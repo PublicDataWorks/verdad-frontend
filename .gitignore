@@ -1,0 +1,42 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Coverage reports
+coverage
+cypress-coverage
+vitest-coverage
+.nyc_output
+reports
+
+cypress/videos
+
+__pycache__
+i18n-script/.env
+i18n-script/docker-compose.yml
+.jwt
+cypress.env.json
+.env
+.eslintcache
+.vscode

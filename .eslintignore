@@ -1,0 +1,17 @@
+**/*.scss
+**/*.css
+
+# config files at root level
+*config.*
+jsconfig.json
+*rc.cjs
+
+src/assets/*
+
+# coverage files
+coverage
+cypress-coverage
+vitest-coverage
+.nyc_output
+reports
+merge-cov.cjs
