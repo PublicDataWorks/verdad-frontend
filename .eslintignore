@@ -15,3 +15,4 @@ vitest-coverage
 .nyc_output
 reports
 merge-cov.cjs
+/dist

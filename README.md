@@ -1,4 +1,3 @@
-
 Install the dependencies:
 
 ```bash
@@ -50,7 +49,8 @@ To run end-to-end tests headless-ly:
 npm run test:e2e:run
 ```
 
-To run all tests (unit and e2e) and merge coverage reports (to run in CI workflows):
+To run all tests (unit and e2e) and merge coverage reports (to run in CI
+workflows):
 
 ```bash
 npm run coverage
@@ -112,11 +112,16 @@ npm run prepare
 
 Toolings:
 
-We are using `Prettier` to format the code, please add it to your editor/IDE and make sure that it picks up the right config of this project at `/.prettierrc.cjs`.
+We are using `Prettier` to format the code, please add it to your editor/IDE and
+make sure that it picks up the right config of this project
+at `/.prettierrc.cjs`.
 
-The pre-commit hook will run `npm run lint` before every commit. You can also install `eslint` plugin to your editor/IDE to see the visualized error while coding.
+The pre-commit hook will run `npm run lint` before every commit. You can also
+install `eslint` plugin to your editor/IDE to see the visualized error while
+coding.
 
-Please note that the unassigned imports (i.e. `import './*.scss'`) are ignored by the linter, please put them together with the sibling import group.
+Please note that the unassigned imports (i.e. `import './*.scss'`) are ignored
+by the linter, please put them together with the sibling import group.
 
 ## Translation
 

@@ -6,9 +6,10 @@
     "es2021": true
   },
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "react-prefer-function-component"
-  ],
+  "parserOptions": {
+    "project": ["./tsconfig.json"]
+  },
+  "plugins": ["react-prefer-function-component"],
   "extends": [
     "eslint:all",
     "plugin:@typescript-eslint/all",
@@ -19,7 +20,6 @@
     "airbnb-typescript",
     "airbnb/hooks",
     "plugin:react/jsx-runtime",
-    "plugin:unicorn/all",
     "plugin:react-prefer-function-component/recommended",
     "prettier"
   ],
@@ -55,17 +55,8 @@
     "@typescript-eslint/prefer-enum-initializers": "off",
     "@typescript-eslint/prefer-readonly-parameter-types": "off",
     "@typescript-eslint/prefer-regexp-exec": "off",
-    "@typescript-eslint/no-magic-numbers": [
-      "error",
-      {
-        "ignoreEnums": true,
-        "ignore": [
-          0
-        ],
-        "enforceConst": true,
-        "detectObjects": true
-      }
-    ],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-magic-numbers": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/init-declarations": "off",
     "@typescript-eslint/no-confusing-void-expression": [
@@ -116,12 +107,8 @@
         "validateNested": true
       }
     ],
-    "react/function-component-definition": [
-      "error",
-      {
-        "namedComponents": "function-declaration"
-      }
-    ],
+    "react/function-component-definition": "off",
+    "react-hooks/exhaustive-deps": "off",
     "react/no-unstable-nested-components": "error",
     "react/jsx-handler-names": [
       "error",
@@ -145,19 +132,7 @@
     ],
     "react/jsx-no-constructed-context-values": "error",
     "react/jsx-no-script-url": "error",
-    "react/jsx-no-useless-fragment": "error",
-    "unicorn/filename-case": [
-      "error",
-      {
-        "cases": {
-          "camelCase": true,
-          "pascalCase": true
-        }
-      }
-    ],
-    "unicorn/no-nested-ternary": [
-      "error"
-    ]
+    "react/jsx-no-useless-fragment": "error"
   },
   "settings": {
     "react": {
@@ -166,43 +141,26 @@
   },
   "overrides": [
     {
-      "files": [
-        "src/**/*.ts?(x)"
-      ],
+      "files": ["src/**/*.ts?(x)"],
       "parserOptions": {
-        "project": [
-          "./tsconfig.json"
-        ]
+        "project": ["./tsconfig.json"]
       }
     },
     {
-      "files": [
-        "vite.config.ts",
-        "cypress.config.ts"
-      ],
+      "files": ["vite.config.ts", "cypress.config.ts"],
       "parserOptions": {
-        "project": [
-          "./tsconfig.node.json"
-        ]
+        "project": ["./tsconfig.node.json"]
       }
     },
     {
-      "files": [
-        "**/__tests__/**/*.ts?(x)"
-      ],
-      "extends": [
-        "plugin:testing-library/react"
-      ],
+      "files": ["**/__tests__/**/*.ts?(x)"],
+      "extends": ["plugin:testing-library/react"],
       "rules": {
-        "@typescript-eslint/no-magic-numbers": [
-          "off"
-        ],
+        "@typescript-eslint/no-magic-numbers": ["off"],
         "testing-library/no-await-sync-events": [
           "error",
           {
-            "eventModules": [
-              "fire-event"
-            ]
+            "eventModules": ["fire-event"]
           }
         ],
         "testing-library/no-manual-cleanup": "error",
