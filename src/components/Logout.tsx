@@ -8,7 +8,7 @@ const Logout = () => {
   const { onTokenChanged } = useTokenChanged()
 
   useEffect(() => {
-    onTokenChanged("")
+    onTokenChanged('')
     navigate(ROOT_PATH, { replace: true })
   }, [])
 

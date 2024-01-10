@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useToken } from '../providers/auth'
 import { LOGIN_PATH } from '../constants/routes'
@@ -11,14 +11,23 @@ interface PrivateRouteProperties {
 const PrivateRoute: React.FC<PrivateRouteProperties> = ({ children }) => {
   const { token } = useToken()
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (!token) {
-      navigate(LOGIN_PATH)
+    if (token !== undefined) {
+      // Finish loading from Missive
+      if (!token) {
+        navigate(LOGIN_PATH)
+      } else {
+        setIsLoading(false)
+      }
     }
   }, [token])
 
-  return token ? children : null
+  if (isLoading) {
+    return <b>Loading...</b>
+  }
+  return children
 }
 
 PrivateRoute.propTypes = {

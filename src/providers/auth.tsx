@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import PropTypes from 'prop-types'
 
 interface TokenContextValue {
-  token: string
+  token: string | undefined
 }
 
 interface TokenChangedValue {
@@ -18,7 +18,7 @@ interface AuthProviderProperties {
 }
 
 function AuthProvider({ children }: AuthProviderProperties) {
-  const [token, setToken] = useState<string>('')
+  const [token, setToken] = useState<string>()
 
   const onTokenChanged = useCallback((accessToken: string) => {
     if (accessToken) {

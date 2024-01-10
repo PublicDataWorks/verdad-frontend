@@ -15,7 +15,8 @@ function Home() {
           onClick={() => {
             navigate(LOGOUT_PATH, { replace: true })
           }}
-          aria-label={GOOGLE_OAUTH}>
+          aria-label={GOOGLE_OAUTH}
+        >
           Logout
         </button>
         <br />
