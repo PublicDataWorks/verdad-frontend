@@ -38,10 +38,8 @@ function AuthProvider({ children }: AuthProviderProperties) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     Missive.storeGet('token')
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      .then((token_: string) => {
-        if (token_) {
-          onTokenChanged(token_)
-        }
+      .then((accessToken: string) => {
+        onTokenChanged(accessToken)
       })
   })
 
