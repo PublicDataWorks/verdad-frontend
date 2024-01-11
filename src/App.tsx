@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import { QueryClient, QueryClientProvider } from 'react-query'
 import { Route, HashRouter as Router, Routes } from 'react-router-dom'
 import AuthProvider from './providers/auth'
 import { LOGIN_PATH, LOGOUT_PATH } from './constants/routes'
@@ -7,6 +6,8 @@ import GoogleOauthPopup from './components/GoogleOauthPopup'
 import Logout from './components/Logout'
 import PrivateRoute from './components/PrivateRoute'
 import Home from './pages/Home'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()
 
@@ -29,6 +30,7 @@ export default function App(): ReactElement {
           </Routes>
         </Router>
       </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }
