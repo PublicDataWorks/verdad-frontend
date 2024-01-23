@@ -2,7 +2,7 @@ import { useToken } from '../../providers/auth'
 import { GOOGLE_OAUTH } from '../../constants/misc'
 import { useNavigate } from 'react-router-dom'
 import { LOGOUT_PATH } from '../../constants/routes'
-import BroadcasterList from '../../components/broadcaster/BroadcasterList'
+import BroadcastDashboard from 'components/broadcaster/BroadcastDashBoard'
 
 function Home() {
   const { token } = useToken()
@@ -20,7 +20,7 @@ function Home() {
           Logout
         </button>
         <br />
-        <BroadcasterList />
+        <BroadcastDashboard />
       </>
     )
   }

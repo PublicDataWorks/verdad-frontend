@@ -18,33 +18,29 @@ interface AuthProviderProperties {
 }
 
 function AuthProvider({ children }: AuthProviderProperties) {
-  const [token, setToken] = useState<string>()
+  const [token, setToken] = useState<string>() // TODO: Do we need this?
 
   const onTokenChanged = useCallback((accessToken: string | null) => {
     if (accessToken) {
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-      // Missive.storeSet('token', accessToken)
-      localStorage.setItem('token', accessToken)
+      Missive.storeSet('token', accessToken)
       setToken(accessToken)
     } else {
       delete axios.defaults.headers.common.Authorization
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-      // Missive.storeSet('token', '')
-      localStorage.setItem('token', '')
+      Missive.storeSet('token', '')
       setToken('')
     }
   }, [])
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('token')
-    onTokenChanged(accessToken)
     // // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    // Missive.storeGet('token')
-    //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    //   .then((accessToken: string) => {
-    //     onTokenChanged(accessToken)
-    //   })
+    Missive.storeGet('token')
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      .then((accessToken: string) => {
+        onTokenChanged(accessToken)
+      })
   })
 
   const tokenContextValue = useMemo(() => ({ token }), [token])

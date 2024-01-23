@@ -1,20 +1,20 @@
 import type { UpdateBroadcaster } from '../apis/broadcaster'
-import { getBroadcasters, updateBroadcaster } from '../apis/broadcaster'
+import { getBroadcastDashboard, updateBroadcaster } from '../apis/broadcaster'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-const useBroadcastersQuery = () =>
+const useBroadcastDashboardQuery = () =>
   useQuery({
-    queryKey: ['broadcasters'],
-    queryFn: getBroadcasters
+    queryKey: ['broadcastDashboard'],
+    queryFn: getBroadcastDashboard
   })
 
-const useUpdateBroadcaster = (queryClient) =>
+const useUpdateBroadcaster = queryClient =>
   useMutation({
-    mutationFn: (data: UpdateBroadcaster) => updateBroadcaster({...data}),
+    mutationFn: (data: UpdateBroadcaster) => updateBroadcaster({ ...data }),
     onSuccess: () => {
       // Invalidate the cache for the specific query key
-      queryClient.invalidateQueries('broadcasters');
-    },
+      queryClient.invalidateQueries('broadcasters')
+    }
   })
 
-export { useBroadcastersQuery, useUpdateBroadcaster }
+export { useBroadcastDashboardQuery, useUpdateBroadcaster }
