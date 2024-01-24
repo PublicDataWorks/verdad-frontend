@@ -1,11 +1,12 @@
-import { Broadcast } from 'apis/broadcaster'
-import { FC, useState } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import type { UpcomingBroadcast } from 'apis/broadcaster'
+import type { FC } from 'react'
+import type { SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import DateUtils from 'utils/date'
 
 interface BroadcastFormProps {
-  broadcast: Broadcast
+  broadcast: UpcomingBroadcast
 }
 
 interface IFormInput {
@@ -20,24 +21,34 @@ const BroadcastForm: FC<BroadcastFormProps> = ({ broadcast }) => {
       secondMessage: broadcast.secondMessage
     }
   })
-  const onSubmit: SubmitHandler<IFormInput> = data => console.log(data)
+  const onSubmit: SubmitHandler<IFormInput> = _data => {}
 
   return (
     <>
       <div className='mt-4 font-bold'>Next batch scheduled to send on {DateUtils.format(broadcast.runAt)}</div>
       <form className='rounded-lg pt-4' onSubmit={handleSubmit(onSubmit)}>
-        <label className='mt-2 block text-lg font-bold'>Conversation starter</label>
+        <label htmlFor='firstMessage' className='mt-2 block text-lg font-bold'>
+          Conversation starter
+        </label>
         <div className='mt-2 border border-white p-2'>
-          <TextareaAutosize className='w-full resize-none overflow-hidden italic' {...register('firstMessage', { required: true })} />
+          <TextareaAutosize
+            id='firstMessage'
+            className='w-full resize-none overflow-hidden italic'
+            {...register('firstMessage', { required: true })}
+          />
         </div>
-        <label className='mt-6 block text-lg'>
+        <label htmlFor='secondMessage' className='mt-6 block text-lg'>
           <span className='font-bold'>Second message</span> {`(sent ${broadcast.delay} later if no reply)`}
         </label>
         <div className='mt-2 border border-white p-2'>
-          <TextareaAutosize className='w-full resize-none overflow-hidden italic' {...register('secondMessage', { required: true })} />
+          <TextareaAutosize
+            id='secondMessage'
+            className='w-full resize-none overflow-hidden italic'
+            {...register('secondMessage', { required: true })}
+          />
         </div>
         <div className='flex justify-end py-2'>
-        <button>Save</button>
+          <button type='button' >Save</button>
         </div>
       </form>
     </>

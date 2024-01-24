@@ -21,9 +21,8 @@ const GoogleOauthPopup = () => {
   const onClick = () => {
     const left = window.screenX + (window.outerWidth - 500) / 2
     const top = window.screenY + (window.outerHeight - 500) / 2.5
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     setExternalWindow(
-      window.open(import.meta.env.VITE_GOOGLE_OAUTH_URL, '_blank', `width=500,height=500,left=${left},top=${top}`)
+      window.open((import.meta.env.VITE_GOOGLE_OAUTH_URL as string), '_blank', `width=500,height=500,left=${left},top=${top}`)
     )
   }
 
