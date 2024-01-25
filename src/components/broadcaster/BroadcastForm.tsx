@@ -2,7 +2,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useQueryClient } from '@tanstack/react-query'
 import type { UpcomingBroadcast } from 'apis/broadcastApi'
 import Spinner from 'components/Spinner'
-import { useUpdateBroadcast } from 'hooks/broadcaster'
+import { useUpdateBroadcast } from 'hooks/broadcast'
 import { Fragment, type FC } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
@@ -30,8 +30,8 @@ const BroadcastForm: FC<BroadcastFormProps> = ({ broadcast, isOpen, onClose, isF
     formState: { errors, isDirty, isValid }
   } = useForm<IFormInput>({
     defaultValues: {
-      firstMessage: broadcast.firstMessage,
-      secondMessage: broadcast.secondMessage
+      firstMessage: `Morning! Im Kate at Outlier Media, a local news nonprofit in Detroit that can help you get resources or information about things happening in the city. Need help or just curious? Try typing a keyword like “housing” or “food” and well share some info.`,
+      secondMessage: `Nothing top of mind? Thats okay too. Type “menu” to get a list of options. Type “reporter” if you want to talk to a journalist about a question or problem you have. Type “help” if you want to know more about this service. Or text “all good” if you dont need anything right now.`
     },
     mode: 'onChange'
   })
@@ -108,14 +108,14 @@ const BroadcastForm: FC<BroadcastFormProps> = ({ broadcast, isOpen, onClose, isF
                   <div className='mt-4 flex justify-end gap-x-4'>
                     <button
                       type='button'
-                      className='w-44 min-h-10 rounded-md border border-white text-sm font-medium text-white hover:bg-sky-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                      className='min-h-10 w-44 rounded-md border border-white text-sm font-medium text-white hover:bg-sky-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
                       onClick={onClose}>
                       Cancel
                     </button>
                     <button
                       type='submit'
                       disabled={!isDirty || !isValid || isPending}
-                      className='w-44 min-h-10 rounded-md border border-white bg-sky-600 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 enabled:hover:bg-sky-900 disabled:cursor-none'>
+                      className='min-h-10 w-44 rounded-md border border-white bg-sky-600 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 enabled:hover:bg-sky-900 disabled:cursor-none'>
                       {isPending && <Spinner />}
                       {isFirstMessage ? 'Save changes and delay the next batch' : 'Save changes'}
                     </button>

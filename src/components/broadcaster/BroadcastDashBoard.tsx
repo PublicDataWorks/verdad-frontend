@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { useBroadcastDashboardQuery } from '../../hooks/broadcaster'
 import BroadcastForm from './BroadcastForm'
-import { FaCaretDown, FaCaretUp } from 'react-icons/fa'
 import DateUtils from 'utils/date'
+import Button from 'components/Button'
+import { useBroadcastDashboardQuery } from 'hooks/broadcast'
+import PastBroadcasts from './PastBroadcasts'
 
 const BroadcastDashboard = () => {
   const { data, isPending } = useBroadcastDashboardQuery()
@@ -20,8 +21,7 @@ const BroadcastDashboard = () => {
   }
 
   const [latestBatch] = data.data.past
-  const past = data.data.past.slice(1)
-  const upcoming = data.data.upcoming
+  const { upcoming } = data.data
 
   return (
     <div className='container mx-auto w-[30rem]'>
@@ -37,49 +37,36 @@ const BroadcastDashboard = () => {
       <hr className='mt-2	border border-white' />
 
       <div className='mt-4 font-bold'>Next batch scheduled to send on {DateUtils.format(upcoming.runAt)}</div>
-      <label htmlFor='firstMessage' className='mt-2 block text-lg font-bold'>
+      <label htmlFor='firstMessage' className='my-4 block text-lg font-bold'>
         Conversation starter
       </label>
-      <p id='firstMessage' className='mt-2 bg-gray-900 italic'>
-        {upcoming.firstMessage}
+      <p id='firstMessage' className='bg-upcoming-background px-3 py-4 italic'>
+        Morning! Im Kate at Outlier Media, a local news nonprofit in Detroit that can help you get resources or
+        information about things happening in the city. Need help or just curious? Try typing a keyword like “housing”
+        or “food” and well share some info.
       </p>
-      <button
-        type='button'
-        onClick={() => onEditClicked(true)}
-        className='mt-px w-full rounded-md bg-gray-900 text-blue-400'>
-        Edit
-      </button>
-      <label htmlFor='secondMessage' className='mt-2 block text-lg font-bold'>
+      <Button text='edit' className='bg-upcoming-background mt-px' onClick={() => onEditClicked(true)} />
+
+      <label htmlFor='secondMessage' className='my-4 block text-lg font-bold'>
         Second message <span className='font-normal italic'>{`(sent ${upcoming.delay} later if no reply)`}</span>
       </label>
-      <p id='secondMessage' className='mt-2 bg-gray-900 italic'>
-        {upcoming.secondMessage}
+      <p id='secondMessage' className='bg-upcoming-background px-3 py-4 italic'>
+        Morning! Im Kate at Outlier Media, a local news nonprofit in Detroit that can help you get resources or
+        information about things happening in the city. Need help or just curious? Try typing a keyword like “housing”
+        or “food” and well share some info.
       </p>
-      <button
-        type='button'
-        onClick={() => onEditClicked(false)}
-        className='mt-px w-full rounded-md bg-gray-900 text-blue-400'>
-        Edit
-      </button>
-      <hr className='mt-2	border border-white' />
-
-      <div className='dropdown'>
-        <div className='font-bold'>Past batches</div>
-        {past.map(item => (
-          <div className='flex rounded-md border px-2'>
-            <FaCaretDown size={30} />
-            <div key={item.id} className='flex items-center'>
-              {DateUtils.format(item.runAt)}
-            </div>
-          </div>
-        ))}
-      </div>
+      <Button text='edit' className='bg-upcoming-background mt-px' onClick={() => onEditClicked(false)} />
+      
       <BroadcastForm
+        key={upcoming.id}
         broadcast={upcoming}
         isOpen={isPopupOpen}
         onClose={() => setIsPopupOpen(false)}
         isFirstMessage={isFirstMessage!}
       />
+      <hr className='mt-2	border border-gray-500' />
+
+      <PastBroadcasts />
     </div>
   )
 }

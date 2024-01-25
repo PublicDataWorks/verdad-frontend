@@ -14,6 +14,8 @@ const format = (unixTimestamp: number): string => {
   return date.toLocaleString(undefined, options).replace(',', '')
 }
 
+const formatDate = (date: Date): string => moment(date).format('YYYY/M/D')
+
 const diffInMinutes = (runAt: number) => {
   const runAtDate = new Date(runAt * 1000)
   const now = new Date()
@@ -22,12 +24,13 @@ const diffInMinutes = (runAt: number) => {
 
 const advance = (noMinutes: number) => {
   const date = new Date()
-  date.setMinutes(date.getMinutes() + 90)
+  date.setMinutes(date.getMinutes() + noMinutes)
   return date.toLocaleString(undefined, options).replace(',', '')
 }
 
 export default {
   format,
   diffInMinutes,
-  advance
+  advance,
+  formatDate
 }
