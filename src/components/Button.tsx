@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import type { FC } from 'react'
 
 interface ButtonProps {
   text: string
@@ -7,16 +7,17 @@ interface ButtonProps {
   className?: string
 }
 
-const Button: FC<ButtonProps> = ({ text, onClick, disabled = false, className = '' }) => {
-  return (
+const Button: FC<ButtonProps> = ({ text, onClick, disabled, className }) => (
     <button
-      type='button'
+      type="button"
       onClick={onClick}
-      className={`w-full rounded-md bg-gray-900 py-3 font-semibold text-blue-600 ${className}`}
+      className={`${className} disabled:opacity-50 w-full rounded-md py-2 text-missive-blue-color disabled:cursor-not-allowed`}
       disabled={disabled}>
       {text}
     </button>
   )
+Button.defaultProps = {
+  className: '',
+  disabled: false
 }
-
 export default Button

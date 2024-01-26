@@ -1,11 +1,11 @@
 import {
   ITEMS_PER_PAGE,
-  UpdateBroadcast,
+  type UpdateBroadcast,
   getBroadcastDashboard,
   getPastBroadcasts,
   updateBroadcast
 } from '../apis/broadcastApi'
-import { QueryClient, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { type QueryClient, useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
 
 const useBroadcastDashboardQuery = () =>
   useQuery({
@@ -13,20 +13,21 @@ const useBroadcastDashboardQuery = () =>
     queryFn: getBroadcastDashboard
   })
 
-const usePastBroadcastsQuery = (initialData) =>
+const usePastBroadcastsQuery = initialData =>
   useInfiniteQuery({
     queryKey: ['pastBroadcasts'],
     queryFn: getPastBroadcasts,
     initialPageParam: undefined,
-    getNextPageParam: lastPage => lastPage.data.past.length < ITEMS_PER_PAGE ? undefined : lastPage.data.currentCursor,
-    initialData: initialData,
+    getNextPageParam: lastPage =>
+      lastPage.data.past.length === ITEMS_PER_PAGE - 1 ? lastPage.data.currentCursor : undefined,
+    initialData: initialData
   })
 
 const useUpdateBroadcast = (queryClient: QueryClient) =>
   useMutation({
-    mutationFn: (newData: UpdateBroadcast) => updateBroadcast(newData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['broadcastDashboard'] })
+    mutationFn: async (newData: UpdateBroadcast) => updateBroadcast(newData),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['broadcastDashboard'] })
     }
   })
 

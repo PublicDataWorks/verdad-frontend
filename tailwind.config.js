@@ -9,8 +9,10 @@ const config = {
     },
     extend: {
       colors: {
-        'upcoming-background': '#272828',
-        'past-background': '#4a4a4a'
+        'missive-background-color': 'var(--missive-background-color)',
+        'missive-blue-color': 'var(--missive-blue-color)',
+        'missive-light-border-color': 'var(--missive-light-border-color)',
+        'missive-border-radius': 'var(--missive-border-radius)',
       }
     }
   }
