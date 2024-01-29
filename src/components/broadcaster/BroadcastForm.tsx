@@ -68,31 +68,33 @@ const BroadcastForm: FC<BroadcastFormProps> = ({ broadcast, isOpen, onClose, isF
   const title = isFirstMessage ? 'Edit conversation starter' : 'Edit second message'
 
   return (
-    <AppDialog isOpen={isOpen} onClose={onCloseWrapper} title={title} className="w-full">
+    <AppDialog isOpen={isOpen} onClose={onCloseWrapper} title={title} className='w-full'>
       <>
-        <div className="text-center px-4">
+        <div className='px-4 text-center'>
           <p>{warning}</p>
           <p>{note}</p>
         </div>
         {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-        <form className="rounded-md pt-4 mx-8 mb-8" onSubmit={handleSubmit(onSubmit)}>
+        <form className='mx-8 mb-4 rounded-md pt-4' onSubmit={handleSubmit(onSubmit)}>
           {/* eslint-disable react/jsx-props-no-spreading */}
           <TextareaAutosize
-            className="w-full resize-none overflow-hidden bg-missive-background-color italic p-2"
+            className='w-full resize-none overflow-hidden bg-missive-background-color p-2 italic'
             {...register(isFirstMessage ? 'firstMessage' : 'secondMessage', { required: true })}
           />
-          {(errors.firstMessage ?? errors.secondMessage) ? <span>This field is required</span> : null}
-          <div className="mt-4 flex justify-end gap-x-4">
+          {errors.firstMessage ?? errors.secondMessage ? <span>This field is required</span> : null}
+          <div className='mt-4 flex justify-end gap-x-4'>
             <button
-              type="button"
-              className="font-medium select-none rounded-[6px] bg-black border py-[8px] px-[30px]"
-              onClick={onClose}>
+              type='button'
+              className='select-none rounded-[6px] border bg-black bg-missive-background-color px-10 py-2 font-medium'
+              onClick={onClose}
+            >
               Cancel
             </button>
             <button
-              type="submit"
+              type='submit'
               disabled={!isDirty || !isValid || isPending}
-              className="disabled:opacity-50 disabled:cursor-not-allowed button max-w-48">
+              className='button w-40 disabled:cursor-not-allowed disabled:opacity-50'
+            >
               {isPending ? <Spinner /> : null}
               {saveBtnText}
             </button>

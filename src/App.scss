@@ -1,4 +1,4 @@
-@import "./preflight.css";
+@import './preflight.css';
 
 @tailwind components;
 @tailwind utilities;
@@ -32,47 +32,22 @@
 //   }
 // }
 
-:root {
-  --missive-font-size: 14px;
-  --missive-border-radius: 6px;
-  --missive-text-color-a: #dededd;
-  --missive-text-color-b: #c4c4c3;
-  --missive-text-color-c: #a0a1a0;
-  --missive-text-color-d: #868685;
-  --missive-text-color-e: #595a59;
-  --missive-blue-color: rgb(58, 130, 247);
-  --missive-light-blue-color: #263240;
-  --missive-orange-color: #ff8400;
-  --missive-light-orange-color: #443424;
-  --missive-green-color: #00b351;
-  --missive-red-color: rgb(242, 49, 49);
-  --missive-yellow-color: #fdd157;
-  --missive-border-color: #484848;
-  --missive-light-border-color: #2d2d2d;
-  --missive-token-background-color: rgb(21, 22, 23);
-  --missive-conversation-list-border-color: #000;
-  --missive-conversation-list-background-color: rgb(21, 22, 23);
-  --missive-conversations-separator-opacity: .2;
-  --missive-background-color: rgb(29, 30, 31);
-  --missive-light-active-color: #232425;
-  --missive-input-background-color: #18191a;
-  --missive-section-shadow-width: 1px;
-  --missive-section-shadow-color: rgba(0, 0, 0, .45);
-
-  --animation-duration: 225ms;
-  --animation-easing: cubic-bezier(.4, 0, .2, 1);
-  --checkmark-color: var(--missive-green-color);
-  --accent-color: var(--missive-blue-color);
-  --button-color: var(--missive-blue-color);
-  --button-hover-color: var(--button-color);
-  --shadow-color: rgba(0, 0, 0, .2);
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
 #root {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    Fira Sans,
+    Droid Sans,
+    Helvetica Neue,
+    sans-serif;
   height: 100svh;
-  background-color: var(--missive-token-background-color);
+  background-color: var(--missive-conversation-list-background-color);
   font-family: inherit;
-  color: rgb(255 255 255);
-  overflow: auto
+  color: var(--missive-text-color-a);
+  overflow: auto;
 }

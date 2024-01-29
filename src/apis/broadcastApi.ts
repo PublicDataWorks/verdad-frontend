@@ -3,24 +3,26 @@ import type { AxiosResponse } from 'axios'
 import { BROADCAST_PATH } from '../constants/routes'
 
 interface BroadcastDashboard {
-  upcoming: Broadcast
+  upcoming: UpcomingBroadcast
   past: PastBroadcast[]
   currentCursor: number
 }
 
-interface Broadcast {
+interface UpcomingBroadcast {
   id: number
-  runAt: number
   firstMessage: string
   secondMessage: string
+  runAt: number
   delay: string
 }
 
 interface PastBroadcast {
   id: number
+  firstMessage: string
+  secondMessage: string
   runAt: number
   totalSent: number
-  succesfullyDelivered: number
+  successfullyDelivered: number
   failedDelivered: number
 }
 
@@ -34,21 +36,21 @@ interface UpdateBroadcast {
 interface Params {
   pageParam?: number
 }
-const ITEMS_PER_PAGE = 4
+const ITEMS_PER_PAGE = 5
 
 const getPastBroadcasts = async ({ pageParam }: Params): Promise<AxiosResponse<BroadcastDashboard>> => {
   const cursor = pageParam ? `&cursor=${pageParam}` : ''
   return axios.get(`${BROADCAST_PATH}?limit=${ITEMS_PER_PAGE}${cursor}`)
 }
 
-const getBroadcastDashboard = async (): Promise<AxiosResponse<BroadcastDashboard>> => axios.get(`${BROADCAST_PATH}?limit=${ITEMS_PER_PAGE}`)
+const getBroadcastDashboard = async (): Promise<AxiosResponse<BroadcastDashboard>> => axios.get(BROADCAST_PATH)
 
 const updateBroadcast = async ({
   id,
   firstMessage,
   secondMessage,
   runAt
-}: UpdateBroadcast): Promise<AxiosResponse<Broadcast>> =>
+}: UpdateBroadcast): Promise<AxiosResponse<UpcomingBroadcast>> =>
   axios.patch(`${BROADCAST_PATH}/${id}`, {
     firstMessage,
     secondMessage,
@@ -56,4 +58,4 @@ const updateBroadcast = async ({
   })
 
 export { getBroadcastDashboard, updateBroadcast, getPastBroadcasts, ITEMS_PER_PAGE }
-export type { UpdateBroadcast, Broadcast, PastBroadcast }
+export type { UpdateBroadcast, UpcomingBroadcast as Broadcast, PastBroadcast }

@@ -22,7 +22,11 @@ const GoogleOauthPopup = () => {
     const left = window.screenX + (window.outerWidth - 500) / 2
     const top = window.screenY + (window.outerHeight - 500) / 2.5
     setExternalWindow(
-      window.open((import.meta.env.VITE_GOOGLE_OAUTH_URL as string), '_blank', `width=500,height=500,left=${left},top=${top}`)
+      window.open(
+        import.meta.env.VITE_GOOGLE_OAUTH_URL as string,
+        '_blank',
+        `width=500,height=500,left=${left},top=${top}`
+      )
     )
   }
 
@@ -60,7 +64,12 @@ const GoogleOauthPopup = () => {
   }, [externalWindow])
 
   return (
-    <button type='button' onClick={onClick} aria-label={GOOGLE_OAUTH}>
+    <button
+      type='button'
+      className='bg-missive-conversation-list-background-color text-4xl'
+      onClick={onClick}
+      aria-label={GOOGLE_OAUTH}
+    >
       Login with Google
     </button>
   )

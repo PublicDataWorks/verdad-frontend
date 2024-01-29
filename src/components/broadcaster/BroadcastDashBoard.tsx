@@ -25,18 +25,18 @@ const BroadcastDashboard = () => {
   const { upcoming } = data.data
 
   return (
-    <div className='container w-[30rem] mt-16 mx-auto'>
+    <div className='container mx-auto mt-4 w-[22rem] max-w-md'>
       <div className='rounded-md'>
         <h2 className='font-bold'>Most recent batch sent on {DateUtils.format(latestBatch.runAt)}</h2>
         <ul className='pt-5'>
           <li>Total conversation starters sent: {latestBatch.totalSent}</li>
           <li>Second messages sent: {latestBatch.totalSent}</li>
-          <li>Delivered successfully: {latestBatch.succesfullyDelivered}</li>
+          <li>Delivered successfully: {latestBatch.successfullyDelivered}</li>
           <li>Failed to deliver: {latestBatch.failedDelivered}</li>
         </ul>
       </div>
 
-      <hr className='border-gray-500 mt-2 border' />
+      <hr className='mt-2 border border-gray-500' />
 
       <h2 className='mt-3 font-bold'>
         Next batch scheduled to send on <span className='font-normal italic'>{DateUtils.format(upcoming.runAt)}</span>
@@ -45,14 +45,14 @@ const BroadcastDashboard = () => {
         Pause batch schedule
       </button>
       <h3 className='mt-5 font-bold'>Conversation starter</h3>
-      <p className='bg-missive-background-color mt-3 px-3 py-4 italic'>{upcoming.firstMessage}</p>
-      <Button text='edit' className='bg-missive-background-color mt-px' onClick={() => onEditClick(true)} />
+      <p className='mt-3 bg-missive-background-color px-3 py-4 italic'>{upcoming.firstMessage}</p>
+      <Button text='edit' className='mt-px bg-missive-background-color' onClick={() => onEditClick(true)} />
 
       <h3 className='mt-5 font-bold'>
         Second message <span className='font-normal italic'>{`(sent ${upcoming.delay} later if no reply)`}</span>
       </h3>
-      <p className='bg-missive-background-color mt-3 px-3 py-4 italic'>{upcoming.secondMessage}</p>
-      <Button text='edit' className='bg-missive-background-color mb-6 mt-px' onClick={() => onEditClick(false)} />
+      <p className='mt-3 bg-missive-background-color px-3 py-4 italic'>{upcoming.secondMessage}</p>
+      <Button text='edit' className='mb-6 mt-px bg-missive-background-color' onClick={() => onEditClick(false)} />
 
       <RunAtPicker
         isOpen={isRunAtPickerOpen}

@@ -1,22 +1,26 @@
 import type { FC } from 'react'
 
 interface ButtonProps {
+  children?: React.ReactNode
   text: string
   onClick: () => void
-  disabled?: boolean,
+  disabled?: boolean
   className?: string
 }
 
-const Button: FC<ButtonProps> = ({ text, onClick, disabled, className }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`${className} disabled:opacity-50 w-full rounded-md py-2 text-missive-blue-color disabled:cursor-not-allowed`}
-      disabled={disabled}>
-      {text}
-    </button>
-  )
+const Button: FC<ButtonProps> = ({ children, text, onClick, disabled, className }) => (
+  <button
+    type='button'
+    onClick={onClick}
+    className={`${className} w-full rounded-md py-3 text-missive-blue-color disabled:cursor-not-allowed disabled:opacity-50`}
+    disabled={disabled}
+  >
+    {children}
+    {text}
+  </button>
+)
 Button.defaultProps = {
+  children: null,
   className: '',
   disabled: false
 }

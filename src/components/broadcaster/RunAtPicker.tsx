@@ -6,6 +6,7 @@ import 'react-day-picker/dist/style.css'
 import Button from 'components/Button'
 import { useQueryClient } from '@tanstack/react-query'
 import { useUpdateBroadcast } from 'hooks/broadcast'
+import Spinner from 'components/Spinner'
 
 interface RunAtPickerProps {
   isOpen: boolean
@@ -23,10 +24,11 @@ const RunAtPicker: FC<RunAtPickerProps> = ({ isOpen, onClose, runAt, broadcastId
   const { mutate, isPending } = useUpdateBroadcast(queryClient)
   const onCloseWrapper = () => !isPending && onClose()
   const onPause = () => {
+    const timeUnix = originalRunAt.getHours() * 60 * 60 + originalRunAt.getMinutes() * 60 + originalRunAt.getSeconds()
     mutate(
       {
-        id: 8,
-        runAt: Math.floor(selectedDate.getTime() / 1000)
+        id: broadcastId,
+        runAt: Math.floor((selectedDate.getTime() + timeUnix * 1000) / 1000)
       },
       { onSuccess: onClose }
     )
@@ -39,10 +41,12 @@ const RunAtPicker: FC<RunAtPickerProps> = ({ isOpen, onClose, runAt, broadcastId
       <hr className='mx-[-1rem]	mt-2 border border-gray-500' />
       <Button
         text='Pause batch schedule'
-        className='disabled:opacity-50 bg-black disabled:cursor-not-allowed'
+        className='bg-missive-conversation-list-background-color disabled:cursor-not-allowed disabled:opacity-50'
         onClick={onPause}
-        disabled={selectedDate.getTime() === originalRunAtDate.getTime()}
-      />
+        disabled={isPending || selectedDate.getTime() === originalRunAtDate.getTime()}
+      >
+        {isPending ? <Spinner /> : null}
+      </Button>
     </>
   )
   const today = new Date()
