@@ -56,49 +56,6 @@ workflows):
 npm run coverage
 ```
 
-## Architecture
-
-```
-.
-├── README.md
-├── cypress
-│   ├── downloads
-│   ├── e2e
-│   │   └── home.cy.js
-│   ├── fixtures
-│   ├── jsconfig.json
-│   └── support
-│       ├── commands.js
-│       └── e2e.js
-├── cypress.config.cjs
-├── index.html
-├── jsconfig.json
-├── merge-cov.cjs
-├── package-lock.json
-├── package.json
-├── public/
-├── src
-│   ├── App.jsx
-│   ├── App.scss
-│   ├── App.test.jsx
-│   ├── AppRoutes.tsx
-│   ├── apis/
-│   ├── assets/
-│   ├── components/
-│   ├── hooks/
-│   ├── main.jsx
-│   ├── pages
-│   │   ├── Home
-│   │   │   ├── Home.test.jsx
-│   │   │   └── index.jsx
-│   │   ├── Login
-│   │   │   └── index.jsx
-│   │   └── ...
-│   └── vitest-setup.js
-└── vite.config.js
-```
-
-TBU
 
 ## Contributing
 

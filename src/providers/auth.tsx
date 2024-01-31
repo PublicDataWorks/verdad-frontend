@@ -35,12 +35,16 @@ function AuthProvider({ children }: AuthProviderProperties) {
   }, [])
 
   useEffect(() => {
-    // // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    Missive.storeGet('token')
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      .then((accessToken: string) => {
-        onTokenChanged(accessToken)
-      })
+    if (import.meta.env.DEV) {
+      onTokenChanged('test-token')
+    } else {
+      // // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+      Missive.storeGet('token')
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        .then((accessToken: string) => {
+          onTokenChanged(accessToken)
+        })
+    }
   })
 
   const tokenContextValue = useMemo(() => ({ token }), [token])

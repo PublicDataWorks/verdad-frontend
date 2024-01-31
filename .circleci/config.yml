@@ -1,0 +1,63 @@
+version: 2.1
+orbs:
+  cypress: cypress-io/cypress@3
+
+jobs:
+  install-and-persist:
+    executor: cypress/default
+    steps:
+      - cypress/install
+      - persist_to_workspace:
+          paths:
+            - .cache/Cypress
+            - project
+          root: ~/
+
+  install-and-test:
+    docker:
+      - image: cimg/node:18.14.0
+    steps:
+      - checkout
+      # look for existing cache and restore if found
+      - restore_cache:
+          key: v1-deps-{{ checksum "package-lock.json" }}
+      # install dependencies
+      - run:
+          name: install dependencies
+          command: npm install
+      # save any changes to the cache
+      - save_cache:
+          key: v1-deps-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Linter
+          command: npm run lint
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - vitest-coverage
+  
+  run-cypress-tests:
+    executor: cypress/default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - cypress/run-tests:
+          cypress-command: npx cypress run
+          start-command: npx vite --host 0.0.0.0 --port 3000
+      - persist_to_workspace:
+          root: .
+          paths:
+            - cypress-coverage
+
+workflows:
+  test:
+    jobs:
+      - install-and-persist
+      - install-and-test
+      - cypress/run:
+          start-command: 'yarn start:test'
+          cypress-command: 'npx cypress run'

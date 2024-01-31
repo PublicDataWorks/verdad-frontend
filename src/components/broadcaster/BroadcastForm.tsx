@@ -51,6 +51,7 @@ const BroadcastForm: FC<BroadcastFormProps> = ({ broadcast, isOpen, onClose, isF
   let note = ''
   let saveBtnText = 'Save changes'
   if (DateUtils.diffInMinutes(broadcast.runAt) < 90) {
+    console.log('asdsd')
     saveBtnText = 'Save changes and delay the next batch'
     warning = `The next batch is scheduled to send less than 90 minutes from now.
     Making these message updates will delay today's batch by 2-3 hours, sending at approximately ${DateUtils.advance(90)}
@@ -86,15 +87,13 @@ const BroadcastForm: FC<BroadcastFormProps> = ({ broadcast, isOpen, onClose, isF
             <button
               type='button'
               className='select-none rounded-[6px] border bg-black bg-missive-background-color px-10 py-2 font-medium'
-              onClick={onClose}
-            >
+              onClick={onClose}>
               Cancel
             </button>
             <button
               type='submit'
               disabled={!isDirty || !isValid || isPending}
-              className='button w-40 disabled:cursor-not-allowed disabled:opacity-50'
-            >
+              className='button disabled:cursor-not-allowed disabled:opacity-50'>
               {isPending ? <Spinner /> : null}
               {saveBtnText}
             </button>

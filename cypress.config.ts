@@ -1,13 +1,20 @@
 import { defineConfig } from 'cypress'
+import coverageTask from '@cypress/code-coverage/task'
 
 export default defineConfig({
   e2e: {
-    baseUrl: 'https://0.0.0.0:3030',
-    specPattern: 'cypress/e2e/**/*.ts'
+    baseUrl: 'http://0.0.0.0:3000',
+    specPattern: 'cypress/e2e/**/*.ts',
+    setupNodeEvents(on, config) {
+      coverageTask(on, config)
+      // include any other plugin code...
+
+      // It's IMPORTANT to return the config object
+      // with any changed environment variables
+      return config
+    }
   },
   fileServerFolder: 'dist',
-  fixturesFolder: false,
-  projectId: 'etow1b',
   viewportWidth: 1280,
   viewportHeight: 800,
   video: true,
