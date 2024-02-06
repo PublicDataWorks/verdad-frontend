@@ -20,6 +20,7 @@ const usePastBroadcastsQuery = initialData =>
     initialPageParam: undefined,
     getNextPageParam: lastPage =>
       lastPage.data.past.length === ITEMS_PER_PAGE ? lastPage.data.currentCursor : undefined,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     initialData,
     staleTime: 24 * 60 * 60 * 1000
   })

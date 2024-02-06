@@ -38,7 +38,7 @@ function AuthProvider({ children }: AuthProviderProperties) {
     if (import.meta.env.DEV) {
       onTokenChanged('test-token')
     } else {
-      // // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
       Missive.storeGet('token')
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         .then((accessToken: string) => {

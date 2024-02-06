@@ -51,7 +51,6 @@ const BroadcastForm: FC<BroadcastFormProps> = ({ broadcast, isOpen, onClose, isF
   let note = ''
   let saveBtnText = 'Save changes'
   if (DateUtils.diffInMinutes(broadcast.runAt) < 90) {
-    console.log('asdsd')
     saveBtnText = 'Save changes and delay the next batch'
     warning = `The next batch is scheduled to send less than 90 minutes from now.
     Making these message updates will delay today's batch by 2-3 hours, sending at approximately ${DateUtils.advance(90)}

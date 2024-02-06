@@ -16,3 +16,5 @@ vitest-coverage
 reports
 merge-cov.cjs
 /dist
+
+/cypress
