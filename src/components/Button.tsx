@@ -8,12 +8,13 @@ interface ButtonProps {
   className?: string
 }
 
-const Button: FC<ButtonProps> = ({ children, text, onClick, disabled, className }) => (
+const Button: FC<ButtonProps> = ({ children, text, onClick, disabled, className, ...props }) => (
   <button
     type='button'
     onClick={onClick}
     className={`${className} w-full rounded-md py-3 text-missive-blue-color disabled:cursor-not-allowed disabled:opacity-50`}
     disabled={disabled}
+    {...props}
   >
     {children}
     {text}

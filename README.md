@@ -56,7 +56,6 @@ workflows):
 npm run coverage
 ```
 
-
 ## Contributing
 
 ### Coding style

@@ -27,7 +27,7 @@ const BroadcastDashboard = () => {
   return (
     <div className='container mx-auto mt-4 w-[22rem] max-w-md'>
       <div className='rounded-md'>
-        <h2 className='font-bold'>Most recent batch sent on {DateUtils.format(latestBatch.runAt)}</h2>
+        <h2 className='font-bold' data-cy='most-recent'>Most recent batch sent on {DateUtils.format(latestBatch.runAt)}</h2>
         <ul className='pt-5'>
           <li>Total conversation starters sent: {latestBatch.totalSent}</li>
           <li>Second messages sent: {latestBatch.totalSent}</li>
@@ -46,13 +46,22 @@ const BroadcastDashboard = () => {
       </button>
       <h3 className='mt-5 font-bold'>Conversation starter</h3>
       <p className='mt-3 bg-missive-background-color px-3 py-4 italic'>{upcoming.firstMessage}</p>
-      <Button text='edit' className='mt-px bg-missive-background-color data-edit-first-message' onClick={() => onEditClick(true)} />
+      <Button
+        text='edit'
+        className='mt-px bg-missive-background-color'
+        data-cy='edit-first-message'
+        onClick={() => onEditClick(true)}
+      />
 
       <h3 className='mt-5 font-bold'>
         Second message <span className='font-normal italic'>{`(sent ${upcoming.delay} later if no reply)`}</span>
       </h3>
       <p className='mt-3 bg-missive-background-color px-3 py-4 italic'>{upcoming.secondMessage}</p>
-      <Button text='edit' className='mb-6 mt-px bg-missive-background-color data-edit-second-message' onClick={() => onEditClick(false)} />
+      <Button
+        text='edit'
+        className='data-edit-second-message mb-6 mt-px bg-missive-background-color'
+        onClick={() => onEditClick(false)}
+      />
 
       <RunAtPicker
         isOpen={isRunAtPickerOpen}

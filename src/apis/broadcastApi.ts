@@ -58,4 +58,4 @@ const updateBroadcast = async ({
   })
 
 export { getBroadcastDashboard, updateBroadcast, getPastBroadcasts, ITEMS_PER_PAGE }
-export type { UpdateBroadcast, UpcomingBroadcast as Broadcast, PastBroadcast }
+export type { UpdateBroadcast, UpcomingBroadcast, PastBroadcast, BroadcastDashboard }

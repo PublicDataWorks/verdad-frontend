@@ -1,8 +1,7 @@
 import '@testing-library/cypress/add-commands'
-import { BROADCAST_PATH } from '../../src/constants/routes'
 
 Cypress.Commands.add('seed', () => {
-  cy.intercept('GET', BROADCAST_PATH, {
+  cy.intercept('GET', '**/broadcasts', {
     fixture: 'broadcasts.json'
   }).as('seed')
   cy.visit('/')

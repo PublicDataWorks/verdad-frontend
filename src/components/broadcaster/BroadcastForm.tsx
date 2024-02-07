@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import type { Broadcast } from 'apis/broadcastApi'
+import type { UpcomingBroadcast } from 'apis/broadcastApi'
 import AppDialog from 'components/AppDialog'
 import Spinner from 'components/Spinner'
 import { useUpdateBroadcast } from 'hooks/broadcast'
@@ -10,7 +10,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 import DateUtils from 'utils/date'
 
 interface BroadcastFormProps {
-  broadcast: Broadcast
+  broadcast: UpcomingBroadcast
   isOpen: boolean
   onClose: () => void
   isFirstMessage: boolean
@@ -76,7 +76,6 @@ const BroadcastForm: FC<BroadcastFormProps> = ({ broadcast, isOpen, onClose, isF
         </div>
         {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <form className='mx-8 mb-4 rounded-md pt-4' onSubmit={handleSubmit(onSubmit)}>
-          {/* eslint-disable react/jsx-props-no-spreading */}
           <TextareaAutosize
             className='w-full resize-none overflow-hidden bg-missive-background-color p-2 italic'
             {...register(isFirstMessage ? 'firstMessage' : 'secondMessage', { required: true })}
@@ -86,13 +85,15 @@ const BroadcastForm: FC<BroadcastFormProps> = ({ broadcast, isOpen, onClose, isF
             <button
               type='button'
               className='select-none rounded-[6px] border bg-black bg-missive-background-color px-10 py-2 font-medium'
-              onClick={onClose}>
+              onClick={onClose}
+            >
               Cancel
             </button>
             <button
               type='submit'
               disabled={!isDirty || !isValid || isPending}
-              className='button disabled:cursor-not-allowed disabled:opacity-50'>
+              className='button disabled:cursor-not-allowed disabled:opacity-50'
+            >
               {isPending ? <Spinner /> : null}
               {saveBtnText}
             </button>

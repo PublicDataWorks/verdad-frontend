@@ -23,11 +23,6 @@ jobs:
       - run:
           name: Linter
           command: yarn lint
-      - persist_to_workspace:
-          root: .
-          paths:
-            - node_modules
-            - vitest-coverage
 
 workflows:
   test:
@@ -35,5 +30,4 @@ workflows:
       - install-and-lint
       - cypress/run:
           package-manager: yarn
-          start-command: 'yarn start:test'
           cypress-command: 'yarn cy:run'

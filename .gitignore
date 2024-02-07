@@ -31,12 +31,13 @@ vitest-coverage
 reports
 
 cypress/videos
+cypress/screenshots
+cypress.env.json
 
 __pycache__
 i18n-script/.env
 i18n-script/docker-compose.yml
 .jwt
-cypress.env.json
 .env
 .eslintcache
 .vscode

@@ -52,6 +52,6 @@ const AppDialog: FC<AppDialogProps> = ({ children, isOpen, onClose, title, class
 
 AppDialog.defaultProps = {
   className: '',
-  title: '',
+  title: ''
 }
 export default AppDialog
