@@ -1,54 +1,52 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
-import axios from '../lib/axios'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 interface TokenContextValue {
-  token: string | undefined
+  token: string | null
 }
 
 interface TokenChangedValue {
   onTokenChanged: (token: string) => void
 }
 
-const TokenContext = createContext<TokenContextValue>({} as TokenContextValue)
-const TokenChangedContext = createContext<TokenChangedValue>({} as TokenChangedValue)
+const TokenContext = createContext<TokenContextValue>(null!)
+const TokenChangedContext = createContext<TokenChangedValue>(null!)
 
-interface AuthProviderProperties {
+interface AuthProviderProps {
   children: React.ReactNode
+  supabaseClient: SupabaseClient
 }
 
-function AuthProvider({ children }: AuthProviderProperties) {
-  const [token, setToken] = useState<string>() // TODO: Do we need this?
+export function AuthProvider({ children, supabaseClient }: AuthProviderProps) {
+  const [token, setToken] = useState<string | null>(null)
 
-  const onTokenChanged = useCallback((accessToken: string | null) => {
-    if (accessToken) {
-      axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-      Missive.storeSet('token', accessToken)
-      setToken(accessToken)
-    } else {
-      delete axios.defaults.headers.common.Authorization
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-      Missive.storeSet('token', '')
-      setToken('')
-    }
+  const onTokenChanged = useCallback((accessToken: string) => {
+    setToken(accessToken || null)
   }, [])
 
   useEffect(() => {
-    if (import.meta.env.DEV) {
-      onTokenChanged('test-token')
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-      Missive.storeGet('token')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        .then((accessToken: string) => {
-          onTokenChanged(accessToken)
-        })
+    const checkSession = async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession()
+      if (session) {
+        onTokenChanged(session.access_token)
+      }
     }
-  })
+    checkSession()
+
+    const { data: authListener } = supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        onTokenChanged(session.access_token)
+      } else {
+        onTokenChanged('')
+      }
+    })
+
+    return () => {
+      authListener.subscription.unsubscribe()
+    }
+  }, [onTokenChanged, supabaseClient])
 
   const tokenContextValue = useMemo(() => ({ token }), [token])
-
   const tokenChangedContextValue = useMemo(() => ({ onTokenChanged }), [onTokenChanged])
 
   return (
@@ -58,11 +56,18 @@ function AuthProvider({ children }: AuthProviderProperties) {
   )
 }
 
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired
+export const useToken = (): TokenContextValue => {
+  const context = useContext(TokenContext)
+  if (!context) {
+    throw new Error('useToken must be used within an AuthProvider')
+  }
+  return context
 }
 
-export const useToken = () => useContext(TokenContext)
-export const useTokenChanged = () => useContext(TokenChangedContext)
-
-export default AuthProvider
+export const useTokenChanged = (): TokenChangedValue['onTokenChanged'] => {
+  const context = useContext(TokenChangedContext)
+  if (!context) {
+    throw new Error('useTokenChanged must be used within an AuthProvider')
+  }
+  return context.onTokenChanged
+}

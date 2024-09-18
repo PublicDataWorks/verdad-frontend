@@ -1,32 +1,40 @@
-import type { ReactElement } from 'react'
-import { Route, HashRouter as Router, Routes } from 'react-router-dom'
-import AuthProvider from './providers/auth'
-import { LOGIN_PATH, LOGOUT_PATH } from './constants/routes'
-import GoogleOauthPopup from './components/GoogleOauthPopup'
-import Logout from './components/Logout'
-import PrivateRoute from './components/PrivateRoute'
-import Home from './pages/Home'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import type { ReactElement } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { Route, HashRouter as Router, Routes } from 'react-router-dom'
+import { createClient } from '@supabase/supabase-js'
+import { AuthProvider } from './providers/auth'
+import LoginPage from './components/LoginPage'
+import SearchInterface from './components/SearchInterface'
+import PrivateRoute from './components/PrivateRoute'
+import { LOGOUT_PATH } from './constants/routes'
+import Logout from './components/Logout'
+import GoogleOAuthCallback from './pages/GoogleOAuthCallback'
 
 const queryClient = new QueryClient()
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL as string,
+  import.meta.env.VITE_SUPABASE_ANON_KEY as string
+)
 
 export default function App(): ReactElement {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
+      <AuthProvider supabaseClient={supabase}>
         <Router>
           <Routes>
-            <Route path={LOGIN_PATH} element={<GoogleOauthPopup />} />
+            <Route path='/login' element={<LoginPage />} />
             <Route path={LOGOUT_PATH} element={<Logout />} />
             <Route
-              path='*'
+              path='/search'
               element={
                 <PrivateRoute>
-                  <Home />
+                  <SearchInterface />
                 </PrivateRoute>
               }
             />
+            <Route path='*' element={<LoginPage />} />
+            <Route path='/google-oauth-callback' element={<GoogleOAuthCallback />} />
           </Routes>
         </Router>
       </AuthProvider>

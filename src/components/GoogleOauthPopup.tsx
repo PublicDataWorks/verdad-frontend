@@ -1,24 +1,25 @@
+import { Button } from '@/components/ui/button'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useTokenChanged } from '../providers/auth'
-import { ACCESS_TOKEN, GOOGLE_OAUTH } from '../constants/misc'
+import { useAuth } from '@/hooks/useAuth'
+import { ACCESS_TOKEN, GOOGLE_OAUTH } from '@/constants/misc'
 
 const GoogleOauthPopup = () => {
   const navigate = useNavigate()
-  const { onTokenChanged } = useTokenChanged()
-  const [externalWindow, setExternalWindow] = useState<Window | null>()
-  const intervalReference = useRef<number>()
+  const { onTokenChanged } = useAuth()
+  const [externalWindow, setExternalWindow] = useState<Window | null>(null)
+  const intervalRef = useRef<number>()
 
   const clearTimer = () => {
-    window.clearInterval(intervalReference.current)
+    window.clearInterval(intervalRef.current)
   }
 
-  const onToken = (token: string) => {
+  const handleToken = (token: string) => {
     onTokenChanged(token)
-    navigate('/', { replace: true }) // TODO: make it constant
+    navigate('/', { replace: true })
   }
 
-  const onClick = () => {
+  const handleClick = () => {
     const left = window.screenX + (window.outerWidth - 500) / 2
     const top = window.screenY + (window.outerHeight - 500) / 2.5
     setExternalWindow(
@@ -31,47 +32,39 @@ const GoogleOauthPopup = () => {
   }
 
   useEffect(() => {
-    if (externalWindow) {
-      intervalReference.current = window.setInterval(() => {
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          if (!externalWindow || externalWindow.closed) {
-            clearTimer()
-            return
-          }
-          const { hash } = externalWindow.location
-          if (!hash) {
-            return
-          }
-          // hash=#access_token=abcd&refresh_token=1234
-          onToken(hash.slice(1))
-          const parameters = new URLSearchParams(hash.slice(1))
-          const accessToken = parameters.get(ACCESS_TOKEN)
-          if (accessToken) {
-            onToken(accessToken)
-            clearTimer()
-            externalWindow.close()
-          }
-        } catch (error) {
-          // thrown by const { hash } = externalWindow.location
-          // No need to worry here, wait a bit longer til the oauth flow call back
+    if (!externalWindow) return
+
+    intervalRef.current = window.setInterval(() => {
+      try {
+        if (!externalWindow || externalWindow.closed) {
+          clearTimer()
+          return
         }
-      }, 300)
-    }
+        const { hash } = externalWindow.location
+        if (!hash) return
+
+        const parameters = new URLSearchParams(hash.slice(1))
+        const accessToken = parameters.get(ACCESS_TOKEN)
+        if (accessToken) {
+          handleToken(accessToken)
+          clearTimer()
+          externalWindow.close()
+        }
+      } catch (error) {
+        // Ignore errors from cross-origin access attempts
+      }
+    }, 300)
+
     return () => {
+      clearTimer()
       if (externalWindow) externalWindow.close()
     }
   }, [externalWindow])
 
   return (
-    <button
-      type='button'
-      className='bg-missive-conversation-list-background-color text-4xl'
-      onClick={onClick}
-      aria-label={GOOGLE_OAUTH}
-    >
+    <Button variant='outline' className='w-full' onClick={handleClick} aria-label={GOOGLE_OAUTH}>
       Login with Google
-    </button>
+    </Button>
   )
 }
 

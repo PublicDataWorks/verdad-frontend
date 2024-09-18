@@ -1,33 +1,28 @@
-import { type FC, type ReactNode, useEffect, useState } from 'react'
+import type { FC, ReactNode} from 'react';
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useToken } from '../providers/auth'
-import { LOGIN_PATH } from '../constants/routes'
-import PropTypes from 'prop-types'
 
-interface PrivateRouteProperties {
+interface PrivateRouteProps {
   children: ReactNode
 }
 
-const PrivateRoute: FC<PrivateRouteProperties> = ({ children }) => {
+const PrivateRoute: FC<PrivateRouteProps> = ({ children }) => {
   const { token } = useToken()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (token !== undefined) {
-      if (!token) navigate(LOGIN_PATH)
+      if (!token) navigate('/login')
       else setIsLoading(false)
     }
-  }, [token])
+  }, [token, navigate])
 
   if (isLoading) {
-    return <b>Loading...</b>
+    return <div>Loading...</div>
   }
-  return children
-}
-
-PrivateRoute.propTypes = {
-  children: PropTypes.node.isRequired
+  return <>{children}</>
 }
 
 export default PrivateRoute
