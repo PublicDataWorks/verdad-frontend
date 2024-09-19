@@ -13,9 +13,10 @@ const PrivateRoute: FC<PrivateRouteProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (token !== undefined) {
-      if (!token) navigate('/login')
-      else setIsLoading(false)
+    if (token === null) {
+      navigate('/login')
+    } else if (token !== undefined) {
+      setIsLoading(false)
     }
   }, [token, navigate])
 

@@ -1,11 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createClient } from '@supabase/supabase-js'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import GoogleOauthPopup from './GoogleOauthPopup'
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
 
@@ -14,6 +13,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        navigate('/search')
+      }
+    }
+    checkSession()
+  }, [navigate])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,6 +35,18 @@ export default function LoginPage() {
       setError(error.message)
     } else {
       navigate('/search')
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    setError('')
+    const { error, data } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    })
+    if (error) {
+      setError(error.message)
+    } else if (data.url) {
+      window.location.href = data.url
     }
   }
 
@@ -66,7 +87,9 @@ export default function LoginPage() {
             </Button>
           </form>
           <div className='mt-4'>
-            <GoogleOauthPopup />
+            <Button variant='outline' className='w-full' onClick={handleGoogleSignIn}>
+              Login with Google
+            </Button>
           </div>
         </CardContent>
       </Card>
