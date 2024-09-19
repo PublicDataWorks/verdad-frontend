@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Route, HashRouter as Router, Routes } from 'react-router-dom'
@@ -9,7 +9,6 @@ import SearchInterface from './components/SearchInterface'
 import PrivateRoute from './components/PrivateRoute'
 import { LOGOUT_PATH } from './constants/routes'
 import Logout from './components/Logout'
-import GoogleOAuthCallback from './pages/GoogleOAuthCallback'
 
 const queryClient = new QueryClient()
 const supabase = createClient(
@@ -34,7 +33,6 @@ export default function App(): ReactElement {
               }
             />
             <Route path='*' element={<LoginPage />} />
-            <Route path='/google-oauth-callback' element={<GoogleOAuthCallback />} />
           </Routes>
         </Router>
       </AuthProvider>
