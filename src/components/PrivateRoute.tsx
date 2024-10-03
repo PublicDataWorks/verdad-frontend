@@ -1,6 +1,6 @@
-import type { FC, ReactNode} from 'react';
+import type { FC, ReactNode } from 'react';
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useToken } from '../providers/auth'
 
 interface PrivateRouteProps {
@@ -10,15 +10,16 @@ interface PrivateRouteProps {
 const PrivateRoute: FC<PrivateRouteProps> = ({ children }) => {
   const { token } = useToken()
   const navigate = useNavigate()
+  const location = useLocation()
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (token === null) {
-      navigate('/login')
+      navigate('/login', { state: { from: location.pathname + location.search } })
     } else if (token !== undefined) {
       setIsLoading(false)
     }
-  }, [token, navigate])
+  }, [token, navigate, location])
 
   if (isLoading) {
     return <div>Loading...</div>

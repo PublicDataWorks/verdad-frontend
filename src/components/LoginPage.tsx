@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { createClient } from '@supabase/supabase-js'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,17 +12,26 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
-        navigate('/search')
+        const from = (location.state as { from?: string })?.from ?? '/search'
+        navigate(from, { replace: true })
+      } else {
+        setIsLoading(false)
       }
     }
     checkSession()
-  }, [navigate])
+  }, [navigate, location])
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,7 +43,8 @@ export default function LoginPage() {
     if (error) {
       setError(error.message)
     } else {
-      navigate('/search')
+      const from = (location.state as { from?: string })?.from ?? '/search'
+      navigate(from, { replace: true })
     }
   }
 
@@ -42,6 +52,9 @@ export default function LoginPage() {
     setError('')
     const { error, data } = await supabase.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        redirectTo: window.location.origin + (location.state as { from?: string })?.from || '/search'
+      }
     })
     if (error) {
       setError(error.message)
