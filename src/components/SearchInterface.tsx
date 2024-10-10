@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnippets } from '../hooks/useSnippets';
-import { LiveblocksProvider, RoomProvider } from "@liveblocks/react/suspense";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowUp, MessageCircle, Share2, Star, X, Filter, ChevronDown } from "lucide-react";
+import { ArrowUp, Share2, Star, X, Filter, ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useThreads } from "@liveblocks/react";
-import { Thread } from "@liveblocks/react-ui";
-import { SupabaseClient } from '@supabase/supabase-js';
+import LiveblocksComments from '@/components/LiveblocksComments'
 
 interface Source {
   id: number;
@@ -26,43 +22,6 @@ interface Source {
   human_upvotes: number;
 }
 
-const LiveblocksComments: React.FC<{ snippetId: string; onCommentCountChange: (count: number) => void }> = ({ snippetId, onCommentCountChange }) => {
-  const { threads, error, isLoading } = useThreads({
-    query: {
-      metadata: {
-        snippetId,
-      },
-    },
-  });
-
-  useEffect(() => {
-    if (threads) {
-      const totalComments = threads.reduce((sum, thread) => sum + thread.comments.length, 0);
-      onCommentCountChange(totalComments);
-    }
-  }, [threads, onCommentCountChange]);
-
-  if (isLoading) {
-    return <div>Loading comments...</div>;
-  }
-
-  if (error) {
-    return <div>Error loading comments: {error.message}</div>;
-  }
-
-  return (
-    <div className="mt-4">
-      {threads && threads.length > 0 ? (
-        threads.map((thread) => (
-          <Thread key={thread.id} thread={thread} showComposer={false} />
-        ))
-      ) : (
-        ''
-      )}
-    </div>
-  );
-};
-
 const SearchInterface: React.FC = () => {
   const [showSidebar, setShowSidebar] = useState(true);
   const [selectedSource, setSelectedSource] = useState("All Sources");
@@ -71,7 +30,6 @@ const SearchInterface: React.FC = () => {
   const [sortBy, setSortBy] = useState('Most Recent');
   const navigate = useNavigate();
   const { snippets } = useSnippets();
-  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
 
   const radioStations = [
     "All Sources",
@@ -86,16 +44,8 @@ const SearchInterface: React.FC = () => {
     navigate(`/snippet/${snippetId}`);
   };
 
-  const handleCommentCountChange = (snippetId: string, count: number) => {
-    setCommentCounts(prev => {
-      if (prev[snippetId] === count) return prev;
-      return { ...prev, [snippetId]: count };
-    });
-  };
-
   return (
-    <LiveblocksProvider publicApiKey={import.meta.env.VITE_LIVEBLOCKS_PUBKEY as string}>
-      <RoomProvider id={import.meta.env.VITE_LIVEBLOCKS_ROOM as string}>
+
         <div className="container mx-auto px-4 h-screen flex flex-col">
           <div className="flex flex-grow overflow-hidden">
             {showSidebar && (
@@ -206,24 +156,16 @@ const SearchInterface: React.FC = () => {
                         {snippet.state} <ArrowUp className="ml-1 h-3 w-3" /> {snippet.human_upvotes}
                       </Button>
                     </div>
-                    <LiveblocksComments 
-                      snippetId={snippet.id.toString()} 
-                      onCommentCountChange={(count) => handleCommentCountChange(snippet.id.toString(), count)}
+                    <LiveblocksComments
+                      snippetId={snippet.id.toString()}
+                      showFullComments={false}
                     />
-                    <div className="flex justify-end mt-4">
-                      <div className="flex items-center">
-                        <MessageCircle className="h-4 w-4 mr-1" />
-                        <span>{commentCounts[snippet.id] || 0} comments</span>
-                      </div>
-                    </div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
         </div>
-      </RoomProvider>
-    </LiveblocksProvider>
   );
 };
 

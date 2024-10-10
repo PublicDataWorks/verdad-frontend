@@ -2,17 +2,17 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { createClient } from '@supabase/supabase-js'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Eye, EyeOff } from 'lucide-react'
 
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL as string, import.meta.env.VITE_SUPABASE_ANON_KEY as string)
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -26,7 +26,7 @@ export default function LoginPage() {
         setIsLoading(false)
       }
     }
-    checkSession()
+    void checkSession()
   }, [navigate, location])
 
   if (isLoading) {
@@ -63,49 +63,79 @@ export default function LoginPage() {
     }
   }
 
+  const isEmailEntered = email.trim() !== ''
+
   return (
-    <div className='flex min-h-screen items-center justify-center bg-gray-100'>
-      <Card className='w-[350px]'>
-        <CardHeader>
-          <CardTitle className='text-2xl'>Login</CardTitle>
-          <CardDescription>Enter your credentials to access the search interface.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className='space-y-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='email'>Email</Label>
-              <Input
-                id='email'
-                type='email'
-                placeholder='me@example.com'
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className='space-y-2'>
-              <Label htmlFor='password'>Password</Label>
+    <div className='flex min-h-screen items-center justify-center bg-white'>
+      <div className='w-full max-w-md space-y-8'>
+        <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-gray-900'>
+          Login to VERDAD
+        </h2>
+        <form onSubmit={handleLogin} className='mt-8 space-y-6'>
+          <div className='space-y-4'>
+            <Input
+              id='email'
+              type='email'
+              placeholder='Sign in with Email'
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              className='h-12'
+            />
+            <div className='relative'>
               <Input
                 id='password'
-                type='password'
-                placeholder='Enter your password'
+                type={showPassword ? 'text' : 'password'}
+                placeholder='Enter your Password'
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
+                className='h-12 pr-12'
               />
+              <button
+                type='button'
+                className='absolute inset-y-0 right-0 flex items-center pr-3'
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff className='h-5 w-5 text-gray-400' /> : <Eye className='h-5 w-5 text-gray-400' />}
+              </button>
             </div>
-            {error ? <p className='text-red-500'>{error}</p> : null}
-            <Button type='submit' className='w-full'>
-              Login
-            </Button>
-          </form>
-          <div className='mt-4'>
-            <Button variant='outline' className='w-full' onClick={handleGoogleSignIn}>
-              Login with Google
+            <div className='flex items-center justify-end'>
+              <Button variant='link' className='p-0 h-auto text-blue-600'>
+                Forgot password?
+              </Button>
+            </div>
+          </div>
+          {error ? <p className='text-red-500 text-sm'>{error}</p> : null}
+          <Button
+            type='submit'
+            className={`w-full h-12 ${isEmailEntered ? 'bg-[#005EF4] hover:bg-[#004ED1]' : 'bg-gray-300 cursor-not-allowed'}`}
+            disabled={!isEmailEntered}
+          >
+            Continue
+          </Button>
+        </form>
+        <div className='mt-6'>
+          <div className='relative'>
+            <div className='absolute inset-0 flex items-center'>
+              <div className='w-full border-t border-gray-300' />
+            </div>
+            <div className='relative flex justify-center text-sm'>
+              <span className='px-2 bg-white text-gray-500'>or</span>
+            </div>
+          </div>
+          <div className='mt-6'>
+            <Button
+              onClick={handleGoogleSignIn}
+              variant='outline'
+              className='w-full h-12'
+            >
+              <img className='h-5 w-5 mr-2' src='https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg' alt='Google logo' />
+              Sign in with Google
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

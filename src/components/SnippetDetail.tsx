@@ -1,8 +1,7 @@
 "use client"
+
 import type React from 'react';
 import { useSnippets } from '../hooks/useSnippets';
-import { useThreads } from "@liveblocks/react";
-import { Thread, Composer } from "@liveblocks/react-ui";
 import {
   LiveblocksProvider,
   RoomProvider,
@@ -21,43 +20,8 @@ import {
 import AudioPlayer from "./AudioPlayer"
 import LanguageTabs from "./LanguageTab"
 import { useNavigate, useParams } from 'react-router-dom';
-
-const LiveblocksComments: React.FC<{ snippetId: string }> = ({ snippetId }) => {
-  const { threads, error, isLoading } = useThreads({
-    query: {
-      metadata: {
-        snippetId,
-      },
-    },
-  });
-
-  if (isLoading) {
-    return <div>Loading comments...</div>;
-  }
-
-  if (error) {
-    return <div>Error loading comments: {error.message}</div>;
-  }
-
-  return (
-    <div className="mt-8">
-      <h3 className="text-xl font-bold mb-4">Comments</h3>
-      {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
-      {threads && threads.length > 0 ? (
-        threads.map((thread) => (
-          <Thread key={thread.id} thread={thread} />
-        ))
-      ) : (
-        <div className="mt-4">
-          <p>No comments yet.</p>
-          <Composer
-            metadata={{ snippetId }}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
+import Spinner from './Spinner';
+import LiveblocksComments from '@/components/LiveblocksComments'
 
 const SnippetDetail: React.FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>();
@@ -70,16 +34,28 @@ const SnippetDetail: React.FC = () => {
   const englishText = "English text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    );
   }
 
   if (!snippet || !snippetId) {
-    return <div>Snippet not found</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-700 mb-2">Snippet Not Found</h2>
+          <p className="text-gray-500">The requested snippet could not be found.</p>
+          <Button variant="ghost" className="mt-4" onClick={() => navigate(-1)}>
+            Go Back
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <LiveblocksProvider publicApiKey={import.meta.env.VITE_LIVEBLOCKS_PUBKEY as string}>
-      <RoomProvider id={import.meta.env.VITE_LIVEBLOCKS_ROOM as string}>
         <Card className="w-full max-w-3xl mx-auto">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <Button variant="ghost" className="flex items-center space-x-2" onClick={() => navigate(-1)}>
@@ -170,10 +146,8 @@ const SnippetDetail: React.FC = () => {
               </div>
             </div>
           </CardContent>
-          <LiveblocksComments snippetId={snippetId} />
+          <LiveblocksComments snippetId={snippetId} showFullComments />
         </Card>
-      </RoomProvider>
-    </LiveblocksProvider>
   );
 };
 

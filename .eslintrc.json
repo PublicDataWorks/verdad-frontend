@@ -35,6 +35,7 @@
     "no-implicit-coercion": "error",
     "prefer-regex-literals": "error",
     "capitalized-comments": "error",
+    "react/require-default-props": "off",
     "no-restricted-syntax": [
       "error",
       {
