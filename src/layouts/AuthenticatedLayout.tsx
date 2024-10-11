@@ -63,7 +63,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) =
       <RoomProvider id={import.meta.env.VITE_LIVEBLOCKS_ROOM as string}>
         <div className="flex flex-col">
           <HeaderBar />
-          <div className="flex-grow overflow-hidden mt-6">
+          <div className="flex-grow overflow-hidden bg-ghost-white">
             <Outlet />
           </div>
         </div>

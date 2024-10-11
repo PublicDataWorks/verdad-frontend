@@ -1,36 +1,10 @@
 @import './Preflight.css';
 
-// @layer base {
-//   [type='button'] {
-//     background-color: unset;
-//   }
-//   @font-face {
-//     font-family: Inter;
-//     font-style: normal;
-//     font-weight: 400;
-//     font-display: swap;
-//     src: url('/fonts/Inter-Regular.woff2') format('woff2');
-//   }
-
-//   @font-face {
-//     font-family: Inter;
-//     font-style: normal;
-//     font-weight: 500;
-//     font-display: swap;
-//     src: url('/fonts/Inter-Medium.woff2') format('woff2');
-//   }
-
-//   @font-face {
-//     font-family: Inter;
-//     font-style: normal;
-//     font-weight: 700;
-//     font-display: swap;
-//     src: url('/fonts/Inter-Bold.woff2') format('woff2');
-//   }
-// }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 #root {
   font-family:
+    'Inter',
     -apple-system,
     BlinkMacSystemFont,
     Segoe UI,
@@ -42,9 +16,10 @@
     Droid Sans,
     Helvetica Neue,
     sans-serif;
+
   height: 100svh;
   background-color: var(--missive-conversation-list-background-color);
-  font-family: inherit;
   color: var(--missive-text-color-a);
   overflow: auto;
+  font-size: 14px
 }

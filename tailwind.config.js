@@ -10,6 +10,13 @@ const config = {
     },
     extend: {
       colors: {
+        'text-blue': '#005EF4',
+        'dropdown-text': '#A1A1AA',
+        'ghost-white': '#F9F9F9',
+        'blue-accent': '#639FFF',
+        'blue-light': '#E8F1FF',
+        'blue-deep': '#337EF4',
+        'blue-rich': '#004DC7',
         'missive-background-color': 'var(--missive-background-color)',
         'missive-blue-color': 'var(--missive-blue-color)',
         'missive-light-border-color': 'var(--missive-light-border-color)',
