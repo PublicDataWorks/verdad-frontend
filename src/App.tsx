@@ -29,11 +29,7 @@ export default function App(): ReactElement {
             <Route element={<AuthenticatedLayout supabase={supabase}/>}>
               <Route
                 path='/search'
-                element={
-                  <PrivateRoute>
-                    <SearchInterface supabase={supabase} />
-                  </PrivateRoute>
-                }
+                element={<SearchInterface />}
               />
               <Route
                 path='/snippet/:snippetId'

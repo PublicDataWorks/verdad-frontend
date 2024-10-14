@@ -28,7 +28,7 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({
     return <div>Error loading comments: {error.message}</div>;
   }
 
-  const commentCount = threads ? threads.reduce((sum, thread) => sum + thread.comments.length, 0) : 0;
+  const commentCount = threads.reduce((sum, thread) => sum + thread.comments.length, 0)
 
   return (
     <div className="mt-8">
@@ -39,7 +39,7 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({
       {showFullComments ? (
         <div>
           <h3 className="text-xl font-bold mb-4">Comments</h3>
-          {threads && threads.length > 0 ? (
+          {threads.length > 0 ? (
             threads.map((thread) => (
               <Thread key={thread.id} thread={thread} showComposer={showFullComments}/>
             ))
@@ -50,8 +50,7 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({
           )}
         </div>
       ) : (
-        threads && threads.length > 0 &&
-        threads.map((thread) => (
+        threads.length > 0 && threads.map((thread) => (
           <Thread key={thread.id} thread={thread} showComposer={showFullComments}/>
         ))
       )}

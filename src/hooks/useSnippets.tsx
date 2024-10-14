@@ -16,10 +16,6 @@ export function useSnippets() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchSnippets();
-  }, []);
-
   const fetchSnippets = async () => {
     setLoading(true);
     const supabase = createClient(
@@ -35,10 +31,15 @@ export function useSnippets() {
     if (error) {
       console.error('Error fetching snippets:', error);
     } else {
-      setSnippets(data || []);
+      console.log(data)
+      setSnippets(data);
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    void fetchSnippets();
+  }, []);
 
   const getSnippetById = (id: number) => {
     return snippets.find(snippet => snippet.id === id) || null;
