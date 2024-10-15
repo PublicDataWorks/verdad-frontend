@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useThreads } from "@liveblocks/react";
-import { Thread } from "@liveblocks/react-ui";
+import { Composer, Thread } from '@liveblocks/react-ui'
 import { MessageCircle } from 'lucide-react';
 import Spinner from './Spinner'
 
@@ -48,7 +48,8 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({
             ))
           ) : (
             <div className="mt-4">
-              <p>No comments yet.</p>
+              <p className="mx-4" >No comments yet.</p>
+              <Composer />
             </div>
           )}
         </div>

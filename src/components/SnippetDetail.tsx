@@ -141,7 +141,7 @@ const SnippetDetail: React.FC = () => {
               </div>
             </div>
           </CardContent>
-          <LiveblocksComments snippetId={snippetId} showFullComments />
+          <LiveblocksComments snippetId={snippetId} showFullComments={true} />
         </Card>
   );
 };
