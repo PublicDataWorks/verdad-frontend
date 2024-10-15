@@ -4,11 +4,12 @@ import { Moon, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useInboxNotifications } from '@liveblocks/react'
 import { InboxNotification } from '@liveblocks/react-ui'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { User } from '@supabase/supabase-js';
+import { InboxPopover } from './InboxPopover';
+
+interface HeaderBarProps {
+  user: User;
+}
 
 const NotificationsList = () => {
   const { inboxNotifications, error, isLoading } = useInboxNotifications();
@@ -37,8 +38,13 @@ const NotificationsList = () => {
   );
 };
 
-const HeaderBar: React.FC = () => {
+
+const HeaderBar: React.FC<HeaderBarProps> = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const getInitials = (email: string) => {
+    return email.split('@')[0].slice(0, 2).toUpperCase();
+  };
 
   return (
     <header className="bg-blue-50 flex items-center justify-between px-8 py-2 border-b border-blue-600">
@@ -48,21 +54,23 @@ const HeaderBar: React.FC = () => {
         </div>
       </Link>
       <div className="flex items-center space-x-4">
-        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-8 h-8 p-0">
-              <Bell className="h-6 w-6 text-blue-600" />
-            </Button>
-          </DropdownMenuTrigger>
-          <NotificationsList />
-        </DropdownMenu>
+        <InboxPopover />
         <Button variant="ghost" size="icon" className="w-8 h-8 p-0">
-          <Moon className="h-6 w-6 text-blue-600" />
+          <Moon className="h-6 w-6 text-blue-600 hover:bg-gray-50" />
         </Button>
-        <Button variant="ghost" size="icon" className="w-8 h-8 p-0">
-          <div className="h-6 w-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs">
-            AV
-          </div>
+        <Button variant="ghost" size="icon" className="w-8 h-8 p-0 hover:bg-gray-50">
+          {user.user_metadata.avatar_url ? (
+            <img
+              src={user.user_metadata.avatar_url}
+              alt="User Avatar"
+              className="h-6 w-6 rounded-full"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className="h-6 w-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs">
+              {getInitials(user.email || '')}
+            </div>
+          )}
         </Button>
       </div>
     </header>

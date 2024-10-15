@@ -31,8 +31,7 @@ export function useSnippets() {
     if (error) {
       console.error('Error fetching snippets:', error);
     } else {
-      console.log(data)
-      setSnippets(data);
+      setSnippets(data || []);
     }
     setLoading(false);
   };
