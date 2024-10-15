@@ -2,11 +2,6 @@
 
 import type React from 'react';
 import { useSnippets } from '../hooks/useSnippets';
-import {
-  LiveblocksProvider,
-  RoomProvider,
-} from "@liveblocks/react/suspense";
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,7 +16,7 @@ import AudioPlayer from "./AudioPlayer"
 import LanguageTabs from "./LanguageTab"
 import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from './Spinner';
-import LiveblocksComments from '@/components/LiveblocksComments'
+import LiveblocksComments from '../components/LiveblocksComments'
 
 const SnippetDetail: React.FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>();

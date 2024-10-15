@@ -2,6 +2,7 @@ import type React from 'react';
 import { useThreads } from "@liveblocks/react";
 import { Thread } from "@liveblocks/react-ui";
 import { MessageCircle } from 'lucide-react';
+import Spinner from './Spinner'
 
 interface LiveblocksCommentsProps {
   snippetId: string;
@@ -21,17 +22,19 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({
   });
 
   if (isLoading) {
-    return <div>Loading comments...</div>;
+    return <div className="mx-6">
+        <Spinner />
+      </div>;
   }
 
   if (error) {
-    return <div>Error loading comments: {error.message}</div>;
+    return <div className="mx-6">Error loading comments: {error.message}</div>;
   }
 
   const commentCount = threads.reduce((sum, thread) => sum + thread.comments.length, 0)
 
   return (
-    <div className="mt-8">
+    <div className="mx-6 mt-8">
       <div className="flex items-center justify-end">
         <MessageCircle className="h-4 w-4 mr-1" />
         <span>{commentCount} comments</span>
