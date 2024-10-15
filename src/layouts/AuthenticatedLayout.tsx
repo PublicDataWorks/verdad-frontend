@@ -13,6 +13,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) =
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
   useEffect(() => {
     void supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -34,7 +36,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) =
   return (
     <LiveblocksProvider
       authEndpoint={async (room) => {
-        const response = await fetch("http://localhost:3000/api/liveblocks-auth", {
+        const response = await fetch(`${baseUrl}/api/liveblocks-auth`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -47,7 +49,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) =
       }}
       resolveUsers={async ({ userIds }) => {
         try {
-          const response = await fetch("http://localhost:3000/api/users-by-emails", {
+          const response = await fetch(`${baseUrl}/api/users-by-emails`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -77,7 +79,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) =
       }}
       resolveMentionSuggestions={async ({ text, roomId }) => {
         try {
-          const response = await fetch(`http://localhost:3000/api/search-users?query=${encodeURIComponent(text)}`, {
+          const response = await fetch(`${baseUrl}/api/search-users?query=${encodeURIComponent(text)}`, {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${session.access_token}`,
