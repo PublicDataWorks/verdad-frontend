@@ -1,6 +1,13 @@
 # Stage 1: Build the React app using Vite
 FROM node:22.8.0-alpine AS builder
 
+# Set environment variables
+ARG VITE_BASE_URL
+ARG VITE_LIVEBLOCKS_PUBKEY
+ARG VITE_LIVEBLOCKS_ROOM
+ARG VITE_SUPABASE_ANON_KEY
+ARG VITE_SUPABASE_URL
+
 # Set working directory
 WORKDIR /app
 
