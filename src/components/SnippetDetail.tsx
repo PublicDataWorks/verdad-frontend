@@ -19,7 +19,7 @@ const SnippetDetail: React.FC = () => {
   const { snippets, loading } = useSnippets()
   const snippet = snippetId ? snippets.find(s => s.id === parseInt(snippetId, 10)) : null
   const [language, setLanguage] = useState('spanish')
-  console.log(snippetId)
+
   const spanishText =
     'Texto en español: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
   const englishText =

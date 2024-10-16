@@ -48,17 +48,18 @@ export default function LoginPage() {
     if (error) {
       setError(error.message)
     } else {
-      const from = (location.state as { from?: string })?.from ?? '/search'
-      navigate(from, { replace: true })
+      const redirectUrl = import.meta.env.VITE_AUTH_REDIRECT_URL as string|| '/search'
+      navigate(redirectUrl, { replace: true })
     }
   }
 
   const handleGoogleSignIn = async () => {
     setError('')
+    const redirectUrl = import.meta.env.VITE_AUTH_REDIRECT_URL as string || '/search'
     const { error, data } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin + (location.state as { from?: string })?.from || '/search'
+        redirectTo: redirectUrl
       }
     })
     if (error) {

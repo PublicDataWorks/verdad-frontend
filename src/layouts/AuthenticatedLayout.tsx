@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { LiveblocksProvider, RoomProvider } from '@liveblocks/react/suspense'
-import type { SupabaseClient, Session, User } from '@supabase/supabase-js'
+import type { Session, SupabaseClient, User } from '@supabase/supabase-js'
 import HeaderBar from '../components/HeaderBar'
 
 interface AuthenticatedLayoutProps {
@@ -64,16 +64,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) =
             throw new Error('Failed to fetch users')
           }
 
-          const users = await response.json()
-
-          return users.map((user: any) => ({
-            id: user.id,
-            info: {
-              name: user.name,
-              email: user.email,
-              avatar_url: user.avatar_url
-            }
-          }))
+          return await response.json()
         } catch (error) {
           console.error('Error in resolveUsers:', error)
           return []
@@ -92,10 +83,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) =
             throw new Error('Failed to fetch user suggestions')
           }
 
-          const users = await response.json()
-
           // Return the list of user IDs
-          return users.map((user: any) => user.id)
+          return await response.json()
         } catch (error) {
           console.error('Error in resolveMentionSuggestions:', error)
           return []
