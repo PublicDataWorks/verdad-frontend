@@ -1,68 +1,70 @@
-import React, { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { LiveblocksProvider, RoomProvider } from "@liveblocks/react/suspense";
+import React, { useEffect, useState } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { LiveblocksProvider, RoomProvider } from '@liveblocks/react/suspense'
 import type { SupabaseClient, Session, User } from '@supabase/supabase-js'
-import HeaderBar from '../components/HeaderBar';
+import HeaderBar from '../components/HeaderBar'
 
 interface AuthenticatedLayoutProps {
-  supabase: SupabaseClient;
+  supabase: SupabaseClient
 }
 
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const navigate = useNavigate();
+  const [session, setSession] = useState<Session | null>(null)
+  const [user, setUser] = useState<User | null>(null)
+  const navigate = useNavigate()
 
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.VITE_BASE_URL
 
   useEffect(() => {
     void supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user || null);
-      if (!session) navigate('/login');
-    });
+      setSession(session)
+      setUser(session?.user || null)
+      if (!session) navigate('/login')
+    })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user || null);
-      if (!session) navigate('/login');
-    });
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+      setUser(session?.user || null)
+      if (!session) navigate('/login')
+    })
 
-    return () => subscription.unsubscribe();
-  }, [supabase, navigate]);
+    return () => subscription.unsubscribe()
+  }, [supabase, navigate])
 
-  if (!session || !user) return null;
+  if (!session || !user) return null
 
   return (
     <LiveblocksProvider
-      authEndpoint={async (room) => {
+      authEndpoint={async room => {
         const response = await fetch(`${baseUrl}/api/liveblocks-auth`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`
           },
-          body: JSON.stringify({ room }),
-        });
-        if (!response.ok) throw new Error('Failed to authenticate with Liveblocks');
-        return response.json();
+          body: JSON.stringify({ room })
+        })
+        if (!response.ok) throw new Error('Failed to authenticate with Liveblocks')
+        return response.json()
       }}
       resolveUsers={async ({ userIds }) => {
         try {
           const response = await fetch(`${baseUrl}/api/users-by-emails`, {
-            method: "POST",
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${session.access_token}`,
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session.access_token}`
             },
-            body: JSON.stringify({ userIds }),
-          });
+            body: JSON.stringify({ userIds })
+          })
 
           if (!response.ok) {
-            throw new Error('Failed to fetch users');
+            throw new Error('Failed to fetch users')
           }
 
-          const users = await response.json();
+          const users = await response.json()
 
           return users.map((user: any) => ({
             id: user.id,
@@ -71,45 +73,45 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) =
               email: user.email,
               avatar_url: user.avatar_url
             }
-          }));
+          }))
         } catch (error) {
-          console.error('Error in resolveUsers:', error);
-          return [];
+          console.error('Error in resolveUsers:', error)
+          return []
         }
       }}
       resolveMentionSuggestions={async ({ text, roomId }) => {
         try {
           const response = await fetch(`${baseUrl}/api/search-users?query=${encodeURIComponent(text)}`, {
-            method: "GET",
+            method: 'GET',
             headers: {
-              "Authorization": `Bearer ${session.access_token}`,
-            },
-          });
+              Authorization: `Bearer ${session.access_token}`
+            }
+          })
 
           if (!response.ok) {
-            throw new Error('Failed to fetch user suggestions');
+            throw new Error('Failed to fetch user suggestions')
           }
 
-          const users = await response.json();
+          const users = await response.json()
 
           // Return the list of user IDs
-          return users.map((user: any) => user.id);
+          return users.map((user: any) => user.id)
         } catch (error) {
-          console.error('Error in resolveMentionSuggestions:', error);
-          return [];
+          console.error('Error in resolveMentionSuggestions:', error)
+          return []
         }
       }}
     >
       <RoomProvider id={import.meta.env.VITE_LIVEBLOCKS_ROOM as string}>
-        <div className="flex flex-col">
+        <div className='flex flex-col'>
           <HeaderBar user={user} />
-          <div className="flex-grow overflow-hidden bg-ghost-white">
+          <div className='flex-grow overflow-hidden bg-ghost-white'>
             <Outlet />
           </div>
         </div>
       </RoomProvider>
     </LiveblocksProvider>
-  );
-};
+  )
+}
 
-export default AuthenticatedLayout;
+export default AuthenticatedLayout

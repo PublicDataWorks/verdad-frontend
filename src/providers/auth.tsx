@@ -26,7 +26,9 @@ export function AuthProvider({ children, supabaseClient }: AuthProviderProps) {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabaseClient.auth.getSession()
+      const {
+        data: { session }
+      } = await supabaseClient.auth.getSession()
       if (session) {
         onTokenChanged(session.access_token)
       }

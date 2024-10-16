@@ -1,13 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export default function AudioPlayer() {
@@ -80,26 +75,30 @@ export default function AudioPlayer() {
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-4 bg-background rounded-lg shadow-md">
-      <audio ref={audioRef} src="/path-to-your-audio-file.mp3" />
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="space-x-4">
-            <Button variant="outline" onClick={() => skip(-5)} aria-label="Rewind 5 seconds">
-              <ChevronLeft className="h-6 w-6" />
+    <div className='mx-auto w-full max-w-3xl rounded-lg bg-background p-4 shadow-md'>
+      <audio ref={audioRef} src='/path-to-your-audio-file.mp3' />
+      <div className='space-y-4'>
+        <div className='flex items-center justify-between'>
+          <div className='space-x-4'>
+            <Button variant='outline' onClick={() => skip(-5)} aria-label='Rewind 5 seconds'>
+              <ChevronLeft className='h-6 w-6' />
             </Button>
-            <Button variant="outline" size="icon" className="h-10 w-10" onClick={togglePlayPause} aria-label={isPlaying ? "Pause" : "Play"}>
-              {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
+            <Button
+              variant='outline'
+              size='icon'
+              className='h-10 w-10'
+              onClick={togglePlayPause}
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying ? <Pause className='h-6 w-6' /> : <Play className='h-6 w-6' />}
             </Button>
-            <Button variant="outline" onClick={() => skip(5)} aria-label="Forward 5 seconds">
-              <ChevronRight className="h-6 w-6" />
+            <Button variant='outline' onClick={() => skip(5)} aria-label='Forward 5 seconds'>
+              <ChevronRight className='h-6 w-6' />
             </Button>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                {playbackRate}x
-              </Button>
+              <Button variant='outline'>{playbackRate}x</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => changeSpeed(0.5)}>0.5x</DropdownMenuItem>
@@ -109,21 +108,21 @@ export default function AudioPlayer() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="relative w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+        <div className='relative h-1 w-full overflow-hidden rounded-full bg-gray-200'>
           <div
-            className="absolute top-0 left-0 h-full bg-blue-500"
+            className='absolute left-0 top-0 h-full bg-blue-500'
             style={{ width: `${(currentTime / duration) * 100}%` }}
           ></div>
           <input
-            type="range"
-            min="0"
+            type='range'
+            min='0'
             max={duration}
             value={currentTime}
             onChange={onProgressChange}
-            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+            className='absolute left-0 top-0 h-full w-full cursor-pointer opacity-0'
           />
         </div>
-        <div className="flex justify-between text-sm text-muted-foreground">
+        <div className='flex justify-between text-sm text-muted-foreground'>
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>

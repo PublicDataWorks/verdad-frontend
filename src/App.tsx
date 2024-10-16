@@ -26,11 +26,8 @@ export default function App(): ReactElement {
           <Routes>
             <Route path='/login' element={<LoginPage />} />
             <Route path={LOGOUT_PATH} element={<Logout />} />
-            <Route element={<AuthenticatedLayout supabase={supabase}/>}>
-              <Route
-                path='/search'
-                element={<SearchInterface />}
-              />
+            <Route element={<AuthenticatedLayout supabase={supabase} />}>
+              <Route path='/search' element={<SearchInterface />} />
               <Route
                 path='/snippet/:snippetId'
                 element={
