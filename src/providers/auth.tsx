@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { SupabaseClient } from '@supabase/supabase-js'
+import supabase from '../lib/supabase'
 
 interface TokenContextValue {
   token: string | null
@@ -14,10 +14,9 @@ const TokenChangedContext = createContext<TokenChangedValue>(null!)
 
 interface AuthProviderProps {
   children: React.ReactNode
-  supabaseClient: SupabaseClient
 }
 
-export function AuthProvider({ children, supabaseClient }: AuthProviderProps) {
+export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(null)
 
   const onTokenChanged = useCallback((accessToken: string) => {
@@ -28,14 +27,14 @@ export function AuthProvider({ children, supabaseClient }: AuthProviderProps) {
     const checkSession = async () => {
       const {
         data: { session }
-      } = await supabaseClient.auth.getSession()
+      } = await supabase.auth.getSession()
       if (session) {
         onTokenChanged(session.access_token)
       }
     }
     checkSession()
 
-    const { data: authListener } = supabaseClient.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         onTokenChanged(session.access_token)
       } else {
@@ -46,7 +45,7 @@ export function AuthProvider({ children, supabaseClient }: AuthProviderProps) {
     return () => {
       authListener.subscription.unsubscribe()
     }
-  }, [onTokenChanged, supabaseClient])
+  }, [onTokenChanged, supabase])
 
   const tokenContextValue = useMemo(() => ({ token }), [token])
   const tokenChangedContextValue = useMemo(() => ({ onTokenChanged }), [onTokenChanged])

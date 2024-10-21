@@ -1,14 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { createClient } from '@supabase/supabase-js'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Eye, EyeOff } from 'lucide-react'
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL as string,
-  import.meta.env.VITE_SUPABASE_ANON_KEY as string
-)
+import supabase from '../lib/supabase'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -48,14 +43,14 @@ export default function LoginPage() {
     if (error) {
       setError(error.message)
     } else {
-      const redirectUrl = import.meta.env.VITE_AUTH_REDIRECT_URL as string|| '/search'
+      const redirectUrl = (import.meta.env.VITE_AUTH_REDIRECT_URL as string) || '/search'
       navigate(redirectUrl, { replace: true })
     }
   }
 
   const handleGoogleSignIn = async () => {
     setError('')
-    const redirectUrl = import.meta.env.VITE_AUTH_REDIRECT_URL as string || '/search'
+    const redirectUrl = (import.meta.env.VITE_AUTH_REDIRECT_URL as string) || '/search'
     const { error, data } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {

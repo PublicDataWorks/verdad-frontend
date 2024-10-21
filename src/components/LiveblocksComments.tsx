@@ -3,11 +3,7 @@ import { useThreads } from '@liveblocks/react'
 import { Composer, Thread } from '@liveblocks/react-ui'
 import { MessageCircle } from 'lucide-react'
 import Spinner from './Spinner'
-import {
-  Comment,
-  CommentBodyLinkProps,
-  CommentBodyMentionProps,
-} from "@liveblocks/react-ui/primitives";
+import { Comment, CommentBodyLinkProps, CommentBodyMentionProps } from '@liveblocks/react-ui/primitives'
 
 interface LiveblocksCommentsProps {
   snippetId: string
@@ -16,12 +12,12 @@ interface LiveblocksCommentsProps {
 
 // Render a mention in the comment, e.g. "@Emil Joyce"
 function Mention({ userId }: CommentBodyMentionProps) {
-  return <Comment.Mention>@{userId}</Comment.Mention>;
+  return <Comment.Mention>@{userId}</Comment.Mention>
 }
 
 // Render a link in the comment, e.g. "https://liveblocks.io"
 function Link({ href, children }: CommentBodyLinkProps) {
-  return <Comment.Link href={href}>{children}</Comment.Link>;
+  return <Comment.Link href={href}>{children}</Comment.Link>
 }
 
 const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, showFullComments = false }) => {
@@ -32,7 +28,6 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, show
       }
     }
   })
-
 
   if (isLoading) {
     return (
@@ -53,37 +48,29 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, show
   return (
     <div className='mx-6 mt-8'>
       <div className='flex items-center justify-end'>
-        <MessageCircle className='h-4 w-4 mr-1' />
+        <MessageCircle className='mr-1 h-4 w-4' />
         <span>{commentCount} comments</span>
       </div>
       {showFullComments ? (
         <div>
-          <h3 className='text-xl font-bold mb-4'>Comments</h3>
+          <h3 className='mb-4 text-xl font-bold'>Comments</h3>
           {threads.length > 0 ? (
-            threads.map((thread) => (
-              <Thread key={thread.id} thread={thread} showComposer={showFullComments} />
-            ))
+            threads.map(thread => <Thread key={thread.id} thread={thread} showComposer={showFullComments} />)
           ) : (
             <div className='mt-4'>
               <p className='mx-4'>No comments yet.</p>
-              <Composer metadata={{
-                snippetId
-              }}/>
+              <Composer
+                metadata={{
+                  snippetId
+                }}
+              />
             </div>
           )}
         </div>
+      ) : threads.length > 0 ? (
+        threads.map(thread => <Thread key={thread.id} thread={thread} showComposer={showFullComments} />)
       ) : (
-        allComments.length > 0 && lastTwoComments.map((comment) => (
-          <div key={comment.id}>
-            <Comment.Body
-              body={comment.body}
-              components={{
-                Mention,
-                Link,
-              }}
-            />
-          </div>
-        ))
+        ''
       )}
     </div>
   )

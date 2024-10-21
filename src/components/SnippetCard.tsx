@@ -1,5 +1,4 @@
-import type React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Share2 } from 'lucide-react'
 
 import Upvote from '../assets/upvote.svg'
@@ -9,44 +8,30 @@ import Star from '../assets/star.svg'
 import Starred from '../assets/starred.svg'
 import StarHover from '../assets/star_hover.svg'
 import { Button } from './ui/button'
+import LabelButton from './LabelButton'
 import LiveblocksComments from './LiveblocksComments'
-
-interface Snippet {
-  id: number
-  radio_code: string
-  name: string
-  type: string
-  channel: string
-  state: string
-  human_upvotes: number
-}
+import { Snippet } from '../hooks/useSnippets'
+import { formatDate } from '../lib/utils'
 
 interface SnippetCardProps {
   snippet: Snippet
-  onSnippetClick: (id: number) => void
+  onSnippetClick: (id: string) => void
 }
 
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
-  const [isUpvoted, setIsUpvoted] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
+  const [upvotedCategories, setUpvotedCategories] = useState<{ [key: string]: boolean }>({})
+  const [hoveredCategories, setHoveredCategories] = useState<{ [key: string]: boolean }>({})
   const [isStarred, setIsStarred] = useState(false)
   const [isStarHovered, setIsStarHovered] = useState(false)
+  const formattedDate = formatDate(snippet.audio_file.recorded_at)
 
-  const handleUpvoteClick = (e: React.MouseEvent) => {
+  const handleUpvoteClick = (category: string) => (e: React.MouseEvent) => {
     e.stopPropagation()
-    setIsUpvoted(!isUpvoted)
+    setUpvotedCategories(prev => ({ ...prev, [category]: !prev[category] }))
   }
 
-  const getUpvoteButtonClasses = () => {
-    const baseClasses = 'font-normal rounded-full border-none'
-    return isUpvoted
-      ? `${baseClasses} bg-gradient-to-r from-blue-deep to-blue-rich text-white hover:from-blue-deep hover:to-blue-rich hover:text-white`
-      : `${baseClasses} bg-blue-light text-blue-accent hover:bg-blue-light hover:text-blue-accent`
-  }
-
-  const handleStarClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setIsStarred(!isStarred)
+  const handleHover = (category: string, isHovered: boolean) => {
+    setHoveredCategories(prev => ({ ...prev, [category]: isHovered }))
   }
 
   const getStarIcon = () => {
@@ -55,25 +40,17 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
     return Star
   }
 
-  const getGradientWrapperClasses = () => `
-      inline-block rounded-full
-      ${
-        isUpvoted
-          ? 'p-0'
-          : `p-[1px] ${isHovered ? 'bg-gradient-to-b' : 'bg-gradient-to-t'} from-blue-accent to-blue-light`
-      }
-    `
-
-  const getUpvoteIconSrc = () => {
-    if (isUpvoted) return Upvoted
-    return isHovered ? UpvoteHover : Upvote
+  const getUpvoteIconSrc = (category: string) => {
+    if (upvotedCategories[category]) return Upvoted
+    return hoveredCategories[category] ? UpvoteHover : Upvote
   }
 
   return (
     <div className='mt-2 cursor-pointer rounded-lg border bg-white p-6' onClick={() => onSnippetClick(snippet.id)}>
       <div className='mb-2 flex items-start justify-between'>
         <h3 className='text-lg font-medium'>
-          ID {snippet.radio_code} - {snippet.name}
+          ID {snippet.audio_file.radio_station_code} {snippet.audio_file.radio_station_name} -{' '}
+          {snippet.audio_file.location_state}
         </h3>
         <div className='flex space-x-2'>
           <Button variant='ghost' size='icon'>
@@ -85,30 +62,30 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             className='hover:bg-transparent'
             onMouseEnter={() => setIsStarHovered(true)}
             onMouseLeave={() => setIsStarHovered(false)}
-            onClick={handleStarClick}
+            onClick={() => setIsStarred(!isStarred)}
           >
             <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
           </Button>
         </div>
       </div>
-      <p className='mb-4'>
-        {snippet.type} - {snippet.channel}
-      </p>
-      <div className={getGradientWrapperClasses()}>
-        <Button
-          variant='outline'
-          size='sm'
-          className={getUpvoteButtonClasses()}
-          onClick={handleUpvoteClick}
-          onMouseEnter={() => !isUpvoted && setIsHovered(true)}
-          onMouseLeave={() => !isUpvoted && setIsHovered(false)}
-        >
-          {snippet.state}
-          <img src={getUpvoteIconSrc()} alt='Upvote' className='ml-2 mr-1 h-4 w-4' />
-          {snippet.human_upvotes}
+      <p className='mb-4 text-xs text-zinc-400'>{formattedDate}</p>
+      <p className='mb-4'>{snippet.summary}</p>
+      <div className='flex flex-wrap gap-2'>
+        {snippet.confidence_scores.categories.map(category => (
+          <LabelButton
+            key={`${snippet.id}-${category.category}`}
+            label={category.category}
+            upvotes={0} // You might want to add an upvote count to your category object
+            isUpvoted={upvotedCategories[category.category]}
+            onUpvote={e => handleUpvoteClick(category.category)(e)}
+            onHover={isHovered => handleHover(category.category, isHovered)}
+          />
+        ))}
+        <Button variant='outline' size='icon' className='rounded-full'>
+          +
         </Button>
       </div>
-      <LiveblocksComments snippetId={snippet.id.toString()} showFullComments={false} />
+      <LiveblocksComments snippetId={snippet.id} showFullComments={false} />
     </div>
   )
 }

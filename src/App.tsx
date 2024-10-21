@@ -13,20 +13,16 @@ import Logout from './components/Logout'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
 
 const queryClient = new QueryClient()
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL as string,
-  import.meta.env.VITE_SUPABASE_ANON_KEY as string
-)
 
 export default function App(): ReactElement {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider supabaseClient={supabase}>
+      <AuthProvider>
         <Router>
           <Routes>
             <Route path='/login' element={<LoginPage />} />
             <Route path={LOGOUT_PATH} element={<Logout />} />
-            <Route element={<AuthenticatedLayout supabase={supabase} />}>
+            <Route element={<AuthenticatedLayout />}>
               <Route path='/search' element={<SearchInterface />} />
               <Route
                 path='/snippet/:snippetId'

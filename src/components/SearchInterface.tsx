@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import xor from 'lodash/xor'
 import includes from 'lodash/includes'
@@ -14,17 +14,6 @@ import RoundedToggleButton from './RoundedToggleButton'
 import SingleSelectDropdown from './SingleSelectDropdown'
 import SnippetCard from './SnippetCard'
 
-interface Source {
-  id: number
-  radio_code: string
-  name: string
-  type: string
-  channel: string
-  state: string
-  human_upvotes: number
-}
-
-const RADIO_STATIONS = ['All sources', 'KZZZ-123', 'WXYZ-456', 'ABCD-789', 'EFGH-012', 'IJKL-345']
 const LANGUAGES = ['All languages', 'Spanish', 'Arabic']
 const STATES = ['All States', 'Arizona', 'Florida', 'Georgia', 'Michigan', 'Nevada', 'Pennsylvania']
 const STARRED = ['by Me', 'by Others']
@@ -34,7 +23,6 @@ const SORTED_BY = ['Most Recent', 'Oldest', 'Most Popular']
 
 const SearchInterface: React.FC = () => {
   const [showSidebar, setShowSidebar] = useState(true)
-  const [sources, setSources] = useState<string[]>([RADIO_STATIONS[0]])
   const [languages, setLanguages] = useState([LANGUAGES[0]])
   const [states, setStates] = useState([STATES[0]])
   const [labeledBy, setLabeledBy] = useState<string[]>([])
@@ -45,7 +33,8 @@ const SearchInterface: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
   const navigate = useNavigate()
-  const { snippets } = useSnippets()
+  const { snippets: unsortedSnippets, loading, sortSnippets } = useSnippets()
+  const snippets = useMemo(() => sortSnippets(unsortedSnippets, sortedBy), [unsortedSnippets, sortedBy, sortSnippets])
 
   const handleMultiSelect = (
     setter: React.Dispatch<React.SetStateAction<string[]>>,
@@ -69,7 +58,6 @@ const SearchInterface: React.FC = () => {
   }
 
   const clearAll = () => {
-    setSources([RADIO_STATIONS[0]])
     setLanguages([LANGUAGES[0]])
     setStates([STATES[0]])
     setLabeledBy([])
@@ -114,13 +102,6 @@ const SearchInterface: React.FC = () => {
             />
 
             <h3 className='mb-2 mt-6 font-medium'>Source</h3>
-            <MultiSelectDropdown
-              selectedItems={sources}
-              items={RADIO_STATIONS}
-              onItemToggle={(source: string) => handleMultiSelect(setSources, RADIO_STATIONS, source)}
-              placeholder='Select languages'
-              allItemsLabel={RADIO_STATIONS[0]}
-            />
           </div>
 
           <h3 className='mb-2 mt-6 font-semibold'>Labeled</h3>
@@ -182,7 +163,7 @@ const SearchInterface: React.FC = () => {
             ))}
           </div>
           <div className='w-52'>
-            <SingleSelectDropdown selectedItem={sortedBy} items={SORTED_BY} onItemSelect={i => setSortedBy(i)} />
+            <SingleSelectDropdown selectedItem={sortedBy} items={SORTED_BY} onItemSelect={setSortedBy} />
           </div>
         </div>
         <div className='mx-4 flex-grow overflow-y-auto'>

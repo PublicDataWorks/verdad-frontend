@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { LiveblocksProvider, RoomProvider } from '@liveblocks/react/suspense'
-import type { Session, SupabaseClient, User } from '@supabase/supabase-js'
+import type { Session, User } from '@supabase/supabase-js'
 import HeaderBar from '../components/HeaderBar'
+import supabase from '../lib/supabase'
 
-interface AuthenticatedLayoutProps {
-  supabase: SupabaseClient
-}
-
-const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ supabase }) => {
+const AuthenticatedLayout: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const navigate = useNavigate()

@@ -5,7 +5,11 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react'
 
-export default function AudioPlayer() {
+interface AudioPlayerProps {
+  audioSrc: string
+}
+
+export default function AudioPlayer({ audioSrc }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -76,7 +80,7 @@ export default function AudioPlayer() {
 
   return (
     <div className='mx-auto w-full max-w-3xl rounded-lg bg-background p-4 shadow-md'>
-      <audio ref={audioRef} src='/path-to-your-audio-file.mp3' />
+      <audio ref={audioRef} src={audioSrc} />
       <div className='space-y-4'>
         <div className='flex items-center justify-between'>
           <div className='space-x-4'>
