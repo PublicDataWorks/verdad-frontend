@@ -9,8 +9,10 @@ interface TokenChangedValue {
   onTokenChanged: (token: string) => void
 }
 
-const TokenContext = createContext<TokenContextValue>(null!)
-const TokenChangedContext = createContext<TokenChangedValue>(null!)
+const TokenContext = createContext<TokenContextValue>({
+  token: ''
+})
+const TokenChangedContext = createContext<TokenChangedValue>({ onTokenChanged: () => {} })
 
 interface AuthProviderProps {
   children: React.ReactNode
