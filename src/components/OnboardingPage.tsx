@@ -1,15 +1,52 @@
-import PublicHeader from './PublicHeader'
-import { useState } from 'react'
+import { useState, ChangeEvent } from 'react'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Upload } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Upload, Loader2 } from 'lucide-react'
 import supabase from '../lib/supabase'
+
+type FormData = {
+  email: string
+  firstName: string
+  lastName: string
+  password: string
+}
 
 export default function OnboardingPage() {
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [avatar, setAvatar] = useState<File | null>(null)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm<FormData>()
+
+  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      if (file.size > 10 * 1024 * 1024) {
+        setError('File size should not exceed 10MB')
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = event => {
+        if (event.target && typeof event.target.result === 'string') {
+          setAvatarPreview(event.target.result)
+        }
+      }
+      reader.readAsDataURL(file)
+      setAvatar(file)
+      setError('')
+    }
+  }
 
   const handleGoogleSignIn = async () => {
     setError('')
@@ -27,9 +64,31 @@ export default function OnboardingPage() {
     }
   }
 
+  const onSubmit: SubmitHandler<FormData> = async data => {
+    setError('')
+    setIsLoading(true)
+
+    try {
+      const formData = new FormData()
+
+      Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, value)
+      })
+
+      if (avatar) {
+        formData.append('avatar', avatar)
+      }
+    } catch (err) {
+      setError('An error occurred while submitting the form. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const watchFirstName = watch('firstName')
+
   return (
     <div className='flex min-h-screen flex-col'>
-      <PublicHeader />
       <div className='flex flex-grow items-center justify-center'>
         <Card className='w-full max-w-md border-0 shadow-none'>
           <CardHeader className='text-center'>
@@ -37,21 +96,34 @@ export default function OnboardingPage() {
             <p className='mt-4 text-base font-normal'>Let's set up your profile.</p>
           </CardHeader>
           <CardContent className='mt-4 border-0 bg-white shadow-none'>
-            <div className='space-y-6'>
-              <div className='flex'>
+            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+              <div className='flex items-center'>
                 <Avatar className='h-16 w-16 bg-purple-500'>
-                  <AvatarFallback className='text-4xl font-bold text-white'>T</AvatarFallback>
+                  {avatarPreview ? (
+                    <AvatarImage src={avatarPreview} alt='Profile picture' />
+                  ) : (
+                    <AvatarFallback className='text-4xl font-bold text-white'>
+                      {watchFirstName ? watchFirstName[0].toUpperCase() : 'T'}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
-                <div className='ml-2 flex flex-col gap-3'>
+                <div className='ml-4 flex flex-col gap-3'>
                   <p className='text-sm'>Profile picture</p>
                   <Button
+                    type='button'
                     variant='outline'
                     className='w-40 px-3 py-1.5 text-text-blue'
                     onClick={() => document.getElementById('avatar-upload')?.click()}>
                     <Upload className='mr-2 h-4 w-4' />
                     Upload Avatar
                   </Button>
-                  <input id='avatar-upload' type='file' accept='image/*' className='sr-only' />
+                  <input
+                    id='avatar-upload'
+                    type='file'
+                    accept='image/*'
+                    className='sr-only'
+                    onChange={handleAvatarChange}
+                  />
                   <p className='text-tertiary mt-1 text-xs'>*.png, *.jpeg files up to 10MB at least 400px by 400px</p>
                 </div>
               </div>
@@ -61,35 +133,63 @@ export default function OnboardingPage() {
                   <Label className='text-sm font-medium text-primary' htmlFor='email'>
                     Email
                   </Label>
-                  <Input id='email' placeholder='Email' />
+                  <Input id='email' {...register('email', { required: 'Email is required' })} placeholder='Email' />
+                  {errors.email && <p className='text-sm text-red-500'>{errors.email.message}</p>}
                 </div>
                 <div className='space-y-2'>
                   <Label className='text-sm font-medium text-primary' htmlFor='firstName'>
                     First Name
                   </Label>
-                  <Input id='firstName' placeholder='First Name' />
+                  <Input
+                    id='firstName'
+                    {...register('firstName', { required: 'First name is required' })}
+                    placeholder='First Name'
+                  />
+                  {errors.firstName && <p className='text-sm text-red-500'>{errors.firstName.message}</p>}
                 </div>
                 <div className='space-y-2'>
                   <Label className='text-sm font-medium text-primary' htmlFor='lastName'>
                     Last Name
                   </Label>
-                  <Input id='lastName' placeholder='Last Name' />
+                  <Input
+                    id='lastName'
+                    {...register('lastName', { required: 'Last name is required' })}
+                    placeholder='Last Name'
+                  />
+                  {errors.lastName && <p className='text-sm text-red-500'>{errors.lastName.message}</p>}
                 </div>
                 <div className='space-y-2'>
                   <Label className='text-sm font-medium text-primary' htmlFor='password'>
                     Password
                   </Label>
-                  <Input id='password' type='password' placeholder='Create a Password' />
+                  <Input
+                    id='password'
+                    type='password'
+                    {...register('password', { required: 'Password is required' })}
+                    placeholder='Create a Password'
+                  />
+                  {errors.password && <p className='text-sm text-red-500'>{errors.password.message}</p>}
                 </div>
               </div>
 
-              <Button className='w-full'>Continue</Button>
+              {error && <p className='text-sm text-red-500'>{error}</p>}
+
+              <Button type='submit' className='w-full' disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    Please wait
+                  </>
+                ) : (
+                  'Continue'
+                )}
+              </Button>
 
               <div className='text-center'>
                 <span className='text-sm text-gray-500'>or</span>
               </div>
 
-              <Button onClick={handleGoogleSignIn} variant='outline' className='h-12 w-full'>
+              <Button type='button' onClick={handleGoogleSignIn} variant='outline' className='h-12 w-full'>
                 <img
                   className='mr-2 h-5 w-5'
                   src='https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg'
@@ -97,7 +197,7 @@ export default function OnboardingPage() {
                 />
                 Sign in with Google
               </Button>
-            </div>
+            </form>
           </CardContent>
         </Card>
       </div>
