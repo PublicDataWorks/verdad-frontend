@@ -13,6 +13,7 @@ import MultiSelectDropdown from './MultiSelectDropdown'
 import RoundedToggleButton from './RoundedToggleButton'
 import SingleSelectDropdown from './SingleSelectDropdown'
 import SnippetCard from './SnippetCard'
+import ResponsiveSidebar from './Sidebar'
 import supabase from '../lib/supabase'
 
 const LANGUAGES = ['All languages', 'Spanish', 'Arabic']
@@ -76,75 +77,7 @@ const SearchInterface: React.FC = () => {
 
   return (
     <div className='flex flex-grow overflow-hidden'>
-      {showSidebar && (
-        <div className='w-1/6 overflow-y-auto bg-white px-6 pt-2'>
-          <div className='flex justify-end'>
-            <Button variant='ghost' onClick={clearAll} className='px-2 font-normal text-text-blue'>
-              Clear all <X className='ml-2 h-4 w-4' />
-            </Button>
-          </div>
-          <div>
-            <h3 className='mb-2 mt-6 font-medium'>Source Language</h3>
-            <MultiSelectDropdown
-              selectedItems={languages}
-              items={LANGUAGES}
-              onItemToggle={(language: string) => handleMultiSelect(setLanguages, LANGUAGES, language)}
-              placeholder='Select languages'
-              allItemsLabel={LANGUAGES[0]}
-            />
-
-            <h3 className='mb-2 mt-6 font-medium'>State</h3>
-            <MultiSelectDropdown
-              selectedItems={states}
-              items={STATES}
-              onItemToggle={(state: string) => handleMultiSelect(setStates, STATES, state)}
-              placeholder='Select states'
-              allItemsLabel={STATES[0]}
-            />
-
-            <h3 className='mb-2 mt-6 font-medium'>Source</h3>
-          </div>
-
-          <h3 className='mb-2 mt-6 font-semibold'>Labeled</h3>
-          <div className='flex flex-wrap gap-2'>
-            {STARRED.map(labelled => (
-              <RoundedToggleButton
-                key={`labelled-${labelled}`}
-                label={labelled}
-                isActive={labeledBy.includes(labelled)}
-                onClick={() => setLabeledBy(prev => xor(prev, [labelled]))}
-              />
-            ))}
-          </div>
-
-          <h3 className='mb-2 mt-6 font-semibold'>Starred</h3>
-          <div className='flex flex-wrap gap-2'>
-            {STARRED.map(starred => (
-              <RoundedToggleButton
-                key={`starred-${starred}`}
-                label={starred}
-                isActive={starredByFilter.includes(starred)}
-                onClick={() => setStarredByFilter(prev => xor(prev, [starred]))}
-              />
-            ))}
-          </div>
-
-          <h3 className='mb-2 mt-6 font-semibold'>Label</h3>
-          <div className='flex flex-wrap gap-2'>
-            {LABELS.map(label => (
-              <RoundedToggleButton
-                key={`label-${label}`}
-                label={label}
-                isActive={labels.includes(label)}
-                onClick={() => setLabels(prev => xor(prev, [label]))}
-              />
-            ))}
-          </div>
-          <Button variant='link' className='mt-4 p-0 font-normal text-text-blue'>
-            Show more <ChevronDown className='ml-2 h-4 w-4' />
-          </Button>
-        </div>
-      )}
+      {showSidebar && <ResponsiveSidebar />}
       <div className={`${showSidebar ? 'px-16' : 'px-56'} flex w-full flex-col overflow-hidden`}>
         <div className='mb-6 flex items-center justify-between px-4 pt-2'>
           <div className='flex space-x-2'>
