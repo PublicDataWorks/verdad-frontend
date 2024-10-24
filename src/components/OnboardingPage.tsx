@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, useEffect } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -20,6 +20,25 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [session, setSession] = useState(null)
+  const hash = location.hash.substring(1)
+  const searchParams = new URLSearchParams(hash)
+  const params = Object.fromEntries(searchParams)
+
+  useEffect(() => {
+    const updateSession = async () => {
+      setSession({ access_token: params.access_token, refresh_token: params.refresh_token })
+      const response = await supabase.auth.setSession({
+        access_token: params.access_token,
+        refresh_token: params.refresh_token
+      })
+    }
+    try {
+      updateSession()
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
 
   const {
     register,
@@ -69,17 +88,63 @@ export default function OnboardingPage() {
     setIsLoading(true)
 
     try {
-      const formData = new FormData()
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
+      const user = session?.user
 
-      Object.entries(data).forEach(([key, value]) => {
-        formData.append(key, value)
-      })
+      if (!user) throw new Error('No user found')
+
+      let avatarUrl = null
 
       if (avatar) {
-        formData.append('avatar', avatar)
+        const fileExt = avatar.name.split('.').pop()
+        const fileName = `${user.id}-${Math.random()}.${fileExt}`
+        const filePath = `avatars/${fileName}`
+
+        const { error: uploadError, data: uploadData } = await supabase.storage
+          .from('avatars')
+          .upload(filePath, avatar, {
+            cacheControl: '3600',
+            upsert: true
+          })
+
+        if (uploadError) {
+          throw uploadError
+        }
+        console.log(uploadData)
+
+        const {
+          data: { publicUrl }
+        } = supabase.storage.from('avatars').getPublicUrl(filePath)
+        avatarUrl = publicUrl
       }
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          name: data.firstName + ' ' + data.lastName,
+          first_name: data.firstName,
+          last_name: data.lastName,
+          avatar_url: avatarUrl,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id)
+
+      if (updateError) throw updateError
+
+      if (data.password) {
+        const { error: passwordError } = await supabase.auth.updateUser({
+          password: data.password
+        })
+
+        if (passwordError) throw passwordError
+      }
+
+      alert('Profile updated successfully!')
     } catch (err) {
-      setError('An error occurred while submitting the form. Please try again.')
+      console.error('Error:', err)
+      setError(err instanceof Error ? err.message : 'An error occurred while submitting the form.')
     } finally {
       setIsLoading(false)
     }
@@ -124,7 +189,7 @@ export default function OnboardingPage() {
                     className='sr-only'
                     onChange={handleAvatarChange}
                   />
-                  <p className='text-tertiary mt-1 text-xs'>*.png, *.jpeg files up to 10MB at least 400px by 400px</p>
+                  <p className='mt-1 text-xs text-tertiary'>*.png, *.jpeg files up to 10MB at least 400px by 400px</p>
                 </div>
               </div>
 
