@@ -13,6 +13,7 @@ import MultiSelectDropdown from './MultiSelectDropdown'
 import RoundedToggleButton from './RoundedToggleButton'
 import SingleSelectDropdown from './SingleSelectDropdown'
 import SnippetCard from './SnippetCard'
+import supabase from '../lib/supabase'
 
 const LANGUAGES = ['All languages', 'Spanish', 'Arabic']
 const STATES = ['All States', 'Arizona', 'Florida', 'Georgia', 'Michigan', 'Nevada', 'Pennsylvania']
@@ -172,6 +173,7 @@ const SearchInterface: React.FC = () => {
           ))}
         </div>
       </div>
+      <Button onClick={() => supabase.auth.signOut()}>Logout</Button>
     </div>
   )
 }

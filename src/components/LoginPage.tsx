@@ -1,123 +1,123 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+// LoginPage.tsx
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Eye, EyeOff } from 'lucide-react'
-import supabase from '../lib/supabase'
+import { useAuth } from '../providers/auth'
+import { useForm } from 'react-hook-form'
+
+// Define the form data type
+type LoginFormData = {
+  email: string
+  password: string
+}
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
-  const location = useLocation()
+  const { login, loginWithGoogle, user } = useAuth()
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { session }
-      } = await supabase.auth.getSession()
-      if (session) {
-        const from = (location.state as { from?: string })?.from ?? '/search'
-        navigate(from, { replace: true })
-      } else {
-        setIsLoading(false)
-      }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError
+  } = useForm<LoginFormData>({
+    defaultValues: {
+      email: '',
+      password: ''
     }
-    void checkSession()
-  }, [navigate, location])
+  })
 
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/search')
+    }
+  }, [user, navigate])
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
+  // Form submission handler
+  const onSubmit = async (data: LoginFormData) => {
+    const { error } = await login(data.email, data.password)
     if (error) {
-      setError(error.message)
+      // Set form error
+      setError('root', {
+        message: error.message
+      })
     } else {
-      const redirectUrl = (import.meta.env.VITE_AUTH_REDIRECT_URL as string) || '/search'
-      navigate(redirectUrl, { replace: true })
+      navigate('/search')
     }
   }
 
   const handleGoogleSignIn = async () => {
-    setError('')
-    const redirectUrl = (import.meta.env.VITE_AUTH_REDIRECT_URL as string) || '/search'
-    const { error, data } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: redirectUrl
-      }
-    })
+    const { error } = await loginWithGoogle()
     if (error) {
-      setError(error.message)
-    } else if (data.url) {
-      window.location.href = data.url
+      setError('root', {
+        message: error.message
+      })
     }
   }
-
-  const isEmailEntered = email.trim() !== ''
 
   return (
     <div className='flex min-h-screen items-center justify-center bg-white'>
       <div className='w-full max-w-md space-y-8'>
         <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-gray-900'>Login to VERDAD</h2>
-        <form onSubmit={handleLogin} className='mt-8 space-y-6'>
+
+        <form onSubmit={handleSubmit(onSubmit)} className='mt-8 space-y-6'>
           <div className='space-y-4'>
-            <Input
-              id='email'
-              type='email'
-              placeholder='Sign in with Email'
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              className='h-12'
-            />
+            {/* Email Input */}
+            <div>
+              <Input
+                {...register('email', {
+                  required: 'Email is required',
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: 'Invalid email address'
+                  }
+                })}
+                type='email'
+                placeholder='Sign in with Email'
+                className='h-12'
+                aria-invalid={errors.email ? 'true' : 'false'}
+              />
+              {errors.email && <p className='mt-1 text-sm text-red-500'>{errors.email.message}</p>}
+            </div>
+
+            {/* Password Input */}
             <div className='relative'>
               <Input
-                id='password'
-                type={showPassword ? 'text' : 'password'}
+                {...register('password', {
+                  required: 'Password is required',
+                  minLength: {
+                    value: 6,
+                    message: 'Password must be at least 6 characters'
+                  }
+                })}
+                type='password'
                 placeholder='Enter your Password'
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
                 className='h-12 pr-12'
+                aria-invalid={errors.password ? 'true' : 'false'}
               />
-              <button
-                type='button'
-                className='absolute inset-y-0 right-0 flex items-center pr-3'
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeOff className='h-5 w-5 text-gray-400' />
-                ) : (
-                  <Eye className='h-5 w-5 text-gray-400' />
-                )}
-              </button>
+              {errors.password && <p className='mt-1 text-sm text-red-500'>{errors.password.message}</p>}
             </div>
+
             <div className='flex items-center justify-end'>
               <Button variant='link' className='h-auto p-0 text-blue-600'>
                 Forgot password?
               </Button>
             </div>
           </div>
-          {error ? <p className='text-sm text-red-500'>{error}</p> : null}
-          <Button
-            type='submit'
-            className={`h-12 w-full ${isEmailEntered ? 'bg-[#005EF4] hover:bg-[#004ED1]' : 'cursor-not-allowed bg-gray-300'}`}
-            disabled={!isEmailEntered}
-          >
-            Continue
+
+          {/* Root error display */}
+          {errors.root && <p className='text-sm text-red-500'>{errors.root.message}</p>}
+
+          {/* Submit Button */}
+          <Button type='submit' className='h-12 w-full bg-[#005EF4] hover:bg-[#004ED1]' disabled={isSubmitting}>
+            {isSubmitting ? 'Signing in...' : 'Continue'}
           </Button>
         </form>
+
+        {/* Divider */}
         <div className='mt-6'>
           <div className='relative'>
             <div className='absolute inset-0 flex items-center'>
@@ -127,8 +127,10 @@ export default function LoginPage() {
               <span className='bg-white px-2 text-gray-500'>or</span>
             </div>
           </div>
+
+          {/* Google Sign In Button */}
           <div className='mt-6'>
-            <Button onClick={handleGoogleSignIn} variant='outline' className='h-12 w-full'>
+            <Button onClick={handleGoogleSignIn} variant='outline' className='h-12 w-full' disabled={isSubmitting}>
               <img
                 className='mr-2 h-5 w-5'
                 src='https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg'
