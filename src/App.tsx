@@ -9,9 +9,10 @@ import SnippetDetail from './components/SnippetDetail'
 import PrivateRoute from './components/PrivateRoute'
 import OnboardingPage from './components/OnboardingPage'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
+import ForgetPassword from './components/ForgetPassword'
 import { AuthProvider } from './providers/auth'
 
-import { LOGOUT_PATH, ONBOARDING_PATH, LOGIN_PATH } from './constants/routes'
+import { FORGET_PASSWORD_PATH, ONBOARDING_PATH, LOGIN_PATH } from './constants/routes'
 
 const queryClient = new QueryClient()
 
@@ -23,6 +24,7 @@ export default function App(): ReactElement {
           <Routes>
             <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
             <Route path={LOGIN_PATH} element={<LoginPage />} />
+            <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
             <Route element={<AuthenticatedLayout />}>
               <Route path='/search' element={<SearchInterface />} />
               <Route

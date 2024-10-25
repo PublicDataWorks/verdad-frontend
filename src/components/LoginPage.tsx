@@ -29,14 +29,12 @@ export default function LoginPage() {
     }
   })
 
-  // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
       navigate('/search')
     }
   }, [user, navigate])
 
-  // Form submission handler
   const onSubmit = async (data: LoginFormData) => {
     const { error } = await login(data.email, data.password)
     if (error) {
@@ -65,7 +63,6 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className='mt-8 space-y-6'>
           <div className='space-y-4'>
-            {/* Email Input */}
             <div>
               <Input
                 {...register('email', {
@@ -83,7 +80,6 @@ export default function LoginPage() {
               {errors.email && <p className='mt-1 text-sm text-red-500'>{errors.email.message}</p>}
             </div>
 
-            {/* Password Input */}
             <div className='relative'>
               <Input
                 {...register('password', {
@@ -102,22 +98,19 @@ export default function LoginPage() {
             </div>
 
             <div className='flex items-center justify-end'>
-              <Button variant='link' className='h-auto p-0 text-blue-600'>
+              <Button variant='link' className='h-auto p-0 text-blue-600' onClick={() => navigate('/forget-password')}>
                 Forgot password?
               </Button>
             </div>
           </div>
 
-          {/* Root error display */}
           {errors.root && <p className='text-sm text-red-500'>{errors.root.message}</p>}
 
-          {/* Submit Button */}
           <Button type='submit' className='h-12 w-full bg-[#005EF4] hover:bg-[#004ED1]' disabled={isSubmitting}>
             {isSubmitting ? 'Signing in...' : 'Continue'}
           </Button>
         </form>
 
-        {/* Divider */}
         <div className='mt-6'>
           <div className='relative'>
             <div className='absolute inset-0 flex items-center'>
@@ -128,7 +121,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Google Sign In Button */}
           <div className='mt-6'>
             <Button onClick={handleGoogleSignIn} variant='outline' className='h-12 w-full' disabled={isSubmitting}>
               <img
