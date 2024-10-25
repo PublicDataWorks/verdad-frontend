@@ -6,6 +6,7 @@ import { useInboxNotifications } from '@liveblocks/react'
 import { InboxNotification } from '@liveblocks/react-ui'
 import { User } from '@supabase/supabase-js'
 import { InboxPopover } from './InboxPopover'
+import { useAuth } from '@/providers/auth'
 
 interface HeaderBarProps {
   user: User
@@ -35,8 +36,9 @@ const NotificationsList = () => {
   )
 }
 
-const HeaderBar: React.FC<HeaderBarProps> = ({ user }) => {
+const HeaderBar: React.FC<HeaderBarProps> = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const { user } = useAuth()
 
   const getInitials = (email: string) => {
     return email.split('@')[0].slice(0, 2).toUpperCase()
@@ -55,7 +57,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ user }) => {
           <Moon className='h-6 w-6 text-blue-600 hover:bg-gray-50' />
         </Button>
         <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-gray-50'>
-          {user.user_metadata.avatar_url ? (
+          {user?.user_metadata.avatar_url ? (
             <img
               src={user.user_metadata.avatar_url}
               alt='User Avatar'
@@ -64,7 +66,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ user }) => {
             />
           ) : (
             <div className='flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs text-white'>
-              {getInitials(user.email || '')}
+              {getInitials(user?.email || '')}
             </div>
           )}
         </Button>

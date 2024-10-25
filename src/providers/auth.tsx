@@ -1,76 +1,120 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+// AuthProvider.tsx
+import React, { createContext, useEffect, useState, ReactNode, useContext } from 'react'
 import supabase from '../lib/supabase'
+import { User, AuthError } from '@supabase/supabase-js'
 
-interface TokenContextValue {
-  token: string | null
+interface AuthContextType {
+  user: User | null
+  login: (email: string, password: string) => Promise<{ error: AuthError | null }>
+  logout: () => Promise<{ error: AuthError | null }>
+  loginWithGoogle: () => Promise<{ error: AuthError | null }>
 }
 
-interface TokenChangedValue {
-  onTokenChanged: (token: string) => void
-}
-
-const TokenContext = createContext<TokenContextValue>({
-  token: ''
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  login: async () => ({ error: null }),
+  logout: async () => ({ error: null }),
+  loginWithGoogle: async () => ({ error: null })
 })
-const TokenChangedContext = createContext<TokenChangedValue>({ onTokenChanged: () => {} })
 
 interface AuthProviderProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [token, setToken] = useState<string | null>(null)
-
-  const onTokenChanged = useCallback((accessToken: string) => {
-    setToken(accessToken || null)
-  }, [])
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { session }
-      } = await supabase.auth.getSession()
-      if (session) {
-        onTokenChanged(session.access_token)
+    const checkUser = async () => {
+      try {
+        const {
+          data: { session }
+        } = await supabase.auth.getSession()
+        setUser(session?.user ?? null)
+      } catch (error) {
+        console.error('Error checking user:', error)
       }
     }
-    checkSession()
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        onTokenChanged(session.access_token)
-      } else {
-        onTokenChanged('')
-      }
+    checkUser()
+
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
     })
 
     return () => {
-      authListener.subscription.unsubscribe()
+      subscription.unsubscribe()
     }
-  }, [onTokenChanged, supabase])
+  }, [])
 
-  const tokenContextValue = useMemo(() => ({ token }), [token])
-  const tokenChangedContextValue = useMemo(() => ({ onTokenChanged }), [onTokenChanged])
+  const login = async (email: string, password: string): Promise<{ error: AuthError | null }> => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      if (error) throw error
+
+      return { error: null }
+    } catch (error) {
+      console.error('Error logging in:', error)
+      return { error: error as AuthError }
+    }
+  }
+
+  const loginWithGoogle = async (): Promise<{ error: AuthError | null }> => {
+    try {
+      const redirectUrl = (import.meta.env.VITE_AUTH_REDIRECT_URL as string) || '/search'
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl
+        }
+      })
+
+      if (error) throw error
+
+      return { error: null }
+    } catch (error) {
+      console.error('Error logging in with Google:', error)
+      return { error: error as AuthError }
+    }
+  }
+
+  const logout = async (): Promise<{ error: AuthError | null }> => {
+    try {
+      const { error } = await supabase.auth.signOut()
+
+      if (error) throw error
+
+      return { error: null }
+    } catch (error) {
+      console.error('Error logging out:', error)
+      return { error: error as AuthError }
+    }
+  }
 
   return (
-    <TokenChangedContext.Provider value={tokenChangedContextValue}>
-      <TokenContext.Provider value={tokenContextValue}>{children}</TokenContext.Provider>
-    </TokenChangedContext.Provider>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        loginWithGoogle
+      }}>
+      {children}
+    </AuthContext.Provider>
   )
 }
 
-export const useToken = (): TokenContextValue => {
-  const context = useContext(TokenContext)
-  if (!context) {
-    throw new Error('useToken must be used within an AuthProvider')
+// Custom hook
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider')
   }
   return context
-}
-
-export const useTokenChanged = (): TokenChangedValue['onTokenChanged'] => {
-  const context = useContext(TokenChangedContext)
-  if (!context) {
-    throw new Error('useTokenChanged must be used within an AuthProvider')
-  }
-  return context.onTokenChanged
 }

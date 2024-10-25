@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Upload, Loader2 } from 'lucide-react'
 import supabase from '../lib/supabase'
+import { useNavigate } from 'react-router-dom'
 
 type FormData = {
   email: string
@@ -20,32 +21,42 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const [session, setSession] = useState(null)
+  const navigate = useNavigate()
   const hash = location.hash.substring(1)
   const searchParams = new URLSearchParams(hash)
   const params = Object.fromEntries(searchParams)
-
-  useEffect(() => {
-    const updateSession = async () => {
-      setSession({ access_token: params.access_token, refresh_token: params.refresh_token })
-      const response = await supabase.auth.setSession({
-        access_token: params.access_token,
-        refresh_token: params.refresh_token
-      })
-    }
-    try {
-      updateSession()
-    } catch (error) {
-      console.log(error)
-    }
-  }, [])
 
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors }
   } = useForm<FormData>()
+
+  useEffect(() => {
+    const updateSessionAndEmail = async () => {
+      try {
+        if (params.access_token && params.refresh_token) {
+          await supabase.auth.setSession({
+            access_token: params.access_token,
+            refresh_token: params.refresh_token
+          })
+        }
+
+        const {
+          data: { session }
+        } = await supabase.auth.getSession()
+        if (session?.user?.email) {
+          setValue('email', session.user.email)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    updateSessionAndEmail()
+  }, [params.access_token, params.refresh_token, setValue])
 
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -92,6 +103,7 @@ export default function OnboardingPage() {
         data: { session }
       } = await supabase.auth.getSession()
       const user = session?.user
+      const { firstName, lastName, password } = data
 
       if (!user) throw new Error('No user found')
 
@@ -102,17 +114,14 @@ export default function OnboardingPage() {
         const fileName = `${user.id}-${Math.random()}.${fileExt}`
         const filePath = `avatars/${fileName}`
 
-        const { error: uploadError, data: uploadData } = await supabase.storage
-          .from('avatars')
-          .upload(filePath, avatar, {
-            cacheControl: '3600',
-            upsert: true
-          })
+        const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, avatar, {
+          cacheControl: '3600',
+          upsert: true
+        })
 
         if (uploadError) {
           throw uploadError
         }
-        console.log(uploadData)
 
         const {
           data: { publicUrl }
@@ -120,28 +129,14 @@ export default function OnboardingPage() {
         avatarUrl = publicUrl
       }
 
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({
-          name: data.firstName + ' ' + data.lastName,
-          first_name: data.firstName,
-          last_name: data.lastName,
-          avatar_url: avatarUrl,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id)
+      await supabase.rpc('setup_profile', {
+        first_name: firstName,
+        last_name: lastName,
+        password: password,
+        avatar_url: avatarUrl
+      })
 
-      if (updateError) throw updateError
-
-      if (data.password) {
-        const { error: passwordError } = await supabase.auth.updateUser({
-          password: data.password
-        })
-
-        if (passwordError) throw passwordError
-      }
-
-      alert('Profile updated successfully!')
+      navigate('/search')
     } catch (err) {
       console.error('Error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred while submitting the form.')
@@ -198,7 +193,12 @@ export default function OnboardingPage() {
                   <Label className='text-sm font-medium text-primary' htmlFor='email'>
                     Email
                   </Label>
-                  <Input id='email' {...register('email', { required: 'Email is required' })} placeholder='Email' />
+                  <Input
+                    id='email'
+                    {...register('email', { required: 'Email is required' })}
+                    placeholder='Email'
+                    disabled
+                  />
                   {errors.email && <p className='text-sm text-red-500'>{errors.email.message}</p>}
                 </div>
                 <div className='space-y-2'>
@@ -230,8 +230,14 @@ export default function OnboardingPage() {
                   <Input
                     id='password'
                     type='password'
-                    {...register('password', { required: 'Password is required' })}
-                    placeholder='Create a Password'
+                    {...register('password', {
+                      required: 'Password is required',
+                      minLength: {
+                        value: 6,
+                        message: 'Password must be at least 6 characters long'
+                      }
+                    })}
+                    placeholder='Password'
                   />
                   {errors.password && <p className='text-sm text-red-500'>{errors.password.message}</p>}
                 </div>

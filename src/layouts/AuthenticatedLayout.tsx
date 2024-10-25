@@ -86,8 +86,7 @@ const AuthenticatedLayout: React.FC = () => {
           console.error('Error in resolveMentionSuggestions:', error)
           return []
         }
-      }}
-    >
+      }}>
       <RoomProvider id={import.meta.env.VITE_LIVEBLOCKS_ROOM as string}>
         <div className='flex flex-col'>
           <HeaderBar user={user} />

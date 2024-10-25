@@ -8,7 +8,6 @@ import SearchInterface from './components/SearchInterface'
 import SnippetDetail from './components/SnippetDetail'
 import PrivateRoute from './components/PrivateRoute'
 import OnboardingPage from './components/OnboardingPage'
-import Logout from './components/Logout'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
 import { AuthProvider } from './providers/auth'
 
@@ -24,7 +23,6 @@ export default function App(): ReactElement {
           <Routes>
             <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
             <Route path={LOGIN_PATH} element={<LoginPage />} />
-            <Route path={LOGOUT_PATH} element={<Logout />} />
             <Route element={<AuthenticatedLayout />}>
               <Route path='/search' element={<SearchInterface />} />
               <Route
