@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Upload, Loader2 } from 'lucide-react'
 import supabase from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
+import PublicHeader from './PublicHeader'
 
 type FormData = {
   email: string
@@ -149,6 +150,7 @@ export default function OnboardingPage() {
 
   return (
     <div className='flex min-h-screen flex-col'>
+      <PublicHeader />
       <div className='flex flex-grow items-center justify-center'>
         <Card className='w-full max-w-md border-0 shadow-none'>
           <CardHeader className='text-center'>

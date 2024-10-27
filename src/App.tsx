@@ -12,7 +12,8 @@ import AuthenticatedLayout from './layouts/AuthenticatedLayout'
 import ForgetPassword from './components/ForgetPassword'
 import { AuthProvider } from './providers/auth'
 
-import { FORGET_PASSWORD_PATH, ONBOARDING_PATH, LOGIN_PATH } from './constants/routes'
+import { FORGET_PASSWORD_PATH, ONBOARDING_PATH, LOGIN_PATH, RESET_PASSWORD_PATH } from './constants/routes'
+import { ResetPassword } from './components/ResetPassword'
 
 const queryClient = new QueryClient()
 
@@ -25,6 +26,7 @@ export default function App(): ReactElement {
             <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
             <Route path={LOGIN_PATH} element={<LoginPage />} />
             <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
+            <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
             <Route element={<AuthenticatedLayout />}>
               <Route path='/search' element={<SearchInterface />} />
               <Route

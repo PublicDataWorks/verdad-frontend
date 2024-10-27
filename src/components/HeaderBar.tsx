@@ -8,10 +8,6 @@ import { User } from '@supabase/supabase-js'
 import { InboxPopover } from './InboxPopover'
 import { useAuth } from '@/providers/auth'
 
-interface HeaderBarProps {
-  user: User
-}
-
 const NotificationsList = () => {
   const { inboxNotifications, error, isLoading } = useInboxNotifications()
 
@@ -36,7 +32,7 @@ const NotificationsList = () => {
   )
 }
 
-const HeaderBar: React.FC<HeaderBarProps> = () => {
+const HeaderBar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useAuth()
 
