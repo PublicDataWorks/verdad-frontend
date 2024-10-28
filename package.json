@@ -21,6 +21,7 @@
     "report-dir": "cypress-coverage"
   },
   "dependencies": {
+    "@carbon/icons-react": "^11.51.0",
     "@headlessui/react": "^1.7.18",
     "@liveblocks/client": "^2.7.2",
     "@liveblocks/react": "^2.7.2",

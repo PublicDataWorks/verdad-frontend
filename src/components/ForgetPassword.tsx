@@ -66,7 +66,8 @@ export default function ForgetPassword() {
                 <Button
                   type='submit'
                   className='w-full rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 focus:outline-none disabled:opacity-70'
-                  disabled={isLoading}>
+                  disabled={isLoading}
+                >
                   {isLoading ? (
                     <>
                       <Loader2 className='mr-2 h-4 w-4 animate-spin' />
@@ -98,7 +99,8 @@ export default function ForgetPassword() {
 
               <Button
                 onClick={() => (window.location.href = '/login')}
-                className='w-full rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 focus:outline-none'>
+                className='w-full rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 focus:outline-none'
+              >
                 Return to Login
               </Button>
             </div>

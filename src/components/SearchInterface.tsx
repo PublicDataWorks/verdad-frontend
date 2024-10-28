@@ -75,9 +75,9 @@ const SearchInterface: React.FC = () => {
   }
 
   return (
-    <div className='flex flex-grow overflow-hidden'>
+    <div className='flex flex-grow'>
       {showSidebar && (
-        <div className='w-1/6 overflow-y-auto bg-white px-6 pt-2'>
+        <div className='w-64 min-w-[250px] overflow-y-auto bg-white px-6 pt-2'>
           <div className='flex justify-end'>
             <Button variant='ghost' onClick={clearAll} className='px-2 font-normal text-text-blue'>
               Clear all <X className='ml-2 h-4 w-4' />
@@ -145,32 +145,34 @@ const SearchInterface: React.FC = () => {
           </Button>
         </div>
       )}
-      <div className={`${showSidebar ? 'px-16' : 'px-56'} flex w-full flex-col overflow-hidden`}>
-        <div className='mb-6 flex items-center justify-between px-4 pt-2'>
-          <div className='flex space-x-2'>
-            <RoundedToggleButton
-              label='Filter'
-              isActive={showSidebar}
-              onClick={() => setShowSidebar(!showSidebar)}
-              icon={<Filter className='mr-2 h-4 w-4' />}
-            />
-            {STARRED_BY_RESULTS.map(starred => (
+      <div className='flex flex-1 justify-center'>
+        <div className='flex w-full max-w-3xl flex-col overflow-hidden'>
+          <div className='mb-6 flex items-center justify-between px-4 pt-2'>
+            <div className='flex space-x-2'>
               <RoundedToggleButton
-                key={`result-${starred}`}
-                label={starred}
-                isActive={starredByFilter.includes(starred)}
-                onClick={() => setStarredByFilter(prev => xor(prev, [starred]))}
+                label='Filter'
+                isActive={showSidebar}
+                onClick={() => setShowSidebar(!showSidebar)}
+                icon={<Filter className='mr-2 h-4 w-4' />}
               />
+              {STARRED_BY_RESULTS.map(starred => (
+                <RoundedToggleButton
+                  key={`result-${starred}`}
+                  label={starred}
+                  isActive={starredByFilter.includes(starred)}
+                  onClick={() => setStarredByFilter(prev => xor(prev, [starred]))}
+                />
+              ))}
+            </div>
+            <div className='w-52'>
+              <SingleSelectDropdown selectedItem={sortedBy} items={SORTED_BY} onItemSelect={setSortedBy} />
+            </div>
+          </div>
+          <div className='mx-4 flex-grow overflow-y-auto'>
+            {snippets.map(snippet => (
+              <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
             ))}
           </div>
-          <div className='w-52'>
-            <SingleSelectDropdown selectedItem={sortedBy} items={SORTED_BY} onItemSelect={setSortedBy} />
-          </div>
-        </div>
-        <div className='mx-4 flex-grow overflow-y-auto'>
-          {snippets.map(snippet => (
-            <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
-          ))}
         </div>
       </div>
     </div>

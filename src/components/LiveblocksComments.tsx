@@ -4,6 +4,7 @@ import { Composer, Thread } from '@liveblocks/react-ui'
 import { MessageCircle } from 'lucide-react'
 import Spinner from './Spinner'
 import { Comment, CommentBodyLinkProps, CommentBodyMentionProps } from '@liveblocks/react-ui/primitives'
+import { Chat } from '@carbon/icons-react'
 
 interface LiveblocksCommentsProps {
   snippetId: string
@@ -43,22 +44,20 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, show
 
   const allComments = threads.flatMap(thread => thread.comments)
   const commentCount = allComments.length
-  const lastTwoComments = allComments.slice(-2)
 
   return (
-    <div className='mx-6 mt-8'>
-      <div className='flex items-center justify-end'>
-        <MessageCircle className='mr-1 h-4 w-4' />
-        <span>{commentCount} comments</span>
-      </div>
+    <div className='mt-8'>
       {showFullComments ? (
-        <div>
-          <h3 className='mb-4 text-xl font-bold'>Comments</h3>
+        <div className='mx-6'>
+          <h3 className='font-inter mb-4 flex items-center font-normal leading-5 tracking-[0.14px] text-text-secondary'>
+            <Chat size={16} className='mr-2' />
+            {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
+          </h3>
           {threads.length > 0 ? (
             threads.map(thread => <Thread key={thread.id} thread={thread} showComposer={showFullComments} />)
           ) : (
-            <div className='mt-4'>
-              <p className='mx-4'>No comments yet.</p>
+            <div className='mr-4'>
+              <p className='mr-4'>No comments yet.</p>
               <Composer
                 metadata={{
                   snippetId
@@ -67,10 +66,14 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, show
             </div>
           )}
         </div>
-      ) : threads.length > 0 ? (
-        threads.map(thread => <Thread key={thread.id} thread={thread} showComposer={showFullComments} />)
       ) : (
-        ''
+        <div className='flex items-center justify-end'>
+          <MessageCircle className='mr-1 h-4 w-4' />
+          <span>{commentCount} comments</span>
+          {threads.length > 0
+            ? threads.map(thread => <Thread key={thread.id} thread={thread} showComposer={showFullComments} />)
+            : ''}
+        </div>
       )}
     </div>
   )

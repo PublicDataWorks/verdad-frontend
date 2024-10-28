@@ -1,6 +1,22 @@
 import { useState, useEffect } from 'react'
 import supabase from '@/lib/supabase'
 
+interface Upvoter {
+  id: string
+  email: string
+  upvoted_at: string
+}
+
+export interface Label {
+  id: string
+  text: string
+  applied_at: string
+  applied_by: string | null
+  created_by: string | null
+  upvoted_by: Upvoter[]
+  is_ai_suggested: boolean
+}
+
 interface ConfidenceScore {
   score: number
   category: string
@@ -22,10 +38,14 @@ interface Context {
   main: string
   before: string
   after: string
+  before_en: string
+  main_en: string
+  after_en: string
 }
 
 export interface Snippet {
   id: string
+  created_at: string
   transcription: string
   translation: string
   explanation: string
@@ -38,6 +58,16 @@ export interface Snippet {
   file_path: string
   confidence_scores: ConfidenceScores
   audio_file: AudioFileInfo
+  labels: Label[]
+}
+
+const fetchLabels = async (snippetId: string) => {
+  const { data, error } = await supabase.rpc('get_snippet_labels', { snippet_id: snippetId })
+  if (error) {
+    console.error('Error fetching labels:', error)
+    return { labels: [] }
+  }
+  return { labels: data?.labels || [] }
 }
 
 export function useSnippets() {
@@ -49,6 +79,7 @@ export function useSnippets() {
 
     const select = `
       id,
+      created_at,
       transcription,
       translation,
       explanation,
@@ -72,7 +103,13 @@ export function useSnippets() {
     if (error) {
       console.error('Error fetching snippets:', error)
     } else {
-      setSnippets(data || [])
+      const snippetsWithLabels = await Promise.all(
+        (data || []).map(async snippet => {
+          const { labels } = await fetchLabels(snippet.id)
+          return { ...snippet, labels } as Snippet
+        })
+      )
+      setSnippets(snippetsWithLabels)
     }
     setLoading(false)
   }
@@ -81,20 +118,18 @@ export function useSnippets() {
     void fetchSnippets()
   }, [])
 
-  const getSnippetById = (id: number) => {
-    return snippets.find(snippet => snippet.id === id) || null
-  }
+  const getSnippetById = (id: string) => snippets.find(snippet => snippet.id === id) ?? null
 
   const sortSnippets = (snippets: Snippet[], sortBy: string) => {
     return [...snippets].sort((a, b) => {
       if (sortBy === 'Most Recent') {
-        return new Date(b.audio_file.recorded_at).getTime() - new Date(a.audio_file.recorded_at).getTime()
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       } else if (sortBy === 'Oldest') {
-        return new Date(a.audio_file.recorded_at).getTime() - new Date(b.audio_file.recorded_at).getTime()
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       }
       return 0
     })
   }
 
-  return { snippets, loading, fetchSnippets, sortSnippets }
+  return { snippets, loading, fetchSnippets, sortSnippets, getSnippetById }
 }

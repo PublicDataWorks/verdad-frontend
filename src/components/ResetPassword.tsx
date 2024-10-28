@@ -113,7 +113,8 @@ export function ResetPassword() {
                     <button
                       type='button'
                       className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600'
-                      onClick={() => setShowPassword(!showPassword)}>
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
                       {showPassword ? <EyeOff className='h-5 w-5' /> : <Eye className='h-5 w-5' />}
                     </button>
                   </div>
@@ -138,7 +139,8 @@ export function ResetPassword() {
                     <button
                       type='button'
                       className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600'
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
                       {showConfirmPassword ? <EyeOff className='h-5 w-5' /> : <Eye className='h-5 w-5' />}
                     </button>
                   </div>
@@ -157,7 +159,8 @@ export function ResetPassword() {
               <Button
                 type='submit'
                 className='w-full rounded-lg bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300'
-                disabled={isLoading}>
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <div className='flex items-center justify-center'>
                     <Loader2 className='mr-2 h-5 w-5 animate-spin' />
