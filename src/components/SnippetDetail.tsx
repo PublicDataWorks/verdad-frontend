@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import type { FC } from 'react'
-import { useSnippets } from '../hooks/useSnippets'
+import { useSnippet } from '../hooks/useSnippets'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -20,8 +20,7 @@ import type { Label } from '../hooks/useSnippets'
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
   const navigate = useNavigate()
-  const { snippets, loading } = useSnippets()
-  const snippet = snippetId ? snippets.find(s => s.id === snippetId) : null
+  const { data: snippet, isLoading } = useSnippet(snippetId || '')
   const [language, setLanguage] = useState('spanish')
   const [labels, setLabels] = useState<Label[]>([])
 
@@ -39,7 +38,7 @@ const SnippetDetail: FC = () => {
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className='flex h-screen items-center justify-center'>
         <Spinner />
@@ -61,7 +60,7 @@ const SnippetDetail: FC = () => {
     )
   }
 
-  const formattedDate = formatDate(snippet.created_at)
+  const formattedDate = formatDate(snippet.recorded_at)
 
   return (
     <Card className='mx-auto w-full max-w-3xl'>
@@ -136,10 +135,7 @@ const SnippetDetail: FC = () => {
                 onLabelDeleted={labelId => setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))}
               />
             ))}
-            <AddLabelButton
-              snippetId={snippetId}
-              onLabelAdded={handleLabelAdded}
-            />
+            <AddLabelButton snippetId={snippetId} onLabelAdded={handleLabelAdded} />
           </div>
         </div>
       </CardContent>

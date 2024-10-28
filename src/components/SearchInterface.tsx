@@ -1,177 +1,122 @@
+'use client'
+
 import type React from 'react'
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import xor from 'lodash/xor'
-import includes from 'lodash/includes'
-import without from 'lodash/without'
-import isEqual from 'lodash/isEqual'
+import { Filter } from 'lucide-react'
+import { useFilter } from '@/providers/filter'
 
-import { useSnippets } from '../hooks/useSnippets'
-import { Button } from './ui/button'
-import { X, Filter, ChevronDown } from 'lucide-react'
-import MultiSelectDropdown from './MultiSelectDropdown'
 import RoundedToggleButton from './RoundedToggleButton'
-import SingleSelectDropdown from './SingleSelectDropdown'
 import SnippetCard from './SnippetCard'
+import ResponsiveSidebar from './Sidebar'
+import { useSnippets } from '@/hooks/useSnippets'
 
-const LANGUAGES = ['All languages', 'Spanish', 'Arabic']
-const STATES = ['All States', 'Arizona', 'Florida', 'Georgia', 'Michigan', 'Nevada', 'Pennsylvania']
-const STARRED = ['by Me', 'by Others']
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/ui/pagination'
+
 const STARRED_BY_RESULTS = ['Starred by Me', 'Starred by Others']
-const LABELS = ['Human Right', 'Woman Right', 'Equality', 'Label xxx', 'Label xyz']
-const SORTED_BY = ['Most Recent', 'Oldest', 'Most Popular']
+const PAGE_SIZE = 5
 
 const SearchInterface: React.FC = () => {
-  const [showSidebar, setShowSidebar] = useState(true)
-  const [languages, setLanguages] = useState([LANGUAGES[0]])
-  const [states, setStates] = useState([STATES[0]])
-  const [labeledBy, setLabeledBy] = useState<string[]>([])
-  const [starredByFilter, setStarredByFilter] = useState<string[]>([])
-  const [labels, setLabels] = useState<string[]>([])
-  const [sortedBy, setSortedBy] = useState(SORTED_BY[0])
-  const [starredByResult, setStarredByResult] = useState<string[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const { showSidebar, starredByFilter, setShowSidebar, setStarredByFilter } = useFilter()
+
+  const { data, isLoading } = useSnippets(currentPage, PAGE_SIZE)
   const navigate = useNavigate()
-  const { snippets: unsortedSnippets, loading, sortSnippets } = useSnippets()
-  const snippets = useMemo(() => sortSnippets(unsortedSnippets, sortedBy), [unsortedSnippets, sortedBy, sortSnippets])
+  const snippets = data?.data
 
-  const handleMultiSelect = (
-    setter: React.Dispatch<React.SetStateAction<string[]>>,
-    allOptionsArray: string[],
-    item: string
-  ) => {
-    setter(prev => {
-      const [allLabel, ...otherOptions] = allOptionsArray
-      if (item === allLabel) {
-        return includes(prev, allLabel) ? [] : allOptionsArray
-      }
-      if (includes(prev, allLabel)) {
-        return [item]
-      }
-      const newSelection = includes(prev, item) ? without(prev, item) : [...prev, item]
-      if (isEqual(newSelection.sort(), otherOptions.sort())) {
-        return allOptionsArray
-      }
-      return newSelection
-    })
-  }
-
-  const clearAll = () => {
-    setLanguages([LANGUAGES[0]])
-    setStates([STATES[0]])
-    setLabeledBy([])
-    setStarredByFilter([])
-    setLabels([])
-    setSortedBy(SORTED_BY[0])
-    setStarredByResult([])
-    setSearchQuery('')
-    setSelectedFilters([])
-  }
-
-  const handleSnippetClick = (snippetId: number) => {
+  const handleSnippetClick = (snippetId: string) => {
     navigate(`/snippet/${snippetId}`)
   }
 
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar)
+  }
+
+  const handleStarredFilter = (starred: string) => {
+    setStarredByFilter(xor(starredByFilter, [starred]))
+  }
+
   return (
-    <div className='flex flex-grow'>
-      {showSidebar && (
-        <div className='w-64 min-w-[250px] overflow-y-auto bg-white px-6 pt-2'>
-          <div className='flex justify-end'>
-            <Button variant='ghost' onClick={clearAll} className='px-2 font-normal text-text-blue'>
-              Clear all <X className='ml-2 h-4 w-4' />
-            </Button>
-          </div>
-          <div>
-            <h3 className='mb-2 mt-6 font-medium'>Source Language</h3>
-            <MultiSelectDropdown
-              selectedItems={languages}
-              items={LANGUAGES}
-              onItemToggle={(language: string) => handleMultiSelect(setLanguages, LANGUAGES, language)}
-              placeholder='Select languages'
-              allItemsLabel={LANGUAGES[0]}
+    <div className='flex flex-grow overflow-hidden'>
+      {showSidebar && <ResponsiveSidebar />}
+      <div className={`${showSidebar ? 'px-16' : 'md:px-20 lg:px-40'} flex w-full flex-col overflow-hidden`}>
+        <div className='mb-6 flex items-center justify-between px-4 pt-2'>
+          <div className='flex space-x-2'>
+            <RoundedToggleButton
+              label='Filter'
+              isActive={showSidebar}
+              onClick={toggleSidebar}
+              icon={<Filter className='mr-2 h-4 w-4' />}
             />
-
-            <h3 className='mb-2 mt-6 font-medium'>State</h3>
-            <MultiSelectDropdown
-              selectedItems={states}
-              items={STATES}
-              onItemToggle={(state: string) => handleMultiSelect(setStates, STATES, state)}
-              placeholder='Select states'
-              allItemsLabel={STATES[0]}
-            />
-
-            <h3 className='mb-2 mt-6 font-medium'>Source</h3>
-          </div>
-
-          <h3 className='mb-2 mt-6 font-semibold'>Labeled</h3>
-          <div className='flex flex-wrap gap-2'>
-            {STARRED.map(labelled => (
+            {STARRED_BY_RESULTS.map(starred => (
               <RoundedToggleButton
-                key={`labelled-${labelled}`}
-                label={labelled}
-                isActive={labeledBy.includes(labelled)}
-                onClick={() => setLabeledBy(prev => xor(prev, [labelled]))}
-              />
-            ))}
-          </div>
-
-          <h3 className='mb-2 mt-6 font-semibold'>Starred</h3>
-          <div className='flex flex-wrap gap-2'>
-            {STARRED.map(starred => (
-              <RoundedToggleButton
-                key={`starred-${starred}`}
+                key={`result-${starred}`}
                 label={starred}
                 isActive={starredByFilter.includes(starred)}
-                onClick={() => setStarredByFilter(prev => xor(prev, [starred]))}
+                onClick={() => handleStarredFilter(starred)}
               />
             ))}
           </div>
-
-          <h3 className='mb-2 mt-6 font-semibold'>Label</h3>
-          <div className='flex flex-wrap gap-2'>
-            {LABELS.map(label => (
-              <RoundedToggleButton
-                key={`label-${label}`}
-                label={label}
-                isActive={labels.includes(label)}
-                onClick={() => setLabels(prev => xor(prev, [label]))}
-              />
-            ))}
-          </div>
-          <Button variant='link' className='mt-4 p-0 font-normal text-text-blue'>
-            Show more <ChevronDown className='ml-2 h-4 w-4' />
-          </Button>
         </div>
-      )}
-      <div className='flex flex-1 justify-center'>
-        <div className='flex w-full max-w-3xl flex-col overflow-hidden'>
-          <div className='mb-6 flex items-center justify-between px-4 pt-2'>
-            <div className='flex space-x-2'>
-              <RoundedToggleButton
-                label='Filter'
-                isActive={showSidebar}
-                onClick={() => setShowSidebar(!showSidebar)}
-                icon={<Filter className='mr-2 h-4 w-4' />}
-              />
-              {STARRED_BY_RESULTS.map(starred => (
-                <RoundedToggleButton
-                  key={`result-${starred}`}
-                  label={starred}
-                  isActive={starredByFilter.includes(starred)}
-                  onClick={() => setStarredByFilter(prev => xor(prev, [starred]))}
-                />
+        <div className='mx-4 flex-grow overflow-y-auto'>
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <>
+              {snippets?.map(snippet => (
+                <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
               ))}
-            </div>
-            <div className='w-52'>
-              <SingleSelectDropdown selectedItem={sortedBy} items={SORTED_BY} onItemSelect={setSortedBy} />
-            </div>
-          </div>
-          <div className='mx-4 flex-grow overflow-y-auto'>
-            {snippets.map(snippet => (
-              <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
-            ))}
-          </div>
+              <div className='my-6'>
+                <Pagination className='mt-8'>
+                  <PaginationContent className='flex items-center gap-6 rounded-xl border bg-white p-2 shadow-sm'>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-all duration-200
+                          ${
+                            currentPage === 0
+                              ? 'cursor-not-allowed text-gray-300'
+                              : 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
+                          }`}
+                        onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                        disabled={currentPage === 0}
+                      />
+                    </PaginationItem>
+
+                    <PaginationItem>
+                      <PaginationLink
+                        className='rounded-lg bg-blue-50 px-6 py-2 font-semibold text-blue-700'
+                        isActive={true}>
+                        <span className='text-sm'>
+                          {currentPage + 1} / {data?.total_page}
+                        </span>
+                      </PaginationLink>
+                    </PaginationItem>
+
+                    <PaginationItem>
+                      <PaginationNext
+                        className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-all duration-200
+                          ${
+                            currentPage >= (data?.total_page || 0) - 1
+                              ? 'cursor-not-allowed text-gray-300'
+                              : 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
+                          }`}
+                        onClick={() => setCurrentPage(prev => prev + 1)}
+                        disabled={currentPage >= (data?.total_page || 0) - 1}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

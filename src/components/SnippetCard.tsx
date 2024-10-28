@@ -19,8 +19,8 @@ interface SnippetCardProps {
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
   const [isStarred, setIsStarred] = useState(false)
   const [isStarHovered, setIsStarHovered] = useState(false)
-  const [labels, setLabels] = useState(snippet.labels)
-  const formattedDate = formatDate(snippet.created_at)
+  const [labels, setLabels] = useState(snippet.labels || [])
+  const formattedDate = formatDate(snippet.recorded_at)
 
   const getStarIcon = () => {
     if (isStarred) return Starred
@@ -53,8 +53,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             className='hover:bg-transparent'
             onMouseEnter={() => setIsStarHovered(true)}
             onMouseLeave={() => setIsStarHovered(false)}
-            onClick={() => setIsStarred(!isStarred)}
-          >
+            onClick={() => setIsStarred(!isStarred)}>
             <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
           </Button>
         </div>

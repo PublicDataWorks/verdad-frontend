@@ -1,5 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
+
+// Types
+interface Context {
+  main: string
+  before: string
+  after: string
+  main_en: string
+  before_en: string
+  after_en: string
+}
+
+interface AudioFileInfo {
+  id: string
+  location_city: string | null
+  location_state: string
+  radio_station_code: string
+  radio_station_name: string
+}
 
 interface Upvoter {
   id: string
@@ -50,13 +68,18 @@ export interface Snippet {
   translation: string
   explanation: string
   context: Context
+  recorded_at: string
+  duration: string
   start_time: string
   end_time: string
-  keywords_detected: string[]
+  file_path: string
+  file_size: number
   title: string
   summary: string
-  file_path: string
   confidence_scores: ConfidenceScores
+  starred_by_user: boolean
+  status: string
+  error_message: string | null
   audio_file: AudioFileInfo
   labels: Label[]
 }
@@ -70,66 +93,68 @@ const fetchLabels = async (snippetId: string) => {
   return { labels: data?.labels || [] }
 }
 
-export function useSnippets() {
-  const [snippets, setSnippets] = useState<Snippet[]>([])
-  const [loading, setLoading] = useState(true)
+interface PaginatedResponse {
+  data: Snippet[]
+  total_page: number
+}
 
-  const fetchSnippets = async () => {
-    setLoading(true)
+// Query keys
+const snippetKeys = {
+  all: ['snippets'] as const,
+  lists: (page?: number, pageSize?: number) => [...snippetKeys.all, 'list', { page, pageSize }] as const,
+  detail: (id: string) => [...snippetKeys.all, 'detail', id] as const
+}
 
-    const select = `
-      id,
-      created_at,
-      transcription,
-      translation,
-      explanation,
-      context,
-      start_time,
-      end_time,
-      keywords_detected,
-      title,
-      summary,
-      file_path,
-      confidence_scores,
-      audio_file(
-        radio_station_name,
-        radio_station_code,
-        location_state,
-        recorded_at
-      )
-    `
-    const { data, error } = await supabase.from('snippets').select(select).order('id')
+// API functions
+const fetchSnippet = async (id: string): Promise<Snippet> => {
+  const { data, error } = await supabase.rpc('get_snippet', {
+    snippet_id: id
+  })
 
-    if (error) {
-      console.error('Error fetching snippets:', error)
-    } else {
-      const snippetsWithLabels = await Promise.all(
-        (data || []).map(async snippet => {
-          const { labels } = await fetchLabels(snippet.id)
-          return { ...snippet, labels } as Snippet
-        })
-      )
-      setSnippets(snippetsWithLabels)
+  if (error) throw error
+  return data
+}
+
+const fetchSnippets = async (page: number = 0, pageSize: number = 10): Promise<PaginatedResponse> => {
+  const { data, error } = await supabase.rpc('get_snippets', {
+    page,
+    page_size: pageSize
+  })
+
+  if (error) throw error
+
+  return {
+    data: data.snippets,
+    total_page: data.total_pages
+  }
+}
+
+// Modified useSnippets hook using useQuery
+export function useSnippets(page: number = 0, pageSize: number = 10) {
+  return useQuery({
+    queryKey: snippetKeys.lists(page, pageSize),
+    queryFn: () => fetchSnippets(page, pageSize),
+    enabled: true // Query will run immediately
+  })
+}
+
+// Hooks
+export function useSnippet(id: string) {
+  return useQuery({
+    queryKey: snippetKeys.detail(id),
+    queryFn: () => fetchSnippet(id),
+    enabled: !!id
+  })
+}
+
+// Optional: Helper function for sorting
+export const sortSnippets = (snippets: Snippet[], sortBy: string) => {
+  return [...snippets].sort((a, b) => {
+    if (sortBy === 'Most Recent') {
+      return new Date(b.recorded_at).getTime() - new Date(a.recorded_at).getTime()
+    } else if (sortBy === 'Oldest') {
+      return new Date(a.recorded_at).getTime() - new Date(b.recorded_at).getTime()
     }
-    setLoading(false)
-  }
-
-  useEffect(() => {
-    void fetchSnippets()
-  }, [])
-
-  const getSnippetById = (id: string) => snippets.find(snippet => snippet.id === id) ?? null
-
-  const sortSnippets = (snippets: Snippet[], sortBy: string) => {
-    return [...snippets].sort((a, b) => {
-      if (sortBy === 'Most Recent') {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      } else if (sortBy === 'Oldest') {
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      }
-      return 0
-    })
-  }
-
-  return { snippets, loading, fetchSnippets, sortSnippets, getSnippetById }
+    return 0
+  })
 }
