@@ -37,8 +37,6 @@ export function ResetPassword() {
             access_token: params.access_token,
             refresh_token: params.refresh_token
           })
-        } else {
-          navigate('/login')
         }
       } catch (error) {
         console.log(error)
