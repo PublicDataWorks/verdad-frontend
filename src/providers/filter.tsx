@@ -21,7 +21,8 @@ interface FilterContextType {
   setStarredByFilter: React.Dispatch<React.SetStateAction<string[]>>
   labels: string[]
   setLabels: React.Dispatch<React.SetStateAction<string[]>>
-  handleMultiSelect: (setter: React.Dispatch<React.SetStateAction<string[]>>, items: string[], item: string) => void
+  sources: string[]
+  setSources: React.Dispatch<React.SetStateAction<string[]>>
   clearAll: () => void
 }
 
@@ -31,20 +32,15 @@ export function FilterProvider({ children }: { children: ReactNode }) {
   const [showSidebar, setShowSidebar] = useState(false)
   const [languages, setLanguages] = useState<string[]>([])
   const [states, setStates] = useState<string[]>([])
+  const [sources, setSources] = useState<string[]>([])
   const [labeledBy, setLabeledBy] = useState<string[]>([])
   const [starredByFilter, setStarredByFilter] = useState<string[]>([])
   const [labels, setLabels] = useState<string[]>([])
 
-  const handleMultiSelect = (setter: React.Dispatch<React.SetStateAction<string[]>>, items: string[], item: string) => {
-    setter(prev => {
-      if (item === items[0]) return prev.length === items.length - 1 ? [] : items.slice(1)
-      return prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]
-    })
-  }
-
   const clearAll = () => {
     setLanguages([])
     setStates([])
+    setSources([])
     setLabeledBy([])
     setStarredByFilter([])
     setLabels([])
@@ -59,13 +55,14 @@ export function FilterProvider({ children }: { children: ReactNode }) {
         setLanguages,
         states,
         setStates,
+        sources,
+        setSources,
         labeledBy,
         setLabeledBy,
         starredByFilter,
         setStarredByFilter,
         labels,
         setLabels,
-        handleMultiSelect,
         clearAll
       }}>
       {children}
