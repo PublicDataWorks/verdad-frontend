@@ -50,8 +50,7 @@ export interface Snippet {
 
 interface PaginatedResponse {
   data: Snippet[]
-  count: number
-  hasMore: boolean
+  total_page: number
 }
 
 // Query keys
@@ -80,9 +79,8 @@ const fetchSnippets = async (page: number = 0, pageSize: number = 10): Promise<P
   if (error) throw error
 
   return {
-    data: data,
-    count: data.length,
-    hasMore: data.length === pageSize
+    data: data.snippets,
+    total_page: data.total_pages
   }
 }
 

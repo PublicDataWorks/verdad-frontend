@@ -2,67 +2,68 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react'
 
-// Assuming these constants are defined elsewhere in your project
-const LANGUAGES = ['All Languages', 'English', 'Spanish', 'French']
-const STATES = ['All States', 'California', 'New York', 'Texas']
-const STARRED = ['John', 'Jane', 'Bob']
-const LABELS = ['Important', 'Urgent', 'Review']
-
-interface FilterContextType {
+interface FilterState {
   showSidebar: boolean
-  setShowSidebar: (show: boolean) => void
   languages: string[]
-  setLanguages: React.Dispatch<React.SetStateAction<string[]>>
   states: string[]
-  setStates: React.Dispatch<React.SetStateAction<string[]>>
   labeledBy: string[]
-  setLabeledBy: React.Dispatch<React.SetStateAction<string[]>>
   starredByFilter: string[]
-  setStarredByFilter: React.Dispatch<React.SetStateAction<string[]>>
   labels: string[]
-  setLabels: React.Dispatch<React.SetStateAction<string[]>>
   sources: string[]
-  setSources: React.Dispatch<React.SetStateAction<string[]>>
+}
+
+interface FilterContextType extends FilterState {
+  setShowSidebar: (show: boolean) => void
+  setLanguages: (languages: string[]) => void
+  setStates: (states: string[]) => void
+  setLabeledBy: (labeledBy: string[]) => void
+  setStarredByFilter: (starredBy: string[]) => void
+  setLabels: (labels: string[]) => void
+  setSources: (sources: string[]) => void
   clearAll: () => void
 }
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined)
 
-export function FilterProvider({ children }: { children: ReactNode }) {
-  const [showSidebar, setShowSidebar] = useState(false)
-  const [languages, setLanguages] = useState<string[]>([])
-  const [states, setStates] = useState<string[]>([])
-  const [sources, setSources] = useState<string[]>([])
-  const [labeledBy, setLabeledBy] = useState<string[]>([])
-  const [starredByFilter, setStarredByFilter] = useState<string[]>([])
-  const [labels, setLabels] = useState<string[]>([])
+const initialState: FilterState = {
+  showSidebar: false,
+  languages: [],
+  states: [],
+  labeledBy: [],
+  starredByFilter: [],
+  labels: [],
+  sources: []
+}
 
+export function FilterProvider({ children }: { children: ReactNode }) {
+  const [filterState, setFilterState] = useState<FilterState>(initialState)
+
+  const updateState = (key: keyof FilterState) => (value: any) => {
+    setFilterState(prev => ({
+      ...prev,
+      [key]: value
+    }))
+  }
+
+  // Modified clearAll function
   const clearAll = () => {
-    setLanguages([])
-    setStates([])
-    setSources([])
-    setLabeledBy([])
-    setStarredByFilter([])
-    setLabels([])
+    setFilterState(prev => ({
+      ...initialState,
+      showSidebar: prev.showSidebar // Preserve sidebar state
+    }))
   }
 
   return (
     <FilterContext.Provider
       value={{
-        showSidebar,
-        setShowSidebar,
-        languages,
-        setLanguages,
-        states,
-        setStates,
-        sources,
-        setSources,
-        labeledBy,
-        setLabeledBy,
-        starredByFilter,
-        setStarredByFilter,
-        labels,
-        setLabels,
+        ...filterState,
+        setShowSidebar: updateState('showSidebar'),
+        setLanguages: updateState('languages'),
+        setStates: updateState('states'),
+        setSources: updateState('sources'),
+        setLabeledBy: updateState('labeledBy'),
+        setStarredByFilter: updateState('starredByFilter'),
+        setLabels: updateState('labels'),
         clearAll
       }}>
       {children}

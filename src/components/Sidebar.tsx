@@ -31,30 +31,50 @@ export default function Sidebar() {
   const {
     setShowSidebar,
     languages,
-    setLanguages,
     states,
-    setStates,
     sources,
-    setSources,
     labeledBy,
     starredByFilter,
     labels,
-    clearAll,
+    setLanguages,
+    setStates,
+    setSources,
     setLabeledBy,
     setStarredByFilter,
-    setLabels
+    setLabels,
+    clearAll
   } = useFilter()
 
+  const handleClearAll = () => {
+    // First call the context's clearAll
+    clearAll()
+
+    // Then explicitly set all values to empty arrays
+    setLanguages([])
+    setStates([])
+    setSources([])
+    setLabeledBy([])
+    setStarredByFilter([])
+    setLabels([])
+  }
+
   const handleLabeledToggle = (labelled: string) => {
-    setLabeledBy(prev => (prev.includes(labelled) ? prev.filter(item => item !== labelled) : [...prev, labelled]))
+    const newLabeledBy = labeledBy.includes(labelled)
+      ? labeledBy.filter(item => item !== labelled)
+      : [...labeledBy, labelled]
+    setLabeledBy(newLabeledBy)
   }
 
   const handleStarredToggle = (starred: string) => {
-    setStarredByFilter(prev => (prev.includes(starred) ? prev.filter(item => item !== starred) : [...prev, starred]))
+    const newStarredBy = starredByFilter.includes(starred)
+      ? starredByFilter.filter(item => item !== starred)
+      : [...starredByFilter, starred]
+    setStarredByFilter(newStarredBy)
   }
 
   const handleLabelToggle = (label: string) => {
-    setLabels(prev => (prev.includes(label) ? prev.filter(item => item !== label) : [...prev, label]))
+    const newLabels = labels.includes(label) ? labels.filter(item => item !== label) : [...labels, label]
+    setLabels(newLabels)
   }
 
   return (
@@ -63,7 +83,7 @@ export default function Sidebar() {
         <div className='mb-4 flex items-center justify-between'>
           <h2 className='text-lg font-semibold'>Filters</h2>
           <div className='flex items-center gap-2'>
-            <Button variant='ghost' onClick={clearAll} className='px-2 font-normal text-blue-600'>
+            <Button variant='ghost' onClick={handleClearAll} className='px-2 font-normal text-blue-600'>
               Clear all <X className='ml-2 h-4 w-4' aria-hidden='true' />
             </Button>
             <Button variant='ghost' onClick={() => setShowSidebar(false)} className='md:hidden'>
@@ -77,7 +97,7 @@ export default function Sidebar() {
           <MultiSelect
             options={LANGUAGE_OPTIONS}
             onValueChange={setLanguages}
-            defaultValue={languages}
+            value={languages}
             placeholder='Select languages'
             maxCount={2}
             className='w-full'
@@ -87,7 +107,7 @@ export default function Sidebar() {
           <MultiSelect
             options={STATE_OPTIONS}
             onValueChange={setStates}
-            defaultValue={states}
+            value={states}
             placeholder='Select states'
             maxCount={2}
             className='w-full'
@@ -97,7 +117,7 @@ export default function Sidebar() {
           <MultiSelect
             options={SOURCE_OPTIONS}
             onValueChange={setSources}
-            defaultValue={sources}
+            value={sources}
             placeholder='Select sources'
             maxCount={2}
             className='w-full'
