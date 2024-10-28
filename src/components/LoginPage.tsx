@@ -98,7 +98,11 @@ export default function LoginPage() {
             </div>
 
             <div className='flex items-center justify-end'>
-              <Button variant='link' className='h-auto p-0 text-blue-600' onClick={() => navigate('/forget-password')}>
+              <Button
+                variant='link'
+                className='h-auto p-0 text-blue-600'
+                type='button'
+                onClick={() => navigate('/forget-password')}>
                 Forgot password?
               </Button>
             </div>
