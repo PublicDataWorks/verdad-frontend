@@ -20,7 +20,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   const [isStarred, setIsStarred] = useState(false)
   const [isStarHovered, setIsStarHovered] = useState(false)
   const [labels, setLabels] = useState(snippet.labels || [])
-  const formattedDate = formatDate(snippet.created_at)
+  const formattedDate = formatDate(snippet.recorded_at)
 
   const getStarIcon = () => {
     if (isStarred) return Starred
