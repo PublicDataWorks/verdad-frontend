@@ -72,9 +72,8 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
           className={`${getUpvoteButtonClasses()} whitespace-nowrap`}
           onClick={handleUpvote}
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <span>{label.text}</span>
+          onMouseLeave={() => setIsHovered(false)}>
+          <span>{label?.text}</span>
           <img src={isUpvoted ? Upvoted : Upvote} alt='Upvote' className='h-4 w-4' />
           <span>{upvoteCount}</span>
         </Button>

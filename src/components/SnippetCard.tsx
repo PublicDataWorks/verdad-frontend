@@ -19,7 +19,7 @@ interface SnippetCardProps {
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
   const [isStarred, setIsStarred] = useState(false)
   const [isStarHovered, setIsStarHovered] = useState(false)
-  const [labels, setLabels] = useState(snippet.labels)
+  const [labels, setLabels] = useState(snippet.labels || [])
   const formattedDate = formatDate(snippet.created_at)
 
   const getStarIcon = () => {
@@ -61,14 +61,15 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
       <p className='mb-4 text-xs text-zinc-400'>{formattedDate}</p>
       <p className='mb-4'>{snippet.summary}</p>
       <div className='flex flex-wrap items-baseline gap-2'>
-        {labels.map(label => (
-          <LabelButton
-            key={`${snippet.id}-${label.id}`}
-            label={label}
-            snippetId={snippet.id}
-            onLabelDeleted={handleLabelDeleted}
-          />
-        ))}
+        {labels.length > 0 &&
+          labels.map(label => (
+            <LabelButton
+              key={`${snippet.id}-${label.id}`}
+              label={label}
+              snippetId={snippet.id}
+              onLabelDeleted={handleLabelDeleted}
+            />
+          ))}
         <AddLabelButton snippetId={snippet.id} onLabelAdded={handleLabelAdded} />
       </div>
       <LiveblocksComments snippetId={snippet.id} showFullComments={false} />
