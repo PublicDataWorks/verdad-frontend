@@ -1,33 +1,61 @@
 'use client'
 
-import React from 'react'
 import { X, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import MultiSelectDropdown from './MultiSelectDropdown'
+import { MultiSelect } from '@/components/ui/multi-select'
 import RoundedToggleButton from './RoundedToggleButton'
 import { useFilter } from '@/providers/filter'
 
-// Assuming these constants are defined elsewhere in your project
-const LANGUAGES = ['All Languages', 'English', 'Spanish', 'French']
-const STATES = ['All States', 'California', 'New York', 'Texas']
-const STARRED = ['John', 'Jane', 'Bob']
+const LANGUAGE_OPTIONS = [
+  { label: 'English', value: 'english' },
+  { label: 'Spanish', value: 'spanish' },
+  { label: 'French', value: 'french' }
+]
+
+const STATE_OPTIONS = [
+  { label: 'California', value: 'california' },
+  { label: 'New York', value: 'new-york' },
+  { label: 'Texas', value: 'texas' }
+]
+
+const SOURCE_OPTIONS = [
+  { label: 'Source 1', value: 'source-1' },
+  { label: 'Source 2', value: 'source-2' },
+  { label: 'Source 3', value: 'source-3' }
+]
+
+const STARRED = ['by Me', 'by Others']
 const LABELS = ['Important', 'Urgent', 'Review']
 
 export default function Sidebar() {
   const {
-    showSidebar,
     setShowSidebar,
     languages,
+    setLanguages,
     states,
+    setStates,
+    sources,
+    setSources,
     labeledBy,
     starredByFilter,
     labels,
-    handleMultiSelect,
     clearAll,
     setLabeledBy,
     setStarredByFilter,
     setLabels
   } = useFilter()
+
+  const handleLabeledToggle = (labelled: string) => {
+    setLabeledBy(prev => (prev.includes(labelled) ? prev.filter(item => item !== labelled) : [...prev, labelled]))
+  }
+
+  const handleStarredToggle = (starred: string) => {
+    setStarredByFilter(prev => (prev.includes(starred) ? prev.filter(item => item !== starred) : [...prev, starred]))
+  }
+
+  const handleLabelToggle = (label: string) => {
+    setLabels(prev => (prev.includes(label) ? prev.filter(item => item !== label) : [...prev, label]))
+  }
 
   return (
     <div className='fixed inset-0 z-50 overflow-y-auto bg-white md:relative md:inset-auto md:h-screen md:w-80'>
@@ -37,37 +65,43 @@ export default function Sidebar() {
           <div className='flex items-center gap-2'>
             <Button variant='ghost' onClick={clearAll} className='px-2 font-normal text-blue-600'>
               Clear all <X className='ml-2 h-4 w-4' aria-hidden='true' />
-              <span className='sr-only'>Clear all filters</span>
             </Button>
-            <Button
-              variant='ghost'
-              onClick={() => setShowSidebar(false)}
-              className='md:hidden'
-              aria-label='Close sidebar'>
+            <Button variant='ghost' onClick={() => setShowSidebar(false)} className='md:hidden'>
               <X className='h-6 w-6' />
             </Button>
           </div>
         </div>
+
         <div>
           <h3 className='mb-2 mt-6 font-medium'>Source Language</h3>
-          <MultiSelectDropdown
-            selectedItems={languages}
-            items={LANGUAGES}
-            onItemToggle={(language: string) => handleMultiSelect(setLanguages, LANGUAGES, language)}
+          <MultiSelect
+            options={LANGUAGE_OPTIONS}
+            onValueChange={setLanguages}
+            defaultValue={languages}
             placeholder='Select languages'
-            allItemsLabel={LANGUAGES[0]}
+            maxCount={2}
+            className='w-full'
           />
 
           <h3 className='mb-2 mt-6 font-medium'>State</h3>
-          <MultiSelectDropdown
-            selectedItems={states}
-            items={STATES}
-            onItemToggle={(state: string) => handleMultiSelect(setStates, STATES, state)}
+          <MultiSelect
+            options={STATE_OPTIONS}
+            onValueChange={setStates}
+            defaultValue={states}
             placeholder='Select states'
-            allItemsLabel={STATES[0]}
+            maxCount={2}
+            className='w-full'
           />
 
           <h3 className='mb-2 mt-6 font-medium'>Source</h3>
+          <MultiSelect
+            options={SOURCE_OPTIONS}
+            onValueChange={setSources}
+            defaultValue={sources}
+            placeholder='Select sources'
+            maxCount={2}
+            className='w-full'
+          />
         </div>
 
         <h3 className='mb-2 mt-6 font-semibold'>Labeled</h3>
@@ -77,11 +111,7 @@ export default function Sidebar() {
               key={`labelled-${labelled}`}
               label={labelled}
               isActive={labeledBy.includes(labelled)}
-              onClick={() =>
-                setLabeledBy(prev =>
-                  prev.includes(labelled) ? prev.filter(item => item !== labelled) : [...prev, labelled]
-                )
-              }
+              onClick={() => handleLabeledToggle(labelled)}
             />
           ))}
         </div>
@@ -93,11 +123,7 @@ export default function Sidebar() {
               key={`starred-${starred}`}
               label={starred}
               isActive={starredByFilter.includes(starred)}
-              onClick={() =>
-                setStarredByFilter(prev =>
-                  prev.includes(starred) ? prev.filter(item => item !== starred) : [...prev, starred]
-                )
-              }
+              onClick={() => handleStarredToggle(starred)}
             />
           ))}
         </div>
@@ -109,15 +135,12 @@ export default function Sidebar() {
               key={`label-${label}`}
               label={label}
               isActive={labels.includes(label)}
-              onClick={() =>
-                setLabels(prev => (prev.includes(label) ? prev.filter(item => item !== label) : [...prev, label]))
-              }
+              onClick={() => handleLabelToggle(label)}
             />
           ))}
         </div>
         <Button variant='link' className='mt-4 p-0 font-normal text-blue-600'>
           Show more <ChevronDown className='ml-2 h-4 w-4' aria-hidden='true' />
-          <span className='sr-only'>Show more labels</span>
         </Button>
       </div>
     </div>

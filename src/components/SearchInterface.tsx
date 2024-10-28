@@ -1,84 +1,90 @@
+'use client'
+
 import type React from 'react'
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import xor from 'lodash/xor'
-import includes from 'lodash/includes'
-import without from 'lodash/without'
-import isEqual from 'lodash/isEqual'
+import { Filter } from 'lucide-react'
+import { useFilter } from '@/providers/filter'
 
-import { useSnippets } from '../hooks/useSnippets'
-import { Button } from './ui/button'
-import { X, Filter, ChevronDown } from 'lucide-react'
-import MultiSelectDropdown from './MultiSelectDropdown'
 import RoundedToggleButton from './RoundedToggleButton'
-import SingleSelectDropdown from './SingleSelectDropdown'
 import SnippetCard from './SnippetCard'
 import ResponsiveSidebar from './Sidebar'
-import supabase from '../lib/supabase'
+import { useSnippets } from '@/hooks/useSnippets'
 
-const LANGUAGES = ['All languages', 'Spanish', 'Arabic']
-const STATES = ['All States', 'Arizona', 'Florida', 'Georgia', 'Michigan', 'Nevada', 'Pennsylvania']
-const STARRED = ['by Me', 'by Others']
+// Import shadcn pagination components
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/ui/pagination'
+
 const STARRED_BY_RESULTS = ['Starred by Me', 'Starred by Others']
-const LABELS = ['Human Right', 'Woman Right', 'Equality', 'Label xxx', 'Label xyz']
 const SORTED_BY = ['Most Recent', 'Oldest', 'Most Popular']
+const PAGE_SIZE = 10
 
 const SearchInterface: React.FC = () => {
-  const [showSidebar, setShowSidebar] = useState(true)
-  const [languages, setLanguages] = useState([LANGUAGES[0]])
-  const [states, setStates] = useState([STATES[0]])
-  const [labeledBy, setLabeledBy] = useState<string[]>([])
-  const [starredByFilter, setStarredByFilter] = useState<string[]>([])
-  const [labels, setLabels] = useState<string[]>([])
-  const [sortedBy, setSortedBy] = useState(SORTED_BY[0])
-  const [starredByResult, setStarredByResult] = useState<string[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const { showSidebar, setShowSidebar, starredByFilter, setStarredByFilter } = useFilter()
+
+  const { data, isLoading } = useSnippets(currentPage, PAGE_SIZE)
   const navigate = useNavigate()
-  const { snippets: unsortedSnippets, loading, sortSnippets } = useSnippets()
-  const snippets = useMemo(() => sortSnippets(unsortedSnippets, sortedBy), [unsortedSnippets, sortedBy, sortSnippets])
 
-  const handleMultiSelect = (
-    setter: React.Dispatch<React.SetStateAction<string[]>>,
-    allOptionsArray: string[],
-    item: string
-  ) => {
-    setter(prev => {
-      const [allLabel, ...otherOptions] = allOptionsArray
-      if (item === allLabel) {
-        return includes(prev, allLabel) ? [] : allOptionsArray
-      }
-      if (includes(prev, allLabel)) {
-        return [item]
-      }
-      const newSelection = includes(prev, item) ? without(prev, item) : [...prev, item]
-      if (isEqual(newSelection.sort(), otherOptions.sort())) {
-        return allOptionsArray
-      }
-      return newSelection
-    })
-  }
-
-  const clearAll = () => {
-    setLanguages([LANGUAGES[0]])
-    setStates([STATES[0]])
-    setLabeledBy([])
-    setStarredByFilter([])
-    setLabels([])
-    setSortedBy(SORTED_BY[0])
-    setStarredByResult([])
-    setSearchQuery('')
-    setSelectedFilters([])
-  }
-
-  const handleSnippetClick = (snippetId: number) => {
+  const handleSnippetClick = (snippetId: string) => {
     navigate(`/snippet/${snippetId}`)
+  }
+
+  // Calculate total pages (if you have total count from API)
+  const totalPages = Math.ceil((data?.count || 0) / PAGE_SIZE)
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages = []
+    const showPages = 5 // Number of page buttons to show
+
+    if (totalPages <= showPages) {
+      // If total pages is less than or equal to showPages, show all pages
+      for (let i = 0; i < totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      // Always show first page
+      pages.push(0)
+
+      // Calculate start and end of current group
+      let start = Math.max(currentPage - 1, 1)
+      let end = Math.min(currentPage + 1, totalPages - 2)
+
+      // Add ellipsis if there's a gap after first page
+      if (start > 1) {
+        pages.push('ellipsis')
+      }
+
+      // Add pages around current page
+      for (let i = start; i <= end; i++) {
+        pages.push(i)
+      }
+
+      // Add ellipsis if there's a gap before last page
+      if (end < totalPages - 2) {
+        pages.push('ellipsis')
+      }
+
+      // Always show last page
+      pages.push(totalPages - 1)
+    }
+
+    return pages
   }
 
   return (
     <div className='flex flex-grow overflow-hidden'>
       {showSidebar && <ResponsiveSidebar />}
-      <div className={`${showSidebar ? 'px-16' : 'px-56'} flex w-full flex-col overflow-hidden`}>
+      <div className={`${showSidebar ? 'px-16' : 'md:px-56'} flex w-full flex-col overflow-hidden`}>
         <div className='mb-6 flex items-center justify-between px-4 pt-2'>
           <div className='flex space-x-2'>
             <RoundedToggleButton
@@ -96,14 +102,49 @@ const SearchInterface: React.FC = () => {
               />
             ))}
           </div>
-          <div className='w-52'>
-            <SingleSelectDropdown selectedItem={sortedBy} items={SORTED_BY} onItemSelect={setSortedBy} />
-          </div>
         </div>
         <div className='mx-4 flex-grow overflow-y-auto'>
-          {snippets.map(snippet => (
-            <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
-          ))}
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <>
+              {data?.data.map(snippet => (
+                <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
+              ))}
+
+              {/* Shadcn Pagination */}
+              <div className='my-6'>
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                        disabled={currentPage === 0}
+                      />
+                    </PaginationItem>
+
+                    {getPageNumbers().map((pageNum, index) => (
+                      <PaginationItem key={index}>
+                        {pageNum === 'ellipsis' ? (
+                          <PaginationEllipsis />
+                        ) : (
+                          <PaginationLink
+                            onClick={() => setCurrentPage(pageNum as number)}
+                            isActive={currentPage === pageNum}>
+                            {(pageNum as number) + 1}
+                          </PaginationLink>
+                        )}
+                      </PaginationItem>
+                    ))}
+
+                    <PaginationItem>
+                      <PaginationNext onClick={() => setCurrentPage(prev => prev + 1)} disabled={!data?.hasMore} />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

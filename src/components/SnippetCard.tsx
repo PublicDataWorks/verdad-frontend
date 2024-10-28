@@ -23,7 +23,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   const [hoveredCategories, setHoveredCategories] = useState<{ [key: string]: boolean }>({})
   const [isStarred, setIsStarred] = useState(false)
   const [isStarHovered, setIsStarHovered] = useState(false)
-  const formattedDate = formatDate(snippet.audio_file.recorded_at)
+  const formattedDate = formatDate(snippet.recorded_at)
 
   const handleUpvoteClick = (category: string) => (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -62,8 +62,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             className='hover:bg-transparent'
             onMouseEnter={() => setIsStarHovered(true)}
             onMouseLeave={() => setIsStarHovered(false)}
-            onClick={() => setIsStarred(!isStarred)}
-          >
+            onClick={() => setIsStarred(!isStarred)}>
             <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
           </Button>
         </div>

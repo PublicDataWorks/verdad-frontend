@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import type { FC } from 'react'
-import { useSnippets } from '../hooks/useSnippets'
+import { useSnippet } from '../hooks/useSnippets'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -18,13 +18,12 @@ import { formatDate } from '@/lib/utils'
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
   const navigate = useNavigate()
-  const { snippets, loading } = useSnippets()
-  const snippet = snippetId ? snippets.find(s => s.id === snippetId) : null
+  const { data: snippet, isLoading } = useSnippet(snippetId || '')
   const [language, setLanguage] = useState('spanish')
   const [upvotedCategories, setUpvotedCategories] = useState<{ [key: string]: boolean }>({})
   const [hoveredCategories, setHoveredCategories] = useState<{ [key: string]: boolean }>({})
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className='flex h-screen items-center justify-center'>
         <Spinner />
@@ -46,7 +45,7 @@ const SnippetDetail: FC = () => {
     )
   }
 
-  const formattedDate = formatDate(snippet.audio_file.recorded_at)
+  const formattedDate = formatDate(snippet.recorded_at)
 
   const handleUpvoteClick = (category: string) => {
     setUpvotedCategories(prev => ({ ...prev, [category]: !prev[category] }))
@@ -109,8 +108,8 @@ const SnippetDetail: FC = () => {
           <LanguageTabs
             language={language}
             setLanguage={setLanguage}
-            spanishText={snippet.transcription}
-            englishText={snippet.translation}
+            spanishText={snippet.context.main} // Updated to use context
+            englishText={snippet.context.main_en} // Updated to use context
           />
           <div className='flex space-x-2'>
             <div className='flex space-x-2'>
@@ -118,7 +117,7 @@ const SnippetDetail: FC = () => {
                 <LabelButton
                   key={`${snippet.id}-${category.category}`}
                   label={category.category}
-                  upvotes={0} // You might want to add an upvote count to your category object
+                  upvotes={0}
                   isUpvoted={upvotedCategories[category.category]}
                   onUpvote={() => handleUpvoteClick(category.category)}
                   onHover={isHovered => handleHover(category.category, isHovered)}
