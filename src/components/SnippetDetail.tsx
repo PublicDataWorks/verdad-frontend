@@ -30,10 +30,6 @@ const SnippetDetail: FC = () => {
     }
   }, [snippet])
 
-  const handleLabelAdded = (newLabels: Label[]) => {
-    setLabels(newLabels)
-  }
-
   if (isLoading) {
     return (
       <div className='flex h-screen items-center justify-center'>
@@ -56,7 +52,7 @@ const SnippetDetail: FC = () => {
     )
   }
 
-  const formattedDate = formatDate(snippet.created_at)
+  const formattedDate = formatDate(snippet.recorded_at)
 
   return (
     <Card className='mx-auto w-full max-w-3xl'>
