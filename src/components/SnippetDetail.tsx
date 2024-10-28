@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import type { FC } from 'react'
 import { useSnippet } from '../hooks/useSnippets'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -14,14 +14,25 @@ import LabelButton from './LabelButton'
 import Spinner from './Spinner'
 import LiveblocksComments from '../components/LiveblocksComments'
 import { formatDate } from '@/lib/utils'
+import AddLabelButton from './AddLabelButton'
+import type { Label } from '../hooks/useSnippets'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
   const navigate = useNavigate()
   const { data: snippet, isLoading } = useSnippet(snippetId || '')
   const [language, setLanguage] = useState('spanish')
-  const [upvotedCategories, setUpvotedCategories] = useState<{ [key: string]: boolean }>({})
-  const [hoveredCategories, setHoveredCategories] = useState<{ [key: string]: boolean }>({})
+  const [labels, setLabels] = useState<Label[]>([])
+
+  useEffect(() => {
+    if (snippet) {
+      setLabels(snippet.labels)
+    }
+  }, [snippet])
+
+  const handleLabelAdded = (newLabels: Label[]) => {
+    setLabels(newLabels)
+  }
 
   if (isLoading) {
     return (
@@ -45,20 +56,12 @@ const SnippetDetail: FC = () => {
     )
   }
 
-  const formattedDate = formatDate(snippet.recorded_at)
-
-  const handleUpvoteClick = (category: string) => {
-    setUpvotedCategories(prev => ({ ...prev, [category]: !prev[category] }))
-  }
-
-  const handleHover = (category: string, isHovered: boolean) => {
-    setHoveredCategories(prev => ({ ...prev, [category]: isHovered }))
-  }
+  const formattedDate = formatDate(snippet.created_at)
 
   return (
     <Card className='mx-auto w-full max-w-3xl'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <Button variant='ghost' className='flex items-center space-x-2' onClick={() => navigate(-1)}>
+        <Button variant='ghost' className='flex items-center space-x-2 px-0' onClick={() => navigate(-1)}>
           <ArrowLeft className='h-4 w-4' />
           <span>Back</span>
         </Button>
@@ -91,7 +94,7 @@ const SnippetDetail: FC = () => {
         <div className='space-y-4'>
           <div>
             <h2 className='text-2xl font-bold'>
-              ID {snippet.audio_file.radio_station_code} - {snippet.audio_file.radio_station_name} -{' '}
+              {snippet.audio_file.radio_station_code} - {snippet.audio_file.radio_station_name} -{' '}
               {snippet.audio_file.location_state}
             </h2>
             <p className='text-sm text-muted-foreground text-zinc-400'>{formattedDate}</p>
@@ -108,25 +111,30 @@ const SnippetDetail: FC = () => {
           <LanguageTabs
             language={language}
             setLanguage={setLanguage}
-            spanishText={snippet.context.main} // Updated to use context
-            englishText={snippet.context.main_en} // Updated to use context
+            spanishText={{
+              before: snippet.context.before,
+              main: snippet.context.main,
+              after: snippet.context.after
+            }}
+            englishText={{
+              before_en: snippet.context.before_en,
+              main_en: snippet.context.main_en,
+              after_en: snippet.context.after_en
+            }}
           />
-          <div className='flex space-x-2'>
-            <div className='flex space-x-2'>
-              {snippet.confidence_scores.categories.map(category => (
-                <LabelButton
-                  key={`${snippet.id}-${category.category}`}
-                  label={category.category}
-                  upvotes={0}
-                  isUpvoted={upvotedCategories[category.category]}
-                  onUpvote={() => handleUpvoteClick(category.category)}
-                  onHover={isHovered => handleHover(category.category, isHovered)}
-                />
-              ))}
-              <Button variant='outline' size='icon' className='rounded-full'>
-                +
-              </Button>
-            </div>
+          <div className='flex flex-wrap items-center gap-2'>
+            {labels.map(label => (
+              <LabelButton
+                key={`${snippet.id}-${label.id}`}
+                label={label}
+                snippetId={snippetId}
+                onLabelDeleted={labelId => setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))}
+              />
+            ))}
+            <AddLabelButton
+              snippetId={snippetId}
+              onLabelAdded={newLabels => setLabels(prevLabels => [...prevLabels, ...newLabels])}
+            />
           </div>
         </div>
       </CardContent>

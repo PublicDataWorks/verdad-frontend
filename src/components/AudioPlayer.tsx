@@ -1,9 +1,12 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react'
+import Rewind5 from '../assets/rewind_5.svg'
+import Forward5 from '../assets/forward_5.svg'
+import Play from '../assets/play_filled.svg'
+import { Pause, ChevronDown } from 'lucide-react'
 
 interface AudioPlayerProps {
   audioSrc: string
@@ -84,31 +87,51 @@ export default function AudioPlayer({ audioSrc }: AudioPlayerProps) {
       <div className='space-y-4'>
         <div className='flex items-center justify-between'>
           <div className='space-x-4'>
-            <Button variant='outline' onClick={() => skip(-5)} aria-label='Rewind 5 seconds'>
-              <ChevronLeft className='h-6 w-6' />
+            <Button
+              variant='ghost'
+              onClick={() => skip(-5)}
+              aria-label='Rewind 5 seconds'
+              className='group relative border-none bg-transparent p-2 hover:bg-transparent'
+            >
+              <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10'></div>
+              <img src={Rewind5} alt='Rewind 5 seconds' className='relative h-8 w-8' />
             </Button>
             <Button
-              variant='outline'
+              variant='ghost'
               size='icon'
-              className='h-10 w-10'
+              className='group relative h-12 w-12 border-none bg-transparent p-2 hover:bg-transparent'
               onClick={togglePlayPause}
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
-              {isPlaying ? <Pause className='h-6 w-6' /> : <Play className='h-6 w-6' />}
+              <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10'></div>
+              {isPlaying ? (
+                <Pause className='relative h-8 w-8' />
+              ) : (
+                <img src={Play} alt='Play' className='relative h-8 w-8' />
+              )}
             </Button>
-            <Button variant='outline' onClick={() => skip(5)} aria-label='Forward 5 seconds'>
-              <ChevronRight className='h-6 w-6' />
+            <Button
+              variant='ghost'
+              onClick={() => skip(5)}
+              aria-label='Forward 5 seconds'
+              className='group relative border-none bg-transparent p-2 hover:bg-transparent'
+            >
+              <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10'></div>
+              <img src={Forward5} alt='Forward 5 seconds' className='relative h-8 w-8' />
             </Button>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant='outline'>{playbackRate}x</Button>
+              <Button variant='outline'>
+                {playbackRate === 1 ? '1x' : `${playbackRate * 100}%`}
+                <ChevronDown className='ml-2 h-4 w-4' />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => changeSpeed(0.5)}>0.5x</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeSpeed(1)}>1x</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeSpeed(1.5)}>1.5x</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeSpeed(2)}>2x</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => changeSpeed(0.5)}>50%</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => changeSpeed(0.7)}>70%</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => changeSpeed(1)}>100%</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => changeSpeed(1.25)}>125%</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

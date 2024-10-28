@@ -175,7 +175,8 @@ export default function OnboardingPage() {
                     type='button'
                     variant='outline'
                     className='w-40 px-3 py-1.5 text-text-blue'
-                    onClick={() => document.getElementById('avatar-upload')?.click()}>
+                    onClick={() => document.getElementById('avatar-upload')?.click()}
+                  >
                     <Upload className='mr-2 h-4 w-4' />
                     Upload Avatar
                   </Button>

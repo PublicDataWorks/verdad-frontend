@@ -19,6 +19,22 @@ interface AudioFileInfo {
   radio_station_name: string
 }
 
+interface Upvoter {
+  id: string
+  email: string
+  upvoted_at: string
+}
+
+export interface Label {
+  id: string
+  text: string
+  applied_at: string
+  applied_by: string | null
+  created_by: string | null
+  upvoted_by: Upvoter[]
+  is_ai_suggested: boolean
+}
+
 interface ConfidenceScore {
   score: number
   category: string
@@ -29,8 +45,28 @@ interface ConfidenceScores {
   categories: ConfidenceScore[]
 }
 
+interface AudioFileInfo {
+  recorded_at: string
+  location_state: string
+  radio_station_code: string
+  radio_station_name: string
+}
+
+interface Context {
+  main: string
+  before: string
+  after: string
+  before_en: string
+  main_en: string
+  after_en: string
+}
+
 export interface Snippet {
   id: string
+  created_at: string
+  transcription: string
+  translation: string
+  explanation: string
   context: Context
   recorded_at: string
   duration: string
@@ -38,14 +74,23 @@ export interface Snippet {
   end_time: string
   file_path: string
   file_size: number
-  audio_file: AudioFileInfo
   title: string
   summary: string
-  explanation: string
   confidence_scores: ConfidenceScores
   starred_by_user: boolean
   status: string
   error_message: string | null
+  audio_file: AudioFileInfo
+  labels: Label[]
+}
+
+const fetchLabels = async (snippetId: string) => {
+  const { data, error } = await supabase.rpc('get_snippet_labels', { snippet_id: snippetId })
+  if (error) {
+    console.error('Error fetching labels:', error)
+    return { labels: [] }
+  }
+  return { labels: data?.labels || [] }
 }
 
 interface PaginatedResponse {

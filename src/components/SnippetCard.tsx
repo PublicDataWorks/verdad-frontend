@@ -1,17 +1,15 @@
-import React, { useState } from 'react'
+import type React from 'react'
+import { useState } from 'react'
 import { Share2 } from 'lucide-react'
-
-import Upvote from '../assets/upvote.svg'
-import Upvoted from '../assets/upvoted.svg'
-import UpvoteHover from '../assets/upvote_hover.svg'
 import Star from '../assets/star.svg'
 import Starred from '../assets/starred.svg'
 import StarHover from '../assets/star_hover.svg'
 import { Button } from './ui/button'
 import LabelButton from './LabelButton'
 import LiveblocksComments from './LiveblocksComments'
-import { Snippet } from '../hooks/useSnippets'
+import type { Snippet, Label } from '../hooks/useSnippets'
 import { formatDate } from '../lib/utils'
+import AddLabelButton from './AddLabelButton'
 
 interface SnippetCardProps {
   snippet: Snippet
@@ -19,20 +17,10 @@ interface SnippetCardProps {
 }
 
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
-  const [upvotedCategories, setUpvotedCategories] = useState<{ [key: string]: boolean }>({})
-  const [hoveredCategories, setHoveredCategories] = useState<{ [key: string]: boolean }>({})
   const [isStarred, setIsStarred] = useState(false)
   const [isStarHovered, setIsStarHovered] = useState(false)
-  const formattedDate = formatDate(snippet.recorded_at)
-
-  const handleUpvoteClick = (category: string) => (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setUpvotedCategories(prev => ({ ...prev, [category]: !prev[category] }))
-  }
-
-  const handleHover = (category: string, isHovered: boolean) => {
-    setHoveredCategories(prev => ({ ...prev, [category]: isHovered }))
-  }
+  const [labels, setLabels] = useState(snippet.labels)
+  const formattedDate = formatDate(snippet.created_at)
 
   const getStarIcon = () => {
     if (isStarred) return Starred
@@ -40,16 +28,19 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
     return Star
   }
 
-  const getUpvoteIconSrc = (category: string) => {
-    if (upvotedCategories[category]) return Upvoted
-    return hoveredCategories[category] ? UpvoteHover : Upvote
+  const handleLabelAdded = (newLabels: Label[]) => {
+    setLabels(newLabels)
+  }
+
+  const handleLabelDeleted = (labelId: string) => {
+    setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))
   }
 
   return (
     <div className='mt-2 cursor-pointer rounded-lg border bg-white p-6' onClick={() => onSnippetClick(snippet.id)}>
       <div className='mb-2 flex items-start justify-between'>
         <h3 className='text-lg font-medium'>
-          ID {snippet.audio_file.radio_station_code} {snippet.audio_file.radio_station_name} -{' '}
+          {snippet.audio_file.radio_station_code} - {snippet.audio_file.radio_station_name} -{' '}
           {snippet.audio_file.location_state}
         </h3>
         <div className='flex space-x-2'>
@@ -69,20 +60,16 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{formattedDate}</p>
       <p className='mb-4'>{snippet.summary}</p>
-      <div className='flex flex-wrap gap-2'>
-        {snippet.confidence_scores.categories.map(category => (
+      <div className='flex flex-wrap items-baseline gap-2'>
+        {labels.map(label => (
           <LabelButton
-            key={`${snippet.id}-${category.category}`}
-            label={category.category}
-            upvotes={0} // You might want to add an upvote count to your category object
-            isUpvoted={upvotedCategories[category.category]}
-            onUpvote={e => handleUpvoteClick(category.category)(e)}
-            onHover={isHovered => handleHover(category.category, isHovered)}
+            key={`${snippet.id}-${label.id}`}
+            label={label}
+            snippetId={snippet.id}
+            onLabelDeleted={handleLabelDeleted}
           />
         ))}
-        <Button variant='outline' size='icon' className='rounded-full'>
-          +
-        </Button>
+        <AddLabelButton snippetId={snippet.id} onLabelAdded={handleLabelAdded} />
       </div>
       <LiveblocksComments snippetId={snippet.id} showFullComments={false} />
     </div>

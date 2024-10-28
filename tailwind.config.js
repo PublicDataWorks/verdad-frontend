@@ -11,6 +11,7 @@ const config = {
     extend: {
       colors: {
         'text-blue': '#005EF4',
+        'text-secondary': '#3F3F46',
         'dropdown-text': '#A1A1AA',
         'ghost-white': '#F9F9F9',
         'blue-accent': '#639FFF',
