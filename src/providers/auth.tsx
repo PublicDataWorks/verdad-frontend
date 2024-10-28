@@ -23,6 +23,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
+  console.log('===================', import.meta.env.VITE_AUTH_REDIRECT_URL as string)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -104,8 +105,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         login,
         logout,
         loginWithGoogle
-      }}
-    >
+      }}>
       {children}
     </AuthContext.Provider>
   )
