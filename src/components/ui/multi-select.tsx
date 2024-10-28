@@ -260,7 +260,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                     )}>
                     <CheckIcon className='h-4 w-4' />
                   </div>
-                  <span>(Select All)</span>
+                  <span>Select All</span>
                 </CommandItem>
                 {options.map(option => {
                   const isSelected = selectedValues.includes(option.value)
