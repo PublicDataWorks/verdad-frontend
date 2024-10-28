@@ -46,7 +46,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
 
   const createLabel = async (labelText: string) => {
     const newLabel: Label = {
-      id: Date.now().toString(), // Temporary ID
+      id: Date.now().toString(),
       text: labelText,
       applied_at: new Date().toISOString(),
       applied_by: null,
@@ -54,21 +54,28 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
       upvoted_by: [{ id: 'temp', email: 'temp', upvoted_at: new Date().toISOString() }],
       is_ai_suggested: false
     }
-    onLabelAdded([newLabel])
+    
+    // Optimistic update - add the new label to the existing list
+    onLabelAdded(prevLabels => [...prevLabels, newLabel])
 
-    const { data, error } = await supabase.rpc('create_apply_and_upvote_label', {
-      snippet_id: snippetId,
-      label_text: labelText
-    })
-    if (error) {
+    try {
+      const { data, error } = await supabase.rpc('create_apply_and_upvote_label', {
+        snippet_id: snippetId,
+        label_text: labelText
+      })
+      
+      if (error) throw error
+
+      // Replace entire label list with server response
+      if (data && data.labels) {
+        onLabelAdded(data.labels)
+      }
+    } catch (error) {
       console.error('Error creating label:', error)
-      // Remove the optimistically added label if the API call fails
+      // Remove the optimistically added label if there's an error
       onLabelAdded(prevLabels => prevLabels.filter(label => label.id !== newLabel.id))
-      return
     }
-    if (data && data.labels) {
-      onLabelAdded(data.labels)
-    }
+
     setIsInputVisible(false)
     setInputValue('')
   }

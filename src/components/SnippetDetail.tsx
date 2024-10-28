@@ -31,8 +31,12 @@ const SnippetDetail: FC = () => {
     }
   }, [snippet])
 
-  const handleLabelAdded = (newLabels: Label[]) => {
-    setLabels(newLabels)
+  const handleLabelAdded = (newLabels: Label[] | ((prevLabels: Label[]) => Label[])) => {
+    if (typeof newLabels === 'function') {
+      setLabels(newLabels)
+    } else {
+      setLabels(newLabels)
+    }
   }
 
   if (loading) {
@@ -124,9 +128,9 @@ const SnippetDetail: FC = () => {
             }}
           />
           <div className='flex flex-wrap items-center gap-2'>
-            {labels.map(label => (
+            {labels.map((label, index) => (
               <LabelButton
-                key={`${snippet.id}-${label.id}`}
+                key={`${snippetId}-${label.id}-${index}`}
                 label={label}
                 snippetId={snippetId}
                 onLabelDeleted={labelId => setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))}
@@ -134,7 +138,7 @@ const SnippetDetail: FC = () => {
             ))}
             <AddLabelButton
               snippetId={snippetId}
-              onLabelAdded={newLabels => setLabels(prevLabels => [...prevLabels, ...newLabels])}
+              onLabelAdded={handleLabelAdded}
             />
           </div>
         </div>

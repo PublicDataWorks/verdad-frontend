@@ -62,9 +62,9 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
       <p className='mb-4 text-xs text-zinc-400'>{formattedDate}</p>
       <p className='mb-4'>{snippet.summary}</p>
       <div className='flex flex-wrap items-baseline gap-2'>
-        {labels.map(label => (
+        {labels.map((label, index) => (
           <LabelButton
-            key={`${snippet.id}-${label.id}`}
+            key={`${snippet.id}-${label.id}-${index}`}
             label={label}
             snippetId={snippet.id}
             onLabelDeleted={handleLabelDeleted}
