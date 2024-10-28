@@ -173,7 +173,6 @@ const SearchInterface: React.FC = () => {
           ))}
         </div>
       </div>
-      <Button onClick={() => supabase.auth.signOut()}>Logout</Button>
     </div>
   )
 }
