@@ -15,13 +15,26 @@ const LANGUAGE_OPTIONS = [
 const STATE_OPTIONS = [
   { label: 'California', value: 'california' },
   { label: 'New York', value: 'new-york' },
-  { label: 'Texas', value: 'texas' }
+  { label: 'Texas', value: 'texas' },
+  { label: 'Arizona', value: 'arizona' },
+  { label: 'Nevada', value: 'nevada' },
+  { label: 'Wisconsin', value: 'wisconsin' },
+  { label: 'Pennsylvania', value: 'pennsylvania' },
+  { label: 'Georgia', value: 'georgia' },
+  { label: 'Florida', value: 'florida' },
+  { label: 'Michigan', value: 'michigan' }
 ]
 
 const SOURCE_OPTIONS = [
-  { label: 'Source 1', value: 'source-1' },
-  { label: 'Source 2', value: 'source-2' },
-  { label: 'Source 3', value: 'source-3' }
+  { label: 'KNOG-FM 91.7 MHz', value: '91.7' },
+  { label: 'KZLZ-FM 105.3 MHz', value: '105.3' },
+  { label: 'KISF-FM 103.5 MHz', value: '103.5' },
+  { label: 'WLMV-AM 1480 kHz', value: '1480' },
+  { label: 'WLCH-FM 91.3 MHz', value: '91.3' },
+  { label: 'WUMR-FM 106.1 MHz', value: '106.1' },
+  { label: 'WLEL-FM 94.3 MHz', value: '94.3' },
+  { label: 'WPHE-AM 690 kHz', value: '690' },
+  { label: 'WAXY-AM 790 kHz', value: '790' }
 ]
 
 const STARRED = ['by Me', 'by Others']
