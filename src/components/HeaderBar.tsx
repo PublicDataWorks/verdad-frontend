@@ -1,19 +1,13 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Moon, Bell, LogOut } from 'lucide-react' // Add LogOut icon
+import { Moon, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useInboxNotifications } from '@liveblocks/react'
-import { InboxNotification } from '@liveblocks/react-ui'
-import { User } from '@supabase/supabase-js'
 import { InboxPopover } from './InboxPopover'
 import { useAuth } from '@/providers/auth'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu' // Import dropdown components
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import supabase from '@/lib/supabase'
 
-// ... NotificationsList component remains the same ...
-
 const HeaderBar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false)
   const { user } = useAuth()
 
   const getInitials = (email: string) => {

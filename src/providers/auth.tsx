@@ -1,4 +1,3 @@
-// AuthProvider.tsx
 import React, { createContext, useEffect, useState, ReactNode, useContext } from 'react'
 import supabase from '../lib/supabase'
 import { User, AuthError } from '@supabase/supabase-js'
@@ -23,31 +22,44 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    if (mounted) return // Skip if already mounted
+
+    const abortController = new AbortController()
+
     const checkUser = async () => {
       try {
+        if (abortController.signal.aborted) return
+
         const {
           data: { session }
         } = await supabase.auth.getSession()
         setUser(session?.user ?? null)
       } catch (error) {
-        console.error('Error checking user:', error)
+        if (!abortController.signal.aborted) {
+          console.error('Error checking user:', error)
+        }
       }
     }
 
     checkUser()
+    setMounted(true)
 
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+      if (_event === 'SIGNED_IN' && !abortController.signal.aborted) {
+        setUser(session?.user ?? null)
+      }
     })
 
     return () => {
+      abortController.abort()
       subscription.unsubscribe()
     }
-  }, [])
+  }, [mounted])
 
   const login = async (email: string, password: string): Promise<{ error: AuthError | null }> => {
     try {
@@ -104,8 +116,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         login,
         logout,
         loginWithGoogle
-      }}
-    >
+      }}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,6 +1,5 @@
-import type React from 'react'
-import { useState } from 'react'
-import { Share2 } from 'lucide-react'
+import React, { useState } from 'react'
+import { Share2, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react'
 import Star from '../assets/star.svg'
 import Starred from '../assets/starred.svg'
 import StarHover from '../assets/star_hover.svg'
@@ -20,6 +19,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   const [isStarred, setIsStarred] = useState(false)
   const [isStarHovered, setIsStarHovered] = useState(false)
   const [labels, setLabels] = useState(snippet.labels || [])
+  const [isExpanded, setIsExpanded] = useState(false)
   const formattedDate = formatDate(snippet.recorded_at)
 
   const getStarIcon = () => {
@@ -34,6 +34,11 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
 
   const handleLabelDeleted = (labelId: string) => {
     setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))
+  }
+
+  const toggleExpand = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsExpanded(!isExpanded)
   }
 
   return (
@@ -53,25 +58,38 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             className='hover:bg-transparent'
             onMouseEnter={() => setIsStarHovered(true)}
             onMouseLeave={() => setIsStarHovered(false)}
-            onClick={() => setIsStarred(!isStarred)}>
+            onClick={e => {
+              e.stopPropagation()
+              setIsStarred(!isStarred)
+            }}>
             <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
           </Button>
         </div>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{formattedDate}</p>
       <p className='mb-4'>{snippet.summary}</p>
-      <div className='flex flex-wrap items-baseline gap-2'>
-        {labels.map((label, index) => (
-          <LabelButton
-            key={`${snippet.id}-${label.id}-${index}`}
-            label={label}
-            snippetId={snippet.id}
-            onLabelDeleted={handleLabelDeleted}
-          />
-        ))}
-        <AddLabelButton snippetId={snippet.id} onLabelAdded={handleLabelAdded} />
+      <div className='flex justify-between'>
+        <div className='flex flex-wrap items-baseline gap-2'>
+          {labels.map((label, index) => (
+            <LabelButton
+              key={`${snippet.id}-${label.id}-${index}`}
+              label={label}
+              snippetId={snippet.id}
+              onLabelDeleted={handleLabelDeleted}
+            />
+          ))}
+          <AddLabelButton snippetId={snippet.id} onLabelAdded={handleLabelAdded} />
+        </div>
+        <div className='mt-4 flex items-center justify-end'>
+          <Button variant='ghost' size='sm' className='flex items-center space-x-1' onClick={toggleExpand}>
+            <MessageCircle className='h-4 w-4' />
+            <span>Comment</span>
+            {isExpanded ? <ChevronUp className='h-4 w-4' /> : <ChevronDown className='h-4 w-4' />}
+          </Button>
+        </div>
       </div>
-      <LiveblocksComments snippetId={snippet.id} showFullComments={false} />
+
+      {isExpanded && <LiveblocksComments snippetId={snippet.id} showFullComments={true} />}
     </div>
   )
 }
