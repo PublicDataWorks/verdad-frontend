@@ -1,7 +1,6 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
 
-// Types
 interface Context {
   main: string
   before: string
@@ -99,14 +98,12 @@ interface PaginatedResponse {
   total_pages: number
 }
 
-// Query keys
 const snippetKeys = {
   all: ['snippets'] as const,
   lists: (pageSize: number) => [...snippetKeys.all, 'list', { pageSize }] as const,
   detail: (id: string) => [...snippetKeys.all, 'detail', id] as const
 }
 
-// API functions
 const fetchSnippet = async (id: string): Promise<Snippet> => {
   const { data, error } = await supabase.rpc('get_snippet', {
     snippet_id: id
@@ -141,7 +138,6 @@ const fetchSnippets = async ({
   }
 }
 
-// Reimplemented useSnippets using useInfiniteQuery
 export function useSnippets(pageSize: number) {
   return useInfiniteQuery<PaginatedResponse, Error>({
     queryKey: snippetKeys.lists(pageSize),
@@ -157,7 +153,6 @@ export function useSnippets(pageSize: number) {
   })
 }
 
-// Hooks
 export function useSnippet(id: string) {
   return useQuery({
     queryKey: snippetKeys.detail(id),
@@ -166,7 +161,6 @@ export function useSnippet(id: string) {
   })
 }
 
-// Optional: Helper function for sorting
 export const sortSnippets = (snippets: Snippet[], sortBy: string) => {
   return [...snippets].sort((a, b) => {
     if (sortBy === 'Most Recent') {

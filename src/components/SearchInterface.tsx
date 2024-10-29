@@ -14,7 +14,7 @@ import { useSnippets } from '@/hooks/useSnippets'
 import InfiniteScroll from 'react-infinite-scroller'
 
 const STARRED_BY_RESULTS = ['Starred by Me', 'Starred by Others']
-const PAGE_SIZE = 3
+const PAGE_SIZE = 5
 
 const SearchInterface: React.FC = () => {
   const { showSidebar, starredByFilter, setShowSidebar, setStarredByFilter } = useFilter()
@@ -35,7 +35,6 @@ const SearchInterface: React.FC = () => {
     setStarredByFilter(xor(starredByFilter, [starred]))
   }
 
-  // Flatten the pages into a single array of snippets
   const snippets = data?.pages.flatMap(page => page.snippets) || []
 
   return (
@@ -67,7 +66,6 @@ const SearchInterface: React.FC = () => {
             <div>Error: {error.message}</div>
           ) : (
             <div className='h-full overflow-auto'>
-              {' '}
               <InfiniteScroll
                 pageStart={0}
                 loadMore={fetchNextPage}
