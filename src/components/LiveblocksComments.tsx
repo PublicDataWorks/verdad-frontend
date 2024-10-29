@@ -49,10 +49,6 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, show
     <div className='mt-8'>
       {showFullComments ? (
         <div className='mx-6'>
-          <h3 className='font-inter mb-4 flex items-center font-normal leading-5 tracking-[0.14px] text-text-secondary'>
-            <Chat size={16} className='mr-2' />
-            {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
-          </h3>
           {threads.length > 0 ? (
             threads.map(thread => <Thread key={thread.id} thread={thread} showComposer={showFullComments} />)
           ) : (
