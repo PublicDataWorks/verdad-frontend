@@ -1,10 +1,9 @@
 'use client'
 
-import type React from 'react'
-import { useState } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import xor from 'lodash/xor'
-import { Filter } from 'lucide-react'
+import { Filter, Loader } from 'lucide-react'
 import { useFilter } from '@/providers/filter'
 
 import RoundedToggleButton from './RoundedToggleButton'
@@ -12,25 +11,17 @@ import SnippetCard from './SnippetCard'
 import ResponsiveSidebar from './Sidebar'
 import { useSnippets } from '@/hooks/useSnippets'
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious
-} from '@/components/ui/pagination'
+import InfiniteScroll from 'react-infinite-scroller'
 
 const STARRED_BY_RESULTS = ['Starred by Me', 'Starred by Others']
-const PAGE_SIZE = 5
+const PAGE_SIZE = 3
 
 const SearchInterface: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(0)
   const { showSidebar, starredByFilter, setShowSidebar, setStarredByFilter } = useFilter()
 
-  const { data, isLoading } = useSnippets(currentPage, PAGE_SIZE)
+  const { data, error, fetchNextPage, hasNextPage, status } = useSnippets(PAGE_SIZE)
+
   const navigate = useNavigate()
-  const snippets = data?.data
 
   const handleSnippetClick = (snippetId: string) => {
     navigate(`/snippet/${snippetId}`)
@@ -43,6 +34,9 @@ const SearchInterface: React.FC = () => {
   const handleStarredFilter = (starred: string) => {
     setStarredByFilter(xor(starredByFilter, [starred]))
   }
+
+  // Flatten the pages into a single array of snippets
+  const snippets = data?.pages.flatMap(page => page.snippets) || []
 
   return (
     <div className='flex flex-grow overflow-hidden'>
@@ -67,55 +61,29 @@ const SearchInterface: React.FC = () => {
           </div>
         </div>
         <div className='mx-4 flex-grow overflow-y-auto'>
-          {isLoading ? (
+          {status === 'loading' ? (
             <div>Loading...</div>
+          ) : status === 'error' ? (
+            <div>Error: {error.message}</div>
           ) : (
-            <>
-              {snippets?.map(snippet => (
-                <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
-              ))}
-              <div className='my-6'>
-                <Pagination className='mt-8'>
-                  <PaginationContent className='flex items-center gap-6 rounded-xl border bg-white p-2 shadow-sm'>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-all duration-200
-                          ${
-                            currentPage === 0
-                              ? 'cursor-not-allowed text-gray-300'
-                              : 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
-                          }`}
-                        onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
-                        disabled={currentPage === 0}
-                      />
-                    </PaginationItem>
-
-                    <PaginationItem>
-                      <PaginationLink
-                        className='rounded-lg bg-blue-50 px-6 py-2 font-semibold text-blue-700'
-                        isActive={true}>
-                        <span className='text-sm'>
-                          {currentPage + 1} / {data?.total_page}
-                        </span>
-                      </PaginationLink>
-                    </PaginationItem>
-
-                    <PaginationItem>
-                      <PaginationNext
-                        className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-all duration-200
-                          ${
-                            currentPage >= (data?.total_page || 0) - 1
-                              ? 'cursor-not-allowed text-gray-300'
-                              : 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
-                          }`}
-                        onClick={() => setCurrentPage(prev => prev + 1)}
-                        disabled={currentPage >= (data?.total_page || 0) - 1}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            </>
+            <div className='h-full overflow-auto'>
+              {' '}
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={fetchNextPage}
+                hasMore={hasNextPage}
+                loader={
+                  <div className='mt-2 flex w-full justify-center'>
+                    <Loader />
+                  </div>
+                }
+                useWindow={false} // Change to false to use the parent container
+                getScrollParent={() => document.querySelector('.overflow-auto')}>
+                {snippets.map(snippet => (
+                  <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
+                ))}
+              </InfiniteScroll>
+            </div>
           )}
         </div>
       </div>

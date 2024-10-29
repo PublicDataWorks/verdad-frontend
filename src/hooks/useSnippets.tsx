@@ -94,14 +94,15 @@ const fetchLabels = async (snippetId: string) => {
 }
 
 interface PaginatedResponse {
-  data: Snippet[]
-  total_page: number
+  snippets: Snippet[]
+  currentPage: number
+  total_pages: number
 }
 
 // Query keys
 const snippetKeys = {
   all: ['snippets'] as const,
-  lists: (page?: number, pageSize?: number) => [...snippetKeys.all, 'list', { page, pageSize }] as const,
+  lists: (pageSize: number) => [...snippetKeys.all, 'list', { pageSize }] as const,
   detail: (id: string) => [...snippetKeys.all, 'detail', id] as const
 }
 
@@ -115,26 +116,44 @@ const fetchSnippet = async (id: string): Promise<Snippet> => {
   return data
 }
 
-const fetchSnippets = async (page: number = 0, pageSize: number = 10): Promise<PaginatedResponse> => {
+const fetchSnippets = async ({
+  pageParam = 0,
+  queryKey
+}): Promise<{
+  snippets: Snippet[]
+  total_pages: number
+  currentPage: number
+}> => {
+  const [, , { pageSize }] = queryKey
+  const actualPageSize = pageSize || 10
+
   const { data, error } = await supabase.rpc('get_snippets', {
-    page,
-    page_size: pageSize
+    page: pageParam,
+    page_size: actualPageSize
   })
 
   if (error) throw error
 
   return {
-    data: data.snippets,
-    total_page: data.total_pages
+    snippets: data.snippets,
+    total_pages: Number(data.total_pages),
+    currentPage: pageParam
   }
 }
 
-// Modified useSnippets hook using useQuery
-export function useSnippets(page: number = 0, pageSize: number = 10) {
-  return useQuery({
-    queryKey: snippetKeys.lists(page, pageSize),
-    queryFn: () => fetchSnippets(page, pageSize),
-    enabled: true // Query will run immediately
+// Reimplemented useSnippets using useInfiniteQuery
+export function useSnippets(pageSize: number) {
+  return useInfiniteQuery<PaginatedResponse, Error>({
+    queryKey: snippetKeys.lists(pageSize),
+    queryFn: fetchSnippets,
+    initialPageParam: 0,
+    getNextPageParam: lastPage => {
+      if (lastPage.currentPage >= lastPage.total_pages - 1) {
+        return undefined
+      }
+
+      return lastPage.currentPage + 1
+    }
   })
 }
 
