@@ -4,22 +4,19 @@ import React, { createContext, useContext, useState, ReactNode } from 'react'
 
 interface FilterState {
   showSidebar: boolean
-  languages: string[]
-  states: string[]
-  labeledBy: string[]
-  starredByFilter: string[]
-  labels: string[]
-  sources: string[]
+  filters: {
+    languages: string[]
+    states: string[]
+    sources: string[]
+    labels: string[]
+    labeledBy: string[]
+    starredBy: string[]
+  }
 }
 
 interface FilterContextType extends FilterState {
   setShowSidebar: (show: boolean) => void
-  setLanguages: (languages: string[]) => void
-  setStates: (states: string[]) => void
-  setLabeledBy: (labeledBy: string[]) => void
-  setStarredByFilter: (starredBy: string[]) => void
-  setLabels: (labels: string[]) => void
-  setSources: (sources: string[]) => void
+  setFilter: (category: string, values: string[]) => void
   clearAll: () => void
 }
 
@@ -27,25 +24,36 @@ const FilterContext = createContext<FilterContextType | undefined>(undefined)
 
 const initialState: FilterState = {
   showSidebar: false,
-  languages: [],
-  states: [],
-  labeledBy: [],
-  starredByFilter: [],
-  labels: [],
-  sources: []
+  filters: {
+    languages: [],
+    states: [],
+    sources: [],
+    labels: [],
+    labeledBy: [],
+    starredBy: []
+  }
 }
 
 export function FilterProvider({ children }: { children: ReactNode }) {
   const [filterState, setFilterState] = useState<FilterState>(initialState)
 
-  const updateState = (key: keyof FilterState) => (value: any) => {
+  const setFilter = (category: string, values: string[]) => {
     setFilterState(prev => ({
       ...prev,
-      [key]: value
+      filters: {
+        ...prev.filters,
+        [category]: values
+      }
     }))
   }
 
-  // Modified clearAll function
+  const setShowSidebar = (show: boolean) => {
+    setFilterState(prev => ({
+      ...prev,
+      showSidebar: show
+    }))
+  }
+
   const clearAll = () => {
     setFilterState(prev => ({
       ...initialState,
@@ -57,13 +65,8 @@ export function FilterProvider({ children }: { children: ReactNode }) {
     <FilterContext.Provider
       value={{
         ...filterState,
-        setShowSidebar: updateState('showSidebar'),
-        setLanguages: updateState('languages'),
-        setStates: updateState('states'),
-        setSources: updateState('sources'),
-        setLabeledBy: updateState('labeledBy'),
-        setStarredByFilter: updateState('starredByFilter'),
-        setLabels: updateState('labels'),
+        setShowSidebar,
+        setFilter,
         clearAll
       }}
     >

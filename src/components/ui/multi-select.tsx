@@ -1,4 +1,4 @@
-// src/components/multi-select.tsx
+'use client'
 
 import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -69,6 +69,11 @@ interface MultiSelectProps
   defaultValue?: string[]
 
   /**
+   * The selected values passed down from the parent component (controlled component).
+   */
+  value?: string[]
+
+  /**
    * Placeholder text to be displayed when no values are selected.
    * Optional, defaults to "Select options".
    */
@@ -113,6 +118,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       onValueChange,
       variant,
       defaultValue = [],
+      value,
       placeholder = 'Select options',
       animation = 0,
       maxCount = 3,
@@ -123,7 +129,12 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
     },
     ref
   ) => {
-    const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValue)
+    const isControlled = value !== undefined
+
+    const [internalSelectedValues, setInternalSelectedValues] = React.useState<string[]>(defaultValue)
+
+    const selectedValues = isControlled ? value : internalSelectedValues
+
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false)
     const [isAnimating, setIsAnimating] = React.useState(false)
 
@@ -133,21 +144,31 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       } else if (event.key === 'Backspace' && !event.currentTarget.value) {
         const newSelectedValues = [...selectedValues]
         newSelectedValues.pop()
-        setSelectedValues(newSelectedValues)
+        if (!isControlled) {
+          setInternalSelectedValues(newSelectedValues)
+        }
         onValueChange(newSelectedValues)
       }
     }
 
     const toggleOption = (option: string) => {
-      const newSelectedValues = selectedValues.includes(option)
-        ? selectedValues.filter(value => value !== option)
-        : [...selectedValues, option]
-      setSelectedValues(newSelectedValues)
+      const currentSet = new Set(selectedValues || [])
+      if (currentSet.has(option)) {
+        currentSet.delete(option)
+      } else {
+        currentSet.add(option)
+      }
+      const newSelectedValues = Array.from(currentSet)
+      if (!isControlled) {
+        setInternalSelectedValues(newSelectedValues)
+      }
       onValueChange(newSelectedValues)
     }
 
     const handleClear = () => {
-      setSelectedValues([])
+      if (!isControlled) {
+        setInternalSelectedValues([])
+      }
       onValueChange([])
     }
 
@@ -157,7 +178,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
 
     const clearExtraOptions = () => {
       const newSelectedValues = selectedValues.slice(0, maxCount)
-      setSelectedValues(newSelectedValues)
+      if (!isControlled) {
+        setInternalSelectedValues(newSelectedValues)
+      }
       onValueChange(newSelectedValues)
     }
 
@@ -166,7 +189,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
         handleClear()
       } else {
         const allValues = options.map(option => option.value)
-        setSelectedValues(allValues)
+        if (!isControlled) {
+          setInternalSelectedValues(allValues)
+        }
         onValueChange(allValues)
       }
     }
@@ -235,8 +260,6 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       handleClear()
                     }}
                   />
-                  <Separator orientation='vertical' className='flex h-full min-h-6' />
-                  <ChevronDown className='mx-2 h-4 cursor-pointer text-muted-foreground' />
                 </div>
               </div>
             ) : (

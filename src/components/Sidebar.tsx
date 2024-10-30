@@ -37,61 +37,44 @@ const SOURCE_OPTIONS = [
   { label: 'WAXY-AM 790 kHz', value: '790' }
 ]
 
-const STARRED = ['by Me', 'by Others']
-const LABELS = ['Important', 'Urgent', 'Review']
+const BY_OPTIONS = [
+  { label: 'by Me', value: 'by Me' },
+  { label: 'by Others', value: 'by Others' }
+]
+
+const LABELS = [
+  { label: 'Important', value: 'Important' },
+  { label: 'Urgent', value: 'Urgent' },
+  { label: 'Review', value: 'Review' }
+]
 
 export default function Sidebar() {
-  const {
-    setShowSidebar,
-    languages,
-    states,
-    sources,
-    labeledBy,
-    starredByFilter,
-    labels,
-    setLanguages,
-    setStates,
-    setSources,
-    setLabeledBy,
-    setStarredByFilter,
-    setLabels,
-    clearAll
-  } = useFilter()
+  const { setShowSidebar, filters, setFilter, clearAll } = useFilter()
+
+  const languages = filters.languages || []
+  const states = filters.states || []
+  const sources = filters.sources || []
+  const labeledBy = filters.labeledBy || []
+  const starredBy = filters.starredBy || []
+  const labels = filters.labels || []
 
   const handleClearAll = () => {
-    // First call the context's clearAll
     clearAll()
-
-    // Then explicitly set all values to empty arrays
-    setLanguages([])
-    setStates([])
-    setSources([])
-    setLabeledBy([])
-    setStarredByFilter([])
-    setLabels([])
   }
 
-  const handleLabeledToggle = (labelled: string) => {
-    const newLabeledBy = labeledBy.includes(labelled)
-      ? labeledBy.filter(item => item !== labelled)
-      : [...labeledBy, labelled]
-    setLabeledBy(newLabeledBy)
-  }
-
-  const handleStarredToggle = (starred: string) => {
-    const newStarredBy = starredByFilter.includes(starred)
-      ? starredByFilter.filter(item => item !== starred)
-      : [...starredByFilter, starred]
-    setStarredByFilter(newStarredBy)
-  }
-
-  const handleLabelToggle = (label: string) => {
-    const newLabels = labels.includes(label) ? labels.filter(item => item !== label) : [...labels, label]
-    setLabels(newLabels)
+  const handleToggle = (category: string, value: string) => {
+    const currentSet = new Set(filters[category] || [])
+    if (currentSet.has(value)) {
+      currentSet.delete(value)
+    } else {
+      currentSet.add(value)
+    }
+    const newValues = Array.from(currentSet)
+    setFilter(category, newValues)
   }
 
   return (
-    <div className='fixed inset-0 z-50 overflow-y-auto bg-white md:relative md:inset-auto md:h-screen md:w-80'>
+    <div className='fixed inset-0 z-50 overflow-y-auto bg-white md:relative md:inset-auto md:w-80'>
       <div className='p-6'>
         <div className='mb-4 flex items-center justify-between'>
           <h2 className='text-lg font-semibold'>Filters</h2>
@@ -109,7 +92,7 @@ export default function Sidebar() {
           <h3 className='mb-2 mt-6 font-medium'>Source Language</h3>
           <MultiSelect
             options={LANGUAGE_OPTIONS}
-            onValueChange={setLanguages}
+            onValueChange={values => setFilter('languages', values)}
             value={languages}
             placeholder='Select languages'
             maxCount={2}
@@ -119,7 +102,7 @@ export default function Sidebar() {
           <h3 className='mb-2 mt-6 font-medium'>State</h3>
           <MultiSelect
             options={STATE_OPTIONS}
-            onValueChange={setStates}
+            onValueChange={values => setFilter('states', values)}
             value={states}
             placeholder='Select states'
             maxCount={2}
@@ -129,7 +112,7 @@ export default function Sidebar() {
           <h3 className='mb-2 mt-6 font-medium'>Source</h3>
           <MultiSelect
             options={SOURCE_OPTIONS}
-            onValueChange={setSources}
+            onValueChange={values => setFilter('sources', values)}
             value={sources}
             placeholder='Select sources'
             maxCount={2}
@@ -139,24 +122,24 @@ export default function Sidebar() {
 
         <h3 className='mb-2 mt-6 font-semibold'>Labeled</h3>
         <div className='flex flex-wrap gap-2'>
-          {STARRED.map(labelled => (
+          {BY_OPTIONS.map(labelled => (
             <RoundedToggleButton
               key={`labelled-${labelled}`}
-              label={labelled}
-              isActive={labeledBy.includes(labelled)}
-              onClick={() => handleLabeledToggle(labelled)}
+              label={labelled.label}
+              isActive={labeledBy.includes(labelled.value)}
+              onClick={() => handleToggle('labeledBy', labelled.value)}
             />
           ))}
         </div>
 
         <h3 className='mb-2 mt-6 font-semibold'>Starred</h3>
         <div className='flex flex-wrap gap-2'>
-          {STARRED.map(starred => (
+          {BY_OPTIONS.map(starred => (
             <RoundedToggleButton
               key={`starred-${starred}`}
-              label={starred}
-              isActive={starredByFilter.includes(starred)}
-              onClick={() => handleStarredToggle(starred)}
+              label={starred.label}
+              isActive={starredBy.includes(starred.value)}
+              onClick={() => handleToggle('starredBy', starred.value)}
             />
           ))}
         </div>
@@ -166,15 +149,12 @@ export default function Sidebar() {
           {LABELS.map(label => (
             <RoundedToggleButton
               key={`label-${label}`}
-              label={label}
-              isActive={labels.includes(label)}
-              onClick={() => handleLabelToggle(label)}
+              label={label.label}
+              isActive={labels.includes(label.label)}
+              onClick={() => handleToggle('labels', label.value)}
             />
           ))}
         </div>
-        <Button variant='link' className='mt-4 p-0 font-normal text-blue-600'>
-          Show more <ChevronDown className='ml-2 h-4 w-4' aria-hidden='true' />
-        </Button>
       </div>
     </div>
   )
