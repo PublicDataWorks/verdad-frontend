@@ -116,10 +116,9 @@ const fetchSnippet = async (id: string): Promise<Snippet> => {
 const fetchSnippets = async ({ pageParam = 0, pageSize, filters }): Promise<PaginatedResponse> => {
   const actualPageSize = pageSize || 10
 
-
   const { data, error } = await supabase.rpc('get_snippets', {
     page: pageParam,
-    page_size: actualPageSize
+    page_size: actualPageSize,
     filter
   })
 
