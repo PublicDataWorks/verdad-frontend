@@ -84,12 +84,11 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           <Button variant='ghost' size='sm' className='flex items-center space-x-1' onClick={toggleExpand}>
             <MessageCircle className='h-4 w-4' />
             <span>Comment</span>
-            {isExpanded ? <ChevronUp className='h-4 w-4' /> : <ChevronDown className='h-4 w-4' />}
           </Button>
         </div>
       </div>
 
-      {isExpanded && <LiveblocksComments snippetId={snippet.id} showFullComments={true} />}
+      <LiveblocksComments snippetId={snippet.id} showFullComments={true} />
     </div>
   )
 }

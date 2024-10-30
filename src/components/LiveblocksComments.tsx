@@ -53,7 +53,6 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, show
             threads.map(thread => <Thread key={thread.id} thread={thread} showComposer={showFullComments} />)
           ) : (
             <div className='mr-4'>
-              <p className='mr-4'>No comments yet.</p>
               <Composer
                 metadata={{
                   snippetId
