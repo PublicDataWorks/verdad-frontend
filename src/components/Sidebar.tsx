@@ -80,7 +80,7 @@ export default function Sidebar() {
           <h2 className='text-lg font-semibold'>Filters</h2>
           <div className='flex items-center gap-2'>
             <Button variant='ghost' onClick={handleClearAll} className='px-2 font-normal text-blue-600'>
-              Clear all <X className='ml-2 h-4 w-4' aria-hidden='true' />
+              Reset
             </Button>
             <Button variant='ghost' onClick={() => setShowSidebar(false)} className='md:hidden'>
               <X className='h-6 w-6' />
