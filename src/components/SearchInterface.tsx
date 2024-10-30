@@ -49,9 +49,9 @@ const SearchInterface: React.FC = () => {
   const snippets = data?.pages.flatMap(page => page.snippets) || []
 
   return (
-    <div className='flex flex-grow overflow-hidden'>
+    <div className='flex flex-1 overflow-hidden'>
       {showSidebar && <ResponsiveSidebar />}
-      <div className={`${showSidebar ? 'px-16' : 'md:px-20 lg:px-40'} flex w-full flex-col overflow-hidden`}>
+      <div className={`${showSidebar ? 'px-16' : 'md:px-20 lg:px-40'} flex w-full flex-col`}>
         <div className='mb-6 flex items-center justify-between px-4 pt-2'>
           <div className='flex space-x-2'>
             <RoundedToggleButton
@@ -70,7 +70,7 @@ const SearchInterface: React.FC = () => {
             ))}
           </div>
         </div>
-        <div className='mx-4 flex-grow overflow-y-auto'>
+        <div className='mx-4 flex-1 overflow-y-auto'>
           {status === 'error' ? (
             <div>Error: {error.message}</div>
           ) : (
