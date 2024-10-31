@@ -2,6 +2,7 @@ import type React from 'react'
 import { useThreads, RoomProvider } from '@liveblocks/react'
 import { Composer, Thread } from '@liveblocks/react-ui'
 import Spinner from './Spinner'
+import { Comment, CommentBodyLinkProps, CommentBodyMentionProps } from '@liveblocks/react-ui/primitives'
 
 interface LiveblocksCommentsProps {
   snippetId: string
