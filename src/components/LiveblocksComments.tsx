@@ -4,7 +4,6 @@ import { Composer, Thread } from '@liveblocks/react-ui'
 import { MessageCircle } from 'lucide-react'
 import Spinner from './Spinner'
 import { Comment, CommentBodyLinkProps, CommentBodyMentionProps } from '@liveblocks/react-ui/primitives'
-import { Chat } from '@carbon/icons-react'
 
 interface LiveblocksCommentsProps {
   snippetId: string
@@ -46,13 +45,13 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, show
   const commentCount = allComments.length
 
   return (
-    <div className='mt-8'>
+    <div className='mt-8 border-t-2'>
       {showFullComments ? (
-        <div className='mx-6'>
+        <div className=''>
           {threads.length > 0 ? (
             threads.map(thread => <Thread key={thread.id} thread={thread} showComposer={showFullComments} />)
           ) : (
-            <div className='mr-4'>
+            <div className=''>
               <Composer
                 metadata={{
                   snippetId
