@@ -22,44 +22,29 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
-  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    if (mounted) return // Skip if already mounted
-
-    const abortController = new AbortController()
-
     const checkUser = async () => {
       try {
-        if (abortController.signal.aborted) return
-
         const {
           data: { session }
         } = await supabase.auth.getSession()
         setUser(session?.user ?? null)
       } catch (error) {
-        if (!abortController.signal.aborted) {
-          console.error('Error checking user:', error)
-        }
+        console.error('Error checking user:', error)
       }
     }
 
     checkUser()
-    setMounted(true)
 
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (_event === 'SIGNED_IN' && !abortController.signal.aborted) {
-        setUser(session?.user ?? null)
-      }
+      setUser(session?.user ?? null)
     })
 
-    return () => {
-      abortController.abort()
-      subscription.unsubscribe()
-    }
-  }, [mounted])
+    return () => subscription.unsubscribe()
+  }, [])
 
   const login = async (email: string, password: string): Promise<{ error: AuthError | null }> => {
     try {
@@ -99,10 +84,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async (): Promise<{ error: AuthError | null }> => {
     try {
       const { error } = await supabase.auth.signOut()
+      setUser(null)
 
-      if (error) throw error
-
-      return { error: null }
+      if (!error) {
+        setUser(null)
+      }
     } catch (error) {
       console.error('Error logging out:', error)
       return { error: error as AuthError }
@@ -123,7 +109,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   )
 }
 
-// Custom hook
 export const useAuth = () => {
   const context = useContext(AuthContext)
   if (context === undefined) {
