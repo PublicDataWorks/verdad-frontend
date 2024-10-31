@@ -4,6 +4,7 @@ import Upvote from '../assets/upvote.svg'
 import Upvoted from '../assets/upvoted.svg'
 import supabase from '@/lib/supabase'
 import { Label } from '../hooks/useSnippets'
+import { useAuth } from '@/providers/auth'
 
 interface LabelButtonProps {
   label: Label
@@ -15,11 +16,9 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
   const [isUpvoted, setIsUpvoted] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const [upvoteCount, setUpvoteCount] = useState(label.upvoted_by.length)
+  const { user } = useAuth()
 
   const checkUpvoteStatus = useCallback(async () => {
-    const {
-      data: { user }
-    } = await supabase.auth.getUser()
     if (user) {
       setIsUpvoted(label.upvoted_by.some(upvoter => upvoter.email === user.email))
     }
