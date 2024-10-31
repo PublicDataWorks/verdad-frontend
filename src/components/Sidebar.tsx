@@ -6,6 +6,7 @@ import { MultiSelect } from '@/components/ui/multi-select'
 import RoundedToggleButton from './RoundedToggleButton'
 import { useFilter } from '@/providers/filter'
 import { useLanguage } from '@/providers/language'
+import { translations } from '@/constants/translations'
 
 const LANGUAGE_OPTIONS = [
   { label: 'English', value: 'english' },
@@ -47,6 +48,7 @@ const LABELS = [
 export default function Sidebar() {
   const { setShowSidebar, filters, setFilter, clearAll } = useFilter()
   const { language } = useLanguage()
+  const t = translations[language]
 
   const languages = filters.languages || []
   const states = filters.states || []
@@ -56,8 +58,8 @@ export default function Sidebar() {
   const labels = filters.labels || []
 
   const BY_OPTIONS = [
-    { label: language === 'spanish' ? 'por Mí' : 'by Me', value: 'by Me' },
-    { label: language === 'spanish' ? 'por Otros' : 'by Others', value: 'by Others' }
+    { label: t.byMe, value: 'by Me' },
+    { label: t.byOthers, value: 'by Others' }
   ]
 
   const handleClearAll = () => {
@@ -79,10 +81,10 @@ export default function Sidebar() {
     <div className='fixed inset-0 z-50 overflow-y-auto bg-white md:relative md:inset-auto md:w-80'>
       <div className='p-6'>
         <div className='mb-4 flex items-center justify-between'>
-          <h2 className='text-lg font-semibold'>Filters</h2>
+          <h2 className='text-lg font-semibold'>{t.filters}</h2>
           <div className='flex items-center gap-2'>
             <Button variant='ghost' onClick={handleClearAll} className='px-2 font-normal text-blue-600'>
-              Reset
+              {t.reset}
             </Button>
             <Button variant='ghost' onClick={() => setShowSidebar(false)} className='md:hidden'>
               <X className='h-6 w-6' />
@@ -91,42 +93,42 @@ export default function Sidebar() {
         </div>
 
         <div>
-          <h3 className='mb-2 mt-6 font-medium'>Source Language</h3>
+          <h3 className='mb-2 mt-6 font-medium'>{t.sourceLanguage}</h3>
           <MultiSelect
             options={LANGUAGE_OPTIONS}
             onValueChange={values => setFilter('languages', values)}
             value={languages}
-            placeholder='Select languages'
+            placeholder={t.selectLanguages}
             maxCount={2}
             className='w-full'
           />
 
-          <h3 className='mb-2 mt-6 font-medium'>State</h3>
+          <h3 className='mb-2 mt-6 font-medium'>{t.state}</h3>
           <MultiSelect
             options={STATE_OPTIONS}
             onValueChange={values => setFilter('states', values)}
             value={states}
-            placeholder='Select states'
+            placeholder={t.selectStates}
             maxCount={2}
             className='w-full'
           />
 
-          <h3 className='mb-2 mt-6 font-medium'>Source</h3>
+          <h3 className='mb-2 mt-6 font-medium'>{t.source}</h3>
           <MultiSelect
             options={SOURCE_OPTIONS}
             onValueChange={values => setFilter('sources', values)}
             value={sources}
-            placeholder='Select sources'
+            placeholder={t.selectSources}
             maxCount={2}
             className='w-full'
           />
         </div>
 
-        <h3 className='mb-2 mt-6 font-semibold'>Labeled</h3>
+        <h3 className='mb-2 mt-6 font-semibold'>{t.labeled}</h3>
         <div className='flex flex-wrap gap-2'>
           {BY_OPTIONS.map(labelled => (
             <RoundedToggleButton
-              key={`labelled-${labelled}`}
+              key={`labelled-${labelled.value}`}
               label={labelled.label}
               isActive={labeledBy.includes(labelled.value)}
               onClick={() => handleToggle('labeledBy', labelled.value)}
@@ -134,11 +136,11 @@ export default function Sidebar() {
           ))}
         </div>
 
-        <h3 className='mb-2 mt-6 font-semibold'>Starred</h3>
+        <h3 className='mb-2 mt-6 font-semibold'>{t.starred}</h3>
         <div className='flex flex-wrap gap-2'>
           {BY_OPTIONS.map(starred => (
             <RoundedToggleButton
-              key={`starred-${starred}`}
+              key={`starred-${starred.value}`}
               label={starred.label}
               isActive={starredBy.includes(starred.value)}
               onClick={() => handleToggle('starredBy', starred.value)}
@@ -146,11 +148,11 @@ export default function Sidebar() {
           ))}
         </div>
 
-        <h3 className='mb-2 mt-6 font-semibold'>Label</h3>
+        <h3 className='mb-2 mt-6 font-semibold'>{t.label}</h3>
         <div className='flex flex-wrap gap-2'>
           {LABELS.map(label => (
             <RoundedToggleButton
-              key={`label-${label}`}
+              key={`label-${label.value}`}
               label={label.label}
               isActive={labels.includes(label.label)}
               onClick={() => handleToggle('labels', label.value)}

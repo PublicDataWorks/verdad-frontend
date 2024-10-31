@@ -16,29 +16,36 @@ import { ResetPassword } from './components/ResetPassword'
 import { FilterProvider } from './providers/filter'
 import { LiveblocksProvider, RoomProvider } from '@liveblocks/react'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
+import { LanguageProvider } from './providers/language'
 
 const queryClient = new QueryClient()
 
 export default function App(): ReactElement {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <FilterProvider>
-          <Router>
-            <Routes>
-              <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
-              <Route path={LOGIN_PATH} element={<LoginPage />} />
-              <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
-              <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
-              <Route element={<AuthenticatedLayout />}>
-                <Route path='/search' element={<SearchInterface />} />
-                <Route path='/snippet/:snippetId' element={<SnippetDetail />} />
-              </Route>
-              <Route path='*' element={<LoginPage />} />
-            </Routes>
-          </Router>
-        </FilterProvider>
-      </AuthProvider>
+      <LiveblocksProvider publicApiKey={import.meta.env.VITE_LIVEBLOCKS_PUBKEY}>
+        <RoomProvider id={import.meta.env.VITE_LIVEBLOCKS_ROOM}>
+          <LanguageProvider>
+            <AuthProvider>
+              <FilterProvider>
+                <Router>
+                  <Routes>
+                    <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
+                    <Route path={LOGIN_PATH} element={<LoginPage />} />
+                    <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
+                    <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
+                    <Route element={<AuthenticatedLayout />}>
+                      <Route path='/search' element={<SearchInterface />} />
+                      <Route path='/snippet/:snippetId' element={<SnippetDetail />} />
+                    </Route>
+                    <Route path='*' element={<LoginPage />} />
+                  </Routes>
+                </Router>
+              </FilterProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </RoomProvider>
+      </LiveblocksProvider>
 
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

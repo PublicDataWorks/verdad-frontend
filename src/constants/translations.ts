@@ -1,0 +1,42 @@
+export const translations = {
+  english: {
+    filters: 'Filters',
+    reset: 'Reset',
+    closeSidebar: 'Close sidebar',
+    sourceLanguage: 'Source Language',
+    selectLanguages: 'Select languages',
+    state: 'State',
+    selectStates: 'Select states',
+    source: 'Source',
+    selectSources: 'Select sources',
+    labeled: 'Labeled',
+    starred: 'Starred',
+    label: 'Label',
+    byMe: 'by Me',
+    byOthers: 'by Others',
+    toggleDarkMode: 'Toggle dark mode',
+    changeLanguage: 'Change language',
+    userMenu: 'User menu',
+    logOut: 'Log out'
+  },
+  spanish: {
+    filters: 'Filtros',
+    reset: 'Restablecer',
+    closeSidebar: 'Cerrar barra lateral',
+    sourceLanguage: 'Idioma de origen',
+    selectLanguages: 'Seleccionar idiomas',
+    state: 'Estado',
+    selectStates: 'Seleccionar estados',
+    source: 'Fuente',
+    selectSources: 'Seleccionar fuentes',
+    labeled: 'Etiquetado',
+    starred: 'Destacado',
+    label: 'Etiqueta',
+    byMe: 'por Mí',
+    byOthers: 'por Otros',
+    toggleDarkMode: 'Cambiar modo oscuro',
+    changeLanguage: 'Cambiar idioma',
+    userMenu: 'Menú de usuario',
+    logOut: 'Cerrar sesión'
+  }
+}
