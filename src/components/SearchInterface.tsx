@@ -71,7 +71,7 @@ const SearchInterface: React.FC = () => {
                 loadMore={fetchNextPage}
                 hasMore={hasNextPage}
                 loader={
-                  <div className='mt-2 flex w-full justify-center'>
+                  <div className='mt-2 flex w-full justify-center' key="loader">
                     <Loader />
                   </div>
                 }

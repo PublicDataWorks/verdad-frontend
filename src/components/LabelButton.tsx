@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from './ui/button'
 import Upvote from '../assets/upvote.svg'
 import Upvoted from '../assets/upvoted.svg'
 import supabase from '@/lib/supabase'
 import { Label } from '../hooks/useSnippets'
 import { useAuth } from '@/providers/auth'
+import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
 
 interface LabelButtonProps {
   label: Label
@@ -13,24 +14,41 @@ interface LabelButtonProps {
 }
 
 const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDeleted }) => {
-  const [isUpvoted, setIsUpvoted] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [upvoteCount, setUpvoteCount] = useState(label.upvoted_by.length)
   const { user } = useAuth()
+  
+  const [isUpvoted, setIsUpvoted] = useState(() => {
+    const localUpvoted = getLocalStorageItem(`upvoted_${snippetId}_${label.id}`)
+    return localUpvoted !== null ? localUpvoted : label.upvoted_by.some(upvoter => upvoter.email === user?.email)
+  })
 
-  const checkUpvoteStatus = useCallback(async () => {
-    if (user) {
-      setIsUpvoted(label.upvoted_by.some(upvoter => upvoter.email === user.email))
-    }
-  }, [label.upvoted_by])
+  const [upvoteCount, setUpvoteCount] = useState(() => {
+    const localCount = getLocalStorageItem(`upvoteCount_${snippetId}_${label.id}`)
+    return localCount !== null ? localCount : label.upvoted_by.length
+  })
 
+  // Check initial upvote status when component mounts or when user/upvoted_by changes
   useEffect(() => {
-    checkUpvoteStatus()
-  }, [checkUpvoteStatus])
+    if (user) {
+      const isCurrentlyUpvoted = label.upvoted_by.some(upvoter => upvoter.email === user.email)
+      setIsUpvoted(isCurrentlyUpvoted)
+      setLocalStorageItem(`upvoted_${snippetId}_${label.id}`, isCurrentlyUpvoted)
+    }
+  }, [user, label.upvoted_by, snippetId, label.id])
+
+  // Update local storage when states change
+  useEffect(() => {
+    setLocalStorageItem(`upvoted_${snippetId}_${label.id}`, isUpvoted)
+    setLocalStorageItem(`upvoteCount_${snippetId}_${label.id}`, upvoteCount)
+  }, [isUpvoted, upvoteCount, snippetId, label.id])
 
   const handleUpvote = async (e: React.MouseEvent) => {
     e.stopPropagation()
+    if (!user) return // Prevent upvoting if not logged in
+
     const newIsUpvoted = !isUpvoted
+    
+    // Optimistic updates
     setIsUpvoted(newIsUpvoted)
     setUpvoteCount(prevCount => (newIsUpvoted ? prevCount + 1 : prevCount - 1))
 
@@ -39,6 +57,7 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
         snippet_id: snippetId,
         label_text: label.text
       })
+      
       if (error) throw error
 
       if (!data || (Array.isArray(data) && data.length === 0) || (data.labels && data.labels.length === 0)) {
@@ -46,7 +65,7 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
       }
     } catch (error) {
       console.error('Error toggling upvote:', error)
-      // Revert the optimistic update if the API call fails
+      // Revert optimistic updates
       setIsUpvoted(!newIsUpvoted)
       setUpvoteCount(prevCount => (newIsUpvoted ? prevCount - 1 : prevCount + 1))
     }

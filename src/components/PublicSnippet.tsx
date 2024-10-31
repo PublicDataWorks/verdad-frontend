@@ -1,42 +1,52 @@
-'use client'
-
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import type { FC } from 'react'
-import { useSnippet } from '../hooks/useSnippets'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, Download, Share2, Star, ChevronDown } from 'lucide-react'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Download, Share2, ChevronDown } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import AudioPlayer from './AudioPlayer'
 import LanguageTabs from './LanguageTab'
-import LabelButton from './LabelButton'
 import Spinner from './Spinner'
-import LiveblocksComments from '../components/LiveblocksComments'
 import { formatDate } from '@/lib/utils'
-import AddLabelButton from './AddLabelButton'
-import type { Label } from '../hooks/useSnippets'
+import { useQuery } from '@tanstack/react-query'
 
-const SnippetDetail: FC = () => {
+interface PublicSnippet {
+  id: string
+  recorded_at: string
+  file_path: string
+  start_time: string
+  context: {
+    before: string
+    main: string
+    after: string
+    before_en: string
+    main_en: string
+    after_en: string
+  }
+  audio_file: {
+    radio_station_code: string
+    radio_station_name: string
+    location_state: string
+  }
+}
+
+const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippet> => {
+  const response = await fetch(`/api/public/snippets/${snippetId}`)
+  if (!response.ok) throw new Error('Failed to fetch snippet')
+  return response.json()
+}
+
+const PublicSnippet: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
   const navigate = useNavigate()
-  const { data: snippet, isLoading } = useSnippet(snippetId || '')
   const [language, setLanguage] = useState('spanish')
-  const [labels, setLabels] = useState<Label[]>([])
 
-  useEffect(() => {
-    if (snippet) {
-      setLabels(snippet.labels)
-    }
-  }, [snippet])
-
-  const handleLabelAdded = (newLabels: Label[] | ((prevLabels: Label[]) => Label[])) => {
-    if (typeof newLabels === 'function') {
-      setLabels(newLabels)
-    } else {
-      setLabels(newLabels)
-    }
-  }
+  const { data: snippet, isLoading } = useQuery({
+    queryKey: ['publicSnippet', snippetId],
+    queryFn: () => fetchPublicSnippet(snippetId || ''),
+    enabled: !!snippetId
+  })
 
   if (isLoading) {
     return (
@@ -52,9 +62,6 @@ const SnippetDetail: FC = () => {
         <div className='text-center'>
           <h2 className='mb-2 text-2xl font-bold text-gray-700'>Snippet Not Found</h2>
           <p className='text-gray-500'>The requested snippet could not be found.</p>
-          <Button variant='ghost' className='mt-4' onClick={() => navigate(-1)}>
-            Go Back
-          </Button>
         </div>
       </div>
     )
@@ -65,9 +72,8 @@ const SnippetDetail: FC = () => {
   return (
     <Card className='mx-auto w-full max-w-3xl'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <Button variant='ghost' className='flex items-center space-x-2 px-0' onClick={() => navigate(-1)}>
-          <ArrowLeft className='h-4 w-4' />
-          <span>Back</span>
+        <Button variant='ghost' className='flex items-center space-x-2' onClick={() => navigate('/login')}>
+          Login
         </Button>
         <div className='flex items-center space-x-2'>
           <DropdownMenu>
@@ -88,10 +94,6 @@ const SnippetDetail: FC = () => {
             <Share2 className='h-4 w-4' />
             <span>Share</span>
           </Button>
-          <Button variant='ghost' size='icon'>
-            <Star className='h-4 w-4' />
-            <span className='sr-only'>Favorite</span>
-          </Button>
         </div>
       </CardHeader>
       <CardContent>
@@ -102,14 +104,6 @@ const SnippetDetail: FC = () => {
               {snippet.audio_file.location_state}
             </h2>
             <p className='text-sm text-muted-foreground text-zinc-400'>{formattedDate}</p>
-          </div>
-          <CardTitle className='text-2xl'>{snippet.title}</CardTitle>
-          <div className='space-y-2'>
-            <h3 className='font-semibold'>Summary</h3>
-            <p className='text-sm'>{snippet.summary}</p>
-          </div>
-          <div className='space-y-2'>
-            <p className='text-sm text-muted-foreground'>{snippet.explanation}</p>
           </div>
           <AudioPlayer
             audioSrc={`https://audio.verdad.app/${snippet.file_path}`}
@@ -129,22 +123,10 @@ const SnippetDetail: FC = () => {
               after_en: snippet.context.after_en
             }}
           />
-          <div className='flex flex-wrap items-center gap-2'>
-            {labels.map((label, index) => (
-              <LabelButton
-                key={`${snippetId}-${label.id}-${index}`}
-                label={label}
-                snippetId={snippetId}
-                onLabelDeleted={labelId => setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))}
-              />
-            ))}
-            <AddLabelButton snippetId={snippetId} onLabelAdded={handleLabelAdded} />
-          </div>
         </div>
       </CardContent>
-      <LiveblocksComments snippetId={snippetId} showFullComments />
     </Card>
   )
 }
 
-export default SnippetDetail
+export default PublicSnippet
