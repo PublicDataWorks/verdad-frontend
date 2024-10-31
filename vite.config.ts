@@ -5,7 +5,7 @@ import istanbul from 'vite-plugin-istanbul'
 import path from 'path'
 
 export default defineConfig(({ command, mode }) => ({
-  base: '',
+  base: '/',
   plugins: [
     react(),
     tsconfigPaths(),
