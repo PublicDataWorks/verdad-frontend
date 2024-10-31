@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { MultiSelect } from '@/components/ui/multi-select'
 import RoundedToggleButton from './RoundedToggleButton'
 import { useFilter } from '@/providers/filter'
+import { useLanguage } from '@/providers/language'
 
 const LANGUAGE_OPTIONS = [
   { label: 'English', value: 'english' },
@@ -37,11 +38,6 @@ const SOURCE_OPTIONS = [
   { label: 'WAXY-AM 790 kHz', value: '790' }
 ]
 
-const BY_OPTIONS = [
-  { label: 'by Me', value: 'by Me' },
-  { label: 'by Others', value: 'by Others' }
-]
-
 const LABELS = [
   { label: 'Important', value: 'Important' },
   { label: 'Urgent', value: 'Urgent' },
@@ -50,6 +46,7 @@ const LABELS = [
 
 export default function Sidebar() {
   const { setShowSidebar, filters, setFilter, clearAll } = useFilter()
+  const { language } = useLanguage()
 
   const languages = filters.languages || []
   const states = filters.states || []
@@ -57,6 +54,11 @@ export default function Sidebar() {
   const labeledBy = filters.labeledBy || []
   const starredBy = filters.starredBy || []
   const labels = filters.labels || []
+
+  const BY_OPTIONS = [
+    { label: language === 'spanish' ? 'por Mí' : 'by Me', value: 'by Me' },
+    { label: language === 'spanish' ? 'por Otros' : 'by Others', value: 'by Others' }
+  ]
 
   const handleClearAll = () => {
     clearAll()

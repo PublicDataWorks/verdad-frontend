@@ -4,6 +4,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Filter, Loader } from 'lucide-react'
 import { useFilter } from '@/providers/filter'
+import { useLanguage } from '../providers/language'
 
 import RoundedToggleButton from './RoundedToggleButton'
 import SnippetCard from './SnippetCard'
@@ -12,14 +13,11 @@ import { useSnippets } from '@/hooks/useSnippets'
 
 import InfiniteScroll from 'react-infinite-scroller'
 
-const STARRED_BY_RESULTS = [
-  { label: 'Starred by Me', value: 'by Me' },
-  { label: 'Starred by Others', value: 'by Others' }
-]
 const PAGE_SIZE = 20
 
 const SearchInterface: React.FC = () => {
   const { showSidebar, filters, setShowSidebar, setFilter } = useFilter()
+  const { language } = useLanguage()
 
   const navigate = useNavigate()
 
@@ -48,6 +46,17 @@ const SearchInterface: React.FC = () => {
 
   const snippets = data?.pages.flatMap(page => page.snippets) || []
 
+  const STARRED_BY_RESULTS = [
+    {
+      label: language === 'spanish' ? 'Destacado por mí' : 'Starred by Me',
+      value: 'by Me'
+    },
+    {
+      label: language === 'spanish' ? 'Destacado por otros' : 'Starred by Others',
+      value: 'by Others'
+    }
+  ]
+
   return (
     <div className='flex flex-1 overflow-hidden'>
       {showSidebar && <ResponsiveSidebar />}
@@ -55,14 +64,14 @@ const SearchInterface: React.FC = () => {
         <div className='mb-6 flex items-center justify-between px-4 pt-2'>
           <div className='flex space-x-2'>
             <RoundedToggleButton
-              label='Filter'
+              label={language === 'spanish' ? 'Filtrar' : 'Filter'}
               isActive={showSidebar}
               onClick={toggleSidebar}
               icon={<Filter className='mr-2 h-4 w-4' />}
             />
             {STARRED_BY_RESULTS.map(starred => (
               <RoundedToggleButton
-                key={`result-${starred}`}
+                key={`result-${starred.value}`}
                 label={starred.label}
                 isActive={starredBy.includes(starred.value)}
                 onClick={() => handleStarredFilter(starred.value)}
@@ -72,7 +81,7 @@ const SearchInterface: React.FC = () => {
         </div>
         <div className='mx-4 flex-1 overflow-y-auto'>
           {status === 'error' ? (
-            <div>Error: {error.message}</div>
+            <div>{language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}</div>
           ) : (
             <div className='h-full overflow-auto'>
               <InfiniteScroll
