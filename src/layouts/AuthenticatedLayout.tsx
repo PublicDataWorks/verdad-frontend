@@ -6,15 +6,6 @@ import { useQuery } from '@tanstack/react-query'
 import HeaderBar from '../components/HeaderBar'
 import supabase from '../lib/supabase'
 
-interface UserData {
-  id: string
-  email: string
-  raw_user_meta_data: {
-    name?: string
-    avatar_url?: string
-  }
-}
-
 const fetchAllUsers = async () => {
   const { data, error } = await supabase.rpc('get_users')
   if (error) throw error
@@ -114,8 +105,7 @@ const AuthenticatedLayout: React.FC = () => {
         })
 
         return filteredData.map(user => user.email)
-      }}
-    >
+      }}>
       <div className='flex flex-col'>
         <HeaderBar />
         <div className='flex-grow overflow-hidden bg-ghost-white'>
