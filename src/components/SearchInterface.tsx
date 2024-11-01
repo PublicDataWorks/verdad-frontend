@@ -1,6 +1,4 @@
 'use client'
-
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Filter, Loader } from 'lucide-react'
 import { useFilter } from '@/providers/filter'
@@ -13,9 +11,9 @@ import { useSnippets } from '@/hooks/useSnippets'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-const PAGE_SIZE = 20 // Increased to ensure initial scrolling
+const PAGE_SIZE = 20
 
-const SearchInterface: React.FC = () => {
+export default function SearchInterface() {
   const { showSidebar, filters, setShowSidebar, setFilter } = useFilter()
   const { language } = useLanguage()
 
@@ -58,9 +56,10 @@ const SearchInterface: React.FC = () => {
   ]
 
   return (
-    <div className='flex flex-1'>
+    <div className='flex flex-1 rounded-lg'>
       {showSidebar && <ResponsiveSidebar />}
-      <div className={`${showSidebar ? 'px-16' : 'md:px-20 lg:px-40'} flex w-full flex-col`}>
+      <div
+        className={`${showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'md:px-20 lg:px-40 2xl:px-80'} flex w-full flex-col`}>
         <div className='mb-6 flex items-center justify-between px-4 pt-2'>
           <div className='flex space-x-2'>
             <RoundedToggleButton
@@ -79,22 +78,30 @@ const SearchInterface: React.FC = () => {
             ))}
           </div>
         </div>
-        <div id='scrollableDiv' style={{ height: '80vh', overflow: 'auto' }}>
+        <div
+          id='scrollableDiv'
+          className='custom-scrollbar rounded-lg bg-background shadow-inner'
+          style={{
+            height: 'calc(100svh - 128px)',
+            overflow: 'auto'
+          }}>
           {status === 'error' ? (
-            <div>{language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}</div>
+            <div className='p-4 text-center text-destructive'>
+              {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
+            </div>
           ) : (
             <InfiniteScroll
               dataLength={snippets.length}
               next={fetchNextPage}
               hasMore={hasNextPage}
+              className='flex flex-col gap-3 shadow-sm'
               scrollableTarget='scrollableDiv'
               loader={
-                <div className='my-2 flex w-full justify-center'>
-                  <Loader />
+                <div className='my-4 flex w-full justify-center'>
+                  <Loader className='h-6 w-6 animate-spin text-primary' />
                 </div>
               }
-              threshold={250} // Adjust as needed
-            >
+              scrollThreshold={0.8}>
               {snippets.map(snippet => (
                 <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
               ))}
@@ -105,5 +112,3 @@ const SearchInterface: React.FC = () => {
     </div>
   )
 }
-
-export default SearchInterface

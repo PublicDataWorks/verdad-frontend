@@ -47,7 +47,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   }
 
   return (
-    <Card className='mt-2 cursor-pointer' onClick={() => onSnippetClick(snippet.id)}>
+    <Card className='cursor-pointer' onClick={() => onSnippetClick(snippet.id)}>
       <CardHeader>
         <CardTitle className='flex items-start justify-between'>
           <h3 className='text-base font-medium'>
