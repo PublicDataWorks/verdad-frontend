@@ -85,15 +85,6 @@ export interface Snippet {
   }
 }
 
-const fetchLabels = async (snippetId: string) => {
-  const { data, error } = await supabase.rpc('get_snippet_labels', { snippet_id: snippetId })
-  if (error) {
-    console.error('Error fetching labels:', error)
-    return { labels: [] }
-  }
-  return { labels: data?.labels || [] }
-}
-
 interface PaginatedResponse {
   snippets: Snippet[]
   currentPage: number

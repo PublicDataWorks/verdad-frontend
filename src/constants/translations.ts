@@ -17,7 +17,8 @@ export const translations = {
     toggleDarkMode: 'Toggle dark mode',
     changeLanguage: 'Change language',
     userMenu: 'User menu',
-    logOut: 'Log out'
+    logOut: 'Log out',
+    selectLabels: 'Select labels'
   },
   spanish: {
     filters: 'Filtros',
@@ -37,6 +38,7 @@ export const translations = {
     toggleDarkMode: 'Cambiar modo oscuro',
     changeLanguage: 'Cambiar idioma',
     userMenu: 'Menú de usuario',
-    logOut: 'Cerrar sesión'
+    logOut: 'Cerrar sesión',
+    selectLabels: 'Seleccionar etiquetas'
   }
 }

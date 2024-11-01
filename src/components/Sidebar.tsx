@@ -1,66 +1,42 @@
 'use client'
 
-import { X, ChevronDown } from 'lucide-react'
+import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { MultiSelect } from '@/components/ui/multi-select'
 import RoundedToggleButton from './RoundedToggleButton'
 import { useFilter } from '@/providers/filter'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
-
-const LANGUAGE_OPTIONS = [
-  { label: 'English', value: 'english' },
-  { label: 'Spanish', value: 'spanish' },
-  { label: 'French', value: 'french' }
-]
-
-const STATE_OPTIONS = [
-  { label: 'California', value: 'california' },
-  { label: 'New York', value: 'new-york' },
-  { label: 'Texas', value: 'texas' },
-  { label: 'Arizona', value: 'arizona' },
-  { label: 'Nevada', value: 'nevada' },
-  { label: 'Wisconsin', value: 'wisconsin' },
-  { label: 'Pennsylvania', value: 'pennsylvania' },
-  { label: 'Georgia', value: 'georgia' },
-  { label: 'Florida', value: 'florida' },
-  { label: 'Michigan', value: 'michigan' }
-]
-
-const SOURCE_OPTIONS = [
-  { label: 'KNOG-FM 91.7 MHz', value: '91.7' },
-  { label: 'KZLZ-FM 105.3 MHz', value: '105.3' },
-  { label: 'KISF-FM 103.5 MHz', value: '103.5' },
-  { label: 'WLMV-AM 1480 kHz', value: '1480' },
-  { label: 'WLCH-FM 91.3 MHz', value: '91.3' },
-  { label: 'WUMR-FM 106.1 MHz', value: '106.1' },
-  { label: 'WLEL-FM 94.3 MHz', value: '94.3' },
-  { label: 'WPHE-AM 690 kHz', value: '690' },
-  { label: 'WAXY-AM 790 kHz', value: '790' }
-]
-
-const LABELS = [
-  { label: 'Important', value: 'Important' },
-  { label: 'Urgent', value: 'Urgent' },
-  { label: 'Review', value: 'Review' }
-]
+import { useFilters } from '@/hooks/useFilterOptions'
 
 export default function Sidebar() {
   const { setShowSidebar, filters, setFilter, clearAll } = useFilter()
   const { language } = useLanguage()
+  const { data, isLoading } = useFilters(language)
+
   const t = translations[language]
 
-  const languages = filters.languages || []
-  const states = filters.states || []
-  const sources = filters.sources || []
-  const labeledBy = filters.labeledBy || []
-  const starredBy = filters.starredBy || []
-  const labels = filters.labels || []
+  // Destructure filters state
+  const {
+    languages: selectedLanguages = [],
+    states: selectedStates = [],
+    sources: selectedSources = [],
+    labeledBy: selectedLabeledBy = [],
+    starredBy: selectedStarredBy = [],
+    labels: selectedLabels = []
+  } = filters
+
+  // Early return for loading state
+  if (isLoading) {
+    return <div className='p-6'>Loading...</div>
+  }
 
   const BY_OPTIONS = [
     { label: t.byMe, value: 'by Me' },
     { label: t.byOthers, value: 'by Others' }
   ]
+  // Safely access data with fallbacks
+  const { languages = [], states = [], sources = [], labels = { items: [] } } = data || {}
 
   const handleClearAll = () => {
     clearAll()
@@ -95,9 +71,9 @@ export default function Sidebar() {
         <div>
           <h3 className='mb-2 mt-6 font-medium'>{t.sourceLanguage}</h3>
           <MultiSelect
-            options={LANGUAGE_OPTIONS}
+            options={languages}
             onValueChange={values => setFilter('languages', values)}
-            value={languages}
+            value={selectedLanguages}
             placeholder={t.selectLanguages}
             maxCount={2}
             className='w-full'
@@ -105,9 +81,9 @@ export default function Sidebar() {
 
           <h3 className='mb-2 mt-6 font-medium'>{t.state}</h3>
           <MultiSelect
-            options={STATE_OPTIONS}
+            options={states}
             onValueChange={values => setFilter('states', values)}
-            value={states}
+            value={selectedStates}
             placeholder={t.selectStates}
             maxCount={2}
             className='w-full'
@@ -115,47 +91,45 @@ export default function Sidebar() {
 
           <h3 className='mb-2 mt-6 font-medium'>{t.source}</h3>
           <MultiSelect
-            options={SOURCE_OPTIONS}
+            options={sources}
             onValueChange={values => setFilter('sources', values)}
-            value={sources}
+            value={selectedSources}
             placeholder={t.selectSources}
             maxCount={2}
+            className='w-full'
+          />
+
+          <h3 className='mb-2 mt-6 font-medium'>{t.label}</h3>
+          <MultiSelect
+            options={labels.items}
+            onValueChange={values => setFilter('labels', values)}
+            value={selectedLabels}
+            placeholder={t.selectLabels}
+            maxCount={3}
             className='w-full'
           />
         </div>
 
         <h3 className='mb-2 mt-6 font-semibold'>{t.labeled}</h3>
         <div className='flex flex-wrap gap-2'>
-          {BY_OPTIONS.map(labelled => (
+          {BY_OPTIONS.map(option => (
             <RoundedToggleButton
-              key={`labelled-${labelled.value}`}
-              label={labelled.label}
-              isActive={labeledBy.includes(labelled.value)}
-              onClick={() => handleToggle('labeledBy', labelled.value)}
+              key={`labelled-${option.value}`}
+              label={option.label}
+              isActive={selectedLabeledBy.includes(option.value)}
+              onClick={() => handleToggle('labeledBy', option.value)}
             />
           ))}
         </div>
 
         <h3 className='mb-2 mt-6 font-semibold'>{t.starred}</h3>
         <div className='flex flex-wrap gap-2'>
-          {BY_OPTIONS.map(starred => (
+          {BY_OPTIONS.map(option => (
             <RoundedToggleButton
-              key={`starred-${starred.value}`}
-              label={starred.label}
-              isActive={starredBy.includes(starred.value)}
-              onClick={() => handleToggle('starredBy', starred.value)}
-            />
-          ))}
-        </div>
-
-        <h3 className='mb-2 mt-6 font-semibold'>{t.label}</h3>
-        <div className='flex flex-wrap gap-2'>
-          {LABELS.map(label => (
-            <RoundedToggleButton
-              key={`label-${label.value}`}
-              label={label.label}
-              isActive={labels.includes(label.label)}
-              onClick={() => handleToggle('labels', label.value)}
+              key={`starred-${option.value}`}
+              label={option.label}
+              isActive={selectedStarredBy.includes(option.value)}
+              onClick={() => handleToggle('starredBy', option.value)}
             />
           ))}
         </div>
