@@ -12,10 +12,10 @@ const PublicHeaderBar: React.FC = () => {
           VERDAD
         </div>
       </Link>
-      <Button 
-        variant='ghost' 
+      <Button
+        variant='ghost'
         onClick={() => navigate('/login')}
-        className="hover:bg-blue-100 text-blue-600 hover:text-blue-700"
+        className='text-blue-600 hover:bg-blue-100 hover:text-blue-700'
       >
         Login
       </Button>

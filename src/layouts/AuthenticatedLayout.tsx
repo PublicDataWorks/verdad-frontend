@@ -33,13 +33,14 @@ const AuthenticatedLayout: React.FC = () => {
     queryKey: ['users'],
     queryFn: fetchAllUsers,
     enabled: !!session,
-    select: (users) => users.map(user => ({
-      ...user,
-      raw_user_meta_data: {
-        name: user.raw_user_meta_data?.name || user.email,
-        avatar_url: user.raw_user_meta_data?.avatar_url || ""
-      }
-    }))
+    select: users =>
+      users.map(user => ({
+        ...user,
+        raw_user_meta_data: {
+          name: user.raw_user_meta_data?.name || user.email,
+          avatar_url: user.raw_user_meta_data?.avatar_url || ''
+        }
+      }))
   })
 
   useEffect(() => {
@@ -92,28 +93,29 @@ const AuthenticatedLayout: React.FC = () => {
       }}
       resolveUsers={async ({ userIds }) => {
         const users = userIds.map(userId => {
-          const user = allUsers.find(u => u.email === userId);
+          const user = allUsers.find(u => u.email === userId)
           return {
             name: user?.raw_user_meta_data.name || userId,
-            avatar: user?.raw_user_meta_data.avatar_url || ""
-          };
-        });
-        return users;
+            avatar: user?.raw_user_meta_data.avatar_url || ''
+          }
+        })
+        return users
       }}
       resolveMentionSuggestions={async ({ text }) => {
         if (!text) {
-          return allUsers.map(user => user.email);
+          return allUsers.map(user => user.email)
         }
 
         const filteredData = allUsers.filter(user => {
-          const name = user.raw_user_meta_data?.name?.toLowerCase() || "";
-          const email = user.email.toLowerCase();
-          const searchText = text.toLowerCase();
-          return name.includes(searchText) || email.includes(searchText);
-        });
+          const name = user.raw_user_meta_data?.name?.toLowerCase() || ''
+          const email = user.email.toLowerCase()
+          const searchText = text.toLowerCase()
+          return name.includes(searchText) || email.includes(searchText)
+        })
 
-        return filteredData.map(user => user.email);
-      }}>
+        return filteredData.map(user => user.email)
+      }}
+    >
       <div className='flex flex-col'>
         <HeaderBar />
         <div className='flex-grow overflow-hidden bg-ghost-white'>

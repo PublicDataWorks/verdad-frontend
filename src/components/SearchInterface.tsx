@@ -71,12 +71,13 @@ const SearchInterface: React.FC = () => {
                 loadMore={fetchNextPage}
                 hasMore={hasNextPage}
                 loader={
-                  <div className='mt-2 flex w-full justify-center' key="loader">
+                  <div className='mt-2 flex w-full justify-center' key='loader'>
                     <Loader />
                   </div>
                 }
                 useWindow={false} // Change to false to use the parent container
-                getScrollParent={() => document.querySelector('.overflow-auto')}>
+                getScrollParent={() => document.querySelector('.overflow-auto')}
+              >
                 {snippets.map(snippet => (
                   <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
                 ))}

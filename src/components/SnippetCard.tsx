@@ -91,7 +91,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             className='hover:bg-transparent'
             onMouseEnter={() => setIsStarHovered(true)}
             onMouseLeave={() => setIsStarHovered(false)}
-            onClick={handleStarClick}>
+            onClick={handleStarClick}
+          >
             <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
           </Button>
         </div>

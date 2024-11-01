@@ -79,6 +79,7 @@ const PublicSnippet: FC = () => {
   }
 
   const formattedDate = formatDate(snippet.recorded_at)
+  const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
 
   return (
     <>
@@ -117,10 +118,7 @@ const PublicSnippet: FC = () => {
                 <span>{snippet.language}</span>
               </div>
             </div>
-            <AudioPlayer
-              audioSrc={`https://audio.verdad.app/${snippet.file_path}`}
-              startTime={snippet.start_time}
-            />
+            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
             <LanguageTabs
               language={language}
               setLanguage={setLanguage}

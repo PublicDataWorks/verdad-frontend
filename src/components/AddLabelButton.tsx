@@ -54,7 +54,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
       upvoted_by: [{ id: 'temp', email: 'temp', upvoted_at: new Date().toISOString() }],
       is_ai_suggested: false
     }
-    
+
     // Optimistic update - add the new label to the existing list
     onLabelAdded(prevLabels => [...prevLabels, newLabel])
 
@@ -63,7 +63,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
         snippet_id: snippetId,
         label_text: labelText
       })
-      
+
       if (error) throw error
 
       // Replace entire label list with server response
