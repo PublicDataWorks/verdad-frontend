@@ -116,7 +116,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         login,
         logout,
         loginWithGoogle
-      }}>
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

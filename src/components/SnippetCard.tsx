@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Share2, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react'
 import Star from '../assets/star.svg'
 import Starred from '../assets/starred.svg'
@@ -9,6 +9,9 @@ import LiveblocksComments from './LiveblocksComments'
 import type { Snippet, Label } from '../hooks/useSnippets'
 import { formatDate } from '../lib/utils'
 import AddLabelButton from './AddLabelButton'
+import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
+import supabase from '@/lib/supabase'
+import ShareButton from './ShareButton'
 
 interface SnippetCardProps {
   snippet: Snippet
@@ -16,16 +19,48 @@ interface SnippetCardProps {
 }
 
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
-  const [isStarred, setIsStarred] = useState(false)
   const [isStarHovered, setIsStarHovered] = useState(false)
   const [labels, setLabels] = useState(snippet.labels || [])
   const [isExpanded, setIsExpanded] = useState(false)
   const formattedDate = formatDate(snippet.recorded_at)
 
+  const [isStarred, setIsStarred] = useState(() => {
+    const localStarred = getLocalStorageItem(`starred_${snippet.id}`)
+    return localStarred !== null ? localStarred : snippet.starred_by_user
+  })
+
+  useEffect(() => {
+    setLocalStorageItem(`starred_${snippet.id}`, isStarred)
+  }, [isStarred, snippet.id])
+
   const getStarIcon = () => {
     if (isStarred) return Starred
     if (isStarHovered) return StarHover
     return Star
+  }
+
+  const handleStarClick = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const newStarred = !isStarred
+    setIsStarred(newStarred)
+
+    try {
+      const { data, error } = await supabase.rpc('toggle_star_snippet', {
+        snippet_id: snippet.id
+      })
+
+      if (error) throw error
+
+      if (data.snippet_starred !== newStarred) {
+        setIsStarred(data.snippet_starred)
+        setLocalStorageItem(`starred_${snippet.id}`, data.snippet_starred)
+      }
+    } catch (error) {
+      console.error('Error toggling star:', error)
+      // Revert optimistic update on error
+      setIsStarred(!newStarred)
+      setLocalStorageItem(`starred_${snippet.id}`, !newStarred)
+    }
   }
 
   const handleLabelAdded = (newLabels: Label[]) => {
@@ -49,19 +84,15 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           {snippet.audio_file.location_state}
         </h3>
         <div className='flex space-x-2'>
-          <Button variant='ghost' size='icon'>
-            <Share2 className='h-5 w-5' />
-          </Button>
+          <ShareButton snippetId={snippet.id} />
           <Button
             variant='ghost'
             size='icon'
             className='hover:bg-transparent'
             onMouseEnter={() => setIsStarHovered(true)}
             onMouseLeave={() => setIsStarHovered(false)}
-            onClick={e => {
-              e.stopPropagation()
-              setIsStarred(!isStarred)
-            }}>
+            onClick={handleStarClick}
+          >
             <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
           </Button>
         </div>

@@ -16,6 +16,7 @@ import LiveblocksComments from '../components/LiveblocksComments'
 import { formatDate } from '@/lib/utils'
 import AddLabelButton from './AddLabelButton'
 import type { Label } from '../hooks/useSnippets'
+import ShareButton from './ShareButton'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
@@ -62,6 +63,8 @@ const SnippetDetail: FC = () => {
 
   const formattedDate = formatDate(snippet.recorded_at)
 
+  const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
+
   return (
     <Card className='mx-auto w-full max-w-3xl'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
@@ -84,10 +87,7 @@ const SnippetDetail: FC = () => {
               <DropdownMenuItem>Audio</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant='ghost' className='flex items-center space-x-2'>
-            <Share2 className='h-4 w-4' />
-            <span>Share</span>
-          </Button>
+          <ShareButton snippetId={snippetId} showLabel />
           <Button variant='ghost' size='icon'>
             <Star className='h-4 w-4' />
             <span className='sr-only'>Favorite</span>
@@ -111,7 +111,7 @@ const SnippetDetail: FC = () => {
           <div className='space-y-2'>
             <p className='text-sm text-muted-foreground'>{snippet.explanation}</p>
           </div>
-          <AudioPlayer audioSrc={`https://audio.verdad.app/${snippet.file_path}`} />
+          <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
           <LanguageTabs
             language={language}
             setLanguage={setLanguage}

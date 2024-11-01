@@ -65,7 +65,8 @@ export function FilterProvider({ children }: { children: ReactNode }) {
         setStarredByFilter: updateState('starredByFilter'),
         setLabels: updateState('labels'),
         clearAll
-      }}>
+      }}
+    >
       {children}
     </FilterContext.Provider>
   )

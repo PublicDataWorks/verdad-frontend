@@ -1,10 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from './ui/button'
 import Upvote from '../assets/upvote.svg'
 import Upvoted from '../assets/upvoted.svg'
 import supabase from '@/lib/supabase'
 import { Label } from '../hooks/useSnippets'
 import { useAuth } from '@/providers/auth'
+import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
+import { toast } from '@/components/ui/use-toast'
 
 interface LabelButtonProps {
   label: Label
@@ -13,24 +15,52 @@ interface LabelButtonProps {
 }
 
 const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDeleted }) => {
-  const [isUpvoted, setIsUpvoted] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [upvoteCount, setUpvoteCount] = useState(label.upvoted_by.length)
   const { user } = useAuth()
 
-  const checkUpvoteStatus = useCallback(async () => {
-    if (user) {
-      setIsUpvoted(label.upvoted_by.some(upvoter => upvoter.email === user.email))
-    }
-  }, [label.upvoted_by])
+  const [isUpvoted, setIsUpvoted] = useState(() => {
+    const localUpvoted = getLocalStorageItem(`upvoted_${snippetId}_${label.id}`)
+    return localUpvoted !== null ? localUpvoted : label.upvoted_by.some(upvoter => upvoter.email === user?.email)
+  })
+
+  const [upvoteCount, setUpvoteCount] = useState(() => {
+    const localCount = getLocalStorageItem(`upvoteCount_${snippetId}_${label.id}`)
+    return localCount !== null ? localCount : label.upvoted_by.length
+  })
 
   useEffect(() => {
-    checkUpvoteStatus()
-  }, [checkUpvoteStatus])
+    return () => {
+      localStorage.removeItem(`upvoted_${snippetId}_${label.id}`)
+      localStorage.removeItem(`upvoteCount_${snippetId}_${label.id}`)
+    }
+  }, [snippetId, label.id])
+
+  useEffect(() => {
+    if (user) {
+      const isCurrentlyUpvoted = label.upvoted_by.some(upvoter => upvoter.email === user.email)
+      setIsUpvoted(isCurrentlyUpvoted)
+      setUpvoteCount(label.upvoted_by.length)
+    }
+  }, [user, label.upvoted_by])
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const updates = {
+        [`upvoted_${snippetId}_${label.id}`]: isUpvoted,
+        [`upvoteCount_${snippetId}_${label.id}`]: upvoteCount
+      }
+      Object.entries(updates).forEach(([key, value]) => setLocalStorageItem(key, value))
+    }, 100)
+
+    return () => clearTimeout(timeoutId)
+  }, [isUpvoted, upvoteCount, snippetId, label.id])
 
   const handleUpvote = async (e: React.MouseEvent) => {
     e.stopPropagation()
+    if (!user) return // Prevent upvoting if not logged in
+
     const newIsUpvoted = !isUpvoted
+
     setIsUpvoted(newIsUpvoted)
     setUpvoteCount(prevCount => (newIsUpvoted ? prevCount + 1 : prevCount - 1))
 
@@ -39,6 +69,7 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
         snippet_id: snippetId,
         label_text: label.text
       })
+
       if (error) throw error
 
       if (!data || (Array.isArray(data) && data.length === 0) || (data.labels && data.labels.length === 0)) {
@@ -46,7 +77,12 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
       }
     } catch (error) {
       console.error('Error toggling upvote:', error)
-      // Revert the optimistic update if the API call fails
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to update upvote. Please try again.'
+      })
+      // Revert optimistic updates
       setIsUpvoted(!newIsUpvoted)
       setUpvoteCount(prevCount => (newIsUpvoted ? prevCount - 1 : prevCount + 1))
     }
@@ -71,7 +107,8 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
           className={`${getUpvoteButtonClasses()} whitespace-nowrap`}
           onClick={handleUpvote}
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}>
+          onMouseLeave={() => setIsHovered(false)}
+        >
           <span>{label?.text}</span>
           <img src={isUpvoted ? Upvoted : Upvote} alt='Upvote' className='h-4 w-4' />
           <span>{upvoteCount}</span>
