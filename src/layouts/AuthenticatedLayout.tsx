@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { LiveblocksProvider } from '@liveblocks/react/suspense'
 import type { Session, User } from '@supabase/supabase-js'
 import { useQuery } from '@tanstack/react-query'
@@ -25,6 +25,7 @@ const AuthenticatedLayout: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const navigate = useNavigate()
+  const location = useLocation()
   const baseUrl = import.meta.env.VITE_BASE_URL
 
   // Use React Query to fetch and cache users
@@ -46,7 +47,12 @@ const AuthenticatedLayout: React.FC = () => {
       setSession(session)
       setUser(session?.user || null)
       if (!session) {
-        navigate('/login')
+        const snippetMatch = location.pathname.match(/^\/snippet\/(.+)$/)
+        if (snippetMatch) {
+          navigate(`/p/${snippetMatch[1]}`)
+        } else {
+          navigate('/login')
+        }
       }
     })
 
@@ -55,11 +61,18 @@ const AuthenticatedLayout: React.FC = () => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       setUser(session?.user || null)
-      if (!session) navigate('/login')
+      if (!session) {
+        const snippetMatch = location.pathname.match(/^\/snippet\/(.+)$/)
+        if (snippetMatch) {
+          navigate(`/p/${snippetMatch[1]}`)
+        } else {
+          navigate('/login')
+        }
+      }
     })
 
     return () => subscription.unsubscribe()
-  }, [navigate])
+  }, [navigate, location.pathname])
 
   if (!session || !user) return null
 

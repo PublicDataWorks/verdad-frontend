@@ -16,6 +16,7 @@ import LiveblocksComments from '../components/LiveblocksComments'
 import { formatDate } from '@/lib/utils'
 import AddLabelButton from './AddLabelButton'
 import type { Label } from '../hooks/useSnippets'
+import ShareButton from './ShareButton'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
@@ -84,10 +85,7 @@ const SnippetDetail: FC = () => {
               <DropdownMenuItem>Audio</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant='ghost' className='flex items-center space-x-2'>
-            <Share2 className='h-4 w-4' />
-            <span>Share</span>
-          </Button>
+          <ShareButton snippetId={snippetId} showLabel />
           <Button variant='ghost' size='icon'>
             <Star className='h-4 w-4' />
             <span className='sr-only'>Favorite</span>

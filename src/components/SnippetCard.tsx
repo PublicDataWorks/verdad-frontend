@@ -11,6 +11,7 @@ import { formatDate } from '../lib/utils'
 import AddLabelButton from './AddLabelButton'
 import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
 import supabase from '@/lib/supabase'
+import ShareButton from './ShareButton'
 
 interface SnippetCardProps {
   snippet: Snippet
@@ -83,9 +84,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           {snippet.audio_file.location_state}
         </h3>
         <div className='flex space-x-2'>
-          <Button variant='ghost' size='icon'>
-            <Share2 className='h-5 w-5' />
-          </Button>
+          <ShareButton snippetId={snippet.id} />
           <Button
             variant='ghost'
             size='icon'
