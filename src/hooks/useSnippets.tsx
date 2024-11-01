@@ -118,8 +118,7 @@ const fetchSnippets = async ({ pageParam = 0, pageSize, filters }): Promise<Pagi
 
   const { data, error } = await supabase.rpc('get_snippets', {
     page: pageParam,
-    page_size: actualPageSize,
-    filter
+    page_size: actualPageSize
   })
 
   if (error) throw error

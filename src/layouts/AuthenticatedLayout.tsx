@@ -6,15 +6,6 @@ import { useQuery } from '@tanstack/react-query'
 import HeaderBar from '../components/HeaderBar'
 import supabase from '../lib/supabase'
 
-interface UserData {
-  id: string
-  email: string
-  raw_user_meta_data: {
-    name?: string
-    avatar_url?: string
-  }
-}
-
 const fetchAllUsers = async () => {
   const { data, error } = await supabase.rpc('get_users')
   if (error) throw error
@@ -106,9 +97,6 @@ const AuthenticatedLayout: React.FC = () => {
           return allUsers.map(user => user.email)
         }
 
-          if (!response.ok) {
-            throw new Error('Failed to fetch user suggestions')
-          }
         const filteredData = allUsers.filter(user => {
           const name = user.raw_user_meta_data?.name?.toLowerCase() || ''
           const email = user.email.toLowerCase()
@@ -116,15 +104,8 @@ const AuthenticatedLayout: React.FC = () => {
           return name.includes(searchText) || email.includes(searchText)
         })
 
-          // Return the list of user IDs
-          return await response.json()
-        } catch (error) {
-          console.error('Error in resolveMentionSuggestions:', error)
-          return []
-        }
         return filteredData.map(user => user.email)
-      }}
-    >
+      }}>
       <div className='flex flex-col'>
         <HeaderBar />
         <div className='flex-grow overflow-hidden bg-ghost-white'>
