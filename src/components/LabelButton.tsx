@@ -27,19 +27,31 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
     return localCount !== null ? localCount : label.upvoted_by.length
   })
 
-  // Check initial upvote status when component mounts or when user/upvoted_by changes
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem(`upvoted_${snippetId}_${label.id}`)
+      localStorage.removeItem(`upvoteCount_${snippetId}_${label.id}`)
+    }
+  }, [snippetId, label.id])
+
   useEffect(() => {
     if (user) {
       const isCurrentlyUpvoted = label.upvoted_by.some(upvoter => upvoter.email === user.email)
       setIsUpvoted(isCurrentlyUpvoted)
-      setLocalStorageItem(`upvoted_${snippetId}_${label.id}`, isCurrentlyUpvoted)
+      setUpvoteCount(label.upvoted_by.length)
     }
-  }, [user, label.upvoted_by, snippetId, label.id])
+  }, [user, label.upvoted_by])
 
-  // Update local storage when states change
   useEffect(() => {
-    setLocalStorageItem(`upvoted_${snippetId}_${label.id}`, isUpvoted)
-    setLocalStorageItem(`upvoteCount_${snippetId}_${label.id}`, upvoteCount)
+    const timeoutId = setTimeout(() => {
+      const updates = {
+        [`upvoted_${snippetId}_${label.id}`]: isUpvoted,
+        [`upvoteCount_${snippetId}_${label.id}`]: upvoteCount
+      }
+      Object.entries(updates).forEach(([key, value]) => setLocalStorageItem(key, value))
+    }, 100)
+    
+    return () => clearTimeout(timeoutId)
   }, [isUpvoted, upvoteCount, snippetId, label.id])
 
   const handleUpvote = async (e: React.MouseEvent) => {
@@ -48,7 +60,6 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
 
     const newIsUpvoted = !isUpvoted
     
-    // Optimistic updates
     setIsUpvoted(newIsUpvoted)
     setUpvoteCount(prevCount => (newIsUpvoted ? prevCount + 1 : prevCount - 1))
 
