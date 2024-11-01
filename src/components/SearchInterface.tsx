@@ -11,9 +11,9 @@ import SnippetCard from './SnippetCard'
 import ResponsiveSidebar from './Sidebar'
 import { useSnippets } from '@/hooks/useSnippets'
 
-import InfiniteScroll from 'react-infinite-scroller'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 20 // Increased to ensure initial scrolling
 
 const SearchInterface: React.FC = () => {
   const { showSidebar, filters, setShowSidebar, setFilter } = useFilter()
@@ -58,7 +58,7 @@ const SearchInterface: React.FC = () => {
   ]
 
   return (
-    <div className='flex flex-1 overflow-hidden'>
+    <div className='flex flex-1'>
       {showSidebar && <ResponsiveSidebar />}
       <div className={`${showSidebar ? 'px-16' : 'md:px-20 lg:px-40'} flex w-full flex-col`}>
         <div className='mb-6 flex items-center justify-between px-4 pt-2'>
@@ -79,27 +79,26 @@ const SearchInterface: React.FC = () => {
             ))}
           </div>
         </div>
-        <div className='mx-4 flex-1 overflow-y-auto'>
+        <div id='scrollableDiv' style={{ height: '80vh', overflow: 'auto' }}>
           {status === 'error' ? (
             <div>{language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}</div>
           ) : (
-            <div className='h-full overflow-auto'>
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={fetchNextPage}
-                hasMore={hasNextPage}
-                loader={
-                  <div className='mt-2 flex w-full justify-center'>
-                    <Loader />
-                  </div>
-                }
-                useWindow={false}
-                getScrollParent={() => document.querySelector('.overflow-auto')}>
-                {snippets.map(snippet => (
-                  <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
-                ))}
-              </InfiniteScroll>
-            </div>
+            <InfiniteScroll
+              dataLength={snippets.length}
+              next={fetchNextPage}
+              hasMore={hasNextPage}
+              scrollableTarget='scrollableDiv'
+              loader={
+                <div className='my-2 flex w-full justify-center'>
+                  <Loader />
+                </div>
+              }
+              threshold={250} // Adjust as needed
+            >
+              {snippets.map(snippet => (
+                <SnippetCard key={snippet.id} snippet={snippet} onSnippetClick={handleSnippetClick} />
+              ))}
+            </InfiniteScroll>
           )}
         </div>
       </div>

@@ -70,9 +70,9 @@ const AuthenticatedLayout: React.FC = () => {
     //     }
     //   }}>
     // <RoomProvider id={import.meta.env.VITE_LIVEBLOCKS_ROOM as string}>
-    <div className='flex flex-col'>
+    <div className='flex min-h-screen flex-col overflow-y-auto'>
       <HeaderBar />
-      <div className='flex-grow overflow-hidden bg-ghost-white'>
+      <div className='flex-grow bg-ghost-white'>
         <Outlet />
       </div>
     </div>
