@@ -6,7 +6,7 @@ import supabase from '@/lib/supabase'
 import { Label } from '../hooks/useSnippets'
 import { useAuth } from '@/providers/auth'
 import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
-import { toast } from '@/components/ui/use-toast'
+import { toast } from '@/hooks/use-toast'
 
 interface LabelButtonProps {
   label: Label
