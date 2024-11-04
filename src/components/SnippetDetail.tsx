@@ -75,7 +75,7 @@ const SnippetDetail: FC = () => {
   return (
     <Card className='mx-auto w-full max-w-3xl'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <Button variant='ghost' className='flex items-center space-x-2 px-0' onClick={() => navigate(-1)}>
+        <Button variant='ghost' className='flex items-center space-x-2 px-0' onClick={() => navigate('/search')}>
           <ArrowLeft className='h-4 w-4' />
           <span>{t.back}</span>
         </Button>
@@ -96,7 +96,6 @@ const SnippetDetail: FC = () => {
               <DropdownMenuItem>{t.audio}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <ShareButton snippetId={snippetId} showLabel />
           <Button variant='ghost' size='icon'>
             <Star className='h-4 w-4' />
             <span className='sr-only'>{t.favorite}</span>

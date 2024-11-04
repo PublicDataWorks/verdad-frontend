@@ -5,7 +5,6 @@ import type { Session, User } from '@supabase/supabase-js'
 import { useQuery } from '@tanstack/react-query'
 import HeaderBar from '../components/HeaderBar'
 import supabase from '../lib/supabase'
-import { useAuth } from '@/providers/auth'
 
 const fetchAllUsers = async () => {
   const { data, error } = await supabase.rpc('get_users')
@@ -14,7 +13,8 @@ const fetchAllUsers = async () => {
 }
 
 const AuthenticatedLayout: React.FC = () => {
-  const { user } = useAuth()
+  const [session, setSession] = useState<Session | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const navigate = useNavigate()
   const location = useLocation()
   const baseUrl = import.meta.env.VITE_BASE_URL

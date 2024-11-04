@@ -159,7 +159,7 @@ export function useSnippets({ pageSize = 0, filters = {}, language = 'english' }
 
 export function useSnippet(id: string, language: string) {
   return useQuery({
-    queryKey: snippetKeys.detail(id),
+    queryKey: snippetKeys.detail(id, language),
     queryFn: () => fetchSnippet(id, language),
     enabled: !!id
   })
