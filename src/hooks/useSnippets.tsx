@@ -80,7 +80,7 @@ export interface Snippet {
   confidence_scores: ConfidenceScores
   language: {
     dialect: string
-    primary_languge: string
+    primary_language: string
     register: string
   }
 }
@@ -127,8 +127,8 @@ const fetchSnippets = async ({
   const { data, error } = await supabase.rpc('get_snippets', {
     page: pageParam,
     page_size: actualPageSize,
-    p_language: language
-    // filters,
+    p_language: language,
+    p_filter: filters
   })
 
   if (error) {
