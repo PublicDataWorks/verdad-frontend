@@ -17,3 +17,33 @@ export function formatDate(dateString: string): string {
     timeZone: 'UTC'
   })
 }
+
+export const downloadText = (content: string, filename: string) => {
+  const blob = new Blob([content], { type: 'text/plain' })
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
+}
+
+export const downloadAudio = async (url: string, filename: string) => {
+  try {
+    const response = await fetch(url)
+    const blob = await response.blob()
+    const downloadUrl = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(downloadUrl)
+  } catch (error) {
+    console.error('Download failed:', error)
+    throw error
+  }
+}

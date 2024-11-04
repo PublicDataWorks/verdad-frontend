@@ -169,7 +169,8 @@ export const sortSnippets = (snippets: Snippet[], sortBy: string) => {
   return [...snippets].sort((a, b) => {
     if (sortBy === 'Most Recent') {
       return new Date(b.recorded_at).getTime() - new Date(a.recorded_at).getTime()
-    } else if (sortBy === 'Oldest') {
+    }
+    if (sortBy === 'Oldest') {
       return new Date(a.recorded_at).getTime() - new Date(b.recorded_at).getTime()
     }
     return 0
