@@ -28,7 +28,6 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   const [labels, setLabels] = useState(snippet.labels || [])
   const [isExpanded, setIsExpanded] = useState(false)
   const formattedDate = formatDate(snippet.recorded_at)
-  const { language } = useLanguage()
 
   const [isStarred, setIsStarred] = useState(() => {
     const localStarred = getLocalStorageItem(`starred_${snippet.id}`)

@@ -36,7 +36,8 @@ export const translations = {
     center: 'Center',
     center_right: 'Center Right',
     right: 'Right',
-    politicalSpectrum: 'Political Spectrum'
+    politicalSpectrum: 'Political Spectrum',
+    unset: 'Unset'
   },
   spanish: {
     filters: 'Filtros',
@@ -75,6 +76,7 @@ export const translations = {
     center: 'Centro',
     center_right: 'Centro Derecha',
     right: 'Derecha',
-    politicalSpectrum: 'Espectro Político'
+    politicalSpectrum: 'Espectro Político',
+    unset: 'No establecido'
   }
 }

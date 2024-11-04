@@ -32,7 +32,7 @@ export default function PoliticalSpectrum({ value, onChange }: PoliticalSpectrum
 
   const handleChange = (newValue: number[]) => {
     const index = newValue[0]
-    const newPosition = positions[index]
+    const newPosition = index === 2 && currentPosition === undefined ? undefined : positions[index]
     setCurrentPosition(newPosition)
     onChange(newPosition)
   }
@@ -51,28 +51,35 @@ export default function PoliticalSpectrum({ value, onChange }: PoliticalSpectrum
   return (
     <div className='w-full'>
       <SliderPrimitive.Root
-        value={currentPosition !== undefined ? [positionToIndex[currentPosition]] : undefined}
+        value={currentPosition !== undefined ? [positionToIndex[currentPosition]] : [2]}
         min={0}
         max={positions.length - 1}
         step={1}
         onValueChange={handleChange}
-        className='relative flex w-full touch-none select-none items-center py-4'
-        aria-label={t.politicalSpectrum}
-        aria-valuetext={currentPosition ? t[currentPosition] : t.unset}>
+        className='relative flex w-full touch-none select-none items-center py-4'>
         <SliderPrimitive.Track className='relative h-2 w-full grow overflow-hidden rounded-full bg-secondary'>
-          {currentPosition !== undefined && <SliderPrimitive.Range className='absolute h-full bg-primary' />}
+          <SliderPrimitive.Range
+            className={cn('absolute h-full', currentPosition !== undefined ? 'bg-primary' : 'bg-gray-400')}
+          />
         </SliderPrimitive.Track>
-        {currentPosition !== undefined && (
-          <SliderPrimitive.Thumb className='block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50' />
-        )}
+        <SliderPrimitive.Thumb
+          className={cn(
+            'block h-5 w-5 rounded-full border-2 bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+            currentPosition !== undefined ? 'border-primary' : 'border-gray-400'
+          )}
+        />
       </SliderPrimitive.Root>
 
-      <div className='mt-4 text-center text-sm font-medium text-primary'>
-        {currentPosition ? t[currentPosition] : t.unset}
-      </div>
-
       <div className='mt-4 flex justify-center'>
-        <Button onClick={handleReset} variant='outline' size='sm'>
+        <Button
+          onClick={handleReset}
+          variant='outline'
+          size='sm'
+          disabled={currentPosition === undefined}
+          className={cn(
+            'transition-opacity duration-200',
+            currentPosition === undefined ? 'cursor-not-allowed opacity-50' : 'opacity-100'
+          )}>
           {t.reset || 'Reset'}
         </Button>
       </div>
