@@ -38,6 +38,10 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
     setLocalStorageItem(`starred_${snippet.id}`, isStarred)
   }, [isStarred, snippet.id])
 
+  useEffect(() => {
+    setLabels(snippet.labels || [])
+  }, [snippet.labels])
+
   const getStarIcon = () => {
     if (isStarred) return Starred
     if (isStarHovered) return StarHover
