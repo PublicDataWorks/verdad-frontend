@@ -1,6 +1,6 @@
 'use client'
 
-import type React from 'react';
+import type React from 'react'
 import { useState, useEffect } from 'react'
 import type { FC } from 'react'
 import { useSnippet } from '../hooks/useSnippets'
@@ -17,7 +17,6 @@ import LiveblocksComments from '../components/LiveblocksComments'
 import { downloadAudio, downloadText, formatDate } from '@/lib/utils'
 import AddLabelButton from './AddLabelButton'
 import type { Label } from '../hooks/useSnippets'
-import ShareButton from './ShareButton'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { useToast } from '@/hooks/use-toast'
@@ -26,6 +25,7 @@ import StarIcon from '../assets/star.svg'
 import StarredIcon from '../assets/starred.svg'
 import StarHoverIcon from '../assets/star_hover.svg'
 import supabase from '@/lib/supabase'
+import ShareButton from './ShareButton'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
@@ -34,7 +34,7 @@ const SnippetDetail: FC = () => {
   const t = translations[language]
 
   const { data: snippet, isLoading } = useSnippet(snippetId || '', language)
-  const sourceLanguage = snippet?.language.primary_language.toLowerCase() || 'spanish'
+  const sourceLanguage = snippet?.language.primary_language.toLowerCase()
   const [labels, setLabels] = useState<Label[]>([])
   const [isStarHovered, setIsStarHovered] = useState(false)
   const { toast } = useToast()
@@ -163,25 +163,20 @@ const SnippetDetail: FC = () => {
                 onClick={() => {
                   const content = `${snippet.context.before}\n\n${snippet.context.main}\n\n${snippet.context.after}`
                   downloadText(content, `transcript_${snippetId}_${snippetLanguage}.txt`)
-                }}
-              >
+                }}>
                 {t.originalTranscript} ({snippetLanguage})
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
                   const content = `${snippet.context.before_en}\n\n${snippet.context.main_en}\n\n${snippet.context.after_en}`
                   downloadText(content, `transcript_${snippetId}_en.txt`)
-                }}
-              >
+                }}>
                 {t.translatedTranscript} (English)
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={async () => {
                   try {
-                    await downloadAudio(
-                      `${audioBaseUrl}/${snippet.file_path}`,
-                      `audio_${snippetId}.mp3`
-                    )
+                    await downloadAudio(`${audioBaseUrl}/${snippet.file_path}`, `audio_${snippetId}.mp3`)
                   } catch (error) {
                     toast({
                       variant: 'destructive',
@@ -190,8 +185,7 @@ const SnippetDetail: FC = () => {
                       duration: 3000
                     })
                   }
-                }}
-              >
+                }}>
                 {t.audio}
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -202,8 +196,7 @@ const SnippetDetail: FC = () => {
             className='flex items-center space-x-2'
             onMouseEnter={() => setIsStarHovered(true)}
             onMouseLeave={() => setIsStarHovered(false)}
-            onClick={handleStarClick}
-          >
+            onClick={handleStarClick}>
             <img src={getStarIcon()} alt='Star' className='h-4 w-4' />
           </Button>
         </div>

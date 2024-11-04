@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { MultiSelect } from '@/components/ui/multi-select'
 import RoundedToggleButton from './RoundedToggleButton'
+import PoliticalSpectrum from '@/components/ui/political-spectrum-slider'
 import { useFilter } from '@/providers/filter'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
@@ -12,30 +13,25 @@ import { useFilters } from '@/hooks/useFilterOptions'
 export default function Sidebar() {
   const { setShowSidebar, filters, setFilter, clearAll } = useFilter()
   const { language } = useLanguage()
-  const { data, isLoading } = useFilters(language)
+  const { data } = useFilters(language)
 
   const t = translations[language]
 
-  // Destructure filters state
   const {
     languages: selectedLanguages = [],
     states: selectedStates = [],
     sources: selectedSources = [],
     labeledBy: selectedLabeledBy = [],
     starredBy: selectedStarredBy = [],
-    labels: selectedLabels = []
+    labels: selectedLabels = [],
+    politicalSpectrum = 0
   } = filters
 
-  // Early return for loading state
-  if (isLoading) {
-    return <div className='p-6'>Loading...</div>
-  }
-
   const BY_OPTIONS = [
-    { label: t.byMe, value: 'by Me' },
-    { label: t.byOthers, value: 'by Others' }
+    { label: t.byMe, value: 'by_me' },
+    { label: t.byOthers, value: 'by_others' }
   ]
-  // Safely access data with fallbacks
+
   const { languages = [], states = [], sources = [], labels = { items: [] } } = data || {}
 
   const handleClearAll = () => {
@@ -51,6 +47,10 @@ export default function Sidebar() {
     }
     const newValues = Array.from(currentSet)
     setFilter(category, newValues)
+  }
+
+  const handlePoliticalSpectrumChange = (value: number) => {
+    setFilter('politicalSpectrum', value)
   }
 
   return (
@@ -108,6 +108,9 @@ export default function Sidebar() {
             maxCount={3}
             className='w-full'
           />
+
+          <h3 className='mb-2 mt-6 font-medium'>{t.politicalSpectrum}</h3>
+          <PoliticalSpectrum value={politicalSpectrum} onChange={handlePoliticalSpectrumChange} />
         </div>
 
         <h3 className='mb-2 mt-6 font-semibold'>{t.labeled}</h3>

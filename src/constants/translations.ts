@@ -30,7 +30,13 @@ export const translations = {
     translatedTranscript: 'Translated Transcript',
     audio: 'Audio',
     explanation: 'Explanation',
-    share: 'Share'
+    share: 'Share',
+    left: 'Left',
+    center_left: 'Center Left',
+    center: 'Center',
+    center_right: 'Center Right',
+    right: 'Right',
+    politicalSpectrum: 'Political Spectrum'
   },
   spanish: {
     filters: 'Filtros',
@@ -63,6 +69,12 @@ export const translations = {
     translatedTranscript: 'Transcripción Traducida',
     audio: 'Audio',
     explanation: 'Explicación',
-    share: 'Compartir'
+    share: 'Compartir',
+    left: 'Izquierda',
+    center_left: 'Centro Izquierda',
+    center: 'Centro',
+    center_right: 'Centro Derecha',
+    right: 'Derecha',
+    politicalSpectrum: 'Espectro Político'
   }
 }

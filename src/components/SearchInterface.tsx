@@ -1,6 +1,7 @@
 'use client'
+
 import { useNavigate } from 'react-router-dom'
-import { Filter, Loader } from 'lucide-react'
+import { Filter, Loader, FileX } from 'lucide-react'
 import { useFilter } from '@/providers/filter'
 import { useLanguage } from '../providers/language'
 
@@ -10,12 +11,18 @@ import ResponsiveSidebar from './Sidebar'
 import { useSnippets } from '@/hooks/useSnippets'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { fetchFilteringOptions } from '@/hooks/useFilterOptions'
+import { useQueryClient } from '@tanstack/react-query'
+import { useEffect } from 'react'
+import { filterKeys } from '@/hooks/useFilterOptions'
+import { translations } from '@/constants/translations'
 
 const PAGE_SIZE = 20
 
 export default function SearchInterface() {
   const { showSidebar, filters, setShowSidebar, setFilter } = useFilter()
   const { language } = useLanguage()
+  const t = translations[language]
 
   const navigate = useNavigate()
 
@@ -30,6 +37,15 @@ export default function SearchInterface() {
   }
 
   const starredBy = filters.starredBy || []
+
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: filterKeys.options(language),
+      queryFn: () => fetchFilteringOptions(language)
+    })
+  }, [queryClient, language])
 
   const handleStarredFilter = (starred: string) => {
     const currentSet = new Set(starredBy)
@@ -46,14 +62,28 @@ export default function SearchInterface() {
 
   const STARRED_BY_RESULTS = [
     {
-      label: language === 'spanish' ? 'Destacado por mí' : 'Starred by Me',
-      value: 'by Me'
+      label: t.byMe,
+      value: 'by_me'
     },
     {
-      label: language === 'spanish' ? 'Destacado por otros' : 'Starred by Others',
-      value: 'by Others'
+      label: t.byOthers,
+      value: 'by_others'
     }
   ]
+
+  const NoSnippetsMessage = () => (
+    <div className='flex h-full flex-col items-center justify-center p-4 text-center'>
+      <FileX className='mb-4 h-16 w-16 text-muted-foreground' />
+      <h2 className='mb-2 text-2xl font-semibold'>
+        {language === 'spanish' ? 'No se encontraron snippets' : 'No snippets found'}
+      </h2>
+      <p className='text-muted-foreground'>
+        {language === 'spanish'
+          ? 'Intenta ajustar tus filtros o busca algo diferente.'
+          : 'Try adjusting your filters or search for something different.'}
+      </p>
+    </div>
+  )
 
   return (
     <div className='flex flex-1 rounded-lg'>
@@ -68,9 +98,9 @@ export default function SearchInterface() {
               onClick={toggleSidebar}
               icon={<Filter className='mr-2 h-4 w-4' />}
             />
-            {STARRED_BY_RESULTS.map(starred => (
+            {STARRED_BY_RESULTS.map((starred, index) => (
               <RoundedToggleButton
-                key={`result-${starred}`}
+                key={index}
                 label={starred.label}
                 isActive={starredBy.includes(starred.value)}
                 onClick={() => handleStarredFilter(starred.value)}
@@ -89,6 +119,12 @@ export default function SearchInterface() {
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
             </div>
+          ) : status === 'pending' ? (
+            <div className='flex h-full items-center justify-center'>
+              <Loader className='h-6 w-6 animate-spin text-primary' />
+            </div>
+          ) : snippets.length === 0 ? (
+            <NoSnippetsMessage />
           ) : (
             <InfiniteScroll
               dataLength={snippets.length}
