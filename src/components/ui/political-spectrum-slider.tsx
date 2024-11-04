@@ -26,27 +26,19 @@ export default function PoliticalSpectrum({ value, onChange }: PoliticalSpectrum
     right: 4
   }
 
-  const indexToPosition: { [key: number]: Position } = {
-    0: 'left',
-    1: 'center_left',
-    2: 'center',
-    3: 'center_right',
-    4: 'right'
-  }
-
-  const initialIndex = value ? positionToIndex[value] : 2 // Default to 'center'
-
-  const [currentIndex, setCurrentIndex] = useState<number>(initialIndex)
+  const initialPosition = value || 'center' // Default to 'center'
+  const [currentPosition, setCurrentPosition] = useState<Position>(initialPosition)
 
   const handleChange = (newValue: number[]) => {
     const index = newValue[0]
-    setCurrentIndex(index)
-    onChange(indexToPosition[index])
+    const newPosition = positions[index]
+    setCurrentPosition(newPosition)
+    onChange(newPosition)
   }
 
   useEffect(() => {
-    if (value && positionToIndex[value] !== currentIndex) {
-      setCurrentIndex(positionToIndex[value])
+    if (value && value !== currentPosition) {
+      setCurrentPosition(value)
     }
   }, [value])
 
@@ -54,17 +46,17 @@ export default function PoliticalSpectrum({ value, onChange }: PoliticalSpectrum
     <div className='w-full'>
       <div className='px-2'>
         <Slider
-          value={[currentIndex]}
+          value={[positionToIndex[currentPosition]]}
           min={0}
           max={positions.length - 1}
           step={1}
           onValueChange={handleChange}
           className='py-4'
           aria-label={t.politicalSpectrum}
-          aria-valuetext={t[positions[currentIndex]]}
+          aria-valuetext={t[currentPosition]}
         />
 
-        <div className='mt-4 text-center text-sm font-medium text-primary'>{t[positions[currentIndex]]}</div>
+        <div className='mt-4 text-center text-sm font-medium text-primary'>{t[currentPosition]}</div>
       </div>
     </div>
   )
