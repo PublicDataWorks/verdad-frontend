@@ -22,13 +22,15 @@ import { translations } from '@/constants/translations'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
-  const navigate = useNavigate()
-  const { data: snippet, isLoading } = useSnippet(snippetId || '')
-  const sourceLanguage = snippet?.language.primary_languge || 'spanish'
-  const [snippetLanguage, setSnippetLanguage] = useState(sourceLanguage)
-  const [labels, setLabels] = useState<Label[]>([])
   const { language } = useLanguage()
+  const navigate = useNavigate()
   const t = translations[language]
+
+  const { data: snippet, isLoading } = useSnippet(snippetId || '', language)
+  const sourceLanguage = snippet?.language.primary_languge || 'spanish'
+  const [labels, setLabels] = useState<Label[]>([])
+
+  const [snippetLanguage, setSnippetLanguage] = useState(sourceLanguage)
 
   useEffect(() => {
     if (snippet) {
@@ -58,7 +60,7 @@ const SnippetDetail: FC = () => {
         <div className='text-center'>
           <h2 className='mb-2 text-2xl font-bold text-gray-700'>{t.snippetNotFound}</h2>
           <p className='text-gray-500'>{t.snippetNotFoundDesc}</p>
-          <Button variant='ghost' className='mt-4' onClick={() => navigate(-1)}>
+          <Button variant='ghost' className='mt-4' onClick={() => navigate('/search')}>
             {t.goBack}
           </Button>
         </div>

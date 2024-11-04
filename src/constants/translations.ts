@@ -18,7 +18,19 @@ export const translations = {
     changeLanguage: 'Change language',
     userMenu: 'User menu',
     logOut: 'Log out',
-    selectLabels: 'Select labels'
+    selectLabels: 'Select labels',
+    back: 'Back',
+    download: 'Download',
+    favorite: 'Favorite',
+    summary: 'Summary',
+    snippetNotFound: 'Snippet not found',
+    snippetNotFoundDesc: 'The snippet you are looking for does not exist.',
+    goBack: 'Go back',
+    originalTranscript: 'Original Transcript',
+    translatedTranscript: 'Translated Transcript',
+    audio: 'Audio',
+    explanation: 'Explanation',
+    share: 'Share'
   },
   spanish: {
     filters: 'Filtros',
@@ -39,6 +51,18 @@ export const translations = {
     changeLanguage: 'Cambiar idioma',
     userMenu: 'Menú de usuario',
     logOut: 'Cerrar sesión',
-    selectLabels: 'Seleccionar etiquetas'
+    selectLabels: 'Seleccionar etiquetas',
+    back: 'Atrás',
+    download: 'Descargar',
+    favorite: 'Favorito',
+    summary: 'Resumen',
+    snippetNotFound: 'Fragmento no encontrado',
+    snippetNotFoundDesc: 'El fragmento que buscas no existe.',
+    goBack: 'Volver',
+    originalTranscript: 'Transcripción Original',
+    translatedTranscript: 'Transcripción Traducida',
+    audio: 'Audio',
+    explanation: 'Explicación',
+    share: 'Compartir'
   }
 }
