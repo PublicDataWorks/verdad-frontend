@@ -19,7 +19,7 @@ export default function SearchInterface() {
 
   const navigate = useNavigate()
 
-  const { data, error, fetchNextPage, hasNextPage, status } = useSnippets(PAGE_SIZE, filters)
+  const { data, error, fetchNextPage, hasNextPage, status } = useSnippets({ pageSize: PAGE_SIZE, filters, language })
 
   const handleSnippetClick = (snippetId: string) => {
     navigate(`/snippet/${snippetId}`)

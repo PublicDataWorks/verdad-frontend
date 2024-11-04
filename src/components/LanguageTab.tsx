@@ -65,10 +65,10 @@ export default function LanguageTabs({
     <Tabs value={activeTab} onValueChange={handleLanguageChange} className='w-full'>
       <TabsList className='grid w-full grid-cols-2'>
         <TabsTrigger className='capitalize' value={sourceLanguage}>
-          {t.sourceTab}
+          {sourceLanguage}
         </TabsTrigger>
         <TabsTrigger className='capitalize' value='english'>
-          {t.englishTab}
+          English
         </TabsTrigger>
       </TabsList>
       <TabsContent value={sourceLanguage} className='max-h-80 overflow-y-auto text-sm'>

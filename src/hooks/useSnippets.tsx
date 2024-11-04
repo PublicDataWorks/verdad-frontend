@@ -93,14 +93,15 @@ interface PaginatedResponse {
 
 const snippetKeys = {
   all: ['snippets'] as const,
-  lists: (pageSize: number, filters: any) => [...snippetKeys.all, 'list', { pageSize, filters }] as const,
-  detail: (id: string) => [...snippetKeys.all, 'detail', id] as const
+  lists: (pageSize: number, filters: any, language: string) =>
+    [...snippetKeys.all, 'list', { pageSize, filters, language }] as const,
+  detail: (id: string, language: string) => [...snippetKeys.all, 'detail', id, { language }] as const
 }
 
 const fetchSnippet = async (id: string, language: string): Promise<Snippet> => {
   const { data, error } = await supabase.rpc('get_snippet', {
     snippet_id: id,
-    language
+    p_language: language
   })
 
   if (error) {
@@ -125,9 +126,9 @@ const fetchSnippets = async ({
 
   const { data, error } = await supabase.rpc('get_snippets', {
     page: pageParam,
-    page_size: actualPageSize
+    page_size: actualPageSize,
+    p_language: language
     // filters,
-    // language
   })
 
   if (error) {
@@ -142,7 +143,7 @@ const fetchSnippets = async ({
   }
 }
 
-export function useSnippets(pageSize: number, filters: any, language: string) {
+export function useSnippets({ pageSize = 0, filters = {}, language = 'english' }) {
   return useInfiniteQuery<PaginatedResponse, Error>({
     queryKey: snippetKeys.lists(pageSize, filters, language),
     queryFn: ({ pageParam = 0 }) => fetchSnippets({ pageParam, pageSize, filters, language }),
