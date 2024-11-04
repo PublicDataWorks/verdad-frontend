@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+import LandingPage from './components/LandingPage'
 import LoginPage from './components/LoginPage'
 import SearchInterface from './components/SearchInterface'
 import SnippetDetail from './components/SnippetDetail'
@@ -36,6 +37,7 @@ export default function App(): ReactElement {
           <LanguageProvider>
             <Router>
               <Routes>
+                <Route path={ROOT_PATH} element={<LandingPage /> as ReactElement} />
                 <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
                 <Route path={LOGIN_PATH} element={<LoginPage />} />
                 <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
@@ -45,7 +47,6 @@ export default function App(): ReactElement {
                   <Route path={SEARCH_PATH} element={<SearchInterface />} />
                   <Route path={SNIPPET_DETAIL_PATH} element={<SnippetDetail />} />
                 </Route>
-                <Route path='*' element={<LoginPage />} />
               </Routes>
             </Router>
           </LanguageProvider>
