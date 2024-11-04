@@ -24,7 +24,7 @@ export default function Sidebar() {
     labeledBy: selectedLabeledBy = [],
     starredBy: selectedStarredBy = [],
     labels: selectedLabels = [],
-    politicalSpectrum = 'center'
+    politicalSpectrum
   } = filters
 
   const BY_OPTIONS = [

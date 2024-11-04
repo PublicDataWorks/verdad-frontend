@@ -31,8 +31,7 @@ const initialState: FilterState = {
     sources: [],
     labels: [],
     labeledBy: [],
-    starredBy: [],
-    politicalSpectrum: 'center'
+    starredBy: []
   }
 }
 
