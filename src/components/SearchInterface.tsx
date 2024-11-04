@@ -10,6 +10,10 @@ import ResponsiveSidebar from './Sidebar'
 import { useSnippets } from '@/hooks/useSnippets'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { fetchFilteringOptions } from '@/hooks/useFilterOptions'
+import { useQueryClient } from '@tanstack/react-query'
+import { useEffect } from 'react'
+import { filterKeys } from '@/hooks/useFilterOptions'
 
 const PAGE_SIZE = 20
 
@@ -30,6 +34,15 @@ export default function SearchInterface() {
   }
 
   const starredBy = filters.starredBy || []
+
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: filterKeys.options(language),
+      queryFn: () => fetchFilteringOptions(language)
+    })
+  }, [queryClient, language])
 
   const handleStarredFilter = (starred: string) => {
     const currentSet = new Set(starredBy)
