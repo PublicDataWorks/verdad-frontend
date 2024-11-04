@@ -32,7 +32,19 @@ export const downloadText = (content: string, filename: string) => {
 
 export const downloadAudio = async (url: string, filename: string) => {
   try {
-    const response = await fetch(url)
+    const response = await fetch(url, {
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
+
+    if (!response.ok) {
+      // If CORS fails, try direct download using window.open
+      window.open(url, '_blank')
+      return
+    }
+
     const blob = await response.blob()
     const downloadUrl = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -44,6 +56,7 @@ export const downloadAudio = async (url: string, filename: string) => {
     window.URL.revokeObjectURL(downloadUrl)
   } catch (error) {
     console.error('Download failed:', error)
-    throw error
+    // Fallback to direct download
+    window.open(url, '_blank')
   }
 }

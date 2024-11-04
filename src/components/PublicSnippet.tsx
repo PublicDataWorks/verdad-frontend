@@ -7,12 +7,15 @@ import { Download, Share2, ChevronDown } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import AudioPlayer from './AudioPlayer'
 import Spinner from './Spinner'
-import { formatDate } from '@/lib/utils'
+import { downloadAudio, downloadText, formatDate } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
 import PublicHeaderBar from './PublicHeaderBar'
 import ShareButton from './ShareButton'
 import PublicLanguageTab from './PublicLanguageTab'
+import { useLanguage } from '@/providers/language'
+import { translations } from '@/constants/translations'
+import { toast } from '@/hooks/use-toast'
 
 interface PublicSnippet {
   id: string
@@ -50,7 +53,10 @@ const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippet> => 
 
 const PublicSnippet: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
-  const [language, setLanguage] = useState('spanish')
+  const [menulanguage, setLanguage] = useState('spanish')
+  const [snippetLanguage, setSnippetLanguage] = useState(menulanguage)
+  const { language } = useLanguage()
+  const t = translations[language]
 
   const { data: snippet, isLoading } = useQuery({
     queryKey: ['publicSnippet', snippetId],
@@ -91,14 +97,47 @@ const PublicSnippet: FC = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant='ghost' className='flex items-center space-x-2'>
                   <Download className='h-4 w-4' />
-                  <span>Download</span>
+                  <span>{t.download}</span>
                   <ChevronDown className='h-4 w-4' />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Original transcript (Spanish)</DropdownMenuItem>
-                <DropdownMenuItem>Translated transcript (English)</DropdownMenuItem>
-                <DropdownMenuItem>Audio</DropdownMenuItem>
+                <DropdownMenuItem
+                  className='capitalize'
+                  onClick={() => {
+                    const content = `${snippet.context.before}\n\n${snippet.context.main}\n\n${snippet.context.after}`
+                    downloadText(content, `transcript_${snippetId}_${snippetLanguage}.txt`)
+                  }}
+                >
+                  {t.originalTranscript} ({snippetLanguage})
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    const content = `${snippet.context.before_en}\n\n${snippet.context.main_en}\n\n${snippet.context.after_en}`
+                    downloadText(content, `transcript_${snippetId}_en.txt`)
+                  }}
+                >
+                  {t.translatedTranscript} (English)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={async () => {
+                    try {
+                      await downloadAudio(
+                        `${audioBaseUrl}/${snippet.file_path}`,
+                        `audio_${snippet.audio_file.radio_station_code}_${snippet.audio_file.radio_station_name}_${snippet.audio_file.location_state}.mp3`
+                      )
+                    } catch (error) {
+                      toast({
+                        variant: 'destructive',
+                        title: 'Error',
+                        description: 'Failed to download audio file. Please try again.',
+                        duration: 3000
+                      })
+                    }
+                  }}
+                >
+                  {t.audio}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <ShareButton snippetId={snippetId || ''} showLabel />

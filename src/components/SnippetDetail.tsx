@@ -176,7 +176,10 @@ const SnippetDetail: FC = () => {
               <DropdownMenuItem
                 onClick={async () => {
                   try {
-                    await downloadAudio(`${audioBaseUrl}/${snippet.file_path}`, `audio_${snippetId}.mp3`)
+                    await downloadAudio(
+                      `${audioBaseUrl}/${snippet.file_path}`,
+                      `audio_${snippet.audio_file.radio_station_code}_${snippet.audio_file.radio_station_name}_${snippet.audio_file.location_state}.mp3`
+                    )
                   } catch (error) {
                     toast({
                       variant: 'destructive',
