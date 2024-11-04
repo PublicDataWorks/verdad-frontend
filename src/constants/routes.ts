@@ -5,6 +5,9 @@ const FORGET_PASSWORD_PATH = '/forget-password'
 const ROOT_PATH = '/'
 const BROADCAST_PATH = `${import.meta.env.VITE_BASE_URL}/broadcasts`
 const RESET_PASSWORD_PATH = '/reset-password'
+const PUBLIC_SNIPPET_PATH = '/p/:snippetId'
+const SEARCH_PATH = '/search'
+const SNIPPET_DETAIL_PATH = '/snippet/:snippetId'
 
 export {
   LOGIN_PATH,
@@ -13,5 +16,8 @@ export {
   BROADCAST_PATH,
   ONBOARDING_PATH,
   FORGET_PASSWORD_PATH,
-  RESET_PASSWORD_PATH
+  RESET_PASSWORD_PATH,
+  PUBLIC_SNIPPET_PATH,
+  SEARCH_PATH,
+  SNIPPET_DETAIL_PATH
 }

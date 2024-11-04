@@ -93,9 +93,8 @@ interface PaginatedResponse {
 
 const snippetKeys = {
   all: ['snippets'] as const,
-  lists: (pageSize: number, filters: any, language: string) =>
-    [...snippetKeys.all, 'list', { pageSize, filters, language }] as const,
-  detail: (id: string, language: string) => [...snippetKeys.all, 'detail', id, { language }] as const
+  lists: (pageSize: number, filters: any) => [...snippetKeys.all, 'list', { pageSize, filters }] as const,
+  detail: (id: string) => [...snippetKeys.all, 'detail', id] as const
 }
 
 const fetchSnippet = async (id: string, language: string): Promise<Snippet> => {
@@ -157,10 +156,10 @@ export function useSnippets(pageSize: number, filters: any, language: string) {
   })
 }
 
-export function useSnippet(id: string) {
+export function useSnippet(id: string, language: string) {
   return useQuery({
     queryKey: snippetKeys.detail(id),
-    queryFn: () => fetchSnippet(id),
+    queryFn: () => fetchSnippet(id, language),
     enabled: !!id
   })
 }

@@ -70,7 +70,7 @@ export default function SearchInterface() {
             />
             {STARRED_BY_RESULTS.map(starred => (
               <RoundedToggleButton
-                key={`result-${starred.value}`}
+                key={`result-${starred}`}
                 label={starred.label}
                 isActive={starredBy.includes(starred.value)}
                 onClick={() => handleStarredFilter(starred.value)}

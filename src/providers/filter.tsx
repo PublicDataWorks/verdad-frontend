@@ -68,7 +68,8 @@ export function FilterProvider({ children }: { children: ReactNode }) {
         setShowSidebar,
         setFilter,
         clearAll
-      }}>
+      }}
+    >
       {children}
     </FilterContext.Provider>
   )

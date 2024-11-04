@@ -10,9 +10,10 @@ import { Pause, ChevronDown } from 'lucide-react'
 
 interface AudioPlayerProps {
   audioSrc: string
+  startTime?: string
 }
 
-export default function AudioPlayer({ audioSrc }: AudioPlayerProps) {
+export default function AudioPlayer({ audioSrc, startTime }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -25,7 +26,12 @@ export default function AudioPlayer({ audioSrc }: AudioPlayerProps) {
 
     const setAudioData = () => {
       setDuration(audio.duration)
-      setCurrentTime(audio.currentTime)
+      if (startTime) {
+        const [hours, minutes, seconds] = startTime.split(':').map(Number)
+        const startSeconds = hours * 3600 + minutes * 60 + seconds
+        audio.currentTime = startSeconds
+        setCurrentTime(startSeconds)
+      }
     }
 
     const setAudioTime = () => setCurrentTime(audio.currentTime)
@@ -37,7 +43,7 @@ export default function AudioPlayer({ audioSrc }: AudioPlayerProps) {
       audio.removeEventListener('loadeddata', setAudioData)
       audio.removeEventListener('timeupdate', setAudioTime)
     }
-  }, [])
+  }, [startTime])
 
   const togglePlayPause = () => {
     const audio = audioRef.current
