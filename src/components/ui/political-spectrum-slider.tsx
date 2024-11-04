@@ -1,15 +1,17 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Slider } from '@/components/ui/slider'
+import * as SliderPrimitive from '@radix-ui/react-slider'
+import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
+import { cn } from '@/lib/utils'
 
 type Position = 'left' | 'center_left' | 'center' | 'center_right' | 'right'
 
 interface PoliticalSpectrumProps {
   value?: Position
-  onChange: (value: Position) => void
+  onChange: (value: Position | undefined) => void
 }
 
 export default function PoliticalSpectrum({ value, onChange }: PoliticalSpectrumProps) {
@@ -26,45 +28,53 @@ export default function PoliticalSpectrum({ value, onChange }: PoliticalSpectrum
     right: 4
   }
 
-  const indexToPosition: { [key: number]: Position } = {
-    0: 'left',
-    1: 'center_left',
-    2: 'center',
-    3: 'center_right',
-    4: 'right'
-  }
-
-  const initialIndex = value ? positionToIndex[value] : 2 // Default to 'center'
-
-  const [currentIndex, setCurrentIndex] = useState<number>(initialIndex)
+  const [currentPosition, setCurrentPosition] = useState<Position | undefined>(value)
 
   const handleChange = (newValue: number[]) => {
     const index = newValue[0]
-    setCurrentIndex(index)
-    onChange(indexToPosition[index])
+    const newPosition = positions[index]
+    setCurrentPosition(newPosition)
+    onChange(newPosition)
+  }
+
+  const handleReset = () => {
+    setCurrentPosition(undefined)
+    onChange(undefined)
   }
 
   useEffect(() => {
-    if (value && positionToIndex[value] !== currentIndex) {
-      setCurrentIndex(positionToIndex[value])
+    if (value !== currentPosition) {
+      setCurrentPosition(value)
     }
   }, [value])
 
   return (
     <div className='w-full'>
-      <div className='px-2'>
-        <Slider
-          value={[currentIndex]}
-          min={0}
-          max={positions.length - 1}
-          step={1}
-          onValueChange={handleChange}
-          className='py-4'
-          aria-label={t.politicalSpectrum}
-          aria-valuetext={t[positions[currentIndex]]}
-        />
+      <SliderPrimitive.Root
+        value={currentPosition !== undefined ? [positionToIndex[currentPosition]] : undefined}
+        min={0}
+        max={positions.length - 1}
+        step={1}
+        onValueChange={handleChange}
+        className='relative flex w-full touch-none select-none items-center py-4'
+        aria-label={t.politicalSpectrum}
+        aria-valuetext={currentPosition ? t[currentPosition] : t.unset}>
+        <SliderPrimitive.Track className='relative h-2 w-full grow overflow-hidden rounded-full bg-secondary'>
+          {currentPosition !== undefined && <SliderPrimitive.Range className='absolute h-full bg-primary' />}
+        </SliderPrimitive.Track>
+        {currentPosition !== undefined && (
+          <SliderPrimitive.Thumb className='block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50' />
+        )}
+      </SliderPrimitive.Root>
 
-        <div className='mt-4 text-center text-sm font-medium text-primary'>{t[positions[currentIndex]]}</div>
+      <div className='mt-4 text-center text-sm font-medium text-primary'>
+        {currentPosition ? t[currentPosition] : t.unset}
+      </div>
+
+      <div className='mt-4 flex justify-center'>
+        <Button onClick={handleReset} variant='outline' size='sm'>
+          {t.reset || 'Reset'}
+        </Button>
       </div>
     </div>
   )

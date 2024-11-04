@@ -11,7 +11,7 @@ interface FilterState {
     labels: string[]
     labeledBy: string[]
     starredBy: string[]
-    politicalSpectrum: number
+    politicalSpectrum: 'center' | 'center_left' | 'center_right' | 'left' | 'right'
   }
 }
 
@@ -31,8 +31,7 @@ const initialState: FilterState = {
     sources: [],
     labels: [],
     labeledBy: [],
-    starredBy: [],
-    politicalSpectrum: 0
+    starredBy: []
   }
 }
 
