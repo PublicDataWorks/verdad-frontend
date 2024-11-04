@@ -16,7 +16,6 @@ import LiveblocksComments from '../components/LiveblocksComments'
 import { formatDate } from '@/lib/utils'
 import AddLabelButton from './AddLabelButton'
 import type { Label } from '../hooks/useSnippets'
-import ShareButton from './ShareButton'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 
@@ -27,7 +26,7 @@ const SnippetDetail: FC = () => {
   const t = translations[language]
 
   const { data: snippet, isLoading } = useSnippet(snippetId || '', language)
-  const sourceLanguage = snippet?.language.primary_languge || 'spanish'
+  const sourceLanguage = snippet?.language.primary_language.toLowerCase()
   const [labels, setLabels] = useState<Label[]>([])
 
   const [snippetLanguage, setSnippetLanguage] = useState(sourceLanguage)

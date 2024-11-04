@@ -3,6 +3,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from '../hooks/useSnippets'
 import supabase from '@/lib/supabase'
+import { useLabels } from '@/hooks/useLabels'
 
 interface AddLabelButtonProps {
   snippetId: string
@@ -13,8 +14,8 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
   const [isInputVisible, setIsInputVisible] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [suggestions, setSuggestions] = useState<string[]>([])
-  const [allLabels, setAllLabels] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
+  const { data: allLabels } = useLabels()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -28,20 +29,6 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [])
-
-  useEffect(() => {
-    const fetchAllLabels = async () => {
-      const { data, error } = await supabase.from('labels').select('text').order('text')
-
-      if (error) {
-        console.error('Error fetching all labels:', error)
-        return
-      }
-      setAllLabels(data.map(label => label.text))
-    }
-
-    fetchAllLabels()
   }, [])
 
   const createLabel = async (labelText: string) => {
@@ -122,8 +109,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
                 <li
                   key={index}
                   className='cursor-pointer px-2 py-1 hover:bg-gray-100'
-                  onClick={() => createLabel(suggestion)}
-                >
+                  onClick={() => createLabel(suggestion)}>
                   {suggestion}
                 </li>
               ))}
