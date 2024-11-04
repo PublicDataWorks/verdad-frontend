@@ -22,9 +22,9 @@ import {
 } from './constants/routes'
 import { ResetPassword } from './components/ResetPassword'
 import { FilterProvider } from './providers/filter'
-import { LiveblocksProvider, RoomProvider } from '@liveblocks/react'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
 import PublicSnippet from './components/PublicSnippet'
+import { LanguageProvider } from './providers/language'
 
 const queryClient = new QueryClient()
 
@@ -33,20 +33,22 @@ export default function App(): ReactElement {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <FilterProvider>
-          <Router>
-            <Routes>
-              <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
-              <Route path={LOGIN_PATH} element={<LoginPage />} />
-              <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
-              <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
-              <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />
-              <Route element={<AuthenticatedLayout />}>
-                <Route path={SEARCH_PATH} element={<SearchInterface />} />
-                <Route path={SNIPPET_DETAIL_PATH} element={<SnippetDetail />} />
-              </Route>
-              <Route path='*' element={<LoginPage />} />
-            </Routes>
-          </Router>
+          <LanguageProvider>
+            <Router>
+              <Routes>
+                <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
+                <Route path={LOGIN_PATH} element={<LoginPage />} />
+                <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
+                <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
+                <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />
+                <Route element={<AuthenticatedLayout />}>
+                  <Route path={SEARCH_PATH} element={<SearchInterface />} />
+                  <Route path={SNIPPET_DETAIL_PATH} element={<SnippetDetail />} />
+                </Route>
+                <Route path='*' element={<LoginPage />} />
+              </Routes>
+            </Router>
+          </LanguageProvider>
         </FilterProvider>
       </AuthProvider>
 

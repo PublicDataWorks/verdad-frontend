@@ -1,9 +1,10 @@
 import React, { createContext, useEffect, useState, ReactNode, useContext } from 'react'
 import supabase from '../lib/supabase'
-import { User, AuthError } from '@supabase/supabase-js'
+import { User, AuthError, Session } from '@supabase/supabase-js'
 
 interface AuthContextType {
   user: User | null
+  session: Session | null
   login: (email: string, password: string) => Promise<{ error: AuthError | null }>
   logout: () => Promise<{ error: AuthError | null }>
   loginWithGoogle: () => Promise<{ error: AuthError | null }>
@@ -11,6 +12,7 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
+  session: null,
   login: async () => ({ error: null }),
   logout: async () => ({ error: null }),
   loginWithGoogle: async () => ({ error: null })
@@ -22,6 +24,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -30,6 +33,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           data: { session }
         } = await supabase.auth.getSession()
         setUser(session?.user ?? null)
+        setSession(session)
       } catch (error) {
         console.error('Error checking user:', error)
       }
@@ -41,6 +45,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
+      setSession(session || null)
     })
 
     return () => subscription.unsubscribe()
@@ -85,9 +90,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const { error } = await supabase.auth.signOut()
       setUser(null)
+      setSession(null)
 
       if (!error) {
         setUser(null)
+        setSession(null)
       }
     } catch (error) {
       console.error('Error logging out:', error)
@@ -99,11 +106,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        session,
         login,
         logout,
         loginWithGoogle
-      }}
-    >
+      }}>
       {children}
     </AuthContext.Provider>
   )

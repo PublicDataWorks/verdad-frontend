@@ -1,14 +1,20 @@
-import React, { useState } from 'react'
+'use client'
+
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { Moon, LogOut } from 'lucide-react'
+import { Moon, LogOut, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InboxPopover } from './InboxPopover'
 import { useAuth } from '@/providers/auth'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import supabase from '@/lib/supabase'
+import { useLanguage } from '../providers/language'
+import { translations } from '@/constants/translations'
 
 const HeaderBar: React.FC = () => {
   const { user } = useAuth()
+  const { language, setLanguage } = useLanguage()
+  const t = translations[language]
 
   const getInitials = (email: string) => {
     return email.split('@')[0].slice(0, 2).toUpperCase()
@@ -16,6 +22,10 @@ const HeaderBar: React.FC = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
+  }
+
+  const handleLanguageChange = (newLanguage: 'spanish' | 'english') => {
+    setLanguage(newLanguage)
   }
 
   return (
@@ -29,7 +39,26 @@ const HeaderBar: React.FC = () => {
         <InboxPopover />
         <Button variant='ghost' size='icon' className='h-8 w-8 p-0'>
           <Moon className='h-6 w-6 text-blue-600 hover:bg-gray-50' />
+          <span className='sr-only'>{t.toggleDarkMode}</span>
         </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-gray-50'>
+              <Globe className='h-6 w-6 text-blue-600' />
+              <span className='sr-only'>{t.changeLanguage}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align='end' className='w-48'>
+            <DropdownMenuItem className='cursor-pointer' onClick={() => handleLanguageChange('spanish')}>
+              <span>Español</span>
+              {language === 'spanish' && <span className='ml-2'>✓</span>}
+            </DropdownMenuItem>
+            <DropdownMenuItem className='cursor-pointer' onClick={() => handleLanguageChange('english')}>
+              <span>English</span>
+              {language === 'english' && <span className='ml-2'>✓</span>}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-gray-50'>
@@ -45,12 +74,13 @@ const HeaderBar: React.FC = () => {
                   {getInitials(user?.email || '')}
                 </div>
               )}
+              <span className='sr-only'>{t.userMenu}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end' className='w-48'>
             <DropdownMenuItem className='cursor-pointer' onClick={handleLogout}>
               <LogOut className='mr-2 h-4 w-4' />
-              <span>Log out</span>
+              <span>{t.logOut}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

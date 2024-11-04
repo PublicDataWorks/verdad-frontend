@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import type { FC } from 'react'
 import { useSnippet } from '../hooks/useSnippets'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -17,13 +17,20 @@ import { formatDate } from '@/lib/utils'
 import AddLabelButton from './AddLabelButton'
 import type { Label } from '../hooks/useSnippets'
 import ShareButton from './ShareButton'
+import { useLanguage } from '@/providers/language'
+import { translations } from '@/constants/translations'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
+  const { language } = useLanguage()
   const navigate = useNavigate()
-  const { data: snippet, isLoading } = useSnippet(snippetId || '')
-  const [language, setLanguage] = useState('spanish')
+  const t = translations[language]
+
+  const { data: snippet, isLoading } = useSnippet(snippetId || '', language)
+  const sourceLanguage = snippet?.language.primary_languge || 'spanish'
   const [labels, setLabels] = useState<Label[]>([])
+
+  const [snippetLanguage, setSnippetLanguage] = useState(sourceLanguage)
 
   useEffect(() => {
     if (snippet) {
@@ -51,10 +58,10 @@ const SnippetDetail: FC = () => {
     return (
       <div className='flex h-screen items-center justify-center'>
         <div className='text-center'>
-          <h2 className='mb-2 text-2xl font-bold text-gray-700'>Snippet Not Found</h2>
-          <p className='text-gray-500'>The requested snippet could not be found.</p>
-          <Button variant='ghost' className='mt-4' onClick={() => navigate(-1)}>
-            Go Back
+          <h2 className='mb-2 text-2xl font-bold text-gray-700'>{t.snippetNotFound}</h2>
+          <p className='text-gray-500'>{t.snippetNotFoundDesc}</p>
+          <Button variant='ghost' className='mt-4' onClick={() => navigate('/search')}>
+            {t.goBack}
           </Button>
         </div>
       </div>
@@ -68,29 +75,30 @@ const SnippetDetail: FC = () => {
   return (
     <Card className='mx-auto w-full max-w-3xl'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <Button variant='ghost' className='flex items-center space-x-2 px-0' onClick={() => navigate(-1)}>
+        <Button variant='ghost' className='flex items-center space-x-2 px-0' onClick={() => navigate('/search')}>
           <ArrowLeft className='h-4 w-4' />
-          <span>Back</span>
+          <span>{t.back}</span>
         </Button>
         <div className='flex items-center space-x-2'>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' className='flex items-center space-x-2'>
                 <Download className='h-4 w-4' />
-                <span>Download</span>
+                <span>{t.download}</span>
                 <ChevronDown className='h-4 w-4' />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>Original transcript (Spanish)</DropdownMenuItem>
-              <DropdownMenuItem>Translated transcript (English)</DropdownMenuItem>
-              <DropdownMenuItem>Audio</DropdownMenuItem>
+              <DropdownMenuItem className='capitalize'>
+                {t.originalTranscript} ({snippetLanguage})
+              </DropdownMenuItem>
+              <DropdownMenuItem>{t.translatedTranscript} (English)</DropdownMenuItem>
+              <DropdownMenuItem>{t.audio}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <ShareButton snippetId={snippetId} showLabel />
           <Button variant='ghost' size='icon'>
             <Star className='h-4 w-4' />
-            <span className='sr-only'>Favorite</span>
+            <span className='sr-only'>{t.favorite}</span>
           </Button>
         </div>
       </CardHeader>
@@ -105,7 +113,7 @@ const SnippetDetail: FC = () => {
           </div>
           <CardTitle className='text-2xl'>{snippet.title}</CardTitle>
           <div className='space-y-2'>
-            <h3 className='font-semibold'>Summary</h3>
+            <h3 className='font-semibold'>{t.summary}</h3>
             <p className='text-sm'>{snippet.summary}</p>
           </div>
           <div className='space-y-2'>
@@ -113,9 +121,9 @@ const SnippetDetail: FC = () => {
           </div>
           <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
           <LanguageTabs
-            language={language}
-            setLanguage={setLanguage}
-            spanishText={{
+            language={snippetLanguage}
+            setLanguage={setSnippetLanguage}
+            sourceText={{
               before: snippet.context.before,
               main: snippet.context.main,
               after: snippet.context.after
@@ -125,6 +133,7 @@ const SnippetDetail: FC = () => {
               main_en: snippet.context.main_en,
               after_en: snippet.context.after_en
             }}
+            sourceLanguage={sourceLanguage}
           />
           <div className='flex flex-wrap items-center gap-2'>
             {labels.map((label, index) => (

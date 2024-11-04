@@ -6,13 +6,13 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Download, Share2, ChevronDown } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import AudioPlayer from './AudioPlayer'
-import LanguageTabs from './LanguageTab'
 import Spinner from './Spinner'
 import { formatDate } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
 import PublicHeaderBar from './PublicHeaderBar'
 import ShareButton from './ShareButton'
+import PublicLanguageTab from './PublicLanguageTab'
 
 interface PublicSnippet {
   id: string
@@ -50,7 +50,6 @@ const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippet> => 
 
 const PublicSnippet: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
-  const navigate = useNavigate()
   const [language, setLanguage] = useState('spanish')
 
   const { data: snippet, isLoading } = useQuery({
@@ -119,19 +118,11 @@ const PublicSnippet: FC = () => {
               </div>
             </div>
             <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
-            <LanguageTabs
+            <PublicLanguageTab
               language={language}
               setLanguage={setLanguage}
-              spanishText={{
-                before: snippet.context.before,
-                main: snippet.context.main,
-                after: snippet.context.after
-              }}
-              englishText={{
-                before_en: snippet.context.before_en,
-                main_en: snippet.context.main_en,
-                after_en: snippet.context.after_en
-              }}
+              spanishText={snippet.context.main}
+              englishText={snippet.context.main_en}
             />
           </div>
         </CardContent>

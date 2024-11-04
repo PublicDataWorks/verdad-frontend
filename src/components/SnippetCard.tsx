@@ -1,14 +1,18 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
 import { Share2, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react'
 import Star from '../assets/star.svg'
 import Starred from '../assets/starred.svg'
 import StarHover from '../assets/star_hover.svg'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import LabelButton from './LabelButton'
 import LiveblocksComments from './LiveblocksComments'
 import type { Snippet, Label } from '../hooks/useSnippets'
 import { formatDate } from '../lib/utils'
 import AddLabelButton from './AddLabelButton'
+import { useLanguage } from '../providers/language'
 import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
 import supabase from '@/lib/supabase'
 import ShareButton from './ShareButton'
@@ -23,6 +27,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   const [labels, setLabels] = useState(snippet.labels || [])
   const [isExpanded, setIsExpanded] = useState(false)
   const formattedDate = formatDate(snippet.recorded_at)
+  const { language } = useLanguage()
 
   const [isStarred, setIsStarred] = useState(() => {
     const localStarred = getLocalStorageItem(`starred_${snippet.id}`)
@@ -57,7 +62,6 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
       }
     } catch (error) {
       console.error('Error toggling star:', error)
-      // Revert optimistic update on error
       setIsStarred(!newStarred)
       setLocalStorageItem(`starred_${snippet.id}`, !newStarred)
     }
@@ -91,8 +95,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             className='hover:bg-transparent'
             onMouseEnter={() => setIsStarHovered(true)}
             onMouseLeave={() => setIsStarHovered(false)}
-            onClick={handleStarClick}
-          >
+            onClick={handleStarClick}>
             <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
           </Button>
         </div>
