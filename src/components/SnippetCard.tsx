@@ -16,6 +16,7 @@ import { useLanguage } from '../providers/language'
 import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
 import supabase from '@/lib/supabase'
 import ShareButton from './ShareButton'
+import { useToast } from '../hooks/use-toast'
 
 interface SnippetCardProps {
   snippet: Snippet
@@ -44,6 +45,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
     return Star
   }
 
+  const { toast } = useToast()
+
   const handleStarClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
     const newStarred = !isStarred
@@ -56,14 +59,30 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
 
       if (error) throw error
 
-      if (data.snippet_starred !== newStarred) {
-        setIsStarred(data.snippet_starred)
-        setLocalStorageItem(`starred_${snippet.id}`, data.snippet_starred)
+      const serverStarred = data.data.snippet_starred
+      const message = data.data.message
+
+      if (serverStarred !== newStarred) {
+        setIsStarred(serverStarred)
+        setLocalStorageItem(`starred_${snippet.id}`, serverStarred)
       }
+
+      toast({
+        title: 'Success',
+        description: message,
+        duration: 2000
+      })
     } catch (error) {
       console.error('Error toggling star:', error)
       setIsStarred(!newStarred)
       setLocalStorageItem(`starred_${snippet.id}`, !newStarred)
+
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to update star status. Please try again.',
+        duration: 3000
+      })
     }
   }
 
