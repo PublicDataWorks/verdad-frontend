@@ -11,6 +11,7 @@ interface FilterState {
     labels: string[]
     labeledBy: string[]
     starredBy: string[]
+    politicalSpectrum: number
   }
 }
 
@@ -30,7 +31,8 @@ const initialState: FilterState = {
     sources: [],
     labels: [],
     labeledBy: [],
-    starredBy: []
+    starredBy: [],
+    politicalSpectrum: 0
   }
 }
 
@@ -68,8 +70,7 @@ export function FilterProvider({ children }: { children: ReactNode }) {
         setShowSidebar,
         setFilter,
         clearAll
-      }}
-    >
+      }}>
       {children}
     </FilterContext.Provider>
   )

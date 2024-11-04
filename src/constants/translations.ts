@@ -32,9 +32,9 @@ export const translations = {
     explanation: 'Explanation',
     share: 'Share',
     left: 'Left',
-    centerLeft: 'Center Left',
+    center_left: 'Center Left',
     center: 'Center',
-    centerRight: 'Center Right',
+    center_right: 'Center Right',
     right: 'Right',
     politicalSpectrum: 'Political Spectrum'
   },
@@ -71,9 +71,9 @@ export const translations = {
     explanation: 'Explicación',
     share: 'Compartir',
     left: 'Izquierda',
-    centerLeft: 'Centro Izquierda',
+    center_left: 'Centro Izquierda',
     center: 'Centro',
-    centerRight: 'Centro Derecha',
+    center_right: 'Centro Derecha',
     right: 'Derecha',
     politicalSpectrum: 'Espectro Político'
   }
