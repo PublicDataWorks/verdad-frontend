@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Moon, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InboxPopover } from './InboxPopover'
 import { useAuth } from '@/providers/auth'
@@ -34,10 +34,6 @@ const HeaderBar: React.FC = () => {
       </Link>
       <div className='flex items-center space-x-4'>
         <InboxPopover />
-        <Button variant='ghost' size='icon' className='h-8 w-8 p-0'>
-          <Moon className='h-6 w-6 text-blue-600 hover:bg-gray-50' />
-          <span className='sr-only'>{t.toggleDarkMode}</span>
-        </Button>
         <LanguageDropdown />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

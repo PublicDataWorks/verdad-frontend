@@ -1,7 +1,4 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-import { Moon, Sun } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 export default function PublicHeader() {
   return (
@@ -11,11 +8,6 @@ export default function PublicHeader() {
           VERDAD
         </div>
       </Link>
-      <Button variant='ghost' size='icon' className='h-8 w-8 p-0'>
-        <Sun className='h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-        <Moon className='absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
-        <span className='sr-only'>Toggle theme</span>
-      </Button>
     </header>
   )
 }

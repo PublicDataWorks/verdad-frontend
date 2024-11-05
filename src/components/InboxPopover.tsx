@@ -16,13 +16,21 @@ function Inbox({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const { inboxNotifications } = useInboxNotifications()
 
   const NotificationContent = ({ roomId, user }: { roomId: string; user?: string }) => {
-    const { data: snippet } = useSnippet(roomId, "english")
+    const { data: snippet } = useSnippet(roomId, 'english')
     const title = snippet?.title || roomId
 
     if (user) {
-      return <>{user} mentioned you in snippet <strong>{title}</strong></>
+      return (
+        <>
+          {user} mentioned you in snippet <strong>{title}</strong>
+        </>
+      )
     }
-    return <>New comment on snippet <strong>{title}</strong></>
+    return (
+      <>
+        New comment on snippet <strong>{title}</strong>
+      </>
+    )
   }
 
   return inboxNotifications.length === 0 ? (
@@ -35,7 +43,7 @@ function Inbox({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
             key={inboxNotification.id}
             inboxNotification={inboxNotification}
             href={`/snippet/${inboxNotification.roomId}`}
-            showActions="hover"
+            showActions='hover'
             overrides={{
               INBOX_NOTIFICATION_THREAD_COMMENTS_LIST: (list, room) => (
                 <NotificationContent roomId={inboxNotification.roomId} />
@@ -77,7 +85,7 @@ export function InboxPopover() {
               <InboxPopoverUnreadCount />
             </ClientSideSuspense>
           </ErrorBoundary>
-          <svg className='h-5 w-5 text-blue-600' fill='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
+          <svg className='h-8 w-8 text-blue-600' fill='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
             <path
               d='m3.6 9.8 1.9-4.6A2 2 0 0 1 7.3 4h5.4a2 2 0 0 1 1.8 1.2l2 4.6V13a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2V9.8Z'
               stroke='currentColor'
@@ -96,8 +104,7 @@ export function InboxPopover() {
       <Popover.Portal>
         <Popover.Content
           className='flex max-h-[calc(100vh-5rem)] w-[460px] flex-col overflow-hidden rounded-xl bg-white shadow-lg outline-none'
-          sideOffset={5}
-        >
+          sideOffset={5}>
           <ErrorBoundary fallback={<div className='p-4 text-center text-red-500'>Error loading notifications</div>}>
             <ClientSideSuspense fallback={<div className='p-4 text-center'>Loading...</div>}>
               <div className='sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white p-4'>
@@ -107,16 +114,14 @@ export function InboxPopover() {
                     variant='ghost'
                     size='sm'
                     onClick={markAllInboxNotificationsAsRead}
-                    className='text-sm text-blue-600 hover:text-blue-700'
-                  >
+                    className='text-sm text-blue-600 hover:text-blue-700'>
                     Mark all as read
                   </Button>
                   <Button
                     variant='ghost'
                     size='sm'
                     onClick={deleteAllInboxNotifications}
-                    className='text-sm text-red-600 hover:text-red-700'
-                  >
+                    className='text-sm text-red-600 hover:text-red-700'>
                     Delete all
                   </Button>
                 </div>
