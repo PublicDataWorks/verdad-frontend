@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import type { FC } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Download, Share2, ChevronDown } from 'lucide-react'
+import { Download, ChevronDown } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import AudioPlayer from './AudioPlayer'
 import Spinner from './Spinner'
@@ -12,10 +12,10 @@ import { useQuery } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
 import PublicHeaderBar from './PublicHeaderBar'
 import ShareButton from './ShareButton'
-import PublicLanguageTab from './PublicLanguageTab'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { toast } from '@/hooks/use-toast'
+import LanguageTabs from '@/components/LanguageTab'
 
 interface PublicSnippet {
   id: string
@@ -53,16 +53,22 @@ const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippet> => 
 
 const PublicSnippet: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
-  const [menulanguage, setLanguage] = useState('spanish')
-  const [snippetLanguage, setSnippetLanguage] = useState(menulanguage)
   const { language } = useLanguage()
   const t = translations[language]
+  const [snippetLanguage, setSnippetLanguage] = useState('Spanish')
 
   const { data: snippet, isLoading } = useQuery({
     queryKey: ['publicSnippet', snippetId],
     queryFn: () => fetchPublicSnippet(snippetId || ''),
     enabled: !!snippetId
   })
+
+  useEffect(() => {
+    if (snippet?.language) {
+      const sourceLanguage = snippet.language
+      setSnippetLanguage(sourceLanguage)
+    }
+  }, [snippet?.language])
 
   if (isLoading) {
     return (
@@ -83,6 +89,7 @@ const PublicSnippet: FC = () => {
     )
   }
 
+  const sourceLanguage = snippet.language
   const formattedDate = formatDate(snippet.recorded_at)
   const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
 
@@ -157,11 +164,20 @@ const PublicSnippet: FC = () => {
               </div>
             </div>
             <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
-            <PublicLanguageTab
-              language={language}
-              setLanguage={setLanguage}
-              spanishText={snippet.context.main}
-              englishText={snippet.context.main_en}
+            <LanguageTabs
+              language={snippetLanguage}
+              setLanguage={setSnippetLanguage}
+              sourceText={{
+                before: snippet.context.before,
+                main: snippet.context.main,
+                after: snippet.context.after
+              }}
+              englishText={{
+                before_en: snippet.context.before_en,
+                main_en: snippet.context.main_en,
+                after_en: snippet.context.after_en
+              }}
+              sourceLanguage={sourceLanguage}
             />
           </div>
         </CardContent>

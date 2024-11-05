@@ -36,7 +36,7 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
   }
 
   return (
-    <div className='mx-6 mt-8'>
+    <div className='mt-8'>
       {threads.map(thread => (
         <Thread key={thread.id} thread={thread} />
       ))}

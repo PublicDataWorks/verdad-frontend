@@ -7,15 +7,16 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatDate(dateString: string): string {
   const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
+  const formatter = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
     hour12: false,
-    timeZone: 'UTC'
+    timeZoneName: 'short'
   })
+  return formatter.format(date)
 }
 
 export const downloadText = (content: string, filename: string) => {
