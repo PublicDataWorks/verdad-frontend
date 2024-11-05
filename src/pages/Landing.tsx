@@ -71,7 +71,7 @@ export default function Component() {
             </Button>
           </div>
         </div>
-        <div className='order-1 w-full lg:order-none'>
+        <div className='order-1 w-full min-w-[min(100%,_420px)] lg:order-none'>
           <LandingPageCarousel snippets={landingPageContentQuery.data?.snippets || []} />
         </div>
       </main>
