@@ -8,6 +8,7 @@ import { getUserLanguage } from '@/utils/language'
 import { translations } from '@/constants/translations'
 import { useLandingPageContentQuery } from '@/hooks/useLandingPageContent'
 import { useLanguage } from '@/providers/language'
+import { LOGIN_PATH, SIGNUP_PATH } from '@/constants/routes'
 
 export default function Component() {
   const { language, setLanguage } = useLanguage()
@@ -49,7 +50,7 @@ export default function Component() {
           </p>
           <div className='flex flex-col gap-4 sm:flex-row'>
             <Button asChild className='bg-white text-[#2563EB] hover:bg-white/90' size='lg'>
-              <Link to='/signup'>{t.createAccount}</Link>
+              <Link to={SIGNUP_PATH}>{t.createAccount}</Link>
             </Button>
             <Button
               asChild
@@ -57,7 +58,7 @@ export default function Component() {
               size='lg'
               className='border-white bg-white/10 text-white hover:bg-white/20'
             >
-              <Link to='/login'>{t.logIn}</Link>
+              <Link to={LOGIN_PATH}>{t.logIn}</Link>
             </Button>
           </div>
         </div>
