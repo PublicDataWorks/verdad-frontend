@@ -88,7 +88,7 @@ export default function Component() {
   }, [scrollPosition])
 
   return (
-    <div className='min-h-screen bg-[#2563EB]'>
+    <div className='flex min-h-screen flex-col bg-[#2563EB]'>
       <header className='border-b border-gray-200 bg-white'>
         <div className='container mx-auto flex h-14 items-center justify-between px-8'>
           <Link to='/' className='text-xl font-bold text-[#2563EB]'>
@@ -96,7 +96,7 @@ export default function Component() {
           </Link>
         </div>
       </header>
-      <main className='container mx-auto flex flex-col items-start gap-16 px-8 py-16 lg:flex-row'>
+      <main className='container mx-auto flex flex-1 flex-col items-start gap-16 px-8 py-16 lg:flex-row'>
         <div className='max-w-2xl space-y-8'>
           <h1 className='text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl'>
             VERDAD detects and tracks coordinated mis/disinformation on the radio
