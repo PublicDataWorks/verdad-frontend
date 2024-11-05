@@ -1,9 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
+import { Globe, PlayCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PlayCircle } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useLanguage } from '@/providers/language'
+import { translations } from '@/constants/translations'
+import LanguageDropdown from '@/components/LanguageDropdown'
 
 const snippets = [
   {
@@ -44,9 +48,12 @@ const snippets = [
 ]
 
 export default function Component() {
+  const { language } = useLanguage()
   const [scrollPosition, setScrollPosition] = useState(0)
   const scrollRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const t = translations[language]
 
   useEffect(() => {
     let animationFrameId: number
@@ -94,10 +101,12 @@ export default function Component() {
           <Link to='/' className='text-xl font-bold text-[#2563EB]'>
             VERDAD
           </Link>
+
+          <LanguageDropdown />
         </div>
       </header>
-      <main className='container mx-auto flex flex-1 flex-col items-start gap-16 px-8 py-16 lg:flex-row'>
-        <div className='max-w-2xl space-y-8'>
+      <main className='container mx-auto flex flex-1 flex-col items-start gap-16 px-8 py-8 lg:flex-row lg:py-16'>
+        <div className='order-2 max-w-2xl space-y-8 lg:order-none'>
           <h1 className='text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl'>
             VERDAD detects and tracks coordinated mis/disinformation on the radio
           </h1>
@@ -109,7 +118,7 @@ export default function Component() {
           </p>
           <div className='flex flex-col gap-4 sm:flex-row'>
             <Button asChild className='bg-white text-[#2563EB] hover:bg-white/90' size='lg'>
-              <Link to='/signup'>Create Account</Link>
+              <Link to='/signup'>{t.createAccount}</Link>
             </Button>
             <Button
               asChild
@@ -117,11 +126,11 @@ export default function Component() {
               size='lg'
               className='border-white bg-white/10 text-white hover:bg-white/20'
             >
-              <Link to='/login'>Log In</Link>
+              <Link to='/login'>{t.logIn}</Link>
             </Button>
           </div>
         </div>
-        <div className='w-full max-w-md'>
+        <div className='order-1 w-full lg:order-none'>
           <Card
             className='h-[400px] overflow-hidden border-white/20 bg-white/10 p-4 backdrop-blur-sm'
             ref={containerRef}
@@ -139,7 +148,7 @@ export default function Component() {
                       <span className='sr-only'>Play audio</span>
                     </Button>
                   </div>
-                  <div className='mb-3 h-8 w-full rounded bg-white/10' aria-hidden='true'></div>
+                  <div className='mb-3 h-8 w-full rounded bg-white/10' aria-hidden='true' />
                   <div className='flex flex-wrap gap-2'>
                     {snippet.tags.map((tag, tagIndex) => (
                       <Badge key={tagIndex} variant='secondary' className='bg-white/20 text-xs text-white'>
