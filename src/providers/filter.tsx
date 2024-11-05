@@ -24,7 +24,7 @@ interface FilterContextType extends FilterState {
 const FilterContext = createContext<FilterContextType | undefined>(undefined)
 
 const initialState: FilterState = {
-  showSidebar: false,
+  showSidebar: true,
   filters: {
     languages: [],
     states: [],
