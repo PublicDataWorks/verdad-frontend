@@ -66,7 +66,7 @@ export default function Component() {
           <LandingPageCarousel snippets={landingPageContentQuery.data?.snippets || []} />
         </div>
       </main>
-      <footer className='container mx-auto mt-16 px-8 py-8'>
+      <footer className='container mx-auto p-8'>
         <p className='max-w-3xl text-sm text-white/70'>{landingPageContentQuery.data?.footer_text}</p>
       </footer>
     </div>
