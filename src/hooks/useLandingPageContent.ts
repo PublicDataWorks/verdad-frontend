@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
+import shuffle from 'lodash/shuffle'
 
 interface ContentLanguageMap {
   english: string
@@ -41,12 +42,12 @@ async function fetchLandingPageContent(language: 'en' | 'es'): Promise<Translate
     hero_title: data.content.hero_title[langKey],
     hero_description: data.content.hero_description[langKey],
     footer_text: data.content.footer_text[langKey],
-    snippets: data.snippets.map((snippet: Snippet) => ({
+    snippets: shuffle(data.snippets.map((snippet: Snippet) => ({
       id: snippet.id,
       titleEn: snippet.title['english'],
       titleEs: snippet.title['spanish'],
       labels: snippet.labels.map(label => label[langKey])
-    }))
+    })))
   }
 
   return translatedContent
