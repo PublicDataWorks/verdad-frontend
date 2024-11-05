@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Moon, LogOut, Globe } from 'lucide-react'
+import { Moon, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InboxPopover } from './InboxPopover'
 import { useAuth } from '@/providers/auth'
@@ -10,10 +10,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import supabase from '@/lib/supabase'
 import { useLanguage } from '../providers/language'
 import { translations } from '@/constants/translations'
+import LanguageDropdown from './LanguageDropdown'
 
 const HeaderBar: React.FC = () => {
   const { user } = useAuth()
-  const { language, setLanguage } = useLanguage()
+  const { language } = useLanguage()
   const t = translations[language]
 
   const getInitials = (email: string) => {
@@ -22,10 +23,6 @@ const HeaderBar: React.FC = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-  }
-
-  const handleLanguageChange = (newLanguage: 'spanish' | 'english') => {
-    setLanguage(newLanguage)
   }
 
   return (
@@ -41,24 +38,7 @@ const HeaderBar: React.FC = () => {
           <Moon className='h-6 w-6 text-blue-600 hover:bg-gray-50' />
           <span className='sr-only'>{t.toggleDarkMode}</span>
         </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-gray-50'>
-              <Globe className='h-6 w-6 text-blue-600' />
-              <span className='sr-only'>{t.changeLanguage}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end' className='w-48'>
-            <DropdownMenuItem className='cursor-pointer' onClick={() => handleLanguageChange('spanish')}>
-              <span>Español</span>
-              {language === 'spanish' && <span className='ml-2'>✓</span>}
-            </DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer' onClick={() => handleLanguageChange('english')}>
-              <span>English</span>
-              {language === 'english' && <span className='ml-2'>✓</span>}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <LanguageDropdown />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-gray-50'>
