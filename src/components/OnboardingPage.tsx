@@ -114,12 +114,10 @@ export default function OnboardingPage() {
         const fileName = `${user.id}-${Math.random()}.${fileExt}`
         const filePath = `avatars/${fileName}`
 
-        const { error: uploadError } = await supabase.storage
-          .from(import.meta.env.VITE_PUBLIC_RESOURCES_BUCKET)
-          .upload(filePath, avatar, {
-            cacheControl: '3600',
-            upsert: true
-          })
+        const { error: uploadError } = await supabase.storage.from('prod-public-resources').upload(filePath, avatar, {
+          cacheControl: '3600',
+          upsert: true
+        })
 
         if (uploadError) {
           throw uploadError
