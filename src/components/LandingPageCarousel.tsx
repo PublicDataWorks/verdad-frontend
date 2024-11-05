@@ -9,7 +9,7 @@ type LandingPageCarouselProps = {
   snippets: {
     titleEn: string
     titleEs: string
-    tags: string[]
+    labels: string[]
   }[]
 }
 
@@ -27,7 +27,6 @@ export default function LandingPageCarousel({ snippets }: LandingPageCarouselPro
       const elapsed = timestamp - lastTimestamp
 
       if (elapsed > 40) {
-        // Update every 40ms for 25% faster scrolling
         setScrollPosition(prevPosition => {
           const newPosition = prevPosition + 1
           if (scrollRef.current && containerRef.current) {
@@ -74,8 +73,8 @@ export default function LandingPageCarousel({ snippets }: LandingPageCarouselPro
             </div>
             <div className='mb-3 h-8 w-full rounded bg-white/10' aria-hidden='true' />
             <div className='flex flex-wrap gap-2'>
-              {snippet.tags.map((tag, tagIndex) => (
-                <Badge key={tagIndex} variant='secondary' className='bg-white/20 text-xs text-white'>
+              {snippet.labels.map((tag, tagIndex) => (
+                <Badge key={tagIndex} variant='secondary' className='cursor-default bg-white/20 text-xs text-white'>
                   {tag}
                 </Badge>
               ))}

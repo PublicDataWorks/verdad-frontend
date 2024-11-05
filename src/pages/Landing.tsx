@@ -6,7 +6,6 @@ import LandingPageCarousel from '@/components/LandingPageCarousel'
 import { Button } from '@/components/ui/button'
 import { getUserLanguage } from '@/utils/language'
 import { translations } from '@/constants/translations'
-import { useLandingCarouselSnippetsQuery } from '@/hooks/useLandingPageCarouselSnippets'
 import { useLandingPageContentQuery } from '@/hooks/useLandingPageContent'
 import { useLanguage } from '@/providers/language'
 
@@ -19,9 +18,8 @@ export default function Component() {
     setLanguage(userLanguage == 'es' ? 'spanish' : 'english')
   }, [])
 
-  const carouselSnippetQuery = useLandingCarouselSnippetsQuery()
   const landingPageContentQuery = useLandingPageContentQuery(userLanguage)
-  if (landingPageContentQuery.isLoading || carouselSnippetQuery.isLoading) {
+  if (landingPageContentQuery.isLoading) {
     return (
       <div className='flex min-h-screen items-center justify-center'>
         <Loader2 className='mr-2 h-5 w-5 animate-spin' />
@@ -64,7 +62,7 @@ export default function Component() {
           </div>
         </div>
         <div className='order-1 w-full lg:order-none'>
-          <LandingPageCarousel snippets={carouselSnippetQuery.data || []} />
+          <LandingPageCarousel snippets={landingPageContentQuery.data?.snippets || []} />
         </div>
       </main>
       <footer className='container mx-auto mt-16 px-8 py-8'>
