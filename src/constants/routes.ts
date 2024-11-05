@@ -8,6 +8,7 @@ const RESET_PASSWORD_PATH = '/reset-password'
 const PUBLIC_SNIPPET_PATH = '/p/:snippetId'
 const SEARCH_PATH = '/search'
 const SNIPPET_DETAIL_PATH = '/snippet/:snippetId'
+const SIGNUP_PATH = '/signup'
 
 export {
   LOGIN_PATH,
@@ -19,5 +20,6 @@ export {
   RESET_PASSWORD_PATH,
   PUBLIC_SNIPPET_PATH,
   SEARCH_PATH,
-  SNIPPET_DETAIL_PATH
+  SNIPPET_DETAIL_PATH,
+  SIGNUP_PATH
 }

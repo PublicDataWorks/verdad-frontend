@@ -14,7 +14,6 @@ type FormData = {
   email: string
   firstName: string
   lastName: string
-  password: string
 }
 
 export default function OnboardingPage() {
@@ -104,7 +103,7 @@ export default function OnboardingPage() {
         data: { session }
       } = await supabase.auth.getSession()
       const user = session?.user
-      const { firstName, lastName, password } = data
+      const { firstName, lastName } = data
 
       if (!user) throw new Error('No user found')
 
@@ -115,10 +114,12 @@ export default function OnboardingPage() {
         const fileName = `${user.id}-${Math.random()}.${fileExt}`
         const filePath = `avatars/${fileName}`
 
-        const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, avatar, {
-          cacheControl: '3600',
-          upsert: true
-        })
+        const { error: uploadError } = await supabase.storage
+          .from(import.meta.env.VITE_PUBLIC_RESOURCES_BUCKET)
+          .upload(filePath, avatar, {
+            cacheControl: '3600',
+            upsert: true
+          })
 
         if (uploadError) {
           throw uploadError
@@ -133,7 +134,6 @@ export default function OnboardingPage() {
       await supabase.rpc('setup_profile', {
         first_name: firstName,
         last_name: lastName,
-        password: password,
         avatar_url: avatarUrl
       })
 
@@ -175,8 +175,7 @@ export default function OnboardingPage() {
                     type='button'
                     variant='outline'
                     className='w-40 px-3 py-1.5 text-text-blue'
-                    onClick={() => document.getElementById('avatar-upload')?.click()}
-                  >
+                    onClick={() => document.getElementById('avatar-upload')?.click()}>
                     <Upload className='mr-2 h-4 w-4' />
                     Upload Avatar
                   </Button>
@@ -225,24 +224,6 @@ export default function OnboardingPage() {
                     placeholder='Last Name'
                   />
                   {errors.lastName && <p className='text-sm text-red-500'>{errors.lastName.message}</p>}
-                </div>
-                <div className='space-y-2'>
-                  <Label className='text-sm font-medium text-primary' htmlFor='password'>
-                    Password
-                  </Label>
-                  <Input
-                    id='password'
-                    type='password'
-                    {...register('password', {
-                      required: 'Password is required',
-                      minLength: {
-                        value: 6,
-                        message: 'Password must be at least 6 characters long'
-                      }
-                    })}
-                    placeholder='Password'
-                  />
-                  {errors.password && <p className='text-sm text-red-500'>{errors.password.message}</p>}
                 </div>
               </div>
 

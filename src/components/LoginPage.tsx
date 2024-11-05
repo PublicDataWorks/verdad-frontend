@@ -1,13 +1,11 @@
-// LoginPage.tsx
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../providers/auth'
 import { useForm } from 'react-hook-form'
+import { SIGNUP_PATH } from '@/constants/routes'
 
-// Define the form data type
 type LoginFormData = {
   email: string
   password: string
@@ -38,7 +36,6 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     const { error } = await login(data.email, data.password)
     if (error) {
-      // Set form error
       setError('root', {
         message: error.message
       })
@@ -97,13 +94,19 @@ export default function LoginPage() {
               {errors.password && <p className='mt-1 text-sm text-red-500'>{errors.password.message}</p>}
             </div>
 
-            <div className='flex items-center justify-end'>
+            <div className='flex items-center justify-between'>
               <Button
                 variant='link'
                 className='h-auto p-0 text-blue-600'
                 type='button'
-                onClick={() => navigate('/forget-password')}
-              >
+                onClick={() => navigate(SIGNUP_PATH)}>
+                Don't have an account?
+              </Button>
+              <Button
+                variant='link'
+                className='h-auto p-0 text-blue-600'
+                type='button'
+                onClick={() => navigate('/forget-password')}>
                 Forgot password?
               </Button>
             </div>
@@ -112,7 +115,7 @@ export default function LoginPage() {
           {errors.root && <p className='text-sm text-red-500'>{errors.root.message}</p>}
 
           <Button type='submit' className='h-12 w-full bg-[#005EF4] hover:bg-[#004ED1]' disabled={isSubmitting}>
-            {isSubmitting ? 'Signing in...' : 'Continue'}
+            {isSubmitting ? 'Signing in...' : 'Submit'}
           </Button>
         </form>
 
