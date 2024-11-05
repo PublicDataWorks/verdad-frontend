@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../providers/auth'
 import { useForm } from 'react-hook-form'
+import { SIGNUP_PAGE } from '@/constants/routes'
 
 // Define the form data type
 type LoginFormData = {
@@ -97,13 +98,19 @@ export default function LoginPage() {
               {errors.password && <p className='mt-1 text-sm text-red-500'>{errors.password.message}</p>}
             </div>
 
-            <div className='flex items-center justify-end'>
+            <div className='flex items-center justify-between'>
               <Button
                 variant='link'
                 className='h-auto p-0 text-blue-600'
                 type='button'
-                onClick={() => navigate('/forget-password')}
-              >
+                onClick={() => navigate(SIGNUP_PAGE)}>
+                Don't have an account?
+              </Button>
+              <Button
+                variant='link'
+                className='h-auto p-0 text-blue-600'
+                type='button'
+                onClick={() => navigate('/forget-password')}>
                 Forgot password?
               </Button>
             </div>

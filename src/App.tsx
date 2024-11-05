@@ -8,6 +8,7 @@ import SearchInterface from './components/SearchInterface'
 import SnippetDetail from './components/SnippetDetail'
 import OnboardingPage from './components/OnboardingPage'
 import ForgetPassword from './components/ForgetPassword'
+import SignupPage from './components/SignupPage'
 import { AuthProvider } from './providers/auth'
 
 import {
@@ -17,7 +18,8 @@ import {
   RESET_PASSWORD_PATH,
   PUBLIC_SNIPPET_PATH,
   SEARCH_PATH,
-  SNIPPET_DETAIL_PATH
+  SNIPPET_DETAIL_PATH,
+  SIGNUP_PAGE
 } from './constants/routes'
 import { ResetPassword } from './components/ResetPassword'
 import { FilterProvider } from './providers/filter'
@@ -37,6 +39,7 @@ export default function App(): ReactElement {
               <Routes>
                 <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
                 <Route path={LOGIN_PATH} element={<LoginPage />} />
+                <Route path={SIGNUP_PAGE} element={<SignupPage />} />
                 <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
                 <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
                 <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />
