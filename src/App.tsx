@@ -19,7 +19,7 @@ import {
   PUBLIC_SNIPPET_PATH,
   SEARCH_PATH,
   SNIPPET_DETAIL_PATH,
-  SIGNUP_PAGE
+  SIGNUP_PATH
 } from './constants/routes'
 import { ResetPassword } from './components/ResetPassword'
 import { FilterProvider } from './providers/filter'
@@ -39,7 +39,7 @@ export default function App(): ReactElement {
               <Routes>
                 <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
                 <Route path={LOGIN_PATH} element={<LoginPage />} />
-                <Route path={SIGNUP_PAGE} element={<SignupPage />} />
+                <Route path={SIGNUP_PATH} element={<SignupPage />} />
                 <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
                 <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
                 <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />

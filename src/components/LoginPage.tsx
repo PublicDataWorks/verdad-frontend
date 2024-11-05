@@ -1,14 +1,11 @@
-// LoginPage.tsx
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../providers/auth'
 import { useForm } from 'react-hook-form'
-import { SIGNUP_PAGE } from '@/constants/routes'
+import { SIGNUP_PATH } from '@/constants/routes'
 
-// Define the form data type
 type LoginFormData = {
   email: string
   password: string
@@ -39,7 +36,6 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     const { error } = await login(data.email, data.password)
     if (error) {
-      // Set form error
       setError('root', {
         message: error.message
       })
@@ -103,7 +99,7 @@ export default function LoginPage() {
                 variant='link'
                 className='h-auto p-0 text-blue-600'
                 type='button'
-                onClick={() => navigate(SIGNUP_PAGE)}>
+                onClick={() => navigate(SIGNUP_PATH)}>
                 Don't have an account?
               </Button>
               <Button

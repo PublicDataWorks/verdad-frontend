@@ -51,11 +51,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const {
       data: { subscription }
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null)
-      setSession(session || null)
+      setSession(session)
     })
-
     return () => subscription.unsubscribe()
   }, [])
 
@@ -68,7 +67,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (error) throw error
 
-      navigate('/search')
       return { error: null }
     } catch (error) {
       console.error('Error logging in:', error)
@@ -120,8 +118,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (error) throw error
 
-      setUser(null)
-      setSession(null)
       return { error: null }
     } catch (error) {
       console.error('Error logging out:', error)
