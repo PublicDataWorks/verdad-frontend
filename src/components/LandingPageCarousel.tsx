@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 
 type LandingPageCarouselProps = {
   snippets: {
+    id: string
     titleEn: string
     titleEs: string
     labels: string[]
@@ -59,8 +60,8 @@ export default function LandingPageCarousel({ snippets }: LandingPageCarouselPro
   return (
     <Card className='h-[400px] overflow-hidden border-white/20 bg-white/10 p-4 backdrop-blur-sm' ref={containerRef}>
       <div ref={scrollRef} className='transition-transform duration-1000 ease-linear'>
-        {[...snippets, ...snippets].map((snippet, idx) => (
-          <Card key={`${snippet.titleEn}-${idx}`} className='mb-4 border-white/10 bg-white/5 p-4'>
+        {snippets.map((snippet) => (
+          <Card key={snippet.id} className='mb-4 border-white/10 bg-white/5 p-4'>
             <div className='mb-3 flex items-start justify-between'>
               <div className='flex-1 pr-4'>
                 <h3 className='text-sm font-medium text-white/90'>{snippet.titleEn}</h3>
