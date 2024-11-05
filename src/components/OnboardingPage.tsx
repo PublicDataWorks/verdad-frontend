@@ -14,7 +14,6 @@ type FormData = {
   email: string
   firstName: string
   lastName: string
-  password: string
 }
 
 export default function OnboardingPage() {

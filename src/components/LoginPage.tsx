@@ -119,7 +119,7 @@ export default function LoginPage() {
           {errors.root && <p className='text-sm text-red-500'>{errors.root.message}</p>}
 
           <Button type='submit' className='h-12 w-full bg-[#005EF4] hover:bg-[#004ED1]' disabled={isSubmitting}>
-            {isSubmitting ? 'Signing in...' : 'Continue'}
+            {isSubmitting ? 'Signing in...' : 'Submit'}
           </Button>
         </form>
 
