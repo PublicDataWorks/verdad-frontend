@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react'
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import LandingPageCarousel from '@/components/LandingPageCarousel'
 import { Button } from '@/components/ui/button'
@@ -8,9 +8,12 @@ import { getUserLanguage } from '@/utils/language'
 import { translations } from '@/constants/translations'
 import { useLandingPageContentQuery } from '@/hooks/useLandingPageContent'
 import { useLanguage } from '@/providers/language'
-import { LOGIN_PATH, SIGNUP_PATH } from '@/constants/routes'
+import { LOGIN_PATH, SEARCH_PATH, SIGNUP_PATH } from '@/constants/routes'
+import { useAuth } from '@/providers/auth'
 
 export default function Component() {
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const { language, setLanguage } = useLanguage()
   const t = translations[language]
 
@@ -18,6 +21,12 @@ export default function Component() {
   useEffect(() => {
     setLanguage(userLanguage == 'es' ? 'spanish' : 'english')
   }, [])
+
+  useEffect(() => {
+    if (user) {
+      navigate(SEARCH_PATH)
+    }
+  }, [user])
 
   const landingPageContentQuery = useLandingPageContentQuery(userLanguage)
   if (landingPageContentQuery.isLoading) {
