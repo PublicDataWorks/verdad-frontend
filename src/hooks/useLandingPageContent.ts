@@ -38,7 +38,7 @@ async function fetchLandingPageContent(language: 'en' | 'es'): Promise<LandingPa
   )
 }
 
-export function useLandingPageContent(language: string) {
+export function useLandingPageContentQuery(language: string) {
   let userLanguage = language
 
   // Validate language input
