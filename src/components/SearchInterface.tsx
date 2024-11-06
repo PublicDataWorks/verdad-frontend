@@ -86,7 +86,7 @@ export default function SearchInterface() {
     </div>
   )
 
-  const padding = showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'md:px-20 lg:px-40 2xl:px-80'
+  const padding = showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'px-6 md:px-20 lg:px-40 2xl:px-80'
 
   return (
     <div className='flex flex-1 rounded-lg'>
