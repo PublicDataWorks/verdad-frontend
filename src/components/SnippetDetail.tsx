@@ -129,7 +129,7 @@ const SnippetDetail: FC = () => {
         <div className='text-center'>
           <h2 className='mb-2 text-2xl font-bold text-gray-700'>{t.snippetNotFound}</h2>
           <p className='text-gray-500'>{t.snippetNotFoundDesc}</p>
-          <Button variant='ghost' className='mt-4' onClick={() => navigate('/search')}>
+          <Button variant='ghost' className='mt-4' onClick={() => navigate(-1)}>
             {t.goBack}
           </Button>
         </div>
@@ -144,7 +144,7 @@ const SnippetDetail: FC = () => {
   return (
     <Card className='mx-auto w-full max-w-3xl'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={() => navigate('/search')}>
+        <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={() => navigate(-1)}>
           <ArrowLeft className='h-4 w-4' />
           <span>{t.back}</span>
         </Button>
