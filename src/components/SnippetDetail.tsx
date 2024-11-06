@@ -31,6 +31,7 @@ const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
   const { language } = useLanguage()
   const navigate = useNavigate()
+  const location = useLocation()
   const t = translations[language]
 
   const { data: snippet, isLoading } = useSnippet(snippetId || '', language)
@@ -124,9 +125,9 @@ const SnippetDetail: FC = () => {
   }
 
   const goback = () => {
-    try {
+    if (location.key && location.key !== 'default') {
       navigate(-1)
-    } catch {
+    } else {
       navigate('/search')
     }
   }
@@ -171,14 +172,16 @@ const SnippetDetail: FC = () => {
                 onClick={() => {
                   const content = `${snippet.context.before}\n\n${snippet.context.main}\n\n${snippet.context.after}`
                   downloadText(content, `transcript_${snippetId}_${snippetLanguage}.txt`)
-                }}>
+                }}
+              >
                 {t.originalTranscript} ({snippetLanguage})
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
                   const content = `${snippet.context.before_en}\n\n${snippet.context.main_en}\n\n${snippet.context.after_en}`
                   downloadText(content, `transcript_${snippetId}_en.txt`)
-                }}>
+                }}
+              >
                 {t.translatedTranscript} (English)
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -196,7 +199,8 @@ const SnippetDetail: FC = () => {
                       duration: 3000
                     })
                   }
-                }}>
+                }}
+              >
                 {t.audio}
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -207,7 +211,8 @@ const SnippetDetail: FC = () => {
             className='flex items-center space-x-2'
             onMouseEnter={() => setIsStarHovered(true)}
             onMouseLeave={() => setIsStarHovered(false)}
-            onClick={handleStarClick}>
+            onClick={handleStarClick}
+          >
             <img src={getStarIcon()} alt='Star' className='h-4 w-4' />
           </Button>
         </div>
