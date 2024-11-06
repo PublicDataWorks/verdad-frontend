@@ -100,7 +100,7 @@ export default function SearchInterface() {
         )}
         <div
           id='scrollableDiv'
-          className={`${padding} custom-scrollbar h-[calc(-154px+100svh)] overflow-y-scroll rounded-lg`}>
+          className={`${padding} custom-scrollbar h-[calc(-88px+100svh)] overflow-y-scroll rounded-lg`}>
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
