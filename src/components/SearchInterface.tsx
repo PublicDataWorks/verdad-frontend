@@ -61,17 +61,6 @@ export default function SearchInterface() {
 
   const snippets = data?.pages.flatMap(page => page.snippets) || []
 
-  const STARRED_BY_RESULTS = [
-    {
-      label: language === 'spanish' ? 'Destacado por mí' : 'Starred by Me',
-      value: 'by_me'
-    },
-    {
-      label: language === 'spanish' ? 'Destacado por otros' : 'Starred by Others',
-      value: 'by_others'
-    }
-  ]
-
   const NoSnippetsMessage = () => (
     <div className='flex h-full flex-col items-center justify-center p-4 text-center'>
       <FileX className='mb-4 h-16 w-16 text-muted-foreground' />
@@ -90,8 +79,7 @@ export default function SearchInterface() {
     <div className='flex flex-1 rounded-lg'>
       {showSidebar && <ResponsiveSidebar />}
       <div
-        className={`${showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'md:px-20 lg:px-40 2xl:px-80'} flex w-full flex-col`}
-      >
+        className={`${showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'md:px-20 lg:px-40 2xl:px-80'} flex w-full flex-col`}>
         <div className='mb-6 flex items-center justify-between px-4 pt-2'>
           <div className='flex space-x-2'>
             <RoundedToggleButton
@@ -100,14 +88,6 @@ export default function SearchInterface() {
               onClick={toggleSidebar}
               icon={<Filter className='mr-2 h-4 w-4' />}
             />
-            {STARRED_BY_RESULTS.map((starred, index) => (
-              <RoundedToggleButton
-                key={index}
-                label={starred.label}
-                isActive={starredBy.includes(starred.value)}
-                onClick={() => handleStarredFilter(starred.value)}
-              />
-            ))}
           </div>
         </div>
         <div
@@ -116,8 +96,7 @@ export default function SearchInterface() {
           style={{
             height: 'calc(100svh - 128px)',
             overflow: 'auto'
-          }}
-        >
+          }}>
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
@@ -140,8 +119,7 @@ export default function SearchInterface() {
                   <Loader className='h-6 w-6 animate-spin text-primary' />
                 </div>
               }
-              scrollThreshold={0.8}
-            >
+              scrollThreshold={0.8}>
               {snippets.map(snippet => (
                 <SnippetCard key={`${language}-${snippet.id}`} snippet={snippet} onSnippetClick={handleSnippetClick} />
               ))}

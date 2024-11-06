@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import { isMobile } from 'react-device-detect'
 
 interface SidebarState {
   showSidebar: boolean
@@ -10,27 +11,23 @@ interface SidebarContextType extends SidebarState {
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
 
-const initialState: SidebarState = {
-  showSidebar: true
-}
-
 export function SidebarProvider({ children }: { children: ReactNode }) {
-  const [sidebarState, setSidebarState] = useState<SidebarState>(initialState)
+  const [showSidebar, setShowSidebarState] = useState<boolean>(true)
+
+  useEffect(() => {
+    setShowSidebarState(!isMobile)
+  }, [])
 
   const setShowSidebar = (show: boolean) => {
-    setSidebarState(prev => ({
-      ...prev,
-      showSidebar: show
-    }))
+    setShowSidebarState(show)
   }
 
   return (
     <SidebarContext.Provider
       value={{
-        ...sidebarState,
+        showSidebar,
         setShowSidebar
-      }}
-    >
+      }}>
       {children}
     </SidebarContext.Provider>
   )
