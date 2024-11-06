@@ -79,7 +79,7 @@ export function InboxPopover() {
   return (
     <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
       <Popover.Trigger asChild>
-        <Button variant='ghost' size='icon' className='relative h-8 w-8 p-0 hover:bg-transparent'>
+        <Button variant='ghost' size='icon' className='relative h-8 w-8 p-0 hover:bg-transparent transform translate-y-[1px]'>
           <ErrorBoundary fallback={null}>
             <ClientSideSuspense fallback={null}>
               <InboxPopoverUnreadCount />
