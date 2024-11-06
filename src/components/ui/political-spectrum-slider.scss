@@ -1,0 +1,32 @@
+.political-spectrum-slider {
+  transition:
+    opacity 0.3s ease,
+    filter 0.3s ease;
+
+  &.is-grayed-out {
+    opacity: 0.5;
+
+    .slider-track {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .slider-range {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .slider-thumb {
+      border-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(255, 255, 255, 0.7);
+      cursor: not-allowed;
+    }
+  }
+}
+
+.political-spectrum-slider {
+  &.is-grayed-out {
+    .slider-thumb {
+      border-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
