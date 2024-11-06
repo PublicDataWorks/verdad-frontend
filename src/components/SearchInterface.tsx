@@ -1,8 +1,6 @@
-'use client'
-
 import { useNavigate } from 'react-router-dom'
 import { Filter, Loader, FileX } from 'lucide-react'
-import { useFilter } from '@/providers/filter'
+import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '../providers/language'
 
 import RoundedToggleButton from './RoundedToggleButton'
@@ -16,11 +14,14 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
 import { translations } from '@/constants/translations'
+import useSnippetFilters from '@/hooks/useSnippetFilters'
 
 const PAGE_SIZE = 20
 
 export default function SearchInterface() {
-  const { showSidebar, filters, setShowSidebar, setFilter } = useFilter()
+  const { showSidebar, setShowSidebar } = useSidebar()
+  const { filters, setFilter } = useSnippetFilters()
+
   const { language } = useLanguage()
   const t = translations[language]
 
@@ -89,7 +90,8 @@ export default function SearchInterface() {
     <div className='flex flex-1 rounded-lg'>
       {showSidebar && <ResponsiveSidebar />}
       <div
-        className={`${showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'md:px-20 lg:px-40 2xl:px-80'} flex w-full flex-col`}>
+        className={`${showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'md:px-20 lg:px-40 2xl:px-80'} flex w-full flex-col`}
+      >
         <div className='mb-6 flex items-center justify-between px-4 pt-2'>
           <div className='flex space-x-2'>
             <RoundedToggleButton
@@ -114,7 +116,8 @@ export default function SearchInterface() {
           style={{
             height: 'calc(100svh - 128px)',
             overflow: 'auto'
-          }}>
+          }}
+        >
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
@@ -137,7 +140,8 @@ export default function SearchInterface() {
                   <Loader className='h-6 w-6 animate-spin text-primary' />
                 </div>
               }
-              scrollThreshold={0.8}>
+              scrollThreshold={0.8}
+            >
               {snippets.map(snippet => (
                 <SnippetCard key={`${language}-${snippet.id}`} snippet={snippet} onSnippetClick={handleSnippetClick} />
               ))}

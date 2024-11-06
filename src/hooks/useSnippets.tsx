@@ -124,6 +124,11 @@ const fetchSnippets = async ({
 }): Promise<PaginatedResponse> => {
   const actualPageSize = pageSize || 10
 
+  // We won't pass political spectrum when it's unset
+  if (filters && !filters?.politicalSpectrum) {
+    delete filters?.politicalSpectrum
+  }
+
   const { data, error } = await supabase.rpc('get_snippets', {
     page: pageParam,
     page_size: actualPageSize,
