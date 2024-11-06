@@ -1,88 +1,93 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import * as React from 'react'
 import * as SliderPrimitive from '@radix-ui/react-slider'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
-import { cn } from '@/lib/utils'
 
-type Position = 'left' | 'center_left' | 'center' | 'center_right' | 'right'
+import './political-spectrum-slider.scss'
 
-interface PoliticalSpectrumProps {
-  value?: Position
+type Position = 'left' | 'center-left' | 'center' | 'center-right' | 'right'
+
+interface PoliticalSpectrumSliderProps extends React.ComponentProps<typeof SliderPrimitive.Root> {
+  value: Position | undefined
   onChange: (value: Position | undefined) => void
 }
 
-export default function PoliticalSpectrum({ value, onChange }: PoliticalSpectrumProps) {
+export default function PoliticalSpectrumSlider({
+  className,
+  value,
+  onChange,
+  ...props
+}: PoliticalSpectrumSliderProps) {
   const { language } = useLanguage()
   const t = translations[language]
 
-  const positions: Position[] = ['left', 'center_left', 'center', 'center_right', 'right']
+  const positions: Position[] = ['left', 'center-left', 'center', 'center-right', 'right']
+  const labels = [t.left || 'Left', t.center || 'Center', t.right || 'Right']
 
-  const positionToIndex: { [key in Position]: number } = {
-    left: 0,
-    center_left: 1,
-    center: 2,
-    center_right: 3,
-    right: 4
+  const getLabel = (position: Position | undefined) => {
+    if (position === undefined || position === null) return t.all || 'All'
+    return t[position as keyof typeof t] || position
   }
 
-  const [currentPosition, setCurrentPosition] = useState<Position | undefined>(value)
-
-  const handleChange = (newValue: number[]) => {
+  const handleSliderChange = (newValue: number[]) => {
     const index = newValue[0]
-    const newPosition = index === 2 && currentPosition === undefined ? undefined : positions[index]
-    setCurrentPosition(newPosition)
+    const newPosition = index >= 0 && index < positions.length ? positions[index] : undefined
     onChange(newPosition)
   }
 
-  const handleReset = () => {
-    setCurrentPosition(undefined)
+  const handleClear = () => {
     onChange(undefined)
   }
 
-  useEffect(() => {
-    if (value !== currentPosition) {
-      setCurrentPosition(value)
-    }
-  }, [value])
-
   return (
-    <div className='w-full'>
-      <SliderPrimitive.Root
-        value={currentPosition !== undefined ? [positionToIndex[currentPosition]] : [2]}
-        min={0}
-        max={positions.length - 1}
-        step={1}
-        onValueChange={handleChange}
-        className='relative flex w-full touch-none select-none items-center py-4'>
-        <SliderPrimitive.Track className='relative h-2 w-full grow overflow-hidden rounded-full bg-secondary'>
-          <SliderPrimitive.Range
-            className={cn('absolute h-full', currentPosition !== undefined ? 'bg-primary' : 'bg-gray-400')}
-          />
-        </SliderPrimitive.Track>
-        <SliderPrimitive.Thumb
-          className={cn(
-            'block h-5 w-5 rounded-full border-2 bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
-            currentPosition !== undefined ? 'border-primary' : 'border-gray-400'
-          )}
-        />
-      </SliderPrimitive.Root>
-
-      <div className='mt-4 flex justify-center'>
-        <Button
-          onClick={handleReset}
-          variant='outline'
-          size='sm'
-          disabled={currentPosition === undefined}
-          className={cn(
-            'transition-opacity duration-200',
-            currentPosition === undefined ? 'cursor-not-allowed opacity-50' : 'opacity-100'
-          )}>
-          {t.reset || 'Reset'}
+    <div className='w-full max-w-sm space-y-4'>
+      <div className='flex items-center justify-end'>
+        <Button variant='ghost' size='sm' onClick={handleClear} disabled={value === null}>
+          {t.clear || 'Clear'}
         </Button>
       </div>
+      <div className='relative'>
+        <SliderPrimitive.Root
+          id='political-spectrum'
+          value={value !== undefined && value !== null ? [positions.indexOf(value)] : [2]}
+          min={0}
+          max={positions.length - 1}
+          step={1}
+          onValueChange={handleSliderChange}
+          className={cn(
+            'political-spectrum-slider relative flex w-full touch-none select-none items-center',
+            value === null && 'is-grayed-out',
+            className
+          )}
+          {...props}>
+          <SliderPrimitive.Track className='slider-track relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200'></SliderPrimitive.Track>
+          <SliderPrimitive.Thumb
+            className={cn(
+              'slider-thumb block h-3 w-3 rounded-full border-2 border-black bg-black ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+              value === null && 'is-grayed-out'
+            )}
+          />
+        </SliderPrimitive.Root>
+        <div className='absolute left-0 right-0 top-full mt-1 flex justify-between'>
+          {positions.map(position => (
+            <div key={position} className={cn('h-2 w-2 rounded-full bg-secondary')} />
+          ))}
+        </div>
+      </div>
+
+      <div className='flex justify-between text-sm'>
+        {labels.map(label => (
+          <span key={label} className={cn('text-muted-foreground')}>
+            {label}
+          </span>
+        ))}
+      </div>
+
+      <div className='text-center text-sm font-medium text-primary'>{getLabel(value)}</div>
     </div>
   )
 }
