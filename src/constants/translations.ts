@@ -32,14 +32,16 @@ export const translations = {
     explanation: 'Explanation',
     share: 'Share',
     left: 'Left',
-    center_left: 'Center Left',
+    'center-left': 'Center Left',
     center: 'Center',
-    center_right: 'Center Right',
+    'center-right': 'Center Right',
     right: 'Right',
     politicalSpectrum: 'Political Spectrum',
     unset: 'Unset',
     logIn: 'Log In',
-    createAccount: 'Create Account'
+    createAccount: 'Create Account',
+    all: 'All',
+    clear: 'Clear'
   },
   spanish: {
     filters: 'Filtros',
@@ -74,13 +76,15 @@ export const translations = {
     explanation: 'Explicación',
     share: 'Compartir',
     left: 'Izquierda',
-    center_left: 'Centro Izquierda',
+    'center-left': 'Centro Izquierda',
     center: 'Centro',
-    center_right: 'Centro Derecha',
+    'center-right': 'Centro Derecha',
     right: 'Derecha',
     politicalSpectrum: 'Espectro Político',
     unset: 'No establecido',
     logIn: 'Iniciar sesión',
-    createAccount: 'Crear cuenta'
+    createAccount: 'Crear cuenta',
+    all: 'Todos',
+    clear: 'Limpiar'
   }
 }

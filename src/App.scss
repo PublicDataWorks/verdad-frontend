@@ -69,3 +69,12 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:horizontal {
   min-width: var(--scrollbar-minlength);
 }
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
