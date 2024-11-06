@@ -22,7 +22,7 @@ import {
   SIGNUP_PATH
 } from './constants/routes'
 import { ResetPassword } from './components/ResetPassword'
-import { FilterProvider } from './providers/filter'
+import { SidebarProvider } from './providers/sidebar'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
 import PublicSnippet from './components/PublicSnippet'
 import { LanguageProvider } from './providers/language'
@@ -34,7 +34,7 @@ export default function App(): ReactElement {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <FilterProvider>
+        <SidebarProvider>
           <LanguageProvider>
             <Router>
               <Routes>
@@ -52,7 +52,7 @@ export default function App(): ReactElement {
               </Routes>
             </Router>
           </LanguageProvider>
-        </FilterProvider>
+        </SidebarProvider>
       </AuthProvider>
 
       <ReactQueryDevtools initialIsOpen={false} />

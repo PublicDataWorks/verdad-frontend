@@ -4,7 +4,7 @@ import type React from 'react'
 import { useState, useEffect } from 'react'
 import type { FC } from 'react'
 import { useSnippet } from '../hooks/useSnippets'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, Download, ChevronDown } from 'lucide-react'
@@ -123,13 +123,21 @@ const SnippetDetail: FC = () => {
     )
   }
 
+  const goback = () => {
+    try {
+      navigate(-1)
+    } catch {
+      navigate('/search')
+    }
+  }
+
   if (!snippet || !snippetId) {
     return (
       <div className='flex h-screen items-center justify-center'>
         <div className='text-center'>
           <h2 className='mb-2 text-2xl font-bold text-gray-700'>{t.snippetNotFound}</h2>
           <p className='text-gray-500'>{t.snippetNotFoundDesc}</p>
-          <Button variant='ghost' className='mt-4' onClick={() => navigate('/search')}>
+          <Button variant='ghost' className='mt-4' onClick={goback}>
             {t.goBack}
           </Button>
         </div>
@@ -144,7 +152,7 @@ const SnippetDetail: FC = () => {
   return (
     <Card className='mx-auto w-full max-w-3xl'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={() => navigate('/search')}>
+        <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={goback}>
           <ArrowLeft className='h-4 w-4' />
           <span>{t.back}</span>
         </Button>

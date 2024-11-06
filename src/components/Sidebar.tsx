@@ -1,31 +1,32 @@
-'use client'
-
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { MultiSelect } from '@/components/ui/multi-select'
 import RoundedToggleButton from './RoundedToggleButton'
 import PoliticalSpectrum from '@/components/ui/political-spectrum-slider'
-import { useFilter } from '@/providers/filter'
+import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { useFilters } from '@/hooks/useFilterOptions'
+import useSnippetFilters, { SnippetFilters } from '@/hooks/useSnippetFilters'
 
 export default function Sidebar() {
-  const { setShowSidebar, filters, setFilter, clearAll } = useFilter()
+  const { setShowSidebar } = useSidebar()
+  const { filters, setFilter, clearAll } = useSnippetFilters()
+
+  const {
+    languages: selectedLanguages,
+    states: selectedStates,
+    sources: selectedSources,
+    labeledBy: selectedLabeledBy,
+    starredBy: selectedStarredBy,
+    labels: selectedLabels,
+    politicalSpectrum
+  } = filters
+
   const { language } = useLanguage()
   const { data } = useFilters(language)
 
   const t = translations[language]
-
-  const {
-    languages: selectedLanguages = [],
-    states: selectedStates = [],
-    sources: selectedSources = [],
-    labeledBy: selectedLabeledBy = [],
-    starredBy: selectedStarredBy = [],
-    labels: selectedLabels = [],
-    politicalSpectrum
-  } = filters
 
   const BY_OPTIONS = [
     { label: t.byMe, value: 'by_me' },
@@ -38,7 +39,7 @@ export default function Sidebar() {
     clearAll()
   }
 
-  const handleToggle = (category: string, value: string) => {
+  const handleToggle = (category: keyof SnippetFilters, value: string) => {
     const currentSet = new Set(filters[category] || [])
     if (currentSet.has(value)) {
       currentSet.delete(value)
