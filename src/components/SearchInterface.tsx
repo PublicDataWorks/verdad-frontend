@@ -10,12 +10,12 @@ import { useSnippets } from '@/hooks/useSnippets'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { fetchFilteringOptions } from '@/hooks/useFilterOptions'
+import supabaseClient from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
 import { translations } from '@/constants/translations'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
-import supabaseClient from '@/lib/supabase'
 
 const PAGE_SIZE = 20
 
