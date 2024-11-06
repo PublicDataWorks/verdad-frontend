@@ -5,7 +5,6 @@ import { ConfidenceChart } from '@/components/ui/ConfidenceScoreBar'
 export function getSnippetSubtitle(snippet: any): JSX.Element {
   const parts = [
     snippet.audio_file.radio_station_code,
-    snippet.audio_file.radio_station_name,
     snippet.audio_file.location_state,
     format(new Date(snippet.recorded_at), 'HH:mm zzz')
   ].filter(Boolean)
