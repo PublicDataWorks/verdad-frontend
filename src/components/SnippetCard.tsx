@@ -25,8 +25,6 @@ interface SnippetCardProps {
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
   const [isStarHovered, setIsStarHovered] = useState(false)
   const [labels, setLabels] = useState(snippet.labels || [])
-  const [isExpanded, setIsExpanded] = useState(false)
-  const formattedDate = formatDate(snippet.recorded_at)
 
   const [isStarred, setIsStarred] = useState(() => {
     const localStarred = getLocalStorageItem(`starred_${snippet.id}`)
