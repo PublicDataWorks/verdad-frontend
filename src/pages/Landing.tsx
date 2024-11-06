@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react'
 import { useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import LandingPageCarousel from '@/components/LandingPageCarousel'
 import { Button } from '@/components/ui/button'
@@ -16,6 +16,13 @@ export default function Component() {
   const navigate = useNavigate()
   const { language, setLanguage } = useLanguage()
   const t = translations[language]
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.pathname === '/knight') {
+      localStorage.setItem('signup', '/knight')
+    }
+  }, [location.pathname])
 
   const userLanguage = getUserLanguage()
   useEffect(() => {

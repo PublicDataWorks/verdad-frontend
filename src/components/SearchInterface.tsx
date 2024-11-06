@@ -10,6 +10,7 @@ import { useSnippets } from '@/hooks/useSnippets'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { fetchFilteringOptions } from '@/hooks/useFilterOptions'
+import supabaseClient from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
@@ -39,6 +40,22 @@ export default function SearchInterface() {
   }
 
   const queryClient = useQueryClient()
+
+  // TODO: remove this when we have a more genric solution
+  useEffect(() => {
+    const trackUserSignup = async () => {
+      try {
+        await supabaseClient.rpc('track_user_signups', { origin: '/knight' })
+      } catch (error) {}
+    }
+
+    const signupPath = localStorage.getItem('signup')
+
+    if (signupPath === '/knight') {
+      localStorage.removeItem('signup')
+      trackUserSignup()
+    }
+  }, [])
 
   useEffect(() => {
     queryClient.prefetchQuery({
@@ -83,7 +100,7 @@ export default function SearchInterface() {
         )}
         <div
           id='scrollableDiv'
-          className={`${padding} custom-scrollbar h-[calc(-154px+100svh)] overflow-y-scroll rounded-lg`}>
+          className={`${padding} custom-scrollbar h-[calc(-88px+100svh)] overflow-y-scroll rounded-lg`}>
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
