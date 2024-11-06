@@ -1,6 +1,7 @@
 'use client'
 
-import React, { createContext, useContext, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import { isMobile } from 'react-device-detect'
 
 interface FilterState {
   showSidebar: boolean
@@ -11,7 +12,7 @@ interface FilterState {
     labels: string[]
     labeledBy: string[]
     starredBy: string[]
-    politicalSpectrum: 'center' | 'center_left' | 'center_right' | 'left' | 'right'
+    politicalSpectrum: 'center' | 'center_left' | 'center_right' | 'left' | 'right' | undefined
   }
 }
 
@@ -23,20 +24,28 @@ interface FilterContextType extends FilterState {
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined)
 
-const initialState: FilterState = {
-  showSidebar: true,
+const createInitialState = (isMobileDevice: boolean): FilterState => ({
+  showSidebar: !isMobileDevice,
   filters: {
     languages: [],
     states: [],
     sources: [],
     labels: [],
     labeledBy: [],
-    starredBy: []
+    starredBy: [],
+    politicalSpectrum: undefined
   }
-}
+})
 
 export function FilterProvider({ children }: { children: ReactNode }) {
-  const [filterState, setFilterState] = useState<FilterState>(initialState)
+  const [filterState, setFilterState] = useState<FilterState>(() => createInitialState(isMobile))
+
+  useEffect(() => {
+    setFilterState(prev => ({
+      ...prev,
+      showSidebar: !isMobile
+    }))
+  }, [])
 
   const setFilter = (category: string, values: string[]) => {
     setFilterState(prev => ({
@@ -57,8 +66,8 @@ export function FilterProvider({ children }: { children: ReactNode }) {
 
   const clearAll = () => {
     setFilterState(prev => ({
-      ...initialState,
-      showSidebar: prev.showSidebar // Preserve sidebar state
+      ...prev,
+      filters: createInitialState(isMobile).filters
     }))
   }
 
