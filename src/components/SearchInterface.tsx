@@ -5,7 +5,7 @@ import { useLanguage } from '../providers/language'
 
 import RoundedToggleButton from './RoundedToggleButton'
 import SnippetCard from './SnippetCard'
-import ResponsiveSidebar from './Sidebar'
+import Sidebar from './Sidebar'
 import { useSnippets } from '@/hooks/useSnippets'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -15,12 +15,13 @@ import { useEffect } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
 import { translations } from '@/constants/translations'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
+import { isMobile } from 'react-device-detect'
 
 const PAGE_SIZE = 20
 
 export default function SearchInterface() {
   const { showSidebar, setShowSidebar } = useSidebar()
-  const { filters, setFilter } = useSnippetFilters()
+  const { filters } = useSnippetFilters()
 
   const { language } = useLanguage()
   const t = translations[language]
@@ -37,8 +38,6 @@ export default function SearchInterface() {
     setShowSidebar(!showSidebar)
   }
 
-  const starredBy = filters.starredBy || []
-
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -47,17 +46,6 @@ export default function SearchInterface() {
       queryFn: () => fetchFilteringOptions(language)
     })
   }, [queryClient, language])
-
-  const handleStarredFilter = (starred: string) => {
-    const currentSet = new Set(starredBy)
-    if (currentSet.has(starred)) {
-      currentSet.delete(starred)
-    } else {
-      currentSet.add(starred)
-    }
-    const newValues = Array.from(currentSet)
-    setFilter('starredBy', newValues)
-  }
 
   const snippets = data?.pages.flatMap(page => page.snippets) || []
 
@@ -79,18 +67,20 @@ export default function SearchInterface() {
 
   return (
     <div className='flex flex-1 rounded-lg'>
-      {showSidebar && <ResponsiveSidebar />}
+      {showSidebar && <Sidebar />}
       <div className={`flex w-full flex-col pt-6`}>
-        <div className={`${padding} mb-6 flex items-center justify-between px-4 pt-2`}>
-          <div className='flex space-x-2'>
-            <RoundedToggleButton
-              label={language === 'spanish' ? 'Filtrar' : 'Filter'}
-              isActive={showSidebar}
-              onClick={toggleSidebar}
-              icon={<Filter className='mr-2 h-4 w-4' />}
-            />
+        {isMobile && (
+          <div className={`${padding} mb-6 flex items-center justify-between px-4 pt-2`}>
+            <div className='flex space-x-2'>
+              <RoundedToggleButton
+                label={language === 'spanish' ? 'Filtrar' : 'Filter'}
+                isActive={showSidebar}
+                onClick={toggleSidebar}
+                icon={<Filter className='mr-2 h-4 w-4' />}
+              />
+            </div>
           </div>
-        </div>
+        )}
         <div
           id='scrollableDiv'
           className={`${padding} custom-scrollbar h-[calc(-154px+100svh)] overflow-y-scroll rounded-lg`}>
@@ -109,7 +99,7 @@ export default function SearchInterface() {
               dataLength={snippets.length}
               next={fetchNextPage}
               hasMore={hasNextPage}
-              className='flex h-full flex-col gap-3 shadow-sm'
+              className='flex h-full flex-col gap-3'
               scrollableTarget='scrollableDiv'
               loader={
                 <div className='my-4 flex w-full justify-center'>

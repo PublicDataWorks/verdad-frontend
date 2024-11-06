@@ -55,7 +55,7 @@ export default function Sidebar() {
   }
 
   return (
-    <div className='fixed inset-0 z-50 overflow-y-auto bg-white md:relative md:inset-auto md:w-80'>
+    <div className='hide-scrollbar fixed inset-0 z-50 h-[calc(100svh-64px)] overflow-y-auto bg-white md:relative md:inset-auto md:w-80'>
       <div className='p-6'>
         <div className='mb-4 flex items-center justify-between'>
           <h2 className='text-lg font-semibold'>{t.filters}</h2>
