@@ -26,6 +26,7 @@ import StarredIcon from '../assets/starred.svg'
 import StarHoverIcon from '../assets/star_hover.svg'
 import supabase from '@/lib/supabase'
 import ShareButton from './ShareButton'
+import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
@@ -220,13 +221,9 @@ const SnippetDetail: FC = () => {
       <CardContent>
         <div className='space-y-4'>
           <div>
-            <h2 className='text-2xl font-bold'>
-              {snippet.audio_file.radio_station_code} - {snippet.audio_file.radio_station_name} -{' '}
-              {snippet.audio_file.location_state}
-            </h2>
-            <p className='text-sm text-muted-foreground text-zinc-400'>{formattedDate}</p>
+            <h2 className='text-2xl font-bold'>{snippet.title}</h2>
+            <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
           </div>
-          <CardTitle className='text-2xl'>{snippet.title}</CardTitle>
           <div className='space-y-2'>
             <h3 className='font-semibold'>{t.summary}</h3>
             <p className='text-sm'>{snippet.summary}</p>

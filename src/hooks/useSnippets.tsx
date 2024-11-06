@@ -45,7 +45,6 @@ interface ConfidenceScores {
 }
 
 interface AudioFileInfo {
-  recorded_at: string
   location_state: string
   radio_station_code: string
   radio_station_name: string
@@ -82,6 +81,13 @@ export interface Snippet {
     dialect: string
     primary_language: string
     register: string
+  }
+  political_leaning: {
+    score: number
+    explanation: {
+      english: string
+      spanish: string
+    }
   }
 }
 
