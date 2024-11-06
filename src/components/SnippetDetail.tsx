@@ -152,7 +152,7 @@ const SnippetDetail: FC = () => {
   const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
 
   return (
-    <Card className='mx-auto w-full max-w-3xl mt-6'>
+    <Card className='mx-auto px-6 w-full max-w-3xl mt-6'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
         <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={goback}>
           <ArrowLeft className='h-4 w-4' />
