@@ -15,6 +15,7 @@ import { useEffect } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
 import { translations } from '@/constants/translations'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
+import supabaseClient from '@/lib/supabase'
 
 const PAGE_SIZE = 20
 
@@ -40,6 +41,22 @@ export default function SearchInterface() {
   const starredBy = filters.starredBy || []
 
   const queryClient = useQueryClient()
+
+  // TODO: remove this when we have a more genric solution
+  useEffect(() => {
+    const trackUserSignup = async () => {
+      try {
+        await supabaseClient.rpc('track_user_signups', { origin: '/knight' })
+      } catch (error) {}
+    }
+
+    const signupPath = localStorage.getItem('signup')
+
+    if (signupPath === '/knight') {
+      localStorage.removeItem('signup')
+      trackUserSignup()
+    }
+  }, [])
 
   useEffect(() => {
     queryClient.prefetchQuery({
