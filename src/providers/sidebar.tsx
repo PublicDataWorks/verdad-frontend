@@ -15,10 +15,10 @@ const initialState: SidebarState = {
 }
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
-  const [filterState, setFilterState] = useState<SidebarState>(initialState)
+  const [sidebarState, setSidebarState] = useState<SidebarState>(initialState)
 
   const setShowSidebar = (show: boolean) => {
-    setFilterState(prev => ({
+    setSidebarState(prev => ({
       ...prev,
       showSidebar: show
     }))
@@ -27,7 +27,7 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   return (
     <SidebarContext.Provider
       value={{
-        ...filterState,
+        ...sidebarState,
         setShowSidebar
       }}
     >
@@ -39,7 +39,7 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
 export function useSidebar() {
   const context = useContext(SidebarContext)
   if (context === undefined) {
-    throw new Error('useFilter must be used within a FilterProvider')
+    throw new Error('useSidebar must be used within a SidebarProvider')
   }
   return context
 }
