@@ -79,13 +79,13 @@ export function InboxPopover() {
   return (
     <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
       <Popover.Trigger asChild>
-        <Button variant='ghost' size='icon' className='relative h-8 w-8 p-0'>
+        <Button variant='ghost' size='icon' className='relative h-8 w-8 p-0 hover:bg-transparent'>
           <ErrorBoundary fallback={null}>
             <ClientSideSuspense fallback={null}>
               <InboxPopoverUnreadCount />
             </ClientSideSuspense>
           </ErrorBoundary>
-          <svg className='h-8 w-8 text-blue-600' fill='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
+          <svg className='h-8 w-8 text-white' fill='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
             <path
               d='m3.6 9.8 1.9-4.6A2 2 0 0 1 7.3 4h5.4a2 2 0 0 1 1.8 1.2l2 4.6V13a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2V9.8Z'
               stroke='currentColor'
