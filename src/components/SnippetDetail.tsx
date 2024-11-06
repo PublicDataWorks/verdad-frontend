@@ -147,121 +147,121 @@ const SnippetDetail: FC = () => {
     )
   }
 
-  const formattedDate = formatDate(snippet.recorded_at)
-
   const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
 
   return (
-    <Card className='mx-auto px-6 w-full max-w-3xl mt-6'>
-      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={goback}>
-          <ArrowLeft className='h-4 w-4' />
-          <span>{t.back}</span>
-        </Button>
-        <div className='flex items-center space-x-2'>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='ghost' className='flex items-center space-x-2'>
-                <Download className='h-4 w-4' />
-                <span>{t.download}</span>
-                <ChevronDown className='h-4 w-4' />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem
-                className='capitalize'
-                onClick={() => {
-                  const content = `${snippet.context.before}\n\n${snippet.context.main}\n\n${snippet.context.after}`
-                  downloadText(content, `transcript_${snippetId}_${snippetLanguage}.txt`)
-                }}
-              >
-                {t.originalTranscript} ({snippetLanguage})
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  const content = `${snippet.context.before_en}\n\n${snippet.context.main_en}\n\n${snippet.context.after_en}`
-                  downloadText(content, `transcript_${snippetId}_en.txt`)
-                }}
-              >
-                {t.translatedTranscript} (English)
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={async () => {
-                  try {
-                    await downloadAudio(
-                      `${audioBaseUrl}/${snippet.file_path}`,
-                      `audio_${snippet.audio_file.radio_station_code}_${snippet.audio_file.radio_station_name}_${snippet.audio_file.location_state}.mp3`
-                    )
-                  } catch (error) {
-                    toast({
-                      variant: 'destructive',
-                      title: 'Error',
-                      description: 'Failed to download audio file. Please try again.',
-                      duration: 3000
-                    })
-                  }
-                }}
-              >
-                {t.audio}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <ShareButton snippetId={snippetId} showLabel />
-          <Button
-            variant='ghost'
-            className='flex items-center space-x-2'
-            onMouseEnter={() => setIsStarHovered(true)}
-            onMouseLeave={() => setIsStarHovered(false)}
-            onClick={handleStarClick}
-          >
-            <img src={getStarIcon()} alt='Star' className='h-4 w-4' />
+    <div className='h-full w-full p-2 max-w-3xl mx-auto sm:py-6'>
+      <Card className='w-full'>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+          <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={goback}>
+            <ArrowLeft className='h-4 w-4' />
+            <span>{t.back}</span>
           </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className='space-y-4'>
-          <div>
-            <h2 className='text-2xl font-bold'>{snippet.title}</h2>
-            <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
+          <div className='flex items-center space-x-2'>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='ghost' className='flex items-center space-x-2'>
+                  <Download className='h-4 w-4' />
+                  <span>{t.download}</span>
+                  <ChevronDown className='h-4 w-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  className='capitalize'
+                  onClick={() => {
+                    const content = `${snippet.context.before}\n\n${snippet.context.main}\n\n${snippet.context.after}`
+                    downloadText(content, `transcript_${snippetId}_${snippetLanguage}.txt`)
+                  }}
+                >
+                  {t.originalTranscript} ({snippetLanguage})
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    const content = `${snippet.context.before_en}\n\n${snippet.context.main_en}\n\n${snippet.context.after_en}`
+                    downloadText(content, `transcript_${snippetId}_en.txt`)
+                  }}
+                >
+                  {t.translatedTranscript} (English)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={async () => {
+                    try {
+                      await downloadAudio(
+                        `${audioBaseUrl}/${snippet.file_path}`,
+                        `audio_${snippet.audio_file.radio_station_code}_${snippet.audio_file.radio_station_name}_${snippet.audio_file.location_state}.mp3`
+                      )
+                    } catch (error) {
+                      toast({
+                        variant: 'destructive',
+                        title: 'Error',
+                        description: 'Failed to download audio file. Please try again.',
+                        duration: 3000
+                      })
+                    }
+                  }}
+                >
+                  {t.audio}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <ShareButton snippetId={snippetId} showLabel />
+            <Button
+              variant='ghost'
+              className='flex items-center space-x-2'
+              onMouseEnter={() => setIsStarHovered(true)}
+              onMouseLeave={() => setIsStarHovered(false)}
+              onClick={handleStarClick}
+            >
+              <img src={getStarIcon()} alt='Star' className='h-4 w-4' />
+            </Button>
           </div>
-          <div className='space-y-2'>
-            <h3 className='font-semibold'>{t.summary}</h3>
-            <p className='text-sm'>{snippet.summary}</p>
+        </CardHeader>
+        <CardContent>
+          <div className='space-y-4'>
+            <div>
+              <h2 className='text-2xl font-bold'>{snippet.title}</h2>
+              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
+            </div>
+            <div className='space-y-2'>
+              <h3 className='font-semibold'>{t.summary}</h3>
+              <p className='text-sm'>{snippet.summary}</p>
+            </div>
+            <div className='space-y-2'>
+              <p className='text-sm text-muted-foreground'>{snippet.explanation}</p>
+            </div>
+            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
+            <LanguageTabs
+              language={snippetLanguage}
+              setLanguage={setSnippetLanguage}
+              sourceText={{
+                before: snippet.context.before,
+                main: snippet.context.main,
+                after: snippet.context.after
+              }}
+              englishText={{
+                before_en: snippet.context.before_en,
+                main_en: snippet.context.main_en,
+                after_en: snippet.context.after_en
+              }}
+              sourceLanguage={sourceLanguage}
+            />
+            <div className='flex flex-wrap items-center gap-2'>
+              {labels.map((label, index) => (
+                <LabelButton
+                  key={`${snippetId}-${label.id}-${index}`}
+                  label={label}
+                  snippetId={snippetId}
+                  onLabelDeleted={labelId => setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))}
+                />
+              ))}
+              <AddLabelButton snippetId={snippetId} onLabelAdded={handleLabelAdded} />
+            </div>
           </div>
-          <div className='space-y-2'>
-            <p className='text-sm text-muted-foreground'>{snippet.explanation}</p>
-          </div>
-          <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
-          <LanguageTabs
-            language={snippetLanguage}
-            setLanguage={setSnippetLanguage}
-            sourceText={{
-              before: snippet.context.before,
-              main: snippet.context.main,
-              after: snippet.context.after
-            }}
-            englishText={{
-              before_en: snippet.context.before_en,
-              main_en: snippet.context.main_en,
-              after_en: snippet.context.after_en
-            }}
-            sourceLanguage={sourceLanguage}
-          />
-          <div className='flex flex-wrap items-center gap-2'>
-            {labels.map((label, index) => (
-              <LabelButton
-                key={`${snippetId}-${label.id}-${index}`}
-                label={label}
-                snippetId={snippetId}
-                onLabelDeleted={labelId => setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))}
-              />
-            ))}
-            <AddLabelButton snippetId={snippetId} onLabelAdded={handleLabelAdded} />
-          </div>
-        </div>
-      </CardContent>
-      <LiveblocksComments snippetId={snippetId} showFullComments />
-    </Card>
+        </CardContent>
+        <LiveblocksComments snippetId={snippetId} showFullComments />
+      </Card>
+    </div>
   )
 }
 
