@@ -1,22 +1,21 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Share2, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react'
 import Star from '../assets/star.svg'
 import Starred from '../assets/starred.svg'
 import StarHover from '../assets/star_hover.svg'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import LabelButton from './LabelButton'
 import LiveblocksComments from './LiveblocksComments'
 import type { Snippet, Label } from '../hooks/useSnippets'
 import { formatDate } from '../lib/utils'
 import AddLabelButton from './AddLabelButton'
-import { useLanguage } from '../providers/language'
+
 import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
 import supabase from '@/lib/supabase'
 import ShareButton from './ShareButton'
 import { useToast } from '../hooks/use-toast'
+import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 
 interface SnippetCardProps {
   snippet: Snippet
@@ -97,18 +96,10 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
     setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))
   }
 
-  const toggleExpand = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setIsExpanded(!isExpanded)
-  }
-
   return (
     <div className='mt-2 cursor-pointer rounded-lg border bg-white p-6' onClick={() => onSnippetClick(snippet.id)}>
       <div className='mb-2 flex items-start justify-between'>
-        <h3 className='text-lg font-medium'>
-          {snippet.audio_file.radio_station_code} - {snippet.audio_file.radio_station_name} -{' '}
-          {snippet.audio_file.location_state}
-        </h3>
+        <h3 className='text-lg font-medium'>{snippet.title}</h3>
         <div className='flex space-x-2'>
           <ShareButton snippetId={snippet.id} />
           <Button
@@ -122,7 +113,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           </Button>
         </div>
       </div>
-      <p className='mb-4 text-xs text-zinc-400'>{formattedDate}</p>
+      <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
       <p className='mb-4'>{snippet.summary}</p>
       <div className='flex justify-between'>
         <div className='flex flex-wrap items-baseline gap-2'>
