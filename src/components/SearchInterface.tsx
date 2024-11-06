@@ -75,12 +75,13 @@ export default function SearchInterface() {
     </div>
   )
 
+  const padding = showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'px-6 md:px-20 lg:px-40 2xl:px-80'
+
   return (
     <div className='flex flex-1 rounded-lg'>
       {showSidebar && <ResponsiveSidebar />}
-      <div
-        className={`${showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'md:px-20 lg:px-40 2xl:px-80'} flex w-full flex-col`}>
-        <div className='mb-6 flex items-center justify-between px-4 pt-2'>
+      <div className={`flex w-full flex-col pt-6`}>
+        <div className={`${padding} mb-6 flex items-center justify-between px-4 pt-2`}>
           <div className='flex space-x-2'>
             <RoundedToggleButton
               label={language === 'spanish' ? 'Filtrar' : 'Filter'}
@@ -92,11 +93,7 @@ export default function SearchInterface() {
         </div>
         <div
           id='scrollableDiv'
-          className='custom-scrollbar rounded-lg bg-background shadow-inner'
-          style={{
-            height: 'calc(100svh - 128px)',
-            overflow: 'auto'
-          }}>
+          className={`${padding} custom-scrollbar h-[calc(-154px+100svh)] overflow-y-scroll rounded-lg`}>
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
@@ -112,7 +109,7 @@ export default function SearchInterface() {
               dataLength={snippets.length}
               next={fetchNextPage}
               hasMore={hasNextPage}
-              className='flex flex-col gap-3 shadow-sm'
+              className='flex h-full flex-col gap-3 shadow-sm'
               scrollableTarget='scrollableDiv'
               loader={
                 <div className='my-4 flex w-full justify-center'>

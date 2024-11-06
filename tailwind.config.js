@@ -18,6 +18,8 @@ const config = {
         'blue-light': '#E8F1FF',
         'blue-deep': '#337EF4',
         'blue-rich': '#004DC7',
+        'header-blue': '#005EF4',
+        'header-white': '#93C5FD',
         'missive-background-color': 'var(--missive-background-color)',
         'missive-blue-color': 'var(--missive-blue-color)',
         'missive-light-border-color': 'var(--missive-light-border-color)',
