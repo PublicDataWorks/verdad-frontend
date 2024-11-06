@@ -55,7 +55,7 @@ export default function LoginPage() {
 
   return (
     <div className='flex min-h-screen items-center justify-center bg-white'>
-      <div className='w-full max-w-md space-y-8'>
+      <div className='w-full max-w-md space-y-8 p-8'>
         <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-gray-900'>Login to VERDAD</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className='mt-8 space-y-6'>
@@ -94,7 +94,7 @@ export default function LoginPage() {
               {errors.password && <p className='mt-1 text-sm text-red-500'>{errors.password.message}</p>}
             </div>
 
-            <div className='flex items-center justify-between'>
+            <div className='flex items-center justify-between flex-wrap'>
               <Button
                 variant='link'
                 className='h-auto p-0 text-blue-600'

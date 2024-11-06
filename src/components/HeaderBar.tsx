@@ -26,9 +26,9 @@ const HeaderBar: React.FC = () => {
   }
 
   return (
-    <header className='flex items-center justify-between border-b border-blue-600 bg-blue-50 px-8 py-2'>
+    <header className='flex items-center justify-between bg-gradient-to-b from-header-blue to-header-white px-8 py-2'>
       <Link to='/' className='no-underline'>
-        <div className='font-inter cursor-pointer bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text py-2 text-2xl font-bold leading-7 tracking-wide text-transparent'>
+        <div className='font-inter cursor-pointer py-2 text-2xl font-bold leading-7 tracking-wide text-white'>
           VERDAD
         </div>
       </Link>
@@ -37,17 +37,17 @@ const HeaderBar: React.FC = () => {
         <LanguageDropdown />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-gray-50'>
+            <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-transparent'>
               {user?.user_metadata.avatar_url ? (
                 <img
-                  src={user.user_metadata.avatar_url}
+                  src={user.user_metadata.avatar_url as string}
                   alt='User Avatar'
                   className='h-6 w-6 rounded-full'
                   referrerPolicy='no-referrer'
                 />
               ) : (
                 <div className='flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs text-white'>
-                  {getInitials(user?.email || '')}
+                  {getInitials(user?.email ?? '')}
                 </div>
               )}
               <span className='sr-only'>{t.userMenu}</span>
