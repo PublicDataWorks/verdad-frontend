@@ -4,7 +4,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import LandingPageCarousel from '@/components/LandingPageCarousel'
 import { Button } from '@/components/ui/button'
-import { getUserLanguage } from '@/utils/language'
 import { translations } from '@/constants/translations'
 import { useLandingPageContentQuery } from '@/hooks/useLandingPageContent'
 import { useLanguage } from '@/providers/language'
@@ -14,7 +13,7 @@ import { useAuth } from '@/providers/auth'
 export default function Component() {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const { language, setLanguage } = useLanguage()
+  const { language } = useLanguage()
   const t = translations[language]
   const location = useLocation()
 
@@ -24,18 +23,13 @@ export default function Component() {
     }
   }, [location.pathname])
 
-  const userLanguage = getUserLanguage()
-  useEffect(() => {
-    setLanguage(userLanguage == 'es' ? 'spanish' : 'english')
-  }, [])
-
   useEffect(() => {
     if (user) {
       navigate(SEARCH_PATH)
     }
   }, [user])
 
-  const landingPageContentQuery = useLandingPageContentQuery(userLanguage)
+  const landingPageContentQuery = useLandingPageContentQuery(language)
   if (landingPageContentQuery.isLoading) {
     return (
       <div className='flex min-h-screen items-center justify-center'>
@@ -79,7 +73,7 @@ export default function Component() {
           </div>
         </div>
         <div className='order-1 w-full min-w-[min(100%,_420px)] lg:order-none'>
-          <LandingPageCarousel snippets={landingPageContentQuery.data?.snippets || []} />
+          <LandingPageCarousel snippets={landingPageContentQuery.data?.snippets ?? []} />
         </div>
       </main>
       <footer className='container mx-auto p-8'>

@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
 import type React from 'react'
-
 import { createContext, useState, useContext, useCallback, useMemo } from 'react'
 
-type Language = 'english' | 'spanish'
+import { getUserLanguage } from '@/utils/language'
+
+export type Language = 'english' | 'spanish'
 
 interface LanguageContextType {
   language: Language
@@ -27,8 +28,9 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [internalLanguage, setInternalLanguage] = useState<Language>(() => {
     const storedLanguage = localStorage.getItem('language')
+
     if (storedLanguage !== 'english' && storedLanguage !== 'spanish') {
-      return 'english'
+      return getUserLanguage() === 'es' ? 'spanish' : 'english'
     }
 
     return storedLanguage
