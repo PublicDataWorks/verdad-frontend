@@ -36,7 +36,7 @@ const SnippetDetail: FC = () => {
   const location = useLocation()
   const t = translations[language]
 
-  const { data: snippet, isLoading, error } = useSnippet(snippetId || '', language)
+  const { data: snippet, isLoading, isError } = useSnippet(snippetId || '', language)
   const sourceLanguage = snippet?.language?.primary_language?.toLowerCase()
   const [labels, setLabels] = useState<Label[]>([])
   const [isStarHovered, setIsStarHovered] = useState(false)
@@ -134,7 +134,7 @@ const SnippetDetail: FC = () => {
     }
   }
 
-  if (error || isEmpty(snippet) || !snippetId) {
+  if (isError || isEmpty(snippet) || !snippetId) {
     return (
       <div className='flex h-screen items-center justify-center'>
         <div className='text-center'>
