@@ -12,7 +12,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { fetchFilteringOptions } from '@/hooks/useFilterOptions'
 import supabaseClient from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
 import { translations } from '@/constants/translations'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
@@ -31,13 +31,24 @@ export default function SearchInterface() {
 
   const { data, error, fetchNextPage, hasNextPage, status } = useSnippets({ pageSize: PAGE_SIZE, filters, language })
 
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
+
   const handleSnippetClick = (snippetId: string) => {
+    localStorage.setItem('searchScrollPosition', String(scrollAreaRef.current?.scrollTop) ?? '')
     navigate(`/snippet/${snippetId}`)
   }
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar)
   }
+
+  useEffect(() => {
+    const searchScrollPosition = localStorage.getItem('searchScrollPosition')
+    if (searchScrollPosition && scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo(0, Number(searchScrollPosition))
+      localStorage.removeItem('searchScrollPosition')
+    }
+  }, [scrollAreaRef.current])
 
   const queryClient = useQueryClient()
 
@@ -98,7 +109,7 @@ export default function SearchInterface() {
             </div>
           </div>
         )}
-        <div id='scrollableDiv' className={`${padding} custom-scrollbar overflow-y-scroll rounded-lg`}>
+        <div ref={scrollAreaRef} id='scrollableDiv' className={`${padding} custom-scrollbar overflow-y-scroll rounded-lg`}>
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
