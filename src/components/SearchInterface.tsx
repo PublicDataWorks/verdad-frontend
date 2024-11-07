@@ -83,7 +83,7 @@ export default function SearchInterface() {
   const padding = showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'px-6 md:px-20 lg:px-40 2xl:px-80'
 
   return (
-    <div className='flex flex-1 rounded-lg'>
+    <div className='flex h-[calc(-60px+100svh)] flex-1 rounded-lg'>
       {showSidebar && <Sidebar />}
       <div className={`flex w-full flex-col pt-6`}>
         {isMobile && (
@@ -98,9 +98,7 @@ export default function SearchInterface() {
             </div>
           </div>
         )}
-        <div
-          id='scrollableDiv'
-          className={`${padding} custom-scrollbar h-[calc(-88px+100svh)] overflow-y-scroll rounded-lg`}>
+        <div id='scrollableDiv' className={`${padding} custom-scrollbar overflow-y-scroll rounded-lg`}>
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
