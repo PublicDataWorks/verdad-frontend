@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import { InboxNotification, InboxNotificationList } from '@liveblocks/react-ui'
 import * as Popover from '@radix-ui/react-popover'
 import {
@@ -22,19 +24,19 @@ function Inbox({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
     if (user) {
       return (
         <>
-          {user} mentioned you in snippet <strong>{title}</strong>
+          {user} mentioned you in snippet <strong className='break-words'>{title}</strong>
         </>
       )
     }
     return (
       <>
-        New comment on snippet <strong>{title}</strong>
+        New comment on snippet <strong className='break-words'>{title}</strong>
       </>
     )
   }
 
   return inboxNotifications.length === 0 ? (
-    <div className='p-4 text-center text-gray-500'>There aren't any notifications yet.</div>
+    <div className='p-3 text-center text-sm text-gray-500'>There aren't any notifications yet.</div>
   ) : (
     <div className={className} {...props}>
       <InboxNotificationList className='max-h-[calc(100vh-10rem)] divide-y divide-gray-200 overflow-y-auto'>
@@ -44,6 +46,7 @@ function Inbox({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
             inboxNotification={inboxNotification}
             href={`/snippet/${inboxNotification.roomId}`}
             showActions='hover'
+            className='p-3 text-sm'
             overrides={{
               INBOX_NOTIFICATION_THREAD_COMMENTS_LIST: (list, room) => (
                 <NotificationContent roomId={inboxNotification.roomId} />
@@ -79,7 +82,11 @@ export function InboxPopover() {
   return (
     <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
       <Popover.Trigger asChild>
-        <Button variant='ghost' size='icon' className='relative h-8 w-8 p-0 hover:bg-transparent transform translate-y-[1px]'>
+        <Button
+          variant='ghost'
+          size='icon'
+          className='relative h-8 w-8 translate-y-[1px] transform p-0 hover:bg-transparent'
+          aria-label='Open notifications'>
           <ErrorBoundary fallback={null}>
             <ClientSideSuspense fallback={null}>
               <InboxPopoverUnreadCount />
@@ -103,25 +110,26 @@ export function InboxPopover() {
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className='flex max-h-[calc(100vh-5rem)] w-[460px] flex-col overflow-hidden rounded-xl bg-white shadow-lg outline-none'
+          className='flex max-h-[calc(100vh-5rem)] w-[calc(100vw-2rem)] max-w-[460px] flex-col overflow-hidden rounded-xl bg-white shadow-lg outline-none'
           sideOffset={5}>
-          <ErrorBoundary fallback={<div className='p-4 text-center text-red-500'>Error loading notifications</div>}>
-            <ClientSideSuspense fallback={<div className='p-4 text-center'>Loading...</div>}>
-              <div className='sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white p-4'>
-                <h3 className='text-lg font-semibold'>Notifications</h3>
+          <ErrorBoundary
+            fallback={<div className='p-3 text-center text-sm text-red-500'>Error loading notifications</div>}>
+            <ClientSideSuspense fallback={<div className='p-3 text-center text-sm'>Loading...</div>}>
+              <div className='sticky top-0 z-10 flex flex-col border-b border-gray-200 bg-white p-3'>
+                <h3 className='mb-2 text-base font-semibold'>Notifications</h3>
                 <div className='flex space-x-2'>
                   <Button
                     variant='ghost'
                     size='sm'
                     onClick={markAllInboxNotificationsAsRead}
-                    className='text-sm text-blue-600 hover:text-blue-700'>
+                    className='flex-1 text-xs text-blue-600 hover:text-blue-700 sm:text-sm'>
                     Mark all as read
                   </Button>
                   <Button
                     variant='ghost'
                     size='sm'
                     onClick={deleteAllInboxNotifications}
-                    className='text-sm text-red-600 hover:text-red-700'>
+                    className='flex-1 text-xs text-red-600 hover:text-red-700 sm:text-sm'>
                     Delete all
                   </Button>
                 </div>
