@@ -27,6 +27,7 @@ import StarHoverIcon from '../assets/star_hover.svg'
 import supabase from '@/lib/supabase'
 import ShareButton from './ShareButton'
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
+import { isEmpty } from 'lodash'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
@@ -35,8 +36,8 @@ const SnippetDetail: FC = () => {
   const location = useLocation()
   const t = translations[language]
 
-  const { data: snippet, isLoading } = useSnippet(snippetId || '', language)
-  const sourceLanguage = snippet?.language.primary_language.toLowerCase()
+  const { data: snippet, isLoading, isError } = useSnippet(snippetId || '', language)
+  const sourceLanguage = snippet?.language?.primary_language?.toLowerCase()
   const [labels, setLabels] = useState<Label[]>([])
   const [isStarHovered, setIsStarHovered] = useState(false)
   const { toast } = useToast()
@@ -133,7 +134,7 @@ const SnippetDetail: FC = () => {
     }
   }
 
-  if (!snippet || !snippetId) {
+  if (isError || isEmpty(snippet) || !snippetId) {
     return (
       <div className='flex h-screen items-center justify-center'>
         <div className='text-center'>
@@ -150,7 +151,7 @@ const SnippetDetail: FC = () => {
   const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
 
   return (
-    <div className='h-full w-full p-2 max-w-3xl mx-auto sm:py-6'>
+    <div className='mx-auto h-full w-full max-w-3xl p-2 sm:py-6'>
       <Card className='w-full'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={goback}>
@@ -172,16 +173,14 @@ const SnippetDetail: FC = () => {
                   onClick={() => {
                     const content = `${snippet.context.before}\n\n${snippet.context.main}\n\n${snippet.context.after}`
                     downloadText(content, `transcript_${snippetId}_${snippetLanguage}.txt`)
-                  }}
-                >
+                  }}>
                   {t.originalTranscript} ({snippetLanguage})
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
                     const content = `${snippet.context.before_en}\n\n${snippet.context.main_en}\n\n${snippet.context.after_en}`
                     downloadText(content, `transcript_${snippetId}_en.txt`)
-                  }}
-                >
+                  }}>
                   {t.translatedTranscript} (English)
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -199,8 +198,7 @@ const SnippetDetail: FC = () => {
                         duration: 3000
                       })
                     }
-                  }}
-                >
+                  }}>
                   {t.audio}
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -211,8 +209,7 @@ const SnippetDetail: FC = () => {
               className='flex items-center space-x-2'
               onMouseEnter={() => setIsStarHovered(true)}
               onMouseLeave={() => setIsStarHovered(false)}
-              onClick={handleStarClick}
-            >
+              onClick={handleStarClick}>
               <img src={getStarIcon()} alt='Star' className='h-4 w-4' />
             </Button>
           </div>
