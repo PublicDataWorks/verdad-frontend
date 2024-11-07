@@ -1,8 +1,9 @@
-'use client'
+import type { ReactNode } from 'react'
+import type React from 'react'
 
-import React, { createContext, useState, useContext, ReactNode } from 'react'
+import { createContext, useState, useContext, useCallback, useMemo } from 'react'
 
-type Language = 'spanish' | 'english'
+type Language = 'english' | 'spanish'
 
 interface LanguageContextType {
   language: Language
@@ -24,7 +25,27 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('english')
+  const [internalLanguage, setInternalLanguage] = useState<Language>(() => {
+    const storedLanguage = localStorage.getItem('language')
+    if (storedLanguage !== 'english' && storedLanguage !== 'spanish') {
+      return 'english'
+    }
 
-  return <LanguageContext.Provider value={{ language, setLanguage }}>{children}</LanguageContext.Provider>
+    return storedLanguage
+  })
+
+  const setLanguage = useCallback((l: Language) => {
+    localStorage.setItem('language', l)
+    setInternalLanguage(l)
+  }, [])
+
+  const contextValue = useMemo(
+    () => ({
+      language: internalLanguage,
+      setLanguage
+    }),
+    [internalLanguage, setLanguage]
+  )
+
+  return <LanguageContext.Provider value={contextValue}>{children}</LanguageContext.Provider>
 }
