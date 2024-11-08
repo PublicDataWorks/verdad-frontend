@@ -83,9 +83,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           variant='ghost'
           size='sm'
           className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
-          ${currentLikeStatus === 1 ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'hover:bg-zinc-100'}`}
-          onClick={e => handleLikeClick(e, 1)}
-          disabled={likeSnippetMutation.isPending}>
+  ${currentLikeStatus === 1 ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'hover:bg-zinc-100'}`}
+          onClick={e => handleLikeClick(e, 1)}>
           <ThumbsUp className='h-4 w-4' />
         </Button>
 
@@ -93,9 +92,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           variant='ghost'
           size='sm'
           className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
-          ${currentLikeStatus === -1 ? 'bg-red-100 text-red-700 hover:bg-red-100' : 'hover:bg-zinc-100'}`}
-          onClick={e => handleLikeClick(e, -1)}
-          disabled={likeSnippetMutation.isPending}>
+  ${currentLikeStatus === -1 ? 'bg-red-100 text-red-700 hover:bg-red-100' : 'hover:bg-zinc-100'}`}
+          onClick={e => handleLikeClick(e, -1)}>
           <ThumbsDown className='h-4 w-4' />
         </Button>
       </div>
