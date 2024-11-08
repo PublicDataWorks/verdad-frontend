@@ -1,5 +1,7 @@
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
+import { useQuery, useInfiniteQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
+import { useCallback } from 'react'
+import { debounce } from 'lodash'
 
 interface Context {
   main: string
@@ -59,6 +61,8 @@ interface Context {
   after_en: string
 }
 
+export type LikeStatus = 1 | 0 | -1
+
 export interface Snippet {
   id: string
   title: string
@@ -89,6 +93,12 @@ export interface Snippet {
       spanish: string
     }
   }
+  user_like_status: LikeStatus | null
+}
+
+interface LikeSnippetVariables {
+  snippetId: string
+  likeStatus: LikeStatus
 }
 
 interface PaginatedResponse {
@@ -186,4 +196,73 @@ export const sortSnippets = (snippets: Snippet[], sortBy: string) => {
     }
     return 0
   })
+}
+
+const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariables) => {
+  const { data, error } = await supabase.rpc('like_snippet', {
+    snippet_id: snippetId,
+    value: likeStatus
+  })
+  if (error) {
+    throw error
+  }
+  return data
+}
+
+export function useLikeSnippet(wait = 500) {
+  const queryClient = useQueryClient()
+
+  const mutation = useMutation({
+    mutationFn: likeSnippet,
+    onMutate: async ({ snippetId, likeStatus }) => {
+      await queryClient.cancelQueries({ queryKey: snippetKeys.all })
+
+      const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
+
+      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (old: any) => {
+        if (!old) return old
+
+        if ('pages' in old) {
+          return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+              ...page,
+              snippets: page.snippets.map((snippet: Snippet) =>
+                snippet.id === snippetId ? { ...snippet, user_like_status: likeStatus } : snippet
+              )
+            }))
+          }
+        }
+
+        return {
+          ...old,
+          user_like_status: likeStatus
+        }
+      })
+
+      return { previousSnippets }
+    },
+    onError: (err, variables, context: any) => {
+      if (context?.previousSnippets) {
+        context.previousSnippets.forEach(([queryKey, previousValue]: [unknown[], any]) => {
+          queryClient.setQueriesData({ queryKey }, previousValue)
+        })
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: snippetKeys.all })
+    }
+  })
+
+  const debouncedMutate = useCallback(
+    debounce((variables: LikeSnippetVariables) => {
+      mutation.mutate(variables)
+    }, wait),
+    [mutation.mutate, wait]
+  )
+
+  return {
+    ...mutation,
+    mutate: debouncedMutate
+  }
 }

@@ -1,22 +1,20 @@
-'use client'
-
 import type React from 'react'
 import { useState, useEffect } from 'react'
 import type { FC } from 'react'
-import { useSnippet } from '../hooks/useSnippets'
+import { useSnippet, useLikeSnippet } from '../hooks/useSnippets'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, Download, ChevronDown } from 'lucide-react'
+import { ArrowLeft, Download, ChevronDown, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import AudioPlayer from './AudioPlayer'
 import LanguageTabs from './LanguageTab'
 import LabelButton from './LabelButton'
 import Spinner from './Spinner'
 import LiveblocksComments from '../components/LiveblocksComments'
-import { downloadAudio, downloadText, formatDate } from '@/lib/utils'
+import { downloadAudio, downloadText } from '@/lib/utils'
 import AddLabelButton from './AddLabelButton'
-import type { Label } from '../hooks/useSnippets'
+import type { Label, LikeStatus } from '../hooks/useSnippets'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { useToast } from '@/hooks/use-toast'
@@ -27,7 +25,7 @@ import StarHoverIcon from '../assets/star_hover.svg'
 import supabase from '@/lib/supabase'
 import ShareButton from './ShareButton'
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
-import { isEmpty } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
@@ -45,6 +43,8 @@ const SnippetDetail: FC = () => {
     const localStarred = getLocalStorageItem(`starred_${snippetId}`)
     return localStarred !== null ? localStarred : snippet?.starred_by_user || false
   })
+  const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet?.user_like_status ?? null)
+  const likeSnippetMutation = useLikeSnippet()
 
   const [snippetLanguage, setSnippetLanguage] = useState(sourceLanguage)
 
@@ -52,8 +52,9 @@ const SnippetDetail: FC = () => {
     if (snippet) {
       setLabels(snippet.labels)
       setSnippetLanguage(sourceLanguage)
+      setCurrentLikeStatus(snippet.user_like_status ?? null)
     }
-  }, [snippet])
+  }, [snippet, sourceLanguage])
 
   useEffect(() => {
     if (snippet) {
@@ -64,6 +65,40 @@ const SnippetDetail: FC = () => {
   useEffect(() => {
     setLocalStorageItem(`starred_${snippetId}`, isStarred)
   }, [isStarred, snippetId])
+
+  useEffect(() => {
+    return () => {
+      likeSnippetMutation.mutate.cancel()
+    }
+  }, [likeSnippetMutation.mutate])
+
+  const handleLikeClick = async (e: React.MouseEvent, newLikeStatus: 1 | -1) => {
+    e.stopPropagation()
+
+    try {
+      const likeStatus =
+        isNil(currentLikeStatus) || currentLikeStatus === 0
+          ? newLikeStatus
+          : currentLikeStatus === newLikeStatus
+            ? 0
+            : newLikeStatus
+
+      setCurrentLikeStatus(likeStatus)
+
+      await likeSnippetMutation.mutateAsync({
+        snippetId: snippetId!,
+        likeStatus: likeStatus
+      })
+    } catch (error) {
+      setCurrentLikeStatus(snippet?.user_like_status ?? null)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to update rating. Please try again.',
+        duration: 3000
+      })
+    }
+  }
 
   const handleLabelAdded = (newLabels: Label[] | ((prevLabels: Label[]) => Label[])) => {
     if (typeof newLabels === 'function') {
@@ -218,7 +253,28 @@ const SnippetDetail: FC = () => {
           <div className='space-y-4'>
             <div>
               <h2 className='text-2xl font-bold'>{snippet.title}</h2>
-              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
+              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
+            </div>
+            <div className='mb-4 flex items-center'>
+              <Button
+                variant='ghost'
+                size='sm'
+                className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
+              ${currentLikeStatus === 1 ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'hover:bg-zinc-100'}`}
+                onClick={e => handleLikeClick(e, 1)}
+                disabled={likeSnippetMutation.isPending}>
+                <ThumbsUp className='h-4 w-4' />
+              </Button>
+
+              <Button
+                variant='ghost'
+                size='sm'
+                className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
+              ${currentLikeStatus === -1 ? 'bg-red-100 text-red-700 hover:bg-red-100' : 'hover:bg-zinc-100'}`}
+                onClick={e => handleLikeClick(e, -1)}
+                disabled={likeSnippetMutation.isPending}>
+                <ThumbsDown className='h-4 w-4' />
+              </Button>
             </div>
             <div className='space-y-2'>
               <h3 className='font-semibold'>{t.summary}</h3>

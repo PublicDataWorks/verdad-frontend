@@ -41,7 +41,9 @@ export const translations = {
     logIn: 'Log In',
     createAccount: 'Create Account',
     all: 'All',
-    clear: 'Clear'
+    clear: 'Clear',
+    writeAComment: 'Write a comment',
+    replyToThread: 'Reply to thread'
   },
   spanish: {
     filters: 'Filtros',
@@ -85,6 +87,8 @@ export const translations = {
     logIn: 'Iniciar sesión',
     createAccount: 'Crear cuenta',
     all: 'Todos',
-    clear: 'Limpiar'
+    clear: 'Limpiar',
+    writeAComment: 'Escribe un comentario',
+    replyToThread: 'Responder al hilo'
   }
 }

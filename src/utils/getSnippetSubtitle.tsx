@@ -1,8 +1,10 @@
 import { format } from 'date-fns-tz'
 import { getPoliticalLabel } from './getPoliticalLabel'
 import { ConfidenceChart } from '@/components/ui/ConfidenceScoreBar'
+import { Language } from '@/providers/language'
+import { translations } from '@/constants/translations'
 
-export function getSnippetSubtitle(snippet: any): JSX.Element {
+export function getSnippetSubtitle(snippet: any, language: Language): JSX.Element {
   const parts = [
     snippet?.audio_file?.radio_station_code,
     snippet?.audio_file?.location_state,
@@ -11,13 +13,14 @@ export function getSnippetSubtitle(snippet: any): JSX.Element {
 
   // Get the political label
   const score = snippet?.political_leaning?.score
-  const label = score !== null && score !== undefined ? getPoliticalLabel(score) : ''
+  const label = score !== null && score !== undefined ? getPoliticalLabel(score, language) : ''
 
   // Map the political label to the appropriate color class
   const labelColorClass = (() => {
-    if (label === 'Center') return 'text-purple-600'
-    if (label === 'Left' || label === 'Center Left') return 'text-blue-400'
-    if (label === 'Right' || label === 'Center Right') return 'text-red-500'
+    if (label === translations[language].center) return 'text-purple-600'
+    if (label === translations[language].left || label === translations[language]['center-left']) return 'text-blue-400'
+    if (label === translations[language].right || label === translations[language]['center-right'])
+      return 'text-red-500'
     return ''
   })()
 
