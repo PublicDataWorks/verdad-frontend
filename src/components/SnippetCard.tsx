@@ -3,12 +3,14 @@ import { ThumbsUp, ThumbsDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LabelButton from './LabelButton'
 import LiveblocksComments from './LiveblocksComments'
-import type { Snippet, Label } from '../hooks/useSnippets'
+import type { Snippet, Label, LikeStatus } from '../hooks/useSnippets'
 import { useLikeSnippet } from '../hooks/useSnippets'
 import AddLabelButton from './AddLabelButton'
 import ShareButton from './ShareButton'
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { useLanguage } from '@/providers/language'
+import { isNil } from 'lodash'
+
 interface SnippetCardProps {
   snippet: Snippet
   onSnippetClick: (id: string) => void
@@ -17,11 +19,11 @@ interface SnippetCardProps {
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
   const { language } = useLanguage()
   const [labels, setLabels] = useState(snippet?.labels || [])
-  const [currentLikeStatus, setCurrentLikeStatus] = useState<1 | 0 | -1>(snippet.user_like_status)
+  const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet.user_like_status ?? null)
   const likeSnippetMutation = useLikeSnippet()
 
   useEffect(() => {
-    setCurrentLikeStatus(snippet.user_like_status)
+    setCurrentLikeStatus(snippet.user_like_status ?? null)
   }, [snippet.user_like_status])
 
   useEffect(() => {
@@ -38,15 +40,21 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
     e.stopPropagation()
 
     try {
-      const likeStatus = currentLikeStatus === newLikeStatus ? 0 : newLikeStatus
+      const likeStatus =
+        isNil(currentLikeStatus) || currentLikeStatus === 0
+          ? newLikeStatus
+          : currentLikeStatus === newLikeStatus
+            ? 0
+            : newLikeStatus
+
       setCurrentLikeStatus(likeStatus)
 
       await likeSnippetMutation.mutateAsync({
         snippetId: snippet.id,
-        likeStatus
+        likeStatus: likeStatus
       })
     } catch (error) {
-      setCurrentLikeStatus(snippet.user_like_status)
+      setCurrentLikeStatus(snippet.user_like_status ?? null)
     }
   }
 
