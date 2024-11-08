@@ -8,13 +8,14 @@ import { useLikeSnippet } from '../hooks/useSnippets'
 import AddLabelButton from './AddLabelButton'
 import ShareButton from './ShareButton'
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
-
+import { useLanguage } from '@/providers/language'
 interface SnippetCardProps {
   snippet: Snippet
   onSnippetClick: (id: string) => void
 }
 
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
+  const { language } = useLanguage()
   const [labels, setLabels] = useState(snippet?.labels || [])
   const [currentLikeStatus, setCurrentLikeStatus] = useState<1 | 0 | -1>(snippet.user_like_status)
   const likeSnippetMutation = useLikeSnippet()
@@ -58,14 +59,16 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   }
 
   return (
-    <div className='mt-2 cursor-pointer rounded-lg border bg-white p-6' onClick={() => onSnippetClick(snippet.id)}>
+    <div className='mt-2 rounded-lg border bg-white p-6'>
       <div className='mb-2 flex items-start justify-between'>
-        <h3 className='text-lg font-medium'>{snippet.title}</h3>
+        <h3 className='cursor-pointer text-lg font-medium' onClick={() => onSnippetClick(snippet.id)}>
+          {snippet.title}
+        </h3>
         <div className='flex space-x-2'>
           <ShareButton snippetId={snippet.id} />
         </div>
       </div>
-      <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
+      <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
       <p className='mb-4'>{snippet.summary}</p>
       <div className='mb-4 flex items-center'>
         <Button

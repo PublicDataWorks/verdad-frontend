@@ -2,6 +2,8 @@ import type React from 'react'
 import { useThreads, RoomProvider } from '@liveblocks/react'
 import { Composer, Thread } from '@liveblocks/react-ui'
 import Spinner from './Spinner'
+import { useLanguage } from '@/providers/language'
+import { translations } from '@/constants/translations'
 
 interface LiveblocksCommentsProps {
   snippetId: string
@@ -22,6 +24,8 @@ const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, show
 
 const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetId }) => {
   const { threads, error, isLoading } = useThreads()
+  const { language } = useLanguage()
+  const t = translations[language]
 
   if (isLoading) {
     return (
@@ -38,11 +42,20 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
   return (
     <div className='mt-8'>
       {threads.map(thread => (
-        <Thread key={thread.id} thread={thread} />
+        <Thread
+          key={thread.id}
+          thread={thread}
+          overrides={{
+            THREAD_COMPOSER_PLACEHOLDER: t.replyToThread
+          }}
+        />
       ))}
       <Composer
         metadata={{
           snippetId
+        }}
+        overrides={{
+          COMPOSER_PLACEHOLDER: t.writeAComment
         }}
       />
     </div>

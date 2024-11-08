@@ -1,15 +1,17 @@
-type PoliticalLabel = 'Left' | 'Center Left' | 'Center' | 'Center Right' | 'Right'
+import { translations } from '@/constants/translations'
+import { Language } from '@/providers/language'
 
-export function getPoliticalLabel(value: number): PoliticalLabel {
+export function getPoliticalLabel(value: number, language: Language): string {
+  console.log(language)
   if (value >= -1.0 && value <= -0.7) {
-    return 'Left'
+    return translations[language].left
   } else if (value > -0.7 && value <= -0.3) {
-    return 'Center Left'
+    return translations[language]['center-left']
   } else if (value > -0.3 && value <= 0.3) {
-    return 'Center'
+    return translations[language].center
   } else if (value > 0.3 && value <= 0.7) {
-    return 'Center Right'
+    return translations[language]['center-right']
   } else {
-    return 'Right'
+    return translations[language].right
   }
 }

@@ -218,7 +218,7 @@ const SnippetDetail: FC = () => {
           <div className='space-y-4'>
             <div>
               <h2 className='text-2xl font-bold'>{snippet.title}</h2>
-              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
+              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
             </div>
             <div className='space-y-2'>
               <h3 className='font-semibold'>{t.summary}</h3>
