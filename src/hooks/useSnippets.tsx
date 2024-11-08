@@ -1,5 +1,7 @@
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
+import { useQuery, useInfiniteQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
+import { useCallback } from 'react'
+import { debounce } from 'lodash'
 
 interface Context {
   main: string
@@ -89,6 +91,12 @@ export interface Snippet {
       spanish: string
     }
   }
+  user_like_status: 1 | 0 | -1
+}
+
+interface LikeSnippetVariables {
+  snippetId: string
+  likeStatus: 1 | 0 | -1
 }
 
 interface PaginatedResponse {
@@ -186,4 +194,50 @@ export const sortSnippets = (snippets: Snippet[], sortBy: string) => {
     }
     return 0
   })
+}
+
+const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariables) => {
+  // const { data, error } = await supabase.rpc('like_snippet', {
+  //   snippet_id: snippetId,
+  //   like_status: likeStatus
+  // })
+
+  // if (error) {
+  //   throw error
+  // }
+
+  // return data
+  await new Promise(resolve => setTimeout(resolve, 300))
+
+  // Log the action for debugging
+  console.log(`Mocked like action: Snippet ${snippetId} liked with status ${likeStatus}`)
+
+  // Return mock response
+  return {
+    data: {
+      success: true,
+      snippet_id: snippetId,
+      like_status: likeStatus
+    },
+    error: null
+  }
+}
+
+export function useLikeSnippet(wait = 500) {
+  const mutation = useMutation({
+    mutationFn: likeSnippet
+  })
+
+  // Wrap the mutate function with debounce
+  const debouncedMutate = useCallback(
+    debounce((variables: LikeSnippetVariables) => {
+      mutation.mutate(variables)
+    }, wait),
+    [mutation.mutate, wait]
+  )
+
+  return {
+    ...mutation,
+    mutate: debouncedMutate
+  }
 }

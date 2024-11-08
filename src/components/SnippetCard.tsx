@@ -1,20 +1,12 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
-import Star from '../assets/star.svg'
-import Starred from '../assets/starred.svg'
-import StarHover from '../assets/star_hover.svg'
+import { ThumbsUp, ThumbsDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LabelButton from './LabelButton'
 import LiveblocksComments from './LiveblocksComments'
 import type { Snippet, Label } from '../hooks/useSnippets'
-import { formatDate } from '../lib/utils'
+import { useLikeSnippet } from '../hooks/useSnippets'
 import AddLabelButton from './AddLabelButton'
-
-import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
-import supabase from '@/lib/supabase'
 import ShareButton from './ShareButton'
-import { useToast } from '../hooks/use-toast'
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 
 interface SnippetCardProps {
@@ -23,66 +15,37 @@ interface SnippetCardProps {
 }
 
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
-  const [isStarHovered, setIsStarHovered] = useState(false)
-  const [labels, setLabels] = useState(snippet.labels || [])
-
-  const [isStarred, setIsStarred] = useState(() => {
-    const localStarred = getLocalStorageItem(`starred_${snippet.id}`)
-    return localStarred !== null ? localStarred : snippet.starred_by_user
-  })
+  const [labels, setLabels] = useState(snippet?.labels || [])
+  const [currentLikeStatus, setCurrentLikeStatus] = useState<1 | 0 | -1>(snippet.user_like_status)
+  const likeSnippetMutation = useLikeSnippet()
 
   useEffect(() => {
-    setLocalStorageItem(`starred_${snippet.id}`, isStarred)
-  }, [isStarred, snippet.id])
+    setCurrentLikeStatus(snippet.user_like_status)
+  }, [snippet.user_like_status])
 
   useEffect(() => {
     setLabels(snippet.labels || [])
   }, [snippet.labels])
 
-  const getStarIcon = () => {
-    if (isStarred) return Starred
-    if (isStarHovered) return StarHover
-    return Star
-  }
+  useEffect(() => {
+    return () => {
+      likeSnippetMutation.mutate.cancel()
+    }
+  }, [likeSnippetMutation.mutate])
 
-  const { toast } = useToast()
-
-  const handleStarClick = async (e: React.MouseEvent) => {
+  const handleLikeClick = async (e: React.MouseEvent, newLikeStatus: 1 | -1) => {
     e.stopPropagation()
-    const newStarred = !isStarred
-    setIsStarred(newStarred)
 
     try {
-      const { data, error } = await supabase.rpc('toggle_star_snippet', {
-        snippet_id: snippet.id
-      })
+      const likeStatus = currentLikeStatus === newLikeStatus ? 0 : newLikeStatus
+      setCurrentLikeStatus(likeStatus)
 
-      if (error) throw error
-
-      const serverStarred = data.data.snippet_starred
-      const message = data.data.message
-
-      if (serverStarred !== newStarred) {
-        setIsStarred(serverStarred)
-        setLocalStorageItem(`starred_${snippet.id}`, serverStarred)
-      }
-
-      toast({
-        title: 'Success',
-        description: message,
-        duration: 2000
+      await likeSnippetMutation.mutateAsync({
+        snippetId: snippet.id,
+        likeStatus
       })
     } catch (error) {
-      console.error('Error toggling star:', error)
-      setIsStarred(!newStarred)
-      setLocalStorageItem(`starred_${snippet.id}`, !newStarred)
-
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to update star status. Please try again.',
-        duration: 3000
-      })
+      setCurrentLikeStatus(snippet.user_like_status)
     }
   }
 
@@ -100,19 +63,31 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
         <h3 className='text-lg font-medium'>{snippet.title}</h3>
         <div className='flex space-x-2'>
           <ShareButton snippetId={snippet.id} />
-          <Button
-            variant='ghost'
-            size='icon'
-            className='hover:bg-transparent'
-            onMouseEnter={() => setIsStarHovered(true)}
-            onMouseLeave={() => setIsStarHovered(false)}
-            onClick={handleStarClick}>
-            <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
-          </Button>
         </div>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
       <p className='mb-4'>{snippet.summary}</p>
+      <div className='mb-4 flex items-center'>
+        <Button
+          variant='ghost'
+          size='sm'
+          className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
+          ${currentLikeStatus === 1 ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'hover:bg-zinc-100'}`}
+          onClick={e => handleLikeClick(e, 1)}
+          disabled={likeSnippetMutation.isPending}>
+          <ThumbsUp className='h-4 w-4' />
+        </Button>
+
+        <Button
+          variant='ghost'
+          size='sm'
+          className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
+          ${currentLikeStatus === -1 ? 'bg-red-100 text-red-700 hover:bg-red-100' : 'hover:bg-zinc-100'}`}
+          onClick={e => handleLikeClick(e, -1)}
+          disabled={likeSnippetMutation.isPending}>
+          <ThumbsDown className='h-4 w-4' />
+        </Button>
+      </div>
       <div className='flex justify-between'>
         <div className='flex flex-wrap items-baseline gap-2'>
           {labels.map((label, index) => (
