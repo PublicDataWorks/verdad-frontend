@@ -56,7 +56,7 @@ export default function SearchInterface() {
   useEffect(() => {
     const trackUserSignup = async () => {
       try {
-        await supabaseClient.rpc('track_user_signups', { origin: '/knight' })
+        await supabaseClient.rpc('track_user_signups', { origin: '/knt' })
       } catch (error) {}
     }
 
@@ -94,7 +94,7 @@ export default function SearchInterface() {
   const padding = showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'px-6 md:px-20 lg:px-40 2xl:px-80'
 
   return (
-    <div className='flex h-[calc(-60px+100svh)] flex-1 rounded-lg'>
+    <div className='flex h-[calc(-60px+100svh)] flex-1 rounded-lg '>
       {showSidebar && <Sidebar />}
       <div className={`flex w-full flex-col pt-6`}>
         {isMobile && (

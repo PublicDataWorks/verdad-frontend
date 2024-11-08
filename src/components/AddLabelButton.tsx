@@ -108,7 +108,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
               {suggestions.map((suggestion, index) => (
                 <li
                   key={index}
-                  className='cursor-pointer px-2 py-1 hover:bg-gray-100'
+                  className='cursor-pointer px-2 py-1 text-sm hover:bg-gray-100'
                   onClick={() => createLabel(suggestion)}>
                   {suggestion}
                 </li>

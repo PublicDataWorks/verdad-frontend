@@ -11,7 +11,7 @@ import supabase from '@/lib/supabase'
 import { useLanguage } from '../providers/language'
 import { translations } from '@/constants/translations'
 import LanguageDropdown from './LanguageDropdown'
-
+import { ModeToggle } from './ui/mode-toggle'
 const HeaderBar: React.FC = () => {
   const { user } = useAuth()
   const { language } = useLanguage()
@@ -26,7 +26,7 @@ const HeaderBar: React.FC = () => {
   }
 
   return (
-    <header className='flex items-center justify-between bg-gradient-to-b from-header-blue to-header-white px-8 py-2'>
+    <header className='from-header-blue to-header-white flex items-center justify-between bg-gradient-to-b px-8 py-2'>
       <Link to='/' className='no-underline'>
         <div className='font-inter cursor-pointer py-2 text-2xl font-bold leading-7 tracking-wide text-white'>
           VERDAD
@@ -34,6 +34,7 @@ const HeaderBar: React.FC = () => {
       </Link>
       <div className='flex items-center space-x-4'>
         <InboxPopover />
+        <ModeToggle />
         <LanguageDropdown />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

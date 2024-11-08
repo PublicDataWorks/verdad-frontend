@@ -27,6 +27,7 @@ import AuthenticatedLayout from './layouts/AuthenticatedLayout'
 import PublicSnippet from './components/PublicSnippet'
 import { LanguageProvider } from './providers/language'
 import LandingPage from './pages/Landing'
+import { ThemeProvider } from './providers/theme'
 
 const queryClient = new QueryClient()
 
@@ -36,21 +37,23 @@ export default function App(): ReactElement {
       <AuthProvider>
         <SidebarProvider>
           <LanguageProvider>
-            <Router>
-              <Routes>
-                <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
-                <Route path={LOGIN_PATH} element={<LoginPage />} />
-                <Route path={SIGNUP_PATH} element={<SignupPage />} />
-                <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
-                <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
-                <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />
-                <Route element={<AuthenticatedLayout />}>
-                  <Route path={SEARCH_PATH} element={<SearchInterface />} />
-                  <Route path={SNIPPET_DETAIL_PATH} element={<SnippetDetail />} />
-                </Route>
-                <Route path='*' element={<LandingPage />} />
-              </Routes>
-            </Router>
+            <ThemeProvider>
+              <Router>
+                <Routes>
+                  <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
+                  <Route path={LOGIN_PATH} element={<LoginPage />} />
+                  <Route path={SIGNUP_PATH} element={<SignupPage />} />
+                  <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
+                  <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
+                  <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />
+                  <Route element={<AuthenticatedLayout />}>
+                    <Route path={SEARCH_PATH} element={<SearchInterface />} />
+                    <Route path={SNIPPET_DETAIL_PATH} element={<SnippetDetail />} />
+                  </Route>
+                  <Route path='*' element={<LandingPage />} />
+                </Routes>
+              </Router>
+            </ThemeProvider>
           </LanguageProvider>
         </SidebarProvider>
       </AuthProvider>

@@ -95,9 +95,11 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   }
 
   return (
-    <div className='mt-2 cursor-pointer rounded-lg border bg-white p-6' onClick={() => onSnippetClick(snippet.id)}>
+    <div
+      className='mt-2 cursor-pointer rounded-lg border-border bg-card p-6'
+      onClick={() => onSnippetClick(snippet.id)}>
       <div className='mb-2 flex items-start justify-between'>
-        <h3 className='text-lg font-medium'>{snippet.title}</h3>
+        <h3 className='text-lg font-medium text-primary'>{snippet.title}</h3>
         <div className='flex space-x-2'>
           <ShareButton snippetId={snippet.id} />
           <Button
@@ -111,7 +113,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           </Button>
         </div>
       </div>
-      <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
+      <p className='mb-4 text-xs text-tertiary'>{getSnippetSubtitle(snippet)}</p>
       <p className='mb-4'>{snippet.summary}</p>
       <div className='flex justify-between'>
         <div className='flex flex-wrap items-baseline gap-2'>

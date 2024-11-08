@@ -2,7 +2,7 @@ const defaultConfig = require('tailwindcss/defaultConfig')
 
 /** @type {import('tailwindcss/types').Config} */
 const config = {
-  darkMode: ['class'],
+  darkMode: ['class', '[data-theme="dark"]'],
   content: ['index.html', 'src/**/*.tsx'],
   theme: {
     fontFamily: {
@@ -55,7 +55,7 @@ const config = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))'
         },
-        tertiary: '#A1A1AA',
+        tertiary: 'hsl(var(--tertiary))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -65,7 +65,20 @@ const config = {
           3: 'hsl(var(--chart-3))',
           4: 'hsl(var(--chart-4))',
           5: 'hsl(var(--chart-5))'
-        }
+        },
+        'blue-light': 'var(--blue-light)',
+        blue: 'var(--blue)',
+        'border-gray': 'var(--border-gray)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-primary': 'var(--text-primary)',
+        'icon-secondary': 'var(--icon-secondary)',
+        'text-tertiary': 'var(--text-tertiary)',
+        'text-blue': 'var(--text-blue)',
+        'icon-blue': 'var(--icon-blue)',
+        'button-from': 'var(--button-from)',
+        'button-to': 'var(--button-to)',
+        'selected-from': 'var(--selected-from)',
+        'selected-to': 'var(--selected-to)'
       },
       borderRadius: {
         lg: 'var(--radius)',

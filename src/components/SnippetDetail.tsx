@@ -152,7 +152,7 @@ const SnippetDetail: FC = () => {
 
   return (
     <div className='mx-auto h-full w-full max-w-3xl p-2 sm:py-6'>
-      <Card className='w-full'>
+      <Card className='w-full border-border'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={goback}>
             <ArrowLeft className='h-4 w-4' />
@@ -218,7 +218,7 @@ const SnippetDetail: FC = () => {
           <div className='space-y-4'>
             <div>
               <h2 className='text-2xl font-bold'>{snippet.title}</h2>
-              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet)}</p>
+              <p className='text-sm text-tertiary'>{getSnippetSubtitle(snippet)}</p>
             </div>
             <div className='space-y-2'>
               <h3 className='font-semibold'>{t.summary}</h3>
