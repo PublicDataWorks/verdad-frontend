@@ -39,7 +39,7 @@ function Inbox({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
     <div className='p-3 text-center text-sm text-gray-500'>There aren't any notifications yet.</div>
   ) : (
     <div className={className} {...props}>
-      <InboxNotificationList className='max-h-[calc(100vh-10rem)] divide-y divide-gray-200 overflow-y-auto'>
+      <InboxNotificationList className='max-h-[calc(100svh-180px)] divide-y divide-gray-200 overflow-y-auto'>
         {inboxNotifications.map(inboxNotification => (
           <InboxNotification
             key={inboxNotification.id}

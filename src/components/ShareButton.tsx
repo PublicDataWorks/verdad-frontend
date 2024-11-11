@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Share2, Check, Copy } from 'lucide-react'
 import { Button } from './ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
 import { toast } from '@/hooks/use-toast'
 
@@ -46,19 +46,15 @@ const ShareButton: React.FC<ShareButtonProps> = ({ snippetId, showLabel = false 
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant='ghost'
-          className={showLabel ? 'flex items-center space-x-2' : 'size-icon'}
-          onClick={e => e.stopPropagation()}
-        >
+    <Popover modal>
+      <PopoverTrigger asChild>
+        <Button variant='ghost' className={showLabel ? 'flex items-center space-x-2' : 'size-icon'}>
           <Share2 className={showLabel ? 'h-4 w-4' : 'h-5 w-5'} />
           {showLabel && <span>Share</span>}
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align='end' className='w-[300px] p-0'>
-        <DropdownMenuItem className='flex-col items-start' onSelect={e => e.preventDefault()}>
+      </PopoverTrigger>
+      <PopoverContent hideWhenDetached align='end' className='z-40 w-[300px]'>
+        <div className='flex-col items-start'>
           <div className='mb-2 text-sm font-medium'>Share snippet</div>
           <div className='flex w-full items-center gap-2'>
             <code className='flex-1 truncate rounded bg-muted px-2 py-1'>{publicUrl}</code>
@@ -75,9 +71,9 @@ const ShareButton: React.FC<ShareButtonProps> = ({ snippetId, showLabel = false 
               </Tooltip>
             </TooltipProvider>
           </div>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }
 
