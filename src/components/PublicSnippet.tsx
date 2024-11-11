@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import type { FC } from 'react'
-import { useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Download, ChevronDown } from 'lucide-react'
@@ -16,6 +16,7 @@ import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { toast } from '@/hooks/use-toast'
 import LanguageTabs from '@/components/LanguageTab'
+import { useAuth } from '@/providers/auth'
 
 interface PublicSnippet {
   id: string
@@ -52,6 +53,7 @@ const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippet> => 
 }
 
 const PublicSnippet: FC = () => {
+  const { user } = useAuth()
   const { snippetId } = useParams<{ snippetId: string }>()
   const { language } = useLanguage()
   const t = translations[language]
@@ -89,6 +91,11 @@ const PublicSnippet: FC = () => {
     )
   }
 
+  if (user) {
+    return <Navigate to={`/snippet/${snippetId}`} />
+  }
+
+
   const sourceLanguage = snippet.language
   const formattedDate = formatDate(snippet.recorded_at)
   const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
@@ -96,7 +103,7 @@ const PublicSnippet: FC = () => {
   return (
     <>
       <PublicHeaderBar />
-      <Card className='mx-auto w-full max-w-3xl'>
+      <Card className='mx-auto mt-6 w-full max-w-3xl'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <div />
           <div className='flex items-center space-x-2'>
