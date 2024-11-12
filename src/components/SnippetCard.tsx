@@ -20,6 +20,10 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   const { language } = useLanguage()
   const [labels, setLabels] = useState(snippet?.labels || [])
   const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet.user_like_status ?? null)
+  const [counts, setCounts] = useState({
+    likeCount: snippet.like_count || 0,
+    dislikeCount: snippet.dislike_count || 0
+  })
   const likeSnippetMutation = useLikeSnippet()
 
   useEffect(() => {
@@ -31,10 +35,11 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   }, [snippet.labels])
 
   useEffect(() => {
-    return () => {
-      likeSnippetMutation.mutate.cancel()
-    }
-  }, [likeSnippetMutation.mutate])
+    setCounts({
+      likeCount: snippet.like_count || 0,
+      dislikeCount: snippet.dislike_count || 0
+    })
+  }, [snippet.like_count, snippet.dislike_count])
 
   const handleLikeClick = async (e: React.MouseEvent, newLikeStatus: 1 | -1) => {
     e.stopPropagation()
@@ -49,12 +54,21 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
 
       setCurrentLikeStatus(likeStatus)
 
-      await likeSnippetMutation.mutateAsync({
+      const response = await likeSnippetMutation.mutateAsync({
         snippetId: snippet.id,
         likeStatus: likeStatus
       })
+
+      setCounts({
+        likeCount: response.like_count,
+        dislikeCount: response.dislike_count
+      })
     } catch (error) {
       setCurrentLikeStatus(snippet.user_like_status ?? null)
+      setCounts({
+        likeCount: snippet.like_count || 0,
+        dislikeCount: snippet.dislike_count || 0
+      })
     }
   }
 
@@ -83,18 +97,20 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           variant='ghost'
           size='sm'
           className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
-  ${currentLikeStatus === 1 ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'hover:bg-zinc-100'}`}
+            ${currentLikeStatus === 1 ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'hover:bg-zinc-100'}`}
           onClick={e => handleLikeClick(e, 1)}>
           <ThumbsUp className='h-4 w-4' />
+          <span className='ml-2'>{counts.likeCount}</span>
         </Button>
 
         <Button
           variant='ghost'
           size='sm'
           className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
-  ${currentLikeStatus === -1 ? 'bg-red-100 text-red-700 hover:bg-red-100' : 'hover:bg-zinc-100'}`}
+            ${currentLikeStatus === -1 ? 'bg-red-100 text-red-700 hover:bg-red-100' : 'hover:bg-zinc-100'}`}
           onClick={e => handleLikeClick(e, -1)}>
           <ThumbsDown className='h-4 w-4' />
+          <span className='ml-2'>{counts.dislikeCount}</span>
         </Button>
       </div>
       <div className='flex justify-between'>

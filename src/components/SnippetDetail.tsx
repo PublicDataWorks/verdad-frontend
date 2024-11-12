@@ -4,7 +4,7 @@ import type { FC } from 'react'
 import { useSnippet, useLikeSnippet } from '../hooks/useSnippets'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ArrowLeft, Download, ChevronDown, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import AudioPlayer from './AudioPlayer'
@@ -44,8 +44,11 @@ const SnippetDetail: FC = () => {
     return localStarred !== null ? localStarred : snippet?.starred_by_user || false
   })
   const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet?.user_like_status ?? null)
+  const [counts, setCounts] = useState({
+    likeCount: 0,
+    dislikeCount: 0
+  })
   const likeSnippetMutation = useLikeSnippet()
-
   const [snippetLanguage, setSnippetLanguage] = useState(sourceLanguage)
 
   useEffect(() => {
@@ -53,6 +56,10 @@ const SnippetDetail: FC = () => {
       setLabels(snippet.labels)
       setSnippetLanguage(sourceLanguage)
       setCurrentLikeStatus(snippet.user_like_status ?? null)
+      setCounts({
+        likeCount: snippet.like_count || 0,
+        dislikeCount: snippet.dislike_count || 0
+      })
     }
   }, [snippet, sourceLanguage])
 
@@ -66,14 +73,29 @@ const SnippetDetail: FC = () => {
     setLocalStorageItem(`starred_${snippetId}`, isStarred)
   }, [isStarred, snippetId])
 
-  useEffect(() => {
-    return () => {
-      likeSnippetMutation.mutate.cancel()
-    }
-  }, [likeSnippetMutation.mutate])
+  const calculateOptimisticCounts = (
+    currentStatus: LikeStatus | null,
+    newStatus: LikeStatus,
+    currentCounts: { likeCount: number; dislikeCount: number }
+  ) => {
+    const counts = { ...currentCounts }
+
+    // Remove the effect of the current status
+    if (currentStatus === 1) counts.likeCount--
+    if (currentStatus === -1) counts.dislikeCount--
+
+    // Add the effect of the new status
+    if (newStatus === 1) counts.likeCount++
+    if (newStatus === -1) counts.dislikeCount++
+
+    return counts
+  }
 
   const handleLikeClick = async (e: React.MouseEvent, newLikeStatus: 1 | -1) => {
     e.stopPropagation()
+
+    const previousStatus = currentLikeStatus
+    const previousCounts = counts
 
     try {
       const likeStatus =
@@ -83,14 +105,25 @@ const SnippetDetail: FC = () => {
             ? 0
             : newLikeStatus
 
+      // Optimistically update UI
       setCurrentLikeStatus(likeStatus)
+      setCounts(calculateOptimisticCounts(previousStatus, likeStatus, counts))
 
-      await likeSnippetMutation.mutateAsync({
+      // Make API call
+      const response = await likeSnippetMutation.mutateAsync({
         snippetId: snippetId!,
         likeStatus: likeStatus
       })
+
+      // Update with server response
+      setCounts({
+        likeCount: response.like_count,
+        dislikeCount: response.dislike_count
+      })
     } catch (error) {
-      setCurrentLikeStatus(snippet?.user_like_status ?? null)
+      // Revert to previous state if there's an error
+      setCurrentLikeStatus(previousStatus)
+      setCounts(previousCounts)
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -255,23 +288,27 @@ const SnippetDetail: FC = () => {
               <h2 className='text-2xl font-bold'>{snippet.title}</h2>
               <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
             </div>
-            <div className='mb-4 flex items-center'>
+            <div className='mb-4 flex items-center gap-2'>
               <Button
                 variant='ghost'
                 size='sm'
                 className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
-  ${currentLikeStatus === 1 ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'hover:bg-zinc-100'}`}
-                onClick={e => handleLikeClick(e, 1)}>
+                  ${currentLikeStatus === 1 ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'hover:bg-zinc-100'}`}
+                onClick={e => handleLikeClick(e, 1)}
+                disabled={likeSnippetMutation.isPending}>
                 <ThumbsUp className='h-4 w-4' />
+                <span className='ml-2'>{counts.likeCount}</span>
               </Button>
 
               <Button
                 variant='ghost'
                 size='sm'
                 className={`group relative flex min-w-[72px] items-center rounded-full px-3 py-2 hover:bg-transparent
-  ${currentLikeStatus === -1 ? 'bg-red-100 text-red-700 hover:bg-red-100' : 'hover:bg-zinc-100'}`}
-                onClick={e => handleLikeClick(e, -1)}>
+                  ${currentLikeStatus === -1 ? 'bg-red-100 text-red-700 hover:bg-red-100' : 'hover:bg-zinc-100'}`}
+                onClick={e => handleLikeClick(e, -1)}
+                disabled={likeSnippetMutation.isPending}>
                 <ThumbsDown className='h-4 w-4' />
+                <span className='ml-2'>{counts.dislikeCount}</span>
               </Button>
             </div>
             <div className='space-y-2'>

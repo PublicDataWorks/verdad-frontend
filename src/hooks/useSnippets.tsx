@@ -94,6 +94,8 @@ export interface Snippet {
     }
   }
   user_like_status: LikeStatus | null
+  like_count: number
+  dislike_count: number
 }
 
 interface LikeSnippetVariables {
@@ -198,7 +200,12 @@ export const sortSnippets = (snippets: Snippet[], sortBy: string) => {
   })
 }
 
-const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariables) => {
+interface LikeResponse {
+  like_count: number
+  dislike_count: number
+}
+
+const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariables): Promise<LikeResponse> => {
   const { data, error } = await supabase.rpc('like_snippet', {
     snippet_id: snippetId,
     value: likeStatus
@@ -209,10 +216,10 @@ const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariables) => {
   return data
 }
 
-export function useLikeSnippet(wait = 500) {
+export function useLikeSnippet() {
   const queryClient = useQueryClient()
 
-  const mutation = useMutation({
+  return useMutation({
     mutationFn: likeSnippet,
     onMutate: async ({ snippetId, likeStatus }) => {
       await queryClient.cancelQueries({ queryKey: snippetKeys.all })
@@ -242,27 +249,42 @@ export function useLikeSnippet(wait = 500) {
 
       return { previousSnippets }
     },
+    onSuccess: (response, { snippetId }) => {
+      // Update the counts in the cache when the mutation succeeds
+      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (old: any) => {
+        if (!old) return old
+
+        if ('pages' in old) {
+          return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+              ...page,
+              snippets: page.snippets.map((snippet: Snippet) =>
+                snippet.id === snippetId
+                  ? {
+                      ...snippet,
+                      like_count: response.like_count,
+                      dislike_count: response.dislike_count
+                    }
+                  : snippet
+              )
+            }))
+          }
+        }
+
+        return {
+          ...old,
+          like_count: response.like_count,
+          dislike_count: response.dislike_count
+        }
+      })
+    },
     onError: (err, variables, context: any) => {
       if (context?.previousSnippets) {
         context.previousSnippets.forEach(([queryKey, previousValue]: [unknown[], any]) => {
           queryClient.setQueriesData({ queryKey }, previousValue)
         })
       }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: snippetKeys.all })
     }
   })
-
-  const debouncedMutate = useCallback(
-    debounce((variables: LikeSnippetVariables) => {
-      mutation.mutate(variables)
-    }, wait),
-    [mutation.mutate, wait]
-  )
-
-  return {
-    ...mutation,
-    mutate: debouncedMutate
-  }
 }
