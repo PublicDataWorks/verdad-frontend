@@ -17,6 +17,7 @@ import { filterKeys } from '@/hooks/useFilterOptions'
 import { translations } from '@/constants/translations'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { isMobile } from 'react-device-detect'
+import { TooltipProvider } from './ui/tooltip'
 
 const PAGE_SIZE = 20
 
@@ -109,7 +110,10 @@ export default function SearchInterface() {
             </div>
           </div>
         )}
-        <div ref={scrollAreaRef} id='scrollableDiv' className={`${padding} custom-scrollbar overflow-y-scroll rounded-lg`}>
+        <div
+          ref={scrollAreaRef}
+          id='scrollableDiv'
+          className={`${padding} custom-scrollbar overflow-y-scroll rounded-lg`}>
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
@@ -133,9 +137,15 @@ export default function SearchInterface() {
                 </div>
               }
               scrollThreshold={0.8}>
-              {snippets.map(snippet => (
-                <SnippetCard key={`${language}-${snippet.id}`} snippet={snippet} onSnippetClick={handleSnippetClick} />
-              ))}
+              <TooltipProvider delayDuration={100}>
+                {snippets.map(snippet => (
+                  <SnippetCard
+                    key={`${language}-${snippet.id}`}
+                    snippet={snippet}
+                    onSnippetClick={handleSnippetClick}
+                  />
+                ))}
+              </TooltipProvider>
             </InfiniteScroll>
           )}
         </div>

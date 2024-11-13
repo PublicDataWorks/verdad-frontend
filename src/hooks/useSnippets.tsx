@@ -1,7 +1,5 @@
 import { useQuery, useInfiniteQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
-import { useCallback } from 'react'
-import { debounce } from 'lodash'
 
 interface Context {
   main: string
@@ -64,6 +62,7 @@ interface Context {
 export type LikeStatus = 1 | 0 | -1
 
 export interface Snippet {
+  hidden: boolean | null
   id: string
   title: string
   labels: Label[]
@@ -107,6 +106,15 @@ interface PaginatedResponse {
   snippets: Snippet[]
   currentPage: number
   total_pages: number
+}
+
+interface HideSnippetVariables {
+  snippetId: string
+  hidden: boolean
+}
+
+interface HideResponse {
+  hidden: boolean
 }
 
 const snippetKeys = {
@@ -279,6 +287,69 @@ export function useLikeSnippet() {
         }
       })
     },
+    onError: (err, variables, context: any) => {
+      if (context?.previousSnippets) {
+        context.previousSnippets.forEach(([queryKey, previousValue]: [unknown[], any]) => {
+          queryClient.setQueriesData({ queryKey }, previousValue)
+        })
+      }
+    }
+  })
+}
+
+const hideSnippet = async ({ snippetId, hidden }: HideSnippetVariables): Promise<HideResponse> => {
+  const { data, error } = await supabase.rpc('hide_snippet', {
+    snippet_id: snippetId,
+    hidden
+  })
+  if (error) {
+    throw error
+  }
+  return data
+}
+
+export function useHideSnippet() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: hideSnippet,
+
+    // Optimistically update the cache before the mutation happens
+    onMutate: async ({ snippetId, hidden }) => {
+      await queryClient.cancelQueries({ queryKey: snippetKeys.all })
+
+      const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
+
+      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (old: any) => {
+        if (!old) return old
+
+        if ('pages' in old) {
+          // For paginated data
+          return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+              ...page,
+              snippets: page.snippets.map((snippet: Snippet) =>
+                snippet.id === snippetId ? { ...snippet, hidden } : snippet
+              )
+            }))
+          }
+        }
+
+        // For individual snippet data
+        if (old.id === snippetId) {
+          return {
+            ...old,
+            hidden
+          }
+        }
+
+        return old
+      })
+
+      return { previousSnippets }
+    },
+
     onError: (err, variables, context: any) => {
       if (context?.previousSnippets) {
         context.previousSnippets.forEach(([queryKey, previousValue]: [unknown[], any]) => {
