@@ -1,94 +1,94 @@
 import type React from 'react'
-import { useState, useEffect } from 'react'
-import type { FC } from 'react'
-import { useSnippet, useLikeSnippet } from '../hooks/useSnippets'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useState, useEffect, FC } from 'react'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { isEmpty, isNil } from 'lodash'
+
+import { ArrowLeft, Download, ChevronDown, ThumbsUp, ThumbsDown } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { ArrowLeft, Download, ChevronDown, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+
 import AudioPlayer from './AudioPlayer'
 import LanguageTabs from './LanguageTab'
 import LabelButton from './LabelButton'
+import AddLabelButton from './AddLabelButton'
 import Spinner from './Spinner'
 import LiveblocksComments from '../components/LiveblocksComments'
-import { downloadAudio, downloadText } from '@/lib/utils'
-import AddLabelButton from './AddLabelButton'
-import type { Label, LikeStatus } from '../hooks/useSnippets'
+import ShareButton from './ShareButton'
+import SnippetVisibilityToggle from './ui/hide-button'
+
+import { useSnippet } from '@/hooks/useSnippets'
+import { useLikeSnippet } from '@/hooks/useSnippetActions'
 import { useLanguage } from '@/providers/language'
-import { translations } from '@/constants/translations'
+import { useIsAdmin } from '@/hooks/usePermission'
 import { useToast } from '@/hooks/use-toast'
+
+import { downloadAudio, downloadText } from '@/lib/utils'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/storage'
+import supabase from '@/lib/supabase'
+
+import { translations } from '@/constants/translations'
+import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
+
 import StarIcon from '../assets/star.svg'
 import StarredIcon from '../assets/starred.svg'
 import StarHoverIcon from '../assets/star_hover.svg'
-import supabase from '@/lib/supabase'
-import ShareButton from './ShareButton'
-import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
-import { isEmpty, isNil } from 'lodash'
+
+import type { Label, LikeStatus } from '@/types/snippet'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
-  const { language } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
+
+  const { language } = useLanguage()
   const t = translations[language]
 
   const { data: snippet, isLoading, isError } = useSnippet(snippetId || '', language)
-  const sourceLanguage = snippet?.language?.primary_language?.toLowerCase()
+  const { data: isAdmin } = useIsAdmin()
+
   const [labels, setLabels] = useState<Label[]>([])
-  const [isStarHovered, setIsStarHovered] = useState(false)
-  const { toast } = useToast()
-  const [isStarred, setIsStarred] = useState(() => {
+  const [isStarHovered, setIsStarHovered] = useState<boolean>(false)
+  const [isStarred, setIsStarred] = useState<boolean>(() => {
     const localStarred = getLocalStorageItem(`starred_${snippetId}`)
     return localStarred !== null ? localStarred : snippet?.starred_by_user || false
   })
   const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet?.user_like_status ?? null)
-  const [counts, setCounts] = useState({
-    likeCount: 0,
-    dislikeCount: 0
+  const [counts, setCounts] = useState<{ likeCount: number; dislikeCount: number }>({
+    likeCount: snippet?.like_count || 0,
+    dislikeCount: snippet?.dislike_count || 0
   })
+  const [snippetLanguage, setSnippetLanguage] = useState<string | undefined>(
+    snippet?.language?.primary_language.toLowerCase()
+  )
+
   const likeSnippetMutation = useLikeSnippet()
-  const [snippetLanguage, setSnippetLanguage] = useState(sourceLanguage)
+  const { toast } = useToast()
 
-  useEffect(() => {
-    if (snippet) {
-      setLabels(snippet.labels)
-      setSnippetLanguage(sourceLanguage)
-      setCurrentLikeStatus(snippet.user_like_status ?? null)
-      setCounts({
-        likeCount: snippet.like_count || 0,
-        dislikeCount: snippet.dislike_count || 0
-      })
-    }
-  }, [snippet, sourceLanguage])
+  const isHidden = snippet?.hidden
+  const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
 
-  useEffect(() => {
-    if (snippet) {
-      setIsStarred(snippet.starred_by_user)
-    }
-  }, [snippet])
-
-  useEffect(() => {
-    setLocalStorageItem(`starred_${snippetId}`, isStarred)
-  }, [isStarred, snippetId])
+  const getStarIcon = () => {
+    if (isStarred) return StarredIcon
+    if (isStarHovered) return StarHoverIcon
+    return StarIcon
+  }
 
   const calculateOptimisticCounts = (
     currentStatus: LikeStatus | null,
     newStatus: LikeStatus,
     currentCounts: { likeCount: number; dislikeCount: number }
   ) => {
-    const counts = { ...currentCounts }
+    const updatedCounts = { ...currentCounts }
 
-    // Remove the effect of the current status
-    if (currentStatus === 1) counts.likeCount--
-    if (currentStatus === -1) counts.dislikeCount--
+    if (currentStatus === 1) updatedCounts.likeCount--
+    if (currentStatus === -1) updatedCounts.dislikeCount--
 
-    // Add the effect of the new status
-    if (newStatus === 1) counts.likeCount++
-    if (newStatus === -1) counts.dislikeCount++
+    if (newStatus === 1) updatedCounts.likeCount++
+    if (newStatus === -1) updatedCounts.dislikeCount++
 
-    return counts
+    return updatedCounts
   }
 
   const handleLikeClick = async (e: React.MouseEvent, newLikeStatus: 1 | -1) => {
@@ -105,23 +105,19 @@ const SnippetDetail: FC = () => {
             ? 0
             : newLikeStatus
 
-      // Optimistically update UI
       setCurrentLikeStatus(likeStatus)
       setCounts(calculateOptimisticCounts(previousStatus, likeStatus, counts))
 
-      // Make API call
       const response = await likeSnippetMutation.mutateAsync({
         snippetId: snippetId!,
         likeStatus: likeStatus
       })
 
-      // Update with server response
       setCounts({
         likeCount: response.like_count,
         dislikeCount: response.dislike_count
       })
     } catch (error) {
-      // Revert to previous state if there's an error
       setCurrentLikeStatus(previousStatus)
       setCounts(previousCounts)
       toast({
@@ -131,20 +127,6 @@ const SnippetDetail: FC = () => {
         duration: 3000
       })
     }
-  }
-
-  const handleLabelAdded = (newLabels: Label[] | ((prevLabels: Label[]) => Label[])) => {
-    if (typeof newLabels === 'function') {
-      setLabels(newLabels)
-    } else {
-      setLabels(newLabels)
-    }
-  }
-
-  const getStarIcon = () => {
-    if (isStarred) return StarredIcon
-    if (isStarHovered) return StarHoverIcon
-    return StarIcon
   }
 
   const handleStarClick = async (e: React.MouseEvent) => {
@@ -186,6 +168,44 @@ const SnippetDetail: FC = () => {
     }
   }
 
+  const handleLabelAdded = (newLabels: Label[] | ((prevLabels: Label[]) => Label[])) => {
+    if (typeof newLabels === 'function') {
+      setLabels(newLabels)
+    } else {
+      setLabels(newLabels)
+    }
+  }
+
+  useEffect(() => {
+    if (snippet) {
+      setLabels(snippet.labels || [])
+      setSnippetLanguage(snippet.language?.primary_language.toLowerCase())
+      setCurrentLikeStatus(snippet.user_like_status ?? null)
+      setCounts({
+        likeCount: snippet.like_count || 0,
+        dislikeCount: snippet.dislike_count || 0
+      })
+    }
+  }, [snippet])
+
+  useEffect(() => {
+    if (snippet) {
+      setIsStarred(snippet.starred_by_user)
+    }
+  }, [snippet])
+
+  useEffect(() => {
+    setLocalStorageItem(`starred_${snippetId}`, isStarred)
+  }, [isStarred, snippetId])
+
+  const goBack = () => {
+    if (location.key && location.key !== 'default') {
+      navigate(-1)
+    } else {
+      navigate('/search')
+    }
+  }
+
   if (isLoading) {
     return (
       <div className='flex h-screen items-center justify-center'>
@@ -194,21 +214,13 @@ const SnippetDetail: FC = () => {
     )
   }
 
-  const goback = () => {
-    if (location.key && location.key !== 'default') {
-      navigate(-1)
-    } else {
-      navigate('/search')
-    }
-  }
-
   if (isError || isEmpty(snippet) || !snippetId) {
     return (
       <div className='flex h-screen items-center justify-center'>
         <div className='text-center'>
           <h2 className='mb-2 text-2xl font-bold text-gray-700'>{t.snippetNotFound}</h2>
           <p className='text-gray-500'>{t.snippetNotFoundDesc}</p>
-          <Button variant='ghost' className='mt-4' onClick={goback}>
+          <Button variant='ghost' className='mt-4' onClick={goBack}>
             {t.goBack}
           </Button>
         </div>
@@ -216,13 +228,11 @@ const SnippetDetail: FC = () => {
     )
   }
 
-  const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
-
   return (
-    <div className='mx-auto h-full w-full max-w-3xl p-2 sm:py-6'>
+    <div className={`mx-auto h-full w-full max-w-3xl p-2 sm:py-6 ${isHidden ? 'opacity-50' : ''}`}>
       <Card className='w-full'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={goback}>
+          <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={goBack}>
             <ArrowLeft className='h-4 w-4' />
             <span>{t.back}</span>
           </Button>
@@ -280,6 +290,7 @@ const SnippetDetail: FC = () => {
               onClick={handleStarClick}>
               <img src={getStarIcon()} alt='Star' className='h-4 w-4' />
             </Button>
+            {isAdmin && <SnippetVisibilityToggle isHidden={isHidden ? true : false} snippetId={snippet.id} />}
           </div>
         </CardHeader>
         <CardContent>
@@ -288,6 +299,7 @@ const SnippetDetail: FC = () => {
               <h2 className='text-2xl font-bold'>{snippet.title}</h2>
               <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
             </div>
+
             <div className='mb-4 flex items-center gap-2'>
               <Button
                 variant='ghost'
@@ -311,6 +323,7 @@ const SnippetDetail: FC = () => {
                 <span className='ml-2'>{counts.dislikeCount}</span>
               </Button>
             </div>
+
             <div className='space-y-2'>
               <h3 className='font-semibold'>{t.summary}</h3>
               <p className='text-sm'>{snippet.summary}</p>
@@ -318,9 +331,10 @@ const SnippetDetail: FC = () => {
             <div className='space-y-2'>
               <p className='text-sm text-muted-foreground'>{snippet.explanation}</p>
             </div>
+
             <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
             <LanguageTabs
-              language={snippetLanguage}
+              language={snippetLanguage || 'english'}
               setLanguage={setSnippetLanguage}
               sourceText={{
                 before: snippet.context.before,
@@ -332,8 +346,10 @@ const SnippetDetail: FC = () => {
                 main_en: snippet.context.main_en,
                 after_en: snippet.context.after_en
               }}
-              sourceLanguage={sourceLanguage}
+              sourceLanguage={snippet.language?.primary_language.toLowerCase()}
             />
+
+            {/* Labels and Add Label */}
             <div className='flex flex-wrap items-center gap-2'>
               {labels.map((label, index) => (
                 <LabelButton
