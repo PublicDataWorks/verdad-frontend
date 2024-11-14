@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from 'react'
-import { ThumbsUp, ThumbsDown, Share2 } from 'lucide-react'
+import { ThumbsUp, ThumbsDown } from 'lucide-react'
+import { isNil } from 'lodash'
+
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import LabelButton from './LabelButton'
 import LiveblocksComments from './LiveblocksComments'
-import type { Snippet, Label, LikeStatus } from '../hooks/useSnippets'
-import { useLikeSnippet } from '../hooks/useSnippets'
 import AddLabelButton from './AddLabelButton'
 import ShareButton from './ShareButton'
-import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
+import SnippetVisibilityToggle from './ui/hide-button'
+
+import type { Snippet, Label, LikeStatus } from '../hooks/useSnippets'
+import { useLikeSnippet } from '../hooks/useSnippets'
 import { useLanguage } from '@/providers/language'
-import { isNil } from 'lodash'
+import { useIsAdmin } from '@/hooks/usePermission'
+
+import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/storage'
 import supabaseClient from '@/lib/supabase'
+
 import Star from '../assets/star.svg'
 import Starred from '../assets/starred.svg'
 import StarHover from '../assets/star_hover.svg'
-import SnippetVisibilityToggle from './ui/hide-button'
 
 interface SnippetCardProps {
   snippet: Snippet
@@ -25,21 +30,24 @@ interface SnippetCardProps {
 
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
   const { language } = useLanguage()
-  const [labels, setLabels] = useState(snippet?.labels || [])
-  const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet.user_like_status ?? null)
+
+  const { data: isAdmin } = useIsAdmin()
+
+  const [labels, setLabels] = useState<Label[]>(snippet?.labels || [])
+  const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet?.user_like_status ?? null)
   const [counts, setCounts] = useState({
-    likeCount: snippet.like_count || 0,
-    dislikeCount: snippet.dislike_count || 0
+    likeCount: snippet?.like_count || 0,
+    dislikeCount: snippet?.dislike_count || 0
   })
-  const isAdmin = false
-  const isHidden = false
+  const [isStarred, setIsStarred] = useState<boolean>(() => {
+    const localStarred = getLocalStorageItem(`starred_${snippet.id}`)
+    return localStarred !== null ? localStarred : snippet?.starred_by_user || false
+  })
+  const [isStarHovered, setIsStarHovered] = useState<boolean>(false)
+
   const likeSnippetMutation = useLikeSnippet()
 
-  const [isStarred, setIsStarred] = useState(() => {
-    const localStarred = getLocalStorageItem(`starred_${snippet.id}`)
-    return localStarred !== null ? localStarred : snippet.starred_by_user
-  })
-  const [isStarHovered, setIsStarHovered] = useState(false)
+  const isHidden = snippet.hidden
 
   const getStarIcon = () => {
     if (isStarred) return Starred
@@ -70,25 +78,6 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
       setLocalStorageItem(`starred_${snippet.id}`, !newStarred)
     }
   }
-
-  useEffect(() => {
-    setLocalStorageItem(`starred_${snippet.id}`, isStarred)
-  }, [isStarred, snippet.id])
-
-  useEffect(() => {
-    setCurrentLikeStatus(snippet.user_like_status ?? null)
-  }, [snippet.user_like_status])
-
-  useEffect(() => {
-    setLabels(snippet.labels || [])
-  }, [snippet.labels])
-
-  useEffect(() => {
-    setCounts({
-      likeCount: snippet.like_count || 0,
-      dislikeCount: snippet.dislike_count || 0
-    })
-  }, [snippet.like_count, snippet.dislike_count])
 
   const handleLikeClick = async (e: React.MouseEvent, newLikeStatus: 1 | -1) => {
     e.stopPropagation()
@@ -129,6 +118,25 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
     setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))
   }
 
+  useEffect(() => {
+    setLocalStorageItem(`starred_${snippet.id}`, isStarred)
+  }, [isStarred, snippet.id])
+
+  useEffect(() => {
+    setCurrentLikeStatus(snippet.user_like_status ?? null)
+  }, [snippet.user_like_status])
+
+  useEffect(() => {
+    setLabels(snippet.labels || [])
+  }, [snippet.labels])
+
+  useEffect(() => {
+    setCounts({
+      likeCount: snippet.like_count || 0,
+      dislikeCount: snippet.dislike_count || 0
+    })
+  }, [snippet.like_count, snippet.dislike_count])
+
   return (
     <div className={`mt-2 rounded-lg border bg-white p-6 ${isHidden ? 'opacity-50' : ''}`}>
       <div className='mb-2 flex items-start justify-between'>
@@ -146,7 +154,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             onClick={handleStarClick}>
             <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
           </Button>
-          {isAdmin && <SnippetVisibilityToggle isHidden={isHidden} onToggleHide={() => {}} />}
+          {isAdmin && <SnippetVisibilityToggle isHidden={isHidden} snippetId={snippet.id} />}
         </div>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
@@ -159,7 +167,9 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
                 variant='outline'
                 size='sm'
                 onClick={e => handleLikeClick(e, 1)}
-                className={`flex items-center gap-4 ${currentLikeStatus === 1 ? 'bg-green-100 hover:bg-green-200' : ''}`}>
+                className={`flex items-center gap-4 ${
+                  currentLikeStatus === 1 ? 'bg-green-100 hover:bg-green-200' : ''
+                }`}>
                 <ThumbsUp className='h-4 w-4' />
                 <span>{counts.likeCount}</span>
               </Button>
@@ -169,7 +179,6 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             <p>Mis/disinformation</p>
           </TooltipContent>
         </Tooltip>
-
         <Tooltip>
           <TooltipTrigger asChild>
             <div>
