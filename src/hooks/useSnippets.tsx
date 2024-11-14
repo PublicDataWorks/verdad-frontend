@@ -297,10 +297,19 @@ export function useLikeSnippet() {
   })
 }
 
-const hideSnippet = async ({ snippetId, hidden }: HideSnippetVariables): Promise<HideResponse> => {
+const hideSnippet = async (snippetId: string): Promise<HideResponse> => {
   const { data, error } = await supabase.rpc('hide_snippet', {
-    snippet_id: snippetId,
-    hidden
+    snippet_id: snippetId
+  })
+  if (error) {
+    throw error
+  }
+  return data
+}
+
+const unhideSnippet = async (snippetId: string): Promise<HideResponse> => {
+  const { data, error } = await supabase.rpc('unhide_snippet', {
+    snippet_id: snippetId
   })
   if (error) {
     throw error
@@ -315,7 +324,7 @@ export function useHideSnippet() {
     mutationFn: hideSnippet,
 
     // Optimistically update the cache before the mutation happens
-    onMutate: async ({ snippetId, hidden }) => {
+    onMutate: async snippetId => {
       await queryClient.cancelQueries({ queryKey: snippetKeys.all })
 
       const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
@@ -324,23 +333,71 @@ export function useHideSnippet() {
         if (!old) return old
 
         if ('pages' in old) {
-          // For paginated data
           return {
             ...old,
             pages: old.pages.map((page: any) => ({
               ...page,
               snippets: page.snippets.map((snippet: Snippet) =>
-                snippet.id === snippetId ? { ...snippet, hidden } : snippet
+                snippet.id === snippetId ? { ...snippet, hidden: true } : snippet
               )
             }))
           }
         }
 
-        // For individual snippet data
         if (old.id === snippetId) {
           return {
             ...old,
-            hidden
+            hidden: true
+          }
+        }
+
+        return old
+      })
+
+      return { previousSnippets }
+    },
+
+    onError: (err, variables, context: any) => {
+      if (context?.previousSnippets) {
+        context.previousSnippets.forEach(([queryKey, previousValue]: [unknown[], any]) => {
+          queryClient.setQueriesData({ queryKey }, previousValue)
+        })
+      }
+    }
+  })
+}
+
+export function useUnhideSnippet() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: unhideSnippet,
+
+    // Optimistically update the cache before the mutation happens
+    onMutate: async snippetId => {
+      await queryClient.cancelQueries({ queryKey: snippetKeys.all })
+
+      const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
+
+      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (old: any) => {
+        if (!old) return old
+
+        if ('pages' in old) {
+          return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+              ...page,
+              snippets: page.snippets.map((snippet: Snippet) =>
+                snippet.id === snippetId ? { ...snippet, hidden: false } : snippet
+              )
+            }))
+          }
+        }
+
+        if (old.id === snippetId) {
+          return {
+            ...old,
+            hidden: false
           }
         }
 
