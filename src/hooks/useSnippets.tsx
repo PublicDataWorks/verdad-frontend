@@ -108,9 +108,29 @@ interface PaginatedResponse {
   total_pages: number
 }
 
-interface HideSnippetVariables {
-  snippetId: string
-  hidden: boolean
+interface PublicSnippetData {
+  id: string
+  recorded_at: string
+  file_path: string
+  start_time: string
+  end_time: string
+  duration: string
+  file_size: number
+  context: {
+    before: string
+    main: string
+    after: string
+    before_en: string
+    main_en: string
+    after_en: string
+  }
+  language: string
+  audio_file: {
+    radio_station_code: string
+    radio_station_name: string
+    location_state: string
+    location_city: string | null
+  }
 }
 
 interface HideResponse {
@@ -414,5 +434,20 @@ export function useUnhideSnippet() {
         })
       }
     }
+  })
+}
+
+const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippetData> => {
+  const { data, error } = await supabase.rpc('get_public_snippet', { snippet_id: snippetId })
+
+  if (error) throw error
+  return data
+}
+
+export function usePublicSnippet(snippetId: string) {
+  return useQuery({
+    queryKey: snippetKeys.detail(snippetId, 'english'),
+    queryFn: () => fetchPublicSnippet(snippetId),
+    enabled: !!snippetId
   })
 }
