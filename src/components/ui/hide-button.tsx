@@ -5,7 +5,7 @@ import { MinusCircle, PlusCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useHideSnippet } from '@/hooks/useSnippets'
+import { useHideSnippet, useUnhideSnippet } from '@/hooks/useSnippets'
 
 interface SnippetVisibilityToggleProps {
   snippetId: string
@@ -16,9 +16,14 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
   const [showConfirmation, setShowConfirmation] = useState(false)
 
   const hideSnippetMutation = useHideSnippet()
+  const unhideSnippetMutation = useUnhideSnippet()
 
   const handleToggleHide = () => {
-    hideSnippetMutation.mutate({ snippetId, hidden: !isHidden })
+    if (isHidden) {
+      unhideSnippetMutation.mutateAsync(snippetId)
+    } else {
+      hideSnippetMutation.mutateAsync(snippetId)
+    }
   }
 
   const handleToggleClick = () => {
