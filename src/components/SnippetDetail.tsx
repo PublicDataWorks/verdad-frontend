@@ -18,7 +18,8 @@ import LiveblocksComments from '../components/LiveblocksComments'
 import ShareButton from './ShareButton'
 import SnippetVisibilityToggle from './ui/hide-button'
 
-import { useSnippet, useLikeSnippet } from '../hooks/useSnippets'
+import { useSnippet } from '@/hooks/useSnippets'
+import { useLikeSnippet } from '@/hooks/useSnippetActions'
 import { useLanguage } from '@/providers/language'
 import { useIsAdmin } from '@/hooks/usePermission'
 import { useToast } from '@/hooks/use-toast'
@@ -34,7 +35,7 @@ import StarIcon from '../assets/star.svg'
 import StarredIcon from '../assets/starred.svg'
 import StarHoverIcon from '../assets/star_hover.svg'
 
-import type { Label, LikeStatus } from '../hooks/useSnippets'
+import type { Label, LikeStatus } from '@/types/snippet'
 
 const SnippetDetail: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()

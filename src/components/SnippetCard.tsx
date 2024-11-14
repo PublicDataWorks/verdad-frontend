@@ -10,8 +10,8 @@ import AddLabelButton from './AddLabelButton'
 import ShareButton from './ShareButton'
 import SnippetVisibilityToggle from './ui/hide-button'
 
-import type { Snippet, Label, LikeStatus } from '../hooks/useSnippets'
-import { useLikeSnippet } from '../hooks/useSnippets'
+import type { Snippet, Label, LikeStatus } from '@/types/snippet'
+import { useLikeSnippet } from '@/hooks/useSnippetActions'
 import { useLanguage } from '@/providers/language'
 import { useIsAdmin } from '@/hooks/usePermission'
 

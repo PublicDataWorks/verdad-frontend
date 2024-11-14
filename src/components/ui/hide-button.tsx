@@ -5,7 +5,7 @@ import { MinusCircle, PlusCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useHideSnippet, useUnhideSnippet } from '@/hooks/useSnippets'
+import { useHideSnippet, useUnhideSnippet } from '@/hooks/useSnippetActions'
 
 interface SnippetVisibilityToggleProps {
   snippetId: string
