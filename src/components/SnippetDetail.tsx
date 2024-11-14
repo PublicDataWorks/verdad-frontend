@@ -175,7 +175,6 @@ const SnippetDetail: FC = () => {
     }
   }
 
-  // Side Effects
   useEffect(() => {
     if (snippet) {
       setLabels(snippet.labels || [])
@@ -290,18 +289,16 @@ const SnippetDetail: FC = () => {
               onClick={handleStarClick}>
               <img src={getStarIcon()} alt='Star' className='h-4 w-4' />
             </Button>
-            {isAdmin && <SnippetVisibilityToggle isHidden={isHidden} snippetId={snippet.id} />}
+            {isAdmin && <SnippetVisibilityToggle isHidden={isHidden ? true : false} snippetId={snippet.id} />}
           </div>
         </CardHeader>
         <CardContent>
           <div className='space-y-4'>
-            {/* Snippet Title and Subtitle */}
             <div>
               <h2 className='text-2xl font-bold'>{snippet.title}</h2>
               <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
             </div>
 
-            {/* Like and Dislike Buttons */}
             <div className='mb-4 flex items-center gap-2'>
               <Button
                 variant='ghost'
@@ -326,7 +323,6 @@ const SnippetDetail: FC = () => {
               </Button>
             </div>
 
-            {/* Summary and Explanation */}
             <div className='space-y-2'>
               <h3 className='font-semibold'>{t.summary}</h3>
               <p className='text-sm'>{snippet.summary}</p>
@@ -335,12 +331,9 @@ const SnippetDetail: FC = () => {
               <p className='text-sm text-muted-foreground'>{snippet.explanation}</p>
             </div>
 
-            {/* Audio Player */}
             <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
-
-            {/* Language Tabs */}
             <LanguageTabs
-              language={snippetLanguage}
+              language={snippetLanguage || 'english'}
               setLanguage={setSnippetLanguage}
               sourceText={{
                 before: snippet.context.before,

@@ -197,7 +197,7 @@ const fetchSnippets = async ({
 export function useSnippets({ pageSize = 0, filters = {}, language = 'english' }) {
   return useInfiniteQuery<PaginatedResponse, Error>({
     queryKey: snippetKeys.lists(pageSize, filters, language),
-    queryFn: ({ pageParam = 0 }) => fetchSnippets({ pageParam, pageSize, filters, language }),
+    queryFn: ({ pageParam }) => fetchSnippets({ pageParam: pageParam as number, pageSize, filters, language }),
     initialPageParam: 0,
     getNextPageParam: lastPage => {
       if (lastPage.currentPage >= lastPage.total_pages - 1) {

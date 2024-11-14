@@ -14,12 +14,10 @@ import Spinner from './Spinner'
 import PublicHeaderBar from './PublicHeaderBar'
 import ShareButton from './ShareButton'
 
-import { useQuery } from '@tanstack/react-query'
 import { useLanguage } from '@/providers/language'
 import { useAuth } from '@/providers/auth'
 
 import { downloadAudio, downloadText } from '@/lib/utils'
-import supabase from '@/lib/supabase'
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { toast } from '@/hooks/use-toast'
 import { translations } from '@/constants/translations'
