@@ -43,7 +43,18 @@ export const translations = {
     all: 'All',
     clear: 'Clear',
     writeAComment: 'Write a comment',
-    replyToThread: 'Reply to thread'
+    replyToThread: 'Reply to thread',
+    tooltips: {
+      back: 'Back',
+      download: 'Download snippet content',
+      share: 'Share',
+      addFavorite: 'Add to favorites',
+      removeFavorite: 'Remove from favorites',
+      showSnippet: 'Show snippet',
+      hideSnippet: 'Hide snippet',
+      misinfo: 'Mark as mis/disinformation',
+      notMisinfo: 'Mark as not mis/disinformation'
+    }
   },
   spanish: {
     filters: 'Filtros',
@@ -89,6 +100,17 @@ export const translations = {
     all: 'Todos',
     clear: 'Limpiar',
     writeAComment: 'Escribe un comentario',
-    replyToThread: 'Responder al hilo'
+    replyToThread: 'Responder al hilo',
+    tooltips: {
+      back: 'Volver',
+      download: 'Descargar contenido',
+      share: 'Compartir',
+      addFavorite: 'Añadir a favoritos',
+      removeFavorite: 'Eliminar de favoritos',
+      showSnippet: 'Mostrar snippet',
+      hideSnippet: 'Ocultar snippet',
+      misinfo: 'Marcar como desinformación',
+      notMisinfo: 'Marcar como no desinformación'
+    }
   }
 }

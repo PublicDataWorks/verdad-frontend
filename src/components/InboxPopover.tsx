@@ -110,7 +110,7 @@ export function InboxPopover() {
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className='flex max-h-[calc(100vh-5rem)] w-[calc(100vw-2rem)] max-w-[460px] flex-col overflow-hidden rounded-xl bg-white shadow-lg outline-none'
+          className='mr-2 flex max-h-[calc(100vh-5rem)] w-[calc(100vw-2rem)] max-w-[460px] flex-col overflow-hidden rounded-xl bg-white shadow-lg outline-none'
           sideOffset={5}>
           <ErrorBoundary
             fallback={<div className='p-3 text-center text-sm text-red-500'>Error loading notifications</div>}>

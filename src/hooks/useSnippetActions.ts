@@ -3,8 +3,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { snippetKeys } from './useSnippets'
-import { likeSnippet, hideSnippet, unhideSnippet } from '@/apis/snippet'
+import { likeSnippet, hideSnippet, unhideSnippet, dismissWelcomeCard } from '@/apis/snippet'
 import { LikeSnippetVariables, LikeResponse, HideResponse, Snippet } from '@/types/snippet'
+import { useAuth } from '@/providers/auth'
 
 export function useLikeSnippet() {
   const queryClient = useQueryClient()
@@ -171,6 +172,17 @@ export function useUnhideSnippet() {
           queryClient.setQueriesData(key, data)
         })
       }
+    }
+  })
+}
+
+export function useDismissWelcomeCard() {
+  const { refreshUser } = useAuth()
+
+  return useMutation<void, Error, void>({
+    mutationFn: dismissWelcomeCard,
+    onSuccess: data => {
+      refreshUser()
     }
   })
 }

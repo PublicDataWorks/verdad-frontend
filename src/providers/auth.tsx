@@ -15,6 +15,7 @@ interface AuthContextType {
     error: AuthError | null
     success?: boolean
   }>
+  refreshUser: () => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -23,7 +24,8 @@ export const AuthContext = createContext<AuthContextType>({
   login: async () => ({ error: null }),
   logout: async () => ({ error: null }),
   loginWithGoogle: async () => ({ error: null }),
-  signUp: async () => ({ error: null })
+  signUp: async () => ({ error: null }),
+  refreshUser: async () => {}
 })
 
 interface AuthProviderProps {
@@ -125,6 +127,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
+  const refreshUser = async () => {
+    const {
+      data: { session }
+    } = await supabase.auth.refreshSession()
+    setUser(session?.user ?? null)
+    setSession(session)
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -133,7 +143,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         login,
         logout,
         loginWithGoogle,
-        signUp
+        signUp,
+        refreshUser
       }}>
       {children}
     </AuthContext.Provider>

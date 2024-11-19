@@ -9,6 +9,7 @@ import LiveblocksComments from './LiveblocksComments'
 import AddLabelButton from './AddLabelButton'
 import ShareButton from './ShareButton'
 import SnippetVisibilityToggle from './ui/hide-button'
+import { translations } from '@/constants/translations'
 
 import type { Snippet, Label, LikeStatus } from '@/types/snippet'
 import { useLikeSnippet } from '@/hooks/useSnippetActions'
@@ -30,6 +31,7 @@ interface SnippetCardProps {
 
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
   const { language } = useLanguage()
+  const t = translations[language]
 
   const { data: isAdmin } = useIsAdmin()
 
@@ -39,6 +41,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
     likeCount: snippet?.like_count || 0,
     dislikeCount: snippet?.dislike_count || 0
   })
+
   const [isStarred, setIsStarred] = useState<boolean>(() => {
     const localStarred = getLocalStorageItem(`starred_${snippet.id}`)
     return localStarred !== null ? localStarred : snippet?.starred_by_user || false
@@ -144,17 +147,45 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           {snippet.title}
         </h3>
         <div className='flex space-x-2'>
-          <ShareButton snippetId={snippet.id} />
-          <Button
-            variant='ghost'
-            size='icon'
-            className='hover:bg-transparent'
-            onMouseEnter={() => setIsStarHovered(true)}
-            onMouseLeave={() => setIsStarHovered(false)}
-            onClick={handleStarClick}>
-            <img src={getStarIcon()} alt='Star' className='h-5 w-5' />
-          </Button>
-          {isAdmin && <SnippetVisibilityToggle isHidden={isHidden} snippetId={snippet.id} />}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <ShareButton snippetId={snippet.id} />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t.tooltips.share}</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='ghost'
+                className='flex items-center space-x-2'
+                onMouseEnter={() => setIsStarHovered(true)}
+                onMouseLeave={() => setIsStarHovered(false)}
+                onClick={handleStarClick}>
+                <img src={getStarIcon()} alt='Star' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{isStarred ? t.tooltips.removeFavorite : t.tooltips.addFavorite}</p>
+            </TooltipContent>
+          </Tooltip>
+
+          {isAdmin && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <SnippetVisibilityToggle isHidden={isHidden} snippetId={snippet.id} />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isHidden ? t.tooltips.showSnippet : t.tooltips.hideSnippet}</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
@@ -176,7 +207,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Mis/disinformation</p>
+            <p>{t.tooltips.misinfo}</p>
           </TooltipContent>
         </Tooltip>
         <Tooltip>
@@ -193,7 +224,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Not mis/disinformation</p>
+            <p>{t.tooltips.notMisinfo}</p>
           </TooltipContent>
         </Tooltip>
       </div>
@@ -210,7 +241,6 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           <AddLabelButton snippetId={snippet.id} onLabelAdded={handleLabelAdded} />
         </div>
       </div>
-
       <LiveblocksComments snippetId={snippet.id} showFullComments={true} />
     </div>
   )
