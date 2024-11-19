@@ -15,6 +15,7 @@ export type WelcomeCard = {
   contact_email: string | null
   is_default: boolean
   updated_at: string
+  contact_text: string | null
 }
 
 export const getWelcomeContent = async (language: string): Promise<WelcomeCard> => {
