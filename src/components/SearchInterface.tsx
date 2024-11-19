@@ -18,12 +18,16 @@ import { translations } from '@/constants/translations'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { isMobile } from 'react-device-detect'
 import { TooltipProvider } from './ui/tooltip'
+import WelcomeCard from './ui/welcome-card'
+import { useAuth } from '@/providers/auth'
 
 const PAGE_SIZE = 20
 
 export default function SearchInterface() {
   const { showSidebar, setShowSidebar } = useSidebar()
   const { filters } = useSnippetFilters()
+  const { user } = useAuth()
+  const showWelcomeCard = !user?.user_metadata?.dismiss_welcome_card
 
   const { language } = useLanguage()
   const t = translations[language]
@@ -53,7 +57,6 @@ export default function SearchInterface() {
 
   const queryClient = useQueryClient()
 
-  // TODO: remove this when we have a more genric solution
   useEffect(() => {
     const trackUserSignup = async () => {
       try {
@@ -125,28 +128,31 @@ export default function SearchInterface() {
           ) : snippets.length === 0 ? (
             <NoSnippetsMessage />
           ) : (
-            <InfiniteScroll
-              dataLength={snippets.length}
-              next={fetchNextPage}
-              hasMore={hasNextPage}
-              className='flex h-full flex-col gap-3'
-              scrollableTarget='scrollableDiv'
-              loader={
-                <div className='my-4 flex w-full justify-center'>
-                  <Loader className='h-6 w-6 animate-spin text-primary' />
-                </div>
-              }
-              scrollThreshold={0.8}>
-              <TooltipProvider delayDuration={100}>
-                {snippets.map(snippet => (
-                  <SnippetCard
-                    key={`${language}-${snippet.id}`}
-                    snippet={snippet}
-                    onSnippetClick={handleSnippetClick}
-                  />
-                ))}
-              </TooltipProvider>
-            </InfiniteScroll>
+            <>
+              {showWelcomeCard && <WelcomeCard />}
+              <InfiniteScroll
+                dataLength={snippets.length}
+                next={fetchNextPage}
+                hasMore={hasNextPage}
+                className='flex h-full flex-col gap-3'
+                scrollableTarget='scrollableDiv'
+                loader={
+                  <div className='my-4 flex w-full justify-center'>
+                    <Loader className='h-6 w-6 animate-spin text-primary' />
+                  </div>
+                }
+                scrollThreshold={0.8}>
+                <TooltipProvider delayDuration={100}>
+                  {snippets.map(snippet => (
+                    <SnippetCard
+                      key={`${language}-${snippet.id}`}
+                      snippet={snippet}
+                      onSnippetClick={handleSnippetClick}
+                    />
+                  ))}
+                </TooltipProvider>
+              </InfiniteScroll>
+            </>
           )}
         </div>
       </div>
