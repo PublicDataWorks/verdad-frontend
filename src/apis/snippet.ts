@@ -96,3 +96,12 @@ export const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnipp
   if (error) throw error
   return data
 }
+
+export const dismissWelcomeCard = async (): Promise<void> => {
+  const { data, error } = await supabase.rpc('dismiss_welcome_card')
+  if (error) {
+    throw error
+  }
+
+  return data
+}
