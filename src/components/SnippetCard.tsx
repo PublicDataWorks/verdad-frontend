@@ -228,7 +228,19 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
           </TooltipContent>
         </Tooltip>
       </div>
-
+      <div className='flex justify-between'>
+        <div className='flex flex-wrap items-baseline gap-2'>
+          {labels.map((label, index) => (
+            <LabelButton
+              key={`${snippet.id}-${label.id}-${index}`}
+              label={label}
+              snippetId={snippet.id}
+              onLabelDeleted={handleLabelDeleted}
+            />
+          ))}
+          <AddLabelButton snippetId={snippet.id} onLabelAdded={handleLabelAdded} />
+        </div>
+      </div>
       <LiveblocksComments snippetId={snippet.id} showFullComments={true} />
     </div>
   )
