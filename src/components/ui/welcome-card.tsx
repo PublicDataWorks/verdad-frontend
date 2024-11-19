@@ -11,7 +11,7 @@ export default function WelcomeCard() {
   const { mutate: dismissWelcomeCard } = useDismissWelcomeCard()
   const { language } = useLanguage()
   const { data, isLoading } = useWelcomeCard(language)
-  const { title, subtitle, features, footer_text, contact_email } = data || {}
+  const { title, subtitle, features, footer_text, contact_email, contact_text } = data || {}
 
   if (isLoading) {
     return (
@@ -51,10 +51,10 @@ export default function WelcomeCard() {
             })}
           </div>
           {footer_text && <p className='text-xs text-blue-700 dark:text-blue-300'>{footer_text}</p>}
-          {contact_email && (
+          {contact_email && contact_text && (
             <div className='flex items-center gap-2 text-xs'>
               <Mail className='h-3 w-3 text-blue-600 dark:text-blue-400' />
-              <span className='text-blue-700 dark:text-blue-300'>Questions or feedback? Contact us at </span>
+              <span className='text-blue-700 dark:text-blue-300'>{contact_text}</span>
               <a href={`mailto:${contact_email}`} className='text-blue-600 hover:underline dark:text-blue-400'>
                 {contact_email}
               </a>
