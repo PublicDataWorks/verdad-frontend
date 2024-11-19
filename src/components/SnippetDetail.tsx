@@ -364,7 +364,7 @@ const SnippetDetail: FC = () => {
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Mis/disinformation</p>
+                    <p>{t.tooltips.misinfo}</p>
                   </TooltipContent>
                 </Tooltip>
                 <Tooltip>
@@ -381,7 +381,7 @@ const SnippetDetail: FC = () => {
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Not mis/disinformation</p>
+                    <p>{t.tooltips.notMisinfo}</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
