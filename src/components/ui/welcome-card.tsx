@@ -52,10 +52,12 @@ export default function WelcomeCard() {
           </div>
           {footer_text && <p className='text-xs text-blue-700 dark:text-blue-300'>{footer_text}</p>}
           {contact_email && contact_text && (
-            <div className='flex items-center gap-2 text-xs'>
-              <Mail className='h-3 w-3 text-blue-600 dark:text-blue-400' />
-              <span className='text-blue-700 dark:text-blue-300'>{contact_text}</span>
-              <a href={`mailto:${contact_email}`} className='text-blue-600 hover:underline dark:text-blue-400'>
+            <div className='flex flex-wrap items-center gap-2 text-xs'>
+              <div className='flex items-center gap-2'>
+                <Mail className='h-3 w-3 text-blue-600 dark:text-blue-400' />
+                <span className='text-blue-700 dark:text-blue-300'>{contact_text}</span>
+              </div>
+              <a href={`mailto:${contact_email}`} className='inline text-blue-600 hover:underline dark:text-blue-400'>
                 {contact_email}
               </a>
             </div>
