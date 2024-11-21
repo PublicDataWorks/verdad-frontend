@@ -21,7 +21,7 @@ import { TooltipProvider } from './ui/tooltip'
 import WelcomeCard from './ui/welcome-card'
 import { useAuth } from '@/providers/auth'
 
-const PAGE_SIZE = 20
+export const PAGE_SIZE = 20
 
 export default function SearchInterface() {
   const { showSidebar, setShowSidebar } = useSidebar()

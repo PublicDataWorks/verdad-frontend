@@ -62,13 +62,23 @@ function useSnippetFilters() {
     politicalSpectrum
   }
 
+  const isEmpty = useCallback(() => {
+    return (
+      languages.length === 0 &&
+      states.length === 0 &&
+      sources.length === 0 &&
+      labels.length === 0 &&
+      labeledBy.length === 0 &&
+      starredBy.length === 0 &&
+      !politicalSpectrum
+    )
+  }, [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum])
 
-  // Use this to follow the old API
   const setFilter = useCallback(
     (category: keyof SnippetFilters, values: any) => {
       setSnippetFilters({ ...filters, [category]: values })
     },
-    [setSnippetFilters]
+    [setSnippetFilters, filters]
   )
 
   const clearAll = useCallback(() => {
@@ -79,7 +89,8 @@ function useSnippetFilters() {
   return {
     filters,
     setFilter,
-    clearAll
+    clearAll,
+    isEmpty
   }
 }
 
