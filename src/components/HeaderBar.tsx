@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { LogOut } from 'lucide-react'
+import { Info, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InboxPopover } from './InboxPopover'
 import { useAuth } from '@/providers/auth'
@@ -11,11 +11,14 @@ import supabase from '@/lib/supabase'
 import { useLanguage } from '../providers/language'
 import { translations } from '@/constants/translations'
 import LanguageDropdown from './LanguageDropdown'
+import { useToggleWelcomeCard } from '@/hooks/useSnippetActions'
 
 const HeaderBar: React.FC = () => {
   const { user } = useAuth()
   const { language } = useLanguage()
   const t = translations[language]
+  const showInfoIcon = !user?.user_metadata?.dismiss_welcome_card
+  const { mutate: toggleWelcomeCard } = useToggleWelcomeCard()
 
   const getInitials = (email: string) => {
     return email.split('@')[0].slice(0, 2).toUpperCase()
@@ -33,6 +36,11 @@ const HeaderBar: React.FC = () => {
         </div>
       </Link>
       <div className='flex items-center space-x-4'>
+        {showInfoIcon && (
+          <Button className='hover:bg-transparent' variant='ghost' size='icon' onClick={() => toggleWelcomeCard(true)}>
+            <Info className='h-6 w-6 text-white' />
+          </Button>
+        )}
         <InboxPopover />
         <LanguageDropdown />
         <DropdownMenu>

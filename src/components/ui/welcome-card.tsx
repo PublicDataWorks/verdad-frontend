@@ -1,14 +1,15 @@
 import { Mail, X } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useDismissWelcomeCard } from '@/hooks/useSnippetActions'
+import { useDismissWelcomeCard, useToggleWelcomeCard } from '@/hooks/useSnippetActions'
 import { useWelcomeCard } from '@/hooks/useWelcomeCard'
 import { useLanguage } from '@/providers/language'
 import { DynamicIcon } from './dynamic-icon'
 import Spinner from '../Spinner'
 
 export default function WelcomeCard() {
-  const { mutate: dismissWelcomeCard } = useDismissWelcomeCard()
+  // const { mutate: dismissWelcomeCard } = useDismissWelcomeCard()
+  const { mutate: toggleWelcomeCard } = useToggleWelcomeCard()
   const { language } = useLanguage()
   const { data, isLoading } = useWelcomeCard(language)
   const { title, subtitle, features, footer_text, contact_email, contact_text } = data || {}
@@ -29,7 +30,7 @@ export default function WelcomeCard() {
             variant='ghost'
             size='icon'
             className='absolute right-2 top-2'
-            onClick={() => dismissWelcomeCard()}
+            onClick={() => toggleWelcomeCard(false)}
             aria-label='Dismiss welcome message'>
             <X className='h-4 w-4' />
           </Button>

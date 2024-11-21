@@ -106,3 +106,15 @@ export const dismissWelcomeCard = async (): Promise<void> => {
 
   return data
 }
+
+export const toggleWelcomeCard = async (status: boolean): Promise<void> => {
+  const { data, error } = await supabase.rpc('toggle_welcome_card', {
+    p_status: status
+  })
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}

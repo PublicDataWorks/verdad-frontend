@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Filter, Loader, FileX } from 'lucide-react'
+import { Filter, Loader, FileX, X } from 'lucide-react'
 import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '../providers/language'
 
@@ -27,7 +27,7 @@ export default function SearchInterface() {
   const { showSidebar, setShowSidebar } = useSidebar()
   const { filters } = useSnippetFilters()
   const { user } = useAuth()
-  const showWelcomeCard = !user?.user_metadata?.dismiss_welcome_card
+  const showWelcomeCard = user?.user_metadata?.dismiss_welcome_card
 
   const { language } = useLanguage()
   const t = translations[language]

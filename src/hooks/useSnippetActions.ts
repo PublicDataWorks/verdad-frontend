@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { snippetKeys } from './useSnippets'
-import { likeSnippet, hideSnippet, unhideSnippet, dismissWelcomeCard } from '@/apis/snippet'
+import { likeSnippet, hideSnippet, unhideSnippet, dismissWelcomeCard, toggleWelcomeCard } from '@/apis/snippet'
 import { LikeSnippetVariables, LikeResponse, HideResponse, Snippet } from '@/types/snippet'
 import { useAuth } from '@/providers/auth'
 
@@ -182,6 +182,17 @@ export function useDismissWelcomeCard() {
   return useMutation<void, Error, void>({
     mutationFn: dismissWelcomeCard,
     onSuccess: data => {
+      refreshUser()
+    }
+  })
+}
+
+export function useToggleWelcomeCard() {
+  const { refreshUser } = useAuth()
+
+  return useMutation<void, Error, boolean>({
+    mutationFn: toggleWelcomeCard,
+    onSuccess: () => {
       refreshUser()
     }
   })
