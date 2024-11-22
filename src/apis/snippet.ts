@@ -27,12 +27,14 @@ export const fetchSnippets = async ({
   pageParam = 0,
   pageSize = 10,
   filters,
-  language
+  language,
+  orderBy
 }: {
   pageParam: number
   pageSize: number
   filters: any
   language: string
+  orderBy: string
 }): Promise<PaginatedResponse> => {
   // Remove unset filter properties
   const actualFilters = { ...filters }
@@ -40,11 +42,11 @@ export const fetchSnippets = async ({
     delete actualFilters.politicalSpectrum
   }
 
-  const { data, error } = await supabase.rpc('get_snippets', {
     page: pageParam,
     page_size: pageSize,
     p_language: language,
-    p_filter: actualFilters
+    p_filter: actualFilters,
+    p_order_by: orderBy
   })
 
   if (error) {
