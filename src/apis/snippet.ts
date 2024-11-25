@@ -42,6 +42,7 @@ export const fetchSnippets = async ({
     delete actualFilters.politicalSpectrum
   }
 
+  const { data, error } = await supabase.rpc('get_snippets', {
     page: pageParam,
     page_size: pageSize,
     p_language: language,
