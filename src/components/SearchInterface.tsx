@@ -130,7 +130,7 @@ export default function SearchInterface() {
             </div>
           </div>
         )}
-        <div className={`${padding} mb-6 ml-auto flex flex-1  px-4`}>
+        <div className={`${padding} mb-6 ml-auto flex px-4`}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='outline' size='sm'>
@@ -160,7 +160,7 @@ export default function SearchInterface() {
         <div
           ref={scrollAreaRef}
           id='scrollableDiv'
-          className={`${padding} custom-scrollbar overflow-y-scroll rounded-lg`}>
+          className={`${padding} custom-scrollbar flex-1 overflow-y-scroll rounded-lg`}>
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
