@@ -59,6 +59,12 @@ export default function SearchInterface() {
   }
 
   useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [showWelcomeCard])
+
+  useEffect(() => {
     const searchScrollPosition = localStorage.getItem('searchScrollPosition')
     if (searchScrollPosition && scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo(0, Number(searchScrollPosition))
@@ -136,7 +142,7 @@ export default function SearchInterface() {
                     ? 'Most upvotes'
                     : filters.order_by === 'comments'
                       ? 'Most comments'
-                      : 'Most recent recording'}
+                      : 'Most recent recordings'}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='w-[200px]'>
