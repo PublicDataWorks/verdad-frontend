@@ -27,12 +27,14 @@ export const fetchSnippets = async ({
   pageParam = 0,
   pageSize = 10,
   filters,
-  language
+  language,
+  orderBy
 }: {
   pageParam: number
   pageSize: number
   filters: any
   language: string
+  orderBy: string
 }): Promise<PaginatedResponse> => {
   // Remove unset filter properties
   const actualFilters = { ...filters }
@@ -44,7 +46,8 @@ export const fetchSnippets = async ({
     page: pageParam,
     page_size: pageSize,
     p_language: language,
-    p_filter: actualFilters
+    p_filter: actualFilters,
+    p_order_by: orderBy
   })
 
   if (error) {
@@ -55,7 +58,8 @@ export const fetchSnippets = async ({
   return {
     snippets: data.snippets,
     total_pages: Number(data.total_pages),
-    currentPage: pageParam
+    currentPage: pageParam,
+    total_snippets: Number(data.num_of_snippets)
   }
 }
 
@@ -99,6 +103,18 @@ export const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnipp
 
 export const dismissWelcomeCard = async (): Promise<void> => {
   const { data, error } = await supabase.rpc('dismiss_welcome_card')
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+export const toggleWelcomeCard = async (status: boolean): Promise<void> => {
+  const { data, error } = await supabase.rpc('toggle_welcome_card', {
+    p_status: status
+  })
+
   if (error) {
     throw error
   }

@@ -9,6 +9,7 @@ export type SnippetFilters = {
   labeledBy: string[]
   starredBy: string[]
   politicalSpectrum?: 'center' | 'center_left' | 'center_right' | 'left' | 'right'
+  order_by?: 'activities' | 'upvotes' | 'comments' | 'latest'
 }
 
 const parseArrayParam = (param: string | null): string[] => {
@@ -31,6 +32,7 @@ function useSnippetFilters() {
   const labeledBy = parseArrayParam(searchParams.get('labeledBy')) as SnippetFilters['labeledBy']
   const starredBy = parseArrayParam(searchParams.get('starredBy')) as SnippetFilters['starredBy']
   const politicalSpectrum = searchParams.get('politicalSpectrum') as SnippetFilters['politicalSpectrum']
+  const order_by = searchParams.get('order_by') as SnippetFilters['order_by']
 
   const setSnippetFilters = useCallback(
     (filters: SnippetFilters) => {
@@ -47,6 +49,10 @@ function useSnippetFilters() {
         newParams.set('politicalSpectrum', filters.politicalSpectrum)
       }
 
+      if (filters.order_by) {
+        newParams.set('order_by', filters.order_by)
+      }
+
       setSearchParams(newParams)
     },
     [setSearchParams]
@@ -59,27 +65,42 @@ function useSnippetFilters() {
     labels,
     labeledBy,
     starredBy,
-    politicalSpectrum
+    politicalSpectrum,
+    order_by
   }
 
+  const isEmpty = useCallback(() => {
+    return (
+      languages.length === 0 &&
+      states.length === 0 &&
+      sources.length === 0 &&
+      labels.length === 0 &&
+      labeledBy.length === 0 &&
+      starredBy.length === 0 &&
+      !politicalSpectrum
+    )
+  }, [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, order_by])
 
-  // Use this to follow the old API
   const setFilter = useCallback(
     (category: keyof SnippetFilters, values: any) => {
       setSnippetFilters({ ...filters, [category]: values })
     },
-    [setSnippetFilters]
+    [setSnippetFilters, filters]
   )
 
   const clearAll = useCallback(() => {
     const newParams = new URLSearchParams()
+    if (order_by) {
+      newParams.set('order_by', order_by)
+    }
     setSearchParams(newParams)
-  }, [setSearchParams])
+  }, [setSearchParams, order_by])
 
   return {
     filters,
     setFilter,
-    clearAll
+    clearAll,
+    isEmpty
   }
 }
 

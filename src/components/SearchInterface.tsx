@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Filter, Loader, FileX } from 'lucide-react'
+import { Filter, Loader, FileX, X, ArrowUpDown } from 'lucide-react'
 import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '../providers/language'
 
@@ -12,29 +12,40 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { fetchFilteringOptions } from '@/hooks/useFilterOptions'
 import supabaseClient from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
-import { translations } from '@/constants/translations'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { isMobile } from 'react-device-detect'
 import { TooltipProvider } from './ui/tooltip'
 import WelcomeCard from './ui/welcome-card'
 import { useAuth } from '@/providers/auth'
+import { Button } from './ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger
+} from './ui/dropdown-menu'
 
-const PAGE_SIZE = 20
+export const PAGE_SIZE = 20
 
 export default function SearchInterface() {
   const { showSidebar, setShowSidebar } = useSidebar()
-  const { filters } = useSnippetFilters()
+  const { filters, setFilter } = useSnippetFilters()
   const { user } = useAuth()
-  const showWelcomeCard = !user?.user_metadata?.dismiss_welcome_card
+  const showWelcomeCard = user?.user_metadata?.dismiss_welcome_card
 
   const { language } = useLanguage()
-  const t = translations[language]
 
   const navigate = useNavigate()
 
-  const { data, error, fetchNextPage, hasNextPage, status } = useSnippets({ pageSize: PAGE_SIZE, filters, language })
+  const { data, error, fetchNextPage, hasNextPage, status } = useSnippets({
+    pageSize: PAGE_SIZE,
+    filters,
+    language,
+    orderBy: filters.order_by || 'latest'
+  })
 
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
@@ -113,6 +124,33 @@ export default function SearchInterface() {
             </div>
           </div>
         )}
+        <div className={`${padding} mb-6 ml-auto flex flex-1  px-4`}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant='outline' size='sm'>
+                <ArrowUpDown className='mr-2 h-4 w-4' />
+                Sort:{' '}
+                {filters.order_by === 'activities'
+                  ? 'Most recent activities'
+                  : filters.order_by === 'upvotes'
+                    ? 'Most upvotes'
+                    : filters.order_by === 'comments'
+                      ? 'Most comments'
+                      : 'Most recent recording'}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end' className='w-[200px]'>
+              <DropdownMenuRadioGroup
+                value={filters.order_by || 'latest'}
+                onValueChange={value => setFilter('order_by', value)}>
+                <DropdownMenuRadioItem value='activities'>Most recent activities</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value='upvotes'>Most upvotes</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value='comments'>Most comments</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value='latest'>Most recent recording</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         <div
           ref={scrollAreaRef}
           id='scrollableDiv'

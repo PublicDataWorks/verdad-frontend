@@ -1,4 +1,6 @@
 import { X } from 'lucide-react'
+import CountUp from 'react-countup'
+
 import { Button } from '@/components/ui/button'
 import { MultiSelect } from '@/components/ui/multi-select'
 import RoundedToggleButton from './RoundedToggleButton'
@@ -8,10 +10,13 @@ import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { useFilters } from '@/hooks/useFilterOptions'
 import useSnippetFilters, { SnippetFilters } from '@/hooks/useSnippetFilters'
+import { useSnippets } from '@/hooks/useSnippets'
+import { PAGE_SIZE } from '@/components/SearchInterface'
+import { useEffect, useRef } from 'react'
 
 export default function Sidebar() {
   const { setShowSidebar } = useSidebar()
-  const { filters, setFilter, clearAll } = useSnippetFilters()
+  const { filters, setFilter, clearAll, isEmpty } = useSnippetFilters()
 
   const {
     languages: selectedLanguages,
@@ -35,6 +40,16 @@ export default function Sidebar() {
 
   const { languages = [], states = [], sources = [], labels = { items: [] } } = data || {}
 
+  const { data: snippetData, isLoading } = useSnippets({ pageSize: PAGE_SIZE, filters, language })
+
+  const lastValueRef = useRef(0)
+
+  useEffect(() => {
+    if (!isLoading && snippetData?.pages[0].total_snippets !== undefined) {
+      lastValueRef.current = snippetData.pages[0].total_snippets
+    }
+  }, [isLoading, snippetData?.pages[0].total_snippets])
+
   const handleClearAll = () => {
     clearAll()
   }
@@ -55,14 +70,29 @@ export default function Sidebar() {
   }
 
   return (
-    <div className='hide-scrollbar fixed  inset-0 z-50 h-[100svh] overflow-y-auto bg-white md:relative md:inset-auto md:h-full md:h-full md:w-80'>
+    <div className='hide-scrollbar fixed  inset-0 z-50 h-[100svh] overflow-y-auto bg-white md:relative md:inset-auto  md:h-full md:w-80'>
       <div className='p-6'>
-        <div className='mb-4 flex items-center justify-between'>
-          <h2 className='text-lg font-semibold'>{t.filters}</h2>
+        <div className='mb-4 flex h-[24px] items-center justify-between'>
+          <CountUp
+            start={lastValueRef.current}
+            end={isLoading ? lastValueRef.current : snippetData?.pages[0].total_snippets}
+            duration={1.5}
+            separator=','
+            preserveValue={true}
+            className='text-sm font-medium text-gray-600'
+            formattingFn={n => {
+              if (n >= 1000) {
+                return `${(n / 1000).toFixed(1)}k items`
+              }
+              return `${n} ${n === 1 ? 'item' : 'items'}`
+            }}
+          />
           <div className='flex items-center gap-2'>
-            <Button variant='ghost' onClick={handleClearAll} className='px-2 font-normal text-blue-600'>
-              {t.reset}
-            </Button>
+            {!isEmpty() && (
+              <Button variant='ghost' onClick={handleClearAll} className='px-2 font-normal text-blue-600'>
+                {t.reset}
+              </Button>
+            )}
             <Button variant='ghost' onClick={() => setShowSidebar(false)} className='md:hidden'>
               <X className='h-6 w-6' />
             </Button>

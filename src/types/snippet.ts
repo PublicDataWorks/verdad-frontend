@@ -88,6 +88,7 @@ export interface PaginatedResponse {
   snippets: Snippet[]
   currentPage: number
   total_pages: number
+  total_snippets: number
 }
 
 export interface PublicSnippetData {

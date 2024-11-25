@@ -6,6 +6,7 @@ import { translations } from '@/constants/translations'
 
 export function getSnippetSubtitle(snippet: any, language: Language): JSX.Element {
   const parts = [
+    snippet?.audio_file?.radio_station_name,
     snippet?.audio_file?.radio_station_code,
     snippet?.audio_file?.location_state,
     snippet?.recorded_at ? format(new Date(snippet.recorded_at), 'MMM d, yyyy HH:mm zzz') : null

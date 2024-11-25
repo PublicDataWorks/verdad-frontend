@@ -1,14 +1,15 @@
 import { Mail, X } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useDismissWelcomeCard } from '@/hooks/useSnippetActions'
+import { useDismissWelcomeCard, useToggleWelcomeCard } from '@/hooks/useSnippetActions'
 import { useWelcomeCard } from '@/hooks/useWelcomeCard'
 import { useLanguage } from '@/providers/language'
 import { DynamicIcon } from './dynamic-icon'
 import Spinner from '../Spinner'
 
 export default function WelcomeCard() {
-  const { mutate: dismissWelcomeCard } = useDismissWelcomeCard()
+  // const { mutate: dismissWelcomeCard } = useDismissWelcomeCard()
+  const { mutate: toggleWelcomeCard } = useToggleWelcomeCard()
   const { language } = useLanguage()
   const { data, isLoading } = useWelcomeCard(language)
   const { title, subtitle, features, footer_text, contact_email, contact_text } = data || {}
@@ -29,7 +30,7 @@ export default function WelcomeCard() {
             variant='ghost'
             size='icon'
             className='absolute right-2 top-2'
-            onClick={() => dismissWelcomeCard()}
+            onClick={() => toggleWelcomeCard(false)}
             aria-label='Dismiss welcome message'>
             <X className='h-4 w-4' />
           </Button>
@@ -52,10 +53,12 @@ export default function WelcomeCard() {
           </div>
           {footer_text && <p className='text-xs text-blue-700 dark:text-blue-300'>{footer_text}</p>}
           {contact_email && contact_text && (
-            <div className='flex items-center gap-2 text-xs'>
-              <Mail className='h-3 w-3 text-blue-600 dark:text-blue-400' />
-              <span className='text-blue-700 dark:text-blue-300'>{contact_text}</span>
-              <a href={`mailto:${contact_email}`} className='text-blue-600 hover:underline dark:text-blue-400'>
+            <div className='flex flex-wrap items-center gap-2 text-xs'>
+              <div className='flex items-center gap-2'>
+                <Mail className='h-3 w-3 text-blue-600 dark:text-blue-400' />
+                <span className='text-blue-700 dark:text-blue-300'>{contact_text}</span>
+              </div>
+              <a href={`mailto:${contact_email}`} className='inline text-blue-600 hover:underline dark:text-blue-400'>
                 {contact_email}
               </a>
             </div>
