@@ -162,11 +162,11 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
             <TooltipTrigger asChild>
               <Button
                 variant='ghost'
-                className='flex items-center space-x-2'
+                className='flex items-center justify-center p-2'
                 onMouseEnter={() => setIsStarHovered(true)}
                 onMouseLeave={() => setIsStarHovered(false)}
                 onClick={handleStarClick}>
-                <img src={getStarIcon()} alt='Star' />
+                <img src={getStarIcon()} alt='Star' className='h-6 w-6 min-w-[24px]' />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
