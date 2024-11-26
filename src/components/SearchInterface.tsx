@@ -153,7 +153,7 @@ export default function SearchInterface() {
                   <DropdownMenuRadioItem value='activities'>Most recent activities</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value='upvotes'>Most upvotes</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value='comments'>Most comments</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value='latest'>Most recent recording</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='latest'>Most recent recordings</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
