@@ -118,44 +118,46 @@ export default function SearchInterface() {
     <div className='flex h-[calc(-60px+100svh)] flex-1 rounded-lg'>
       {showSidebar && <Sidebar />}
       <div className={`flex w-full flex-col pt-6`}>
-        {isMobile && (
-          <div className={`${padding} mb-6 flex items-center justify-between px-4 pt-2`}>
-            <div className='flex space-x-2'>
-              <RoundedToggleButton
-                label={language === 'spanish' ? 'Filtrar' : 'Filter'}
-                isActive={showSidebar}
-                onClick={toggleSidebar}
-                icon={<Filter className='mr-2 h-4 w-4' />}
-              />
+        <div className={`${padding} mb-6 flex justify-between`}>
+          {isMobile && (
+            <div className='flex'>
+              <div className='flex space-x-2'>
+                <RoundedToggleButton
+                  label={language === 'spanish' ? 'Filtrar' : 'Filter'}
+                  isActive={showSidebar}
+                  onClick={toggleSidebar}
+                  icon={<Filter className='mr-2 h-4 w-4' />}
+                />
+              </div>
             </div>
+          )}
+          <div className={isMobile ? '' : 'ml-auto'}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='outline' size='sm'>
+                  <ArrowUpDown className='mr-2 h-4 w-4' />
+                  Sort:{' '}
+                  {filters.order_by === 'activities'
+                    ? 'Most recent activities'
+                    : filters.order_by === 'upvotes'
+                      ? 'Most upvotes'
+                      : filters.order_by === 'comments'
+                        ? 'Most comments'
+                        : 'Most recent recordings'}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end' className='w-[200px]'>
+                <DropdownMenuRadioGroup
+                  value={filters.order_by || 'latest'}
+                  onValueChange={value => setFilter('order_by', value)}>
+                  <DropdownMenuRadioItem value='activities'>Most recent activities</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='upvotes'>Most upvotes</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='comments'>Most comments</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='latest'>Most recent recording</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        )}
-        <div className={`${padding} mb-6 ml-auto flex px-4`}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='outline' size='sm'>
-                <ArrowUpDown className='mr-2 h-4 w-4' />
-                Sort:{' '}
-                {filters.order_by === 'activities'
-                  ? 'Most recent activities'
-                  : filters.order_by === 'upvotes'
-                    ? 'Most upvotes'
-                    : filters.order_by === 'comments'
-                      ? 'Most comments'
-                      : 'Most recent recordings'}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-[200px]'>
-              <DropdownMenuRadioGroup
-                value={filters.order_by || 'latest'}
-                onValueChange={value => setFilter('order_by', value)}>
-                <DropdownMenuRadioItem value='activities'>Most recent activities</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value='upvotes'>Most upvotes</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value='comments'>Most comments</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value='latest'>Most recent recording</DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
         <div
           ref={scrollAreaRef}
