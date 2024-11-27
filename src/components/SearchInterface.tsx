@@ -146,7 +146,7 @@ export default function SearchInterface() {
                         : 'Most recent recordings'}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align='start'>
+              <DropdownMenuContent align='end' className='w-[200px] justify-between'>
                 <DropdownMenuRadioGroup
                   value={filters.order_by || 'latest'}
                   onValueChange={value => setFilter('order_by', value)}>
