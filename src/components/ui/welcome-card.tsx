@@ -8,18 +8,13 @@ import { DynamicIcon } from './dynamic-icon'
 import Spinner from '../Spinner'
 
 export default function WelcomeCard() {
-  // const { mutate: dismissWelcomeCard } = useDismissWelcomeCard()
   const { mutate: toggleWelcomeCard } = useToggleWelcomeCard()
   const { language } = useLanguage()
   const { data, isLoading } = useWelcomeCard(language)
   const { title, subtitle, features, footer_text, contact_email, contact_text } = data || {}
 
   if (isLoading) {
-    return (
-      <div className='flex h-screen items-center justify-center'>
-        <Spinner />
-      </div>
-    )
+    return null
   }
 
   return (
