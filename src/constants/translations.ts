@@ -11,6 +11,7 @@ export const translations = {
     selectSources: 'Select sources',
     labeled: 'Labeled',
     starred: 'Starred',
+    upvoted: 'Upvote',
     label: 'Label',
     byMe: 'by Me',
     byOthers: 'by Others',
@@ -101,6 +102,7 @@ export const translations = {
     clear: 'Limpiar',
     writeAComment: 'Escribe un comentario',
     replyToThread: 'Responder al hilo',
+    upvoted: 'Votado',
     tooltips: {
       back: 'Volver',
       download: 'Descargar contenido',

@@ -10,6 +10,7 @@ export type SnippetFilters = {
   starredBy: string[]
   politicalSpectrum?: 'center' | 'center_left' | 'center_right' | 'left' | 'right'
   order_by?: 'activities' | 'upvotes' | 'comments' | 'latest'
+  upvotedBy: string[]
 }
 
 const parseArrayParam = (param: string | null): string[] => {
@@ -33,6 +34,7 @@ function useSnippetFilters() {
   const starredBy = parseArrayParam(searchParams.get('starredBy')) as SnippetFilters['starredBy']
   const politicalSpectrum = searchParams.get('politicalSpectrum') as SnippetFilters['politicalSpectrum']
   const order_by = searchParams.get('order_by') as SnippetFilters['order_by']
+  const upvotedBy = parseArrayParam(searchParams.get('upvotedBy')) as SnippetFilters['upvotedBy']
 
   const setSnippetFilters = useCallback(
     (filters: SnippetFilters) => {
@@ -44,6 +46,7 @@ function useSnippetFilters() {
       setArrayParam(newParams, 'labels', filters.labels)
       setArrayParam(newParams, 'labeledBy', filters.labeledBy)
       setArrayParam(newParams, 'starredBy', filters.starredBy)
+      setArrayParam(newParams, 'upvotedBy', filters.upvotedBy)
 
       if (filters.politicalSpectrum) {
         newParams.set('politicalSpectrum', filters.politicalSpectrum)
@@ -66,7 +69,8 @@ function useSnippetFilters() {
     labeledBy,
     starredBy,
     politicalSpectrum,
-    order_by
+    order_by,
+    upvotedBy
   }
 
   const isEmpty = useCallback(() => {
@@ -79,7 +83,7 @@ function useSnippetFilters() {
       starredBy.length === 0 &&
       !politicalSpectrum
     )
-  }, [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, order_by])
+  }, [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, order_by, upvotedBy])
 
   const setFilter = useCallback(
     (category: keyof SnippetFilters, values: any) => {

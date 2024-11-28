@@ -24,6 +24,7 @@ export default function Sidebar() {
     sources: selectedSources,
     labeledBy: selectedLabeledBy,
     starredBy: selectedStarredBy,
+    upvotedBy: selectedUpvotedBy,
     labels: selectedLabels,
     politicalSpectrum
   } = filters
@@ -164,6 +165,18 @@ export default function Sidebar() {
               label={option.label}
               isActive={selectedStarredBy.includes(option.value)}
               onClick={() => handleToggle('starredBy', option.value)}
+            />
+          ))}
+        </div>
+
+        <h3 className='mb-2 mt-6 font-semibold'>{t.upvoted}</h3>
+        <div className='flex flex-wrap gap-2'>
+          {BY_OPTIONS.map(option => (
+            <RoundedToggleButton
+              key={`upvoted-${option.value}`}
+              label={option.label}
+              isActive={selectedUpvotedBy.includes(option.value)}
+              onClick={() => handleToggle('upvotedBy', option.value)}
             />
           ))}
         </div>
