@@ -1,0 +1,36 @@
+{
+  "snippets": [
+    {
+      "id": "1",
+      "title": "Test Snippet 1",
+      "content": "This is test content 1",
+      "source": "Test Source 1",
+      "url": "https://example.com/1",
+      "published_at": "2024-01-01T00:00:00Z",
+      "like_count": 10,
+      "dislike_count": 2,
+      "is_liked": null,
+      "is_hidden": false,
+      "political_spectrum": "center",
+      "topic": "politics",
+      "source_type": "news"
+    },
+    {
+      "id": "2",
+      "title": "Test Snippet 2",
+      "content": "This is test content 2",
+      "source": "Test Source 2",
+      "url": "https://example.com/2",
+      "published_at": "2024-01-02T00:00:00Z",
+      "like_count": 5,
+      "dislike_count": 1,
+      "is_liked": null,
+      "is_hidden": false,
+      "political_spectrum": "left",
+      "topic": "economy",
+      "source_type": "blog"
+    }
+  ],
+  "total_pages": 1,
+  "num_of_snippets": 2
+}

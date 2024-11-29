@@ -59,13 +59,17 @@ export default function LandingPageCarousel({ snippets }: LandingPageCarouselPro
 
   return (
     <Card className='h-[400px] overflow-hidden border-white/20 bg-white/10 p-4 backdrop-blur-sm' ref={containerRef}>
-      <div ref={scrollRef} className='transition-transform duration-1000 ease-linear'>
-        {snippets.map((snippet) => (
-          <Card key={snippet.id} className='mb-4 border-white/10 bg-white/5 p-4'>
+      <div ref={scrollRef} className='transition-transform duration-1000 ease-linear' data-testid='landing-carousel'>
+        {snippets.map(snippet => (
+          <Card key={snippet.id} className='mb-4 border-white/10 bg-white/5 p-4' data-testid='snippet-card'>
             <div className='mb-3 flex items-start justify-between'>
               <div className='flex-1 pr-4'>
-                <h3 className='text-sm font-medium text-white/90'>{snippet.titleEn}</h3>
-                <p className='mt-1 text-xs text-white/70'>{snippet.titleEs}</p>
+                <h3 className='text-sm font-medium text-white/90' data-testid='snippet-title'>
+                  {snippet.titleEn}
+                </h3>
+                <p className='mt-1 text-xs text-white/70' data-testid='snippet-title'>
+                  {snippet.titleEs}
+                </p>
               </div>
               <Button variant='ghost' size='icon' className='pointer-events-none text-white/80'>
                 <PlayCircle className='h-8 w-8' />
@@ -73,9 +77,13 @@ export default function LandingPageCarousel({ snippets }: LandingPageCarouselPro
               </Button>
             </div>
             <div className='mb-3 h-8 w-full rounded bg-white/10' aria-hidden='true' />
-            <div className='flex flex-wrap gap-2'>
+            <div className='flex flex-wrap gap-2' data-testid='snippet-labels'>
               {snippet.labels.map((tag, tagIndex) => (
-                <Badge key={tagIndex} variant='secondary' className='cursor-default bg-white/20 text-xs text-white'>
+                <Badge
+                  key={tagIndex}
+                  variant='secondary'
+                  className='cursor-default bg-white/20 text-xs text-white'
+                  data-testid='label'>
                   {tag}
                 </Badge>
               ))}

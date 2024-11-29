@@ -55,10 +55,10 @@ export default function LandingPage() {
       </header>
       <main className='container mx-auto flex flex-1 flex-col items-start gap-16 px-8 py-8 lg:flex-row lg:py-16'>
         <div className='order-2 max-w-2xl space-y-8 lg:order-none'>
-          <h1 className='text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl markdown'>
+          <h1 className='markdown text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl'>
             <Markdown>{landingPageContentQuery.data?.hero_title}</Markdown>
           </h1>
-          <p className='text-lg leading-relaxed text-white/90 sm:text-xl markdown'>
+          <p className='markdown text-lg leading-relaxed text-white/90 sm:text-xl'>
             <Markdown>{landingPageContentQuery.data?.hero_description}</Markdown>
           </p>
           <div className='flex flex-col gap-4 sm:flex-row'>
@@ -69,8 +69,7 @@ export default function LandingPage() {
               asChild
               variant='outline'
               size='lg'
-              className='border-white bg-white/10 text-white hover:bg-white/20'
-            >
+              className='border-white bg-white/10 text-white hover:bg-white/20'>
               <Link to={LOGIN_PATH}>{t.logIn}</Link>
             </Button>
           </div>
@@ -80,7 +79,7 @@ export default function LandingPage() {
         </div>
       </main>
       <footer className='container mx-auto p-8'>
-        <p className='max-w-3xl text-sm text-white/70 markdown'>
+        <p className='markdown max-w-3xl text-sm text-white/70'>
           <Markdown>{landingPageContentQuery.data?.footer_text}</Markdown>
         </p>
       </footer>

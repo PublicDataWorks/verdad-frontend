@@ -46,7 +46,7 @@ const HeaderBar: React.FC = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-transparent'>
-              {user?.user_metadata.avatar_url ? (
+              {user?.user_metadata?.avatar_url ? (
                 <img
                   src={user.user_metadata.avatar_url as string}
                   alt='User Avatar'

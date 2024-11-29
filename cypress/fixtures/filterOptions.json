@@ -1,0 +1,6 @@
+{
+  "stations": ["Station1", "Station2"],
+  "states": ["State1", "State2"],
+  "cities": ["City1", "City2"],
+  "labels": ["Label1", "Label2"]
+}

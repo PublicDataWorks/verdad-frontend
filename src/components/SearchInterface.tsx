@@ -115,7 +115,7 @@ export default function SearchInterface() {
   const padding = showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'px-6 md:px-20 lg:px-40 2xl:px-80'
 
   return (
-    <div className='flex h-[calc(-60px+100svh)] flex-1 rounded-lg'>
+    <div data-testid='search-interface' className='flex h-[calc(-60px+100svh)] flex-1 rounded-lg'>
       {showSidebar && <Sidebar />}
       <div className={`flex w-full flex-col pt-6`}>
         <div className={`${padding} mb-6 flex justify-between`}>
@@ -134,7 +134,7 @@ export default function SearchInterface() {
           <div className={isMobile ? '' : 'ml-auto'}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant='outline' size='sm'>
+                <Button data-testid='sort-dropdown' variant='outline' size='sm'>
                   <ArrowUpDown className='mr-2 h-4 w-4' />
                   Sort:{' '}
                   {filters.order_by === 'activities'
@@ -180,6 +180,7 @@ export default function SearchInterface() {
                 dataLength={snippets.length}
                 next={fetchNextPage}
                 hasMore={hasNextPage}
+                data-testid='snippet-list'
                 className='flex h-full flex-col gap-3'
                 scrollableTarget='scrollableDiv'
                 loader={
