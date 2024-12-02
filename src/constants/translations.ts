@@ -11,6 +11,7 @@ export const translations = {
     selectSources: 'Select sources',
     labeled: 'Labeled',
     starred: 'Starred',
+    upvoted: 'Upvote',
     label: 'Label',
     byMe: 'by Me',
     byOthers: 'by Others',
@@ -54,6 +55,12 @@ export const translations = {
       hideSnippet: 'Hide snippet',
       misinfo: 'Mark as mis/disinformation',
       notMisinfo: 'Mark as not mis/disinformation'
+    },
+    sortBy: {
+      mostRecentActivities: 'Recent user activities',
+      mostUpvotes: 'Most upvotes',
+      mostComments: 'Most comments',
+      mostRecentRecordings: 'Recently recorded'
     }
   },
   spanish: {
@@ -101,6 +108,7 @@ export const translations = {
     clear: 'Limpiar',
     writeAComment: 'Escribe un comentario',
     replyToThread: 'Responder al hilo',
+    upvoted: 'Votado',
     tooltips: {
       back: 'Volver',
       download: 'Descargar contenido',
@@ -111,6 +119,12 @@ export const translations = {
       hideSnippet: 'Ocultar snippet',
       misinfo: 'Marcar como desinformación',
       notMisinfo: 'Marcar como no desinformación'
+    },
+    sortBy: {
+      mostRecentActivities: 'Reciente actividad de usuario',
+      mostUpvotes: 'Más votos',
+      mostComments: 'Más comentarios',
+      mostRecentRecordings: 'Recientemente grabado'
     }
   }
 }

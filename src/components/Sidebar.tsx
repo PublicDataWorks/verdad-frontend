@@ -24,6 +24,7 @@ export default function Sidebar() {
     sources: selectedSources,
     labeledBy: selectedLabeledBy,
     starredBy: selectedStarredBy,
+    upvotedBy: selectedUpvotedBy,
     labels: selectedLabels,
     politicalSpectrum
   } = filters
@@ -82,9 +83,9 @@ export default function Sidebar() {
             className='text-sm font-medium text-gray-600'
             formattingFn={n => {
               if (n >= 1000) {
-                return `${(n / 1000).toFixed(1)}k items`
+                return `${(n / 1000).toFixed(1)}k snippets`
               }
-              return `${n} ${n === 1 ? 'item' : 'items'}`
+              return `${n} ${n === 1 ? 'snippet' : 'snippets'}`
             }}
           />
           <div className='flex items-center gap-2'>
@@ -164,6 +165,18 @@ export default function Sidebar() {
               label={option.label}
               isActive={selectedStarredBy.includes(option.value)}
               onClick={() => handleToggle('starredBy', option.value)}
+            />
+          ))}
+        </div>
+
+        <h3 className='mb-2 mt-6 font-semibold'>{t.upvoted}</h3>
+        <div className='flex flex-wrap gap-2'>
+          {BY_OPTIONS.map(option => (
+            <RoundedToggleButton
+              key={`upvoted-${option.value}`}
+              label={option.label}
+              isActive={selectedUpvotedBy.includes(option.value)}
+              onClick={() => handleToggle('upvotedBy', option.value)}
             />
           ))}
         </div>
