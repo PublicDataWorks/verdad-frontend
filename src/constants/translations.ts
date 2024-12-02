@@ -55,6 +55,12 @@ export const translations = {
       hideSnippet: 'Hide snippet',
       misinfo: 'Mark as mis/disinformation',
       notMisinfo: 'Mark as not mis/disinformation'
+    },
+    sortBy: {
+      mostRecentActivities: 'Recent user activities',
+      mostUpvotes: 'Most upvotes',
+      mostComments: 'Most comments',
+      mostRecentRecordings: 'Recently recorded'
     }
   },
   spanish: {
@@ -113,6 +119,12 @@ export const translations = {
       hideSnippet: 'Ocultar snippet',
       misinfo: 'Marcar como desinformación',
       notMisinfo: 'Marcar como no desinformación'
+    },
+    sortBy: {
+      mostRecentActivities: 'Reciente actividad de usuario',
+      mostUpvotes: 'Más votos',
+      mostComments: 'Más comentarios',
+      mostRecentRecordings: 'Recientemente grabado'
     }
   }
 }

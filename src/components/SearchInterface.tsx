@@ -12,7 +12,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { fetchFilteringOptions } from '@/hooks/useFilterOptions'
 import supabaseClient from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { isMobile } from 'react-device-detect'
@@ -27,6 +27,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger
 } from './ui/dropdown-menu'
+import { translations } from '@/constants/translations'
 
 export const PAGE_SIZE = 20
 
@@ -37,6 +38,7 @@ export default function SearchInterface() {
   const showWelcomeCard = user?.user_metadata?.dismiss_welcome_card
 
   const { language } = useLanguage()
+  const t = translations[language]
 
   const navigate = useNavigate()
 
@@ -49,9 +51,14 @@ export default function SearchInterface() {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
-  const handleSnippetClick = (snippetId: string) => {
-    localStorage.setItem('searchScrollPosition', String(scrollAreaRef.current?.scrollTop) ?? '')
-    navigate(`/snippet/${snippetId}`)
+  const handleSnippetClick = (event: React.MouseEvent, snippetId: string) => {
+    if (event.ctrlKey || event.metaKey) {
+      localStorage.setItem('searchScrollPosition', String(scrollAreaRef.current?.scrollTop) ?? '')
+      window.open(`/snippet/${snippetId}`, '_blank')
+    } else {
+      localStorage.setItem('searchScrollPosition', String(scrollAreaRef.current?.scrollTop) ?? '')
+      navigate(`/snippet/${snippetId}`)
+    }
   }
 
   const toggleSidebar = () => {
@@ -138,22 +145,22 @@ export default function SearchInterface() {
                   <ArrowUpDown className='mr-2 h-4 w-4' />
                   Sort:{' '}
                   {filters.order_by === 'activities'
-                    ? 'Most recent activities'
+                    ? t.sortBy.mostRecentActivities
                     : filters.order_by === 'upvotes'
-                      ? 'Most upvotes'
+                      ? t.sortBy.mostUpvotes
                       : filters.order_by === 'comments'
-                        ? 'Most comments'
-                        : 'Most recent recordings'}
+                        ? t.sortBy.mostComments
+                        : t.sortBy.mostRecentRecordings}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='start'>
                 <DropdownMenuRadioGroup
                   value={filters.order_by || 'latest'}
                   onValueChange={value => setFilter('order_by', value)}>
-                  <DropdownMenuRadioItem value='activities'>Most recent activities</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value='upvotes'>Most upvotes</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value='comments'>Most comments</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value='latest'>Most recent recordings</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='activities'>{t.sortBy.mostRecentActivities}</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='upvotes'>{t.sortBy.mostUpvotes}</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='comments'>{t.sortBy.mostComments}</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='latest'>{t.sortBy.mostRecentRecordings}</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
