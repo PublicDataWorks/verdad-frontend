@@ -83,9 +83,9 @@ export default function Sidebar() {
             className='text-sm font-medium text-gray-600'
             formattingFn={n => {
               if (n >= 1000) {
-                return `${(n / 1000).toFixed(1)}k items`
+                return `${(n / 1000).toFixed(1)}k snippets`
               }
-              return `${n} ${n === 1 ? 'item' : 'items'}`
+              return `${n} ${n === 1 ? 'snippet' : 'snippets'}`
             }}
           />
           <div className='flex items-center gap-2'>
