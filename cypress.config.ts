@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress'
 import coverageTask from '@cypress/code-coverage/task'
+import vitePreprocessor from 'cypress-vite'
 
 export default defineConfig({
   e2e: {
@@ -7,10 +8,11 @@ export default defineConfig({
     specPattern: 'cypress/e2e/**/*.ts',
     setupNodeEvents(on, config) {
       coverageTask(on, config)
-      // include any other plugin code...
-
-      // It's IMPORTANT to return the config object
-      // with any changed environment variables
+      on('file:preprocessor', vitePreprocessor())
+      config.env = {
+        ...process.env,
+        ...config.env
+      }
       return config
     }
   },

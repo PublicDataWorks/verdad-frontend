@@ -1,6 +1,1555 @@
 {
-  "stations": ["Station1", "Station2"],
-  "states": ["State1", "State2"],
-  "cities": ["City1", "City2"],
-  "labels": ["Label1", "Label2"]
+  "labels": {
+      "items": [
+          {
+              "label": "Culture Wars and Social Issues",
+              "value": "f858835b-a66f-45c2-a799-9ecd97d50507"
+          },
+          {
+              "label": "Misinformation",
+              "value": "4346ec8b-8a31-4ca2-8338-ca6618d3cfba"
+          },
+          {
+              "label": "Smear Campaign",
+              "value": "c0907181-c697-4625-b1ab-dbb934056384"
+          },
+          {
+              "label": "Economic Policies and Inflation",
+              "value": "d79aa3cc-b0bb-4122-9192-071bf5605c75"
+          },
+          {
+              "label": "Election Integrity and Voting Processes",
+              "value": "681c2ac4-c336-47e4-aeb4-fb2ffbb13980"
+          },
+          {
+              "label": "Negative Campaigning",
+              "value": "c7e52e1a-3147-4292-a95c-d0591242094d"
+          },
+          {
+              "label": "Misleading Information",
+              "value": "7fe32d0f-2835-440d-adcc-fd1dd5e5cca2"
+          },
+          {
+              "label": "Political discourse",
+              "value": "7c16a148-e869-4399-847e-d234bb081f61"
+          },
+          {
+              "label": "Misrepresentation of Facts",
+              "value": "33fde14e-83f9-4e78-95b6-82bcb9e61f5c"
+          },
+          {
+              "label": "Political Figures and Movements",
+              "value": "78d8f93b-1fd6-4177-8354-e00a64e73884"
+          },
+          {
+              "label": "Immigration Policies",
+              "value": "4f44d0e7-e761-4075-86a9-3353573dcabd"
+          },
+          {
+              "label": "Abortion and Reproductive Rights",
+              "value": "4a0b0f10-579b-4682-8297-d43cb0ebb8e9"
+          },
+          {
+              "label": "Climate Change and Environmental Policies",
+              "value": "56743c2a-dc81-4d3b-9d6e-5b788477b7bf"
+          },
+          {
+              "label": "Satire/Humor",
+              "value": "73642857-57c4-43ae-924a-81e5ecb7fe4f"
+          },
+          {
+              "label": "Conspiracy Theories",
+              "value": "bfb81a9a-ab3e-4367-8a2d-09bf780492ef"
+          },
+          {
+              "label": "Misleading Content",
+              "value": "a75a246d-c632-4301-929f-f68b7409b17e"
+          },
+          {
+              "label": "Propaganda",
+              "value": "ca53c2ce-e1f5-408d-8153-1d358ea8b9f3"
+          },
+          {
+              "label": "Misinformation, Misleading Content",
+              "value": "72b85a70-7bbc-4f13-a4b6-6908baa556c6"
+          },
+          {
+              "label": "Healthcare Reform",
+              "value": "cdae0b5d-174f-498b-aeea-dc901a128901"
+          },
+          {
+              "label": "Dehumanization",
+              "value": "900321b2-a837-4773-b056-b4f95e82363a"
+          },
+          {
+              "label": "Fearmongering",
+              "value": "7753c4fd-d7b4-4eca-97c7-c1a1e36aba00"
+          },
+          {
+              "label": "Misrepresentation of Religious Practices",
+              "value": "8aaf607b-2660-485a-bf08-bd1b3781e29e"
+          },
+          {
+              "label": "Public Safety and Law Enforcement",
+              "value": "d1d5d05d-74c0-49fa-bb4a-1f6ff3a6ac58"
+          },
+          {
+              "label": "LGBTQ+ Rights and Gender Issues",
+              "value": "a9e79b79-f043-4e14-b932-4f379d7d76c4"
+          },
+          {
+              "label": "Media and Tech Manipulation",
+              "value": "f385de02-32fd-4c2d-b3e2-cb04e2c132b5"
+          },
+          {
+              "label": "Puerto Rico",
+              "value": "d9c6c4e7-0f5b-42f0-ace5-a406232bb66c"
+          },
+          {
+              "label": "Christianity",
+              "value": "3aca0f55-3f8f-496e-83dd-4ba123a8971a"
+          },
+          {
+              "label": "Technology and Privacy",
+              "value": "cdb95ae3-b892-4137-af7f-341802832491"
+          },
+          {
+              "label": "Geopolitical Issues",
+              "value": "e79067b7-dfe6-444f-9c3c-72ce3f14ccf9"
+          },
+          {
+              "label": "Loaded Language",
+              "value": "3865c74e-3ad6-436a-a598-2fa271862c0c"
+          },
+          {
+              "label": "Misrepresentation",
+              "value": "0a7b8180-3665-467c-bcf1-2097bb855b7c"
+          },
+          {
+              "label": "Political Figure Promotion",
+              "value": "433b0d37-36b4-4a96-a0e5-865465a997b3"
+          },
+          {
+              "label": "Political Discourse",
+              "value": "488efe65-c4ad-45f6-8018-56e4577e758a"
+          },
+          {
+              "label": "Dehumanizing Language",
+              "value": "063e26c1-d6ec-446c-8b37-80f63bb0fb32"
+          },
+          {
+              "label": "Foreign Policy and International Relations",
+              "value": "00cc5730-9d10-4c0d-b607-aab8125f2143"
+          },
+          {
+              "label": "Geopolitical Issues- Ukraine-Russia Conflict",
+              "value": "83ab01c0-ecbb-46e0-a5fe-bdcc8eed363c"
+          },
+          {
+              "label": "Geopolitical Issues - Cuba",
+              "value": "d274d2c8-46fd-4ae9-b7ea-237dec86c835"
+          },
+          {
+              "label": "Fear-mongering",
+              "value": "6039ea3e-321c-4377-b8b2-864ded813689"
+          },
+          {
+              "label": "Loaded Language and Misrepresentation",
+              "value": "1d656e8d-c94d-4c44-8315-ab429d7c1cc6"
+          },
+          {
+              "label": "Misinformation/Disinformation",
+              "value": "1b634a35-d773-43d0-ba43-252614c5b349"
+          },
+          {
+              "label": "Cuba-US Relations",
+              "value": "3c17b262-43c8-4277-97f9-0a17ad24f984"
+          },
+          {
+              "label": "Reproductive Rights",
+              "value": "cfdf9c36-1154-4638-973f-7c00c2fdd4ca"
+          },
+          {
+              "label": "Social Programs",
+              "value": "8b0e8b83-ed58-4ab4-96dd-b85d11eac9a6"
+          },
+          {
+              "label": "Israel-Palestine Conflict",
+              "value": "0f04220c-e2b5-4068-8b53-af3fd9d9059b"
+          },
+          {
+              "label": "Emotional Appeal",
+              "value": "789cebe6-fa57-473a-b302-fa335a3948fc"
+          },
+          {
+              "label": "Misleading claims about Social Security",
+              "value": "f7089a5d-ace4-4455-9e5e-7e7f06a3b0a3"
+          },
+          {
+              "label": "COVID-19 and Vaccination",
+              "value": "2e19c22f-d843-4e9c-b236-78e10f07a74b"
+          },
+          {
+              "label": "Voter Suppression",
+              "value": "a160942d-c21a-4c9c-b5ff-97a1f4c3a63a"
+          },
+          {
+              "label": "Social Security and Welfare Programs",
+              "value": "77419f16-1acf-4853-b1d6-425edad81ec8"
+          },
+          {
+              "label": "Misrepresentation of Political Stances",
+              "value": "50b060a1-dae5-4c23-8892-09256624fb2e"
+          },
+          {
+              "label": "Misrepresentation of Fact",
+              "value": "c6cd53a3-ab9a-47d6-a5be-eb6e94b899ee"
+          },
+          {
+              "label": "Social Security and Retirement Programs",
+              "value": "04ab417d-d393-44eb-91fb-92ae41092f4f"
+          },
+          {
+              "label": "Election Interference",
+              "value": "628571b5-0229-488e-af76-0f3f0b655fe6"
+          },
+          {
+              "label": "False Comparison",
+              "value": "950bb7cf-74e3-4d17-83e8-44ba4971e221"
+          },
+          {
+              "label": "Political figures and movements",
+              "value": "536e264d-8198-4fd8-a9a4-4b47e04b3918"
+          },
+          {
+              "label": "Human Trafficking",
+              "value": "a6f3557c-2c3b-490b-a6ef-4c2fe28604ad"
+          },
+          {
+              "label": "Education and Academic Freedom",
+              "value": "fbd7b1af-449c-421e-b6a3-78f1330f4301"
+          },
+          {
+              "label": "Women's Rights",
+              "value": "f012e93d-cdc8-40f9-b93a-a4c2053560d5"
+          },
+          {
+              "label": "Integrity of the Election and Voting Processes",
+              "value": "1c834e9a-2ae7-4b49-baf3-481b02d18851"
+          },
+          {
+              "label": "Exaggeration/Misrepresentation",
+              "value": "1be86ad3-1715-46f1-8ca5-57799d5332f5"
+          },
+          {
+              "label": "Exaggerated Claims/Misrepresentation",
+              "value": "b86680f0-e7d0-441d-ba60-3d0a0566e09d"
+          },
+          {
+              "label": "Conspiracy theories",
+              "value": "ca30147c-1115-40ed-ab80-79ca639e0fe5"
+          },
+          {
+              "label": "Gender equality and sexism",
+              "value": "a6936281-dc5e-4ceb-bcea-f1c148ae6110"
+          },
+          {
+              "label": "Gender Equality and LGBTQ+ Rights",
+              "value": "74db3a6e-5d3c-4eae-adf7-7d3698ce166c"
+          },
+          {
+              "label": "Ukraine-Russia Conflict",
+              "value": "8889bab1-53de-4d5e-b6f1-8c9b04cb7e7e"
+          },
+          {
+              "label": "Media Bias",
+              "value": "de8786d3-3c33-49e7-9084-b46491cb9a6e"
+          },
+          {
+              "label": "Ethics and Credibility",
+              "value": "d52efab4-2668-4bac-9a21-e3bce843b6ba"
+          },
+          {
+              "label": "Integrity of the electoral process",
+              "value": "76a86735-de51-4778-980b-1fb2a2c4e5ee"
+          },
+          {
+              "label": "Manipulated Content",
+              "value": "624627c0-b535-4ebe-a694-edba487cfff4"
+          },
+          {
+              "label": "Misrepresentation of Information",
+              "value": "72dd2aa2-5394-4249-9757-8aa615334391"
+          },
+          {
+              "label": "Health Misinformation",
+              "value": "7f207daa-c9f5-44ee-a19e-9f774c5b4987"
+          },
+          {
+              "label": "Misleading Comparisons",
+              "value": "ad746de1-eaf5-439d-999b-a2f038351444"
+          },
+          {
+              "label": "Misleading political advertisement",
+              "value": "9c7a6bbb-b435-46d1-9aed-9095caada7cc"
+          },
+          {
+              "label": "Paid Political Advertising",
+              "value": "cdf07ee9-108f-4142-ac12-6cc95f0522c0"
+          },
+          {
+              "label": "Electoral Integrity and Voting",
+              "value": "115bc510-2a01-45a3-9682-e53302f0dff3"
+          },
+          {
+              "label": "Crime",
+              "value": "a30b4ffe-7f34-4dd7-8a84-b4d73f7e1d60"
+          },
+          {
+              "label": "Political rhetoric",
+              "value": "f73de524-fd43-4cf5-8229-69573bbdcb6e"
+          },
+          {
+              "label": "Social Security and Retirement",
+              "value": "659c481e-2e42-4d42-932b-4cefa61bf411"
+          },
+          {
+              "label": "Religion and Culture Wars",
+              "value": "cbf87130-8d03-4631-a87f-014639c24d03"
+          },
+          {
+              "label": "Geopolitical Issues > Ukraine-Russia Conflict",
+              "value": "92c7d1ad-a42c-4af8-b434-41b5ea1b2716"
+          },
+          {
+              "label": "Exaggerated or misleading portrayal of events.",
+              "value": "fd212e5f-1e09-4d98-8bc6-0e0a0eac1472"
+          },
+          {
+              "label": "Disinformation about Political Figures",
+              "value": "8c082bd6-a2c8-496f-8635-eb98164e13de"
+          },
+          {
+              "label": "Satire/Parody",
+              "value": "99b54489-29ec-4edf-8e13-f2d85b84f25e"
+          },
+          {
+              "label": "Disinformation and Misleading Content",
+              "value": "d0c9493e-8065-460c-9858-02d547e6cdc5"
+          },
+          {
+              "label": "Smear campaign",
+              "value": "417fe1e1-5238-414f-9907-403e74ab2d0d"
+          },
+          {
+              "label": "Political Manipulation",
+              "value": "d68748a6-6373-431b-a161-7bd5e17ad50c"
+          },
+          {
+              "label": "Anti-Semitism",
+              "value": "516a925e-6b52-4e53-b13a-5df3051209a1"
+          },
+          {
+              "label": "Socialism/Communism",
+              "value": "c5e3f50c-a11e-4c63-9db5-f3f63d18c633"
+          },
+          {
+              "label": "Misleading Statistics",
+              "value": "0aabb8b0-9157-4200-8ad8-0505b52fff53"
+          },
+          {
+              "label": "Xenophobia",
+              "value": "52454322-5533-4889-a8e8-1c8f5bbaf9a0"
+          },
+          {
+              "label": "Loaded Language/Labeling",
+              "value": "5d871e92-2e74-4939-b53f-65517a4e3df5"
+          },
+          {
+              "label": "Pseudoscience",
+              "value": "ea822247-1615-4eda-877d-6b39c0b47d54"
+          },
+          {
+              "label": "Organized Crime",
+              "value": "390ec037-9294-450a-96f8-c34787549434"
+          },
+          {
+              "label": "Health and Wellness",
+              "value": "415918d1-bdcc-4a17-840c-ab0428d7341b"
+          },
+          {
+              "label": "Health",
+              "value": "cd0011ca-e599-49d7-8795-109d09428d19"
+          },
+          {
+              "label": "Social Security",
+              "value": "771ed96e-2b1b-4ce9-a946-34aad5d051c5"
+          },
+          {
+              "label": "Climate Change Denial",
+              "value": "8848280c-feab-4c84-b848-59e9240f791e"
+          },
+          {
+              "label": "Sexism/Gender Bias",
+              "value": "8679132e-4f7c-4051-a2f9-b9e98d380cad"
+          },
+          {
+              "label": "Political disinformation",
+              "value": "8ce0c93e-9977-46a0-b593-1142a2385aff"
+          },
+          {
+              "label": "Gender Issues",
+              "value": "c24cd170-021d-4a67-b782-70869f3b2c3f"
+          },
+          {
+              "label": "Abortion and reproductive rights",
+              "value": "23c70056-aca8-499c-a237-2d5f70eeb9d9"
+          },
+          {
+              "label": "Culture wars and social issues",
+              "value": "af289d99-1c96-4084-bc9c-6ea6a54f18d1"
+          },
+          {
+              "label": "Stereotyping or Misrepresentation",
+              "value": "fb87cb3d-ac9c-44ad-bfe1-cfed0ba37707"
+          },
+          {
+              "label": "Hate Speech",
+              "value": "831fe580-8e3a-4b36-879f-4005de905f5e"
+          },
+          {
+              "label": "Concern",
+              "value": "56de3b46-f057-4ca8-8224-a136919c3a08"
+          },
+          {
+              "label": "Speculation",
+              "value": "d98094ec-1f93-429d-8625-bb0168eff759"
+          },
+          {
+              "label": "Distrust",
+              "value": "f51c8ef8-7e8d-46e8-bfd8-13d1da3fc247"
+          },
+          {
+              "label": "Misleading or False Information",
+              "value": "b915fbeb-e7d3-45a9-936e-06b4c4ea46da"
+          },
+          {
+              "label": "Administrative procedures",
+              "value": "fbbe1181-afaf-4954-b154-3b4f71d700aa"
+          },
+          {
+              "label": "Gun Rights and Control",
+              "value": "5facb262-6793-43b7-86cf-1601e20e69c1"
+          },
+          {
+              "label": "Terrorism",
+              "value": "6008bf82-3791-4ecd-b300-ebf7fe1a8cca"
+          },
+          {
+              "label": "Disinformation about Political Figures or Movements",
+              "value": "6afecc81-48e6-43ff-9c57-7020b6dcd2c2"
+          },
+          {
+              "label": "Misinformation about health",
+              "value": "27add4a4-72c5-4d8a-aec2-eb987c34ac9f"
+          },
+          {
+              "label": "Exaggerated or misleading health claims",
+              "value": "2a975dcc-030f-4841-a2fc-0f70baa065b0"
+          },
+          {
+              "label": "Political Rhetoric",
+              "value": "da7aa141-faf7-43ae-bd65-3125cb4f91a4"
+          },
+          {
+              "label": "Ageism",
+              "value": "19557159-7fac-42bd-883c-e8db0a479169"
+          },
+          {
+              "label": "Political Discourse and Misinformation",
+              "value": "8a79f1c8-637c-4aef-8837-05be84d0aed4"
+          },
+          {
+              "label": "Ageism/Ableism",
+              "value": "43e5bc30-c9a7-4fb9-b0b0-817bb0820694"
+          },
+          {
+              "label": "Political Commentary",
+              "value": "2db9d6f1-8853-4905-9ca9-d877a826c3a1"
+          },
+          {
+              "label": "Disinformation about Messi's Performance",
+              "value": "41f22c5b-8ef8-4066-ba08-a0de75f136f0"
+          },
+          {
+              "label": "Disinformation",
+              "value": "bb2f8453-373a-453c-8f74-e2fedb67f36d"
+          },
+          {
+              "label": "Geopolitical Issues / Israel-Palestine conflict",
+              "value": "347c3bb4-f3ae-4f46-bd51-845d76fc44db"
+          },
+          {
+              "label": "Disinformation and Misinformation",
+              "value": "b86c5807-fa55-40ac-9df2-47b704591dac"
+          },
+          {
+              "label": "Anti-semitism",
+              "value": "f2add3fd-04c1-450a-bca0-b780bec4e0fe"
+          },
+          {
+              "label": "Oversimplification/Misrepresentation",
+              "value": "d931714c-c461-41cf-bf01-9354623e05b1"
+          },
+          {
+              "label": "Misinformation about health and diseases",
+              "value": "27b542a5-b8d2-4a56-a028-2abe7d5fb611"
+          },
+          {
+              "label": "Promoting unverified health products or treatments",
+              "value": "9e7e307f-d8a8-40b8-9eb6-85ad5cba129c"
+          },
+          {
+              "label": "Ageism/Mischaracterization",
+              "value": "f563c29c-4c77-4696-9e9a-314d7406bad8"
+          },
+          {
+              "label": "Health, Science, and Misinformation on Public Issues",
+              "value": "27945de9-8be5-4b07-b982-291534306fac"
+          },
+          {
+              "label": "Exaggeration or Misrepresentation",
+              "value": "558f3934-0670-4b17-8517-c47dfeedd3ce"
+          },
+          {
+              "label": "Manipulation of Information",
+              "value": "89adf2cf-8a78-4fb2-9fff-24de8b400bc0"
+          },
+          {
+              "label": "Misleading Narrative",
+              "value": "531f9718-43cf-408a-bb45-ce37a384ac91"
+          },
+          {
+              "label": "China-US Relations",
+              "value": "2204c9d4-f0c3-4109-a2af-eab2af567109"
+          },
+          {
+              "label": "Misrepresentation of Political Figures",
+              "value": "c023afa9-3574-40d2-b19c-cd8888cd7a25"
+          },
+          {
+              "label": "Misrepresentation of Political Movements",
+              "value": "88996f58-87ae-4c76-ad71-5a6b63b574db"
+          },
+          {
+              "label": "Geopolitical Issues -  Israel-Palestine Conflict",
+              "value": "eef8b8b8-3dbd-48c6-8256-fb1f7302ba62"
+          },
+          {
+              "label": "Discrimination",
+              "value": "c9db6b62-e5e6-4a17-8078-0fd0d43ff222"
+          },
+          {
+              "label": "Human Rights Issues",
+              "value": "daae5077-059b-4504-a242-79b6cc3b2e7a"
+          },
+          {
+              "label": "Geopolitical Issues / China-US Relations",
+              "value": "7fe62f0f-d7b9-4e18-ba5c-7befcfa4f8bf"
+          },
+          {
+              "label": "Sweeping Generalizations",
+              "value": "b504a9a6-afd0-45d8-bdb3-c3f0f69e6856"
+          },
+          {
+              "label": "deep state",
+              "value": "85f0e1f0-efbe-4fcf-80fe-715157270f35"
+          },
+          {
+              "label": "Pseudo-scientific medical advice.",
+              "value": "a086b064-b768-479a-beea-abebb7d266df"
+          },
+          {
+              "label": "Exaggerated or misleading health claims.",
+              "value": "b7026c87-90bc-434b-9524-268d585a94af"
+          },
+          {
+              "label": "Geopolitical Issues -> Israel-Palestine Conflict",
+              "value": "9256423c-5c38-42b0-a476-89d5ec7e9bdf"
+          },
+          {
+              "label": "Public Health",
+              "value": "7d9fdba5-48d4-4ad2-b94c-e89fb06ab587"
+          },
+          {
+              "label": "Misinformation about health and unproven cures",
+              "value": "975fbcfe-309b-4dfb-ae13-bfc5e3a6aae4"
+          },
+          {
+              "label": "Genocide",
+              "value": "5683a9c6-c981-45e6-bb6d-3b9dd73325f1"
+          },
+          {
+              "label": "Exaggerated or False Claims",
+              "value": "0b4cd0e1-f5cb-4009-b374-fef6da1480fa"
+          },
+          {
+              "label": "Misleading Comparison",
+              "value": "a65cc41e-fbd1-4f67-ae82-cee80e1f5409"
+          },
+          {
+              "label": "Geopolitical Issues / Ukraine-Russia Conflict",
+              "value": "7c16d26d-3dd6-4d4f-95fe-389aadce812c"
+          },
+          {
+              "label": "Geopolitical issues / Israel-Palestine conflict",
+              "value": "39fb6cd3-9dd3-402e-a3bb-963f8e0f1ca7"
+          },
+          {
+              "label": "Geopolitical Issues \\ Israel-Palestine Conflict",
+              "value": "274697c7-9c3d-4d52-9b14-18d6fc9286e7"
+          },
+          {
+              "label": "Transparency and Accountability",
+              "value": "14d713cb-ba28-48f1-84cc-e05a6e540573"
+          },
+          {
+              "label": "Disinformation Narrative",
+              "value": "1142f8e2-55d4-468d-a6c8-5825f499fc07"
+          },
+          {
+              "label": "Sexual Assault Accusations",
+              "value": "1d910031-ebf5-41de-a299-3995c95ae464"
+          },
+          {
+              "label": "Misrepresentation of political figures or movements.",
+              "value": "52071c25-aeb0-435b-ac9e-9a3473f46369"
+          },
+          {
+              "label": "Promoting unsubstantiated or misleading geopolitical narratives.",
+              "value": "bc372c0f-6d42-40c7-8016-2e150d42691f"
+          },
+          {
+              "label": "Gender or Identity",
+              "value": "babd7292-c964-4564-b78e-34f45b7b24c3"
+          },
+          {
+              "label": "Misleading or exaggerated health claims",
+              "value": "00f50a13-f4c4-463c-ba67-8ca7eacfdd8b"
+          },
+          {
+              "label": "Medical Misinformation",
+              "value": "811baf49-c56a-43af-8663-3decbf8bc714"
+          },
+          {
+              "label": "Health and Safety",
+              "value": "90e6e689-8f25-4937-abe5-09949963bcd8"
+          },
+          {
+              "label": "Geopolitical Issues: Israel-Palestine Conflict",
+              "value": "11377dfe-ab5b-4232-953b-1fc5aeb23fae"
+          },
+          {
+              "label": "Disinformation about social groups.",
+              "value": "be8ea12d-472a-45fb-8ae9-94a0636645b7"
+          },
+          {
+              "label": "Accuracy Issues",
+              "value": "2326fe95-aec7-493b-9df2-3642702cc568"
+          },
+          {
+              "label": "Misrepresentation of political processes",
+              "value": "e73a5313-db5f-455e-ae25-2d51b84acb71"
+          },
+          {
+              "label": "Religious Discrimination",
+              "value": "aa1c348e-10a9-40ff-b84b-7f5fbd8b0219"
+          },
+          {
+              "label": "Geopolitical Issues \\ Ukraine-Russia Conflict",
+              "value": "abdc08a4-b161-4ead-bbd1-b743c441cac0"
+          },
+          {
+              "label": "Geopolitical Issues - Ukraine-Russia Conflict",
+              "value": "7eccfb99-f488-4106-bff4-2909663ee576"
+          },
+          {
+              "label": "Geopolitical Issues (Israel-Palestine Conflict)",
+              "value": "629309b2-d6cb-4b28-b2f3-8c6fcf1b00dd"
+          },
+          {
+              "label": "Misinformation about U.S. Law",
+              "value": "1542b7f5-a99e-42a2-b876-9dd26e506567"
+          },
+          {
+              "label": "Geopolitical Issues; Israel-Palestine conflict",
+              "value": "61e2e14c-4521-44ce-9ddb-28012aabacd7"
+          },
+          {
+              "label": "Geopolitical Issues/Ukraine-Russia Conflict",
+              "value": "8f75da1f-30c6-420c-b739-7110d0686d2d"
+          },
+          {
+              "label": "Disinformation Narratives",
+              "value": "71b7ea11-c607-4801-9856-2c3b66ed40ba"
+          },
+          {
+              "label": "Geopolitical Issues - Israel-Palestine Conflict",
+              "value": "c1a8a7b6-9a34-4eec-93fa-fc6e9040b666"
+          },
+          {
+              "label": "Anti-Israel Rhetoric",
+              "value": "59c2bb73-d596-4682-9cd9-e871cd20b9b1"
+          },
+          {
+              "label": "Gender equality",
+              "value": "425e4696-b90c-4408-b354-fcf9de765830"
+          },
+          {
+              "label": "Geopolitical Issues->Israel-Palestine Conflict",
+              "value": "9f42f67d-565a-4976-b895-3d9ec8fad9c3"
+          },
+          {
+              "label": "Tech and Media Manipulation",
+              "value": "45a7de4a-7655-4e1d-9437-63a1dc96e294"
+          },
+          {
+              "label": "Misleading or manipulative information about a politician or political event.",
+              "value": "b4ed2d90-fd85-45f3-9ab2-70bf306d5c12"
+          },
+          {
+              "label": "Sensationalism/Misleading Content",
+              "value": "9a0c9e2a-87dd-4b98-8874-0bd0a3ec0c9f"
+          },
+          {
+              "label": "Ageism and Ableism",
+              "value": "704f5a33-7318-4514-9afc-00f75aa052d2"
+          },
+          {
+              "label": "Misinformation related to the Russia-Ukraine conflict.",
+              "value": "9dea245c-eb3b-4e94-83aa-2f60fceafc6b"
+          },
+          {
+              "label": "Geopolitical Issues / Israel-Palestine Conflict",
+              "value": "778f04ea-26ed-4a2f-a7f6-9b8fb2bd1396"
+          },
+          {
+              "label": "Misinformation regarding disaster relief efforts and political discrimination",
+              "value": "d554eea6-0747-4589-9e8e-08b516af75b9"
+          },
+          {
+              "label": "Misleading comparison",
+              "value": "47f7de3e-d5cd-40bc-a15b-21c42d54a34b"
+          },
+          {
+              "label": "False attribution",
+              "value": "13e0d585-4104-454b-bbc2-0546c7707093"
+          },
+          {
+              "label": "Misleading or false information",
+              "value": "15806f70-6608-4690-a1c7-a172a6cc2a24"
+          },
+          {
+              "label": "Misrepresentation of Public Figures",
+              "value": "e47eb285-4c9e-4849-ae91-1a63519a77c8"
+          },
+          {
+              "label": "Genocide Denial",
+              "value": "a363c2b6-d8d8-4d54-9b25-758317e7e876"
+          },
+          {
+              "label": "Misinformation about political figures",
+              "value": "9f5761a7-165e-4cd1-8171-23eb77ab6df9"
+          },
+          {
+              "label": "Geopolitical Issues \\u2013 China",
+              "value": "b511a89f-7cf8-4b1e-a85d-d0e9721439dd"
+          },
+          {
+              "label": "Foreign Interference",
+              "value": "a48f5007-3be3-4e13-ab5c-5a427a45197c"
+          },
+          {
+              "label": "Discrimination and Racism",
+              "value": "eca97b29-ea39-4840-bf2a-dc79c5fc57fd"
+          },
+          {
+              "label": "Whataboutism",
+              "value": "a7282b95-c8dc-402c-9aae-9d751e203366"
+          },
+          {
+              "label": "Sinophobia/Racism",
+              "value": "d9dae32a-7776-452c-a03e-9af95b16e6f8"
+          },
+          {
+              "label": "Transparency in Government Spending",
+              "value": "6c851f74-b825-4e7a-96fb-0624da66e85b"
+          },
+          {
+              "label": "Political corruption",
+              "value": "1ce2aa02-7c7d-476c-bb16-7b96d45af23a"
+          },
+          {
+              "label": "Straw Man",
+              "value": "4af58574-e5b0-44df-adcc-fe0b5493af3f"
+          },
+          {
+              "label": "Foreign Policy and International Relations/China-US Relations",
+              "value": "d9a0e0db-e495-46e9-9080-962fcb4166d3"
+          },
+          {
+              "label": "COVID-19 and vaccination",
+              "value": "5030e159-da6c-4367-980f-805bd7ffe70e"
+          },
+          {
+              "label": "Misinformation and Misleading Content",
+              "value": "7d3232ab-2e90-46e0-83c2-3f627f58ea1a"
+          },
+          {
+              "label": "Geopolitical Issues \\(Ukraine-Russia Conflict\\)",
+              "value": "87b3e0f6-c264-497a-98a7-9474a9db6ff1"
+          },
+          {
+              "label": "Electoral Integrity",
+              "value": "d3b2cbfc-451c-486b-beaf-ee90bcf6086d"
+          },
+          {
+              "label": "Geopolitical Issues > Israel-Palestine Conflict",
+              "value": "98a57334-ddd1-4546-ac58-d0dcc0d5dc76"
+          },
+          {
+              "label": "Geopolitical Issues: The Israeli-Palestinian Conflict",
+              "value": "3bf97151-20b9-4667-af0e-41b60593039f"
+          },
+          {
+              "label": "Media and tech manipulation",
+              "value": "220c2435-3fbf-427a-9a8a-adc89ed7d9e2"
+          },
+          {
+              "label": "Gender equality and feminism",
+              "value": "19ccc61a-74a4-4cb4-99d4-46324f2b8dc6"
+          },
+          {
+              "label": "Foreign Policy and International Relations: Israel-Palestine conflict",
+              "value": "b22706a9-7004-47f9-8bed-363b6495731c"
+          },
+          {
+              "label": "Social Responsibility",
+              "value": "571b96a3-bc23-4af5-b30d-d8e6b2218606"
+          },
+          {
+              "label": "Disinformation about Political Figures and Movements",
+              "value": "2c73b1ab-6e57-483a-a14b-2c9366cd700b"
+          },
+          {
+              "label": "Criticism of a Public Figure",
+              "value": "f62c0087-fa22-4659-84a2-198990201df9"
+          },
+          {
+              "label": "Misinformation about health or medical topics.",
+              "value": "4dcc6984-0741-46b7-b9bf-40ab8ec38d99"
+          },
+          {
+              "label": "Geopolitical issues / Conspiracies",
+              "value": "c39990d0-ba7f-46a4-b573-827fde8f41ba"
+          },
+          {
+              "label": "Hate speech",
+              "value": "679a6337-948a-495c-bd38-931914eb6093"
+          },
+          {
+              "label": "Geopolitical Issues \\u2013 Ukraine-Russia Conflict",
+              "value": "11a21d72-5259-48e5-89f6-dea64fb9682b"
+          },
+          {
+              "label": "Geopolitical Issues >> Ukraine-Russia Conflict",
+              "value": "d8bd380c-26ff-4d2c-bd31-1f37eb59079f"
+          },
+          {
+              "label": "5. LGBTQ+ Rights and Gender Issues",
+              "value": "ac6895d3-7d44-4018-a1de-b93af684a32c"
+          },
+          {
+              "label": "Misinformation about Bloomberg's role in polling.",
+              "value": "04447681-45aa-4175-a147-ad709076d4d1"
+          },
+          {
+              "label": "Culture Wars",
+              "value": "30e3d492-b5d9-4ee9-8db8-6b9690c2e298"
+          },
+          {
+              "label": "Social Security Scam",
+              "value": "e8e909f7-1946-41c7-be3e-306eb2a84658"
+          },
+          {
+              "label": "Geopolitical Issues->Ukraine-Russia Conflict",
+              "value": "a84923fb-a267-4fd1-92f1-6a3c7e5da7c4"
+          },
+          {
+              "label": "Syria Conflict Misinformation",
+              "value": "66552348-4d2b-470e-b691-5ea583bb45ee"
+          },
+          {
+              "label": "Misrepresentation of Statistics",
+              "value": "90aa8545-7a1c-448f-841f-2f9beae54feb"
+          },
+          {
+              "label": "False Information",
+              "value": "3761f201-59ab-4d74-98a7-4915c9a9593c"
+          },
+          {
+              "label": "Geopolitical Issues\\China-US Relations",
+              "value": "c4b15007-27a2-4d0b-89db-b9ffb7c01b32"
+          },
+          {
+              "label": "Gun Control",
+              "value": "28454c85-66c2-4be1-b5a4-cfd5c6ccb2b7"
+          },
+          {
+              "label": "Logical Fallacies",
+              "value": "73f65394-2d33-45a3-b556-ca0afc25ad24"
+          },
+          {
+              "label": "Misrepresentation of data or information related to the war in Ukraine",
+              "value": "bb3aa7c2-5da2-47da-abe0-45d2278a0851"
+          },
+          {
+              "label": "Foreign Policy and International Relations: Israel-Palestine Conflict",
+              "value": "16050fce-478a-4457-95d0-b4462126be71"
+          },
+          {
+              "label": "Misinformation / Disinformation",
+              "value": "bf9d6058-aa8b-4ccf-b5d7-e6fe9895d867"
+          },
+          {
+              "label": "Food Safety",
+              "value": "4a4d9721-bae5-40c0-9010-83233e9216f3"
+          },
+          {
+              "label": "Political discourse, rhetoric, and polarization",
+              "value": "c8c5070e-20bf-4a33-9fec-1ce405d4aebc"
+          },
+          {
+              "label": "Geopolitical Issues: Ukraine-Russia Conflict",
+              "value": "1d0a5f36-c0f7-4e2d-8974-ec874d411840"
+          },
+          {
+              "label": "Exaggeration/Embellishment",
+              "value": "f0268a9b-44cd-45c1-9bef-134df65ec980"
+          },
+          {
+              "label": "Geopolitical Issues>Ukraine-Russia Conflict",
+              "value": "07f6c926-dce7-4305-882b-1f44c4a9d9b9"
+          },
+          {
+              "label": "Geopolitical Issues, Ukraine-Russia Conflict",
+              "value": "43aa5ed9-a4cd-4181-992e-f2375c71e741"
+          },
+          {
+              "label": "Gender Equality and Discrimination",
+              "value": "729f3466-211d-4554-b1a4-5902e872ba0d"
+          },
+          {
+              "label": "Sensationalism/Misrepresentation",
+              "value": "f0b969a1-d798-4611-9b11-38b909892be7"
+          },
+          {
+              "label": "Geopolitical Issues\\Ukraine-Russia Conflict",
+              "value": "16ec4b7f-0084-4281-a077-bb7906bfa527"
+          },
+          {
+              "label": "Exaggeration / Distortion of facts",
+              "value": "e28e79fe-beb8-47df-ab3b-bfc53afdc91b"
+          },
+          {
+              "label": "Media Bias/Misinformation",
+              "value": "cb6c174a-a7a5-43e1-bcc0-e676af5a9d2e"
+          },
+          {
+              "label": "Misrepresentation of facts",
+              "value": "ac644cf7-f882-4e9c-be3d-0a736faba5aa"
+          },
+          {
+              "label": "Loaded Language and Misleading Rhetoric",
+              "value": "d126c72b-2448-43c9-9cb5-548db7a56c3d"
+          },
+          {
+              "label": "NONE",
+              "value": "8e235f94-6637-4933-80ea-ae8a2db46bb6"
+          },
+          {
+              "label": "Misinformation and Disinformation",
+              "value": "cbd672e1-e61d-48a1-b5ea-2b6e62602dd7"
+          },
+          {
+              "label": "Geopolitical Issues (Ukraine-Russia conflict)",
+              "value": "c392401b-aced-4095-a145-e3e3cf03eaf4"
+          },
+          {
+              "label": "Disinformation about political figures and movements",
+              "value": "420f7a1f-3332-4ae4-9555-39891b5a704f"
+          },
+          {
+              "label": "Foreign Policy and International Relations: Ukraine-Russia Conflict",
+              "value": "231d062c-8f2d-44aa-9d66-c53f326cc083"
+          },
+          {
+              "label": "Pseudo-Science/Medical Misinformation",
+              "value": "be0092d9-dcd9-421a-8d71-b7164206f9e8"
+          },
+          {
+              "label": "LGBTQ+ rights and gender issues",
+              "value": "b7939535-2db5-402c-a0fa-4ce6d464f986"
+          },
+          {
+              "label": "Disinformation related to LGBTQ+ issues",
+              "value": "74dadd52-f2bf-41b4-85ad-7364fcfd16c7"
+          },
+          {
+              "label": "Political Figure and Movements",
+              "value": "3c0a9293-d21d-4135-a0c5-2d272d3dd818"
+          },
+          {
+              "label": "False Accusations",
+              "value": "82030aba-c4c3-4e80-8002-cacfc32aae83"
+          },
+          {
+              "label": "Harmful Narratives",
+              "value": "2e394382-e080-472a-9f9e-7f70b8f76b16"
+          },
+          {
+              "label": "Geopolitical Issues- Israel-Palestine Conflict",
+              "value": "4ac7664b-1cf5-4d50-b843-e6f9fce98e75"
+          },
+          {
+              "label": "Geopolitical Issues - Israeli-Palestinian Conflict",
+              "value": "28a360ba-bdfe-424e-9a15-0cb77c85db7a"
+          },
+          {
+              "label": "Crime and Public Safety",
+              "value": "7613e4c6-4ccc-43d8-af70-f81e5151665d"
+          },
+          {
+              "label": "Geopolitical Issues / Ukraine-Russia conflict",
+              "value": "be0ba011-72ae-45f6-bfba-52121608d275"
+          },
+          {
+              "label": "9/11 Conspiracy theories",
+              "value": "e4367b60-c046-489b-8a17-630eff0689cd"
+          },
+          {
+              "label": "Misrepresentation of geopolitical events",
+              "value": "2d6cf089-92ab-455f-af43-ffe20dbd6fec"
+          },
+          {
+              "label": "Geopolitical Issues \\u2013 China-US Relations",
+              "value": "13dbd027-10d7-4d21-9345-bbed6dfa9e3b"
+          },
+          {
+              "label": "Misrepresentation of Public Opinion",
+              "value": "476ea09a-535b-45e1-bc29-e0c8852feeee"
+          },
+          {
+              "label": "Misrepresentation of information",
+              "value": "025a3fc8-0aa2-4a8f-b138-bc60d84fb31c"
+          },
+          {
+              "label": "Rumors and Misinformation",
+              "value": "813c6acb-0928-4f60-b01f-3c1863f616cd"
+          },
+          {
+              "label": "NATO",
+              "value": "bda8906d-bfc4-41d4-8368-1739ac84bafd"
+          },
+          {
+              "label": "Nuclear Threat",
+              "value": "4872790d-1c70-47e0-bf14-bb10ccb09b9f"
+          },
+          {
+              "label": "Antisemitism",
+              "value": "1c2b83dc-a018-436e-99ce-46ac193d71f2"
+          },
+          {
+              "label": "Sensationalism",
+              "value": "ea6e291e-7ba7-4d73-a99c-61b52580f709"
+          },
+          {
+              "label": "Conspiracy Theory",
+              "value": "adceeefd-b1e6-432e-bd79-831725eb8cec"
+          },
+          {
+              "label": "Geopolitical Issues, Israel-Palestine Conflict",
+              "value": "ab93d94a-b906-434e-9570-a10f04e81ad9"
+          },
+          {
+              "label": "Political Corruption",
+              "value": "55059964-3ca9-4d21-8767-872940eae8f0"
+          },
+          {
+              "label": "Disinformation related to the Israeli-Palestinian conflict.",
+              "value": "3de74fc1-1714-415c-b423-16f999ff7b70"
+          },
+          {
+              "label": "Gender Identity and LGBTQ+ issues",
+              "value": "a5782214-1422-48cf-a2cf-e13be3bc4b70"
+          },
+          {
+              "label": "Gender Issues and LGBTQ+ Rights",
+              "value": "fc8ce7c0-7672-4406-b526-3c3d753d488a"
+          },
+          {
+              "label": "Geopolitical Issues/Syria",
+              "value": "00f9afde-f678-491b-bac0-d6f33ff58697"
+          },
+          {
+              "label": "Political discourse, opinions, and biases",
+              "value": "62b1e2d2-a473-4428-8b7f-c105a81e5fe0"
+          },
+          {
+              "label": "Geopolitical Issues/Israel-Palestine Conflict",
+              "value": "3038cb41-9035-4297-a070-b07a2a4a1fb2"
+          },
+          {
+              "label": "Geopolitical Issues-Ukraine-Russia Conflict",
+              "value": "89830f10-4959-4e4e-89fb-751f06bd5411"
+          },
+          {
+              "label": "Body Shaming",
+              "value": "910195ba-5d89-4223-81a7-53c6d96cdfff"
+          },
+          {
+              "label": "Social Issues and Culture Wars",
+              "value": "94a2a714-d5e1-447b-bf4e-6494ce487dd2"
+          },
+          {
+              "label": "Refusal to concede after losing the 2020 election",
+              "value": "f34fb05b-9195-4681-aa6b-42714ccb311a"
+          },
+          {
+              "label": "Geopolitical Issues; Israel-Palestine Conflict",
+              "value": "bbfb034a-a9f4-4ae6-be51-ea9ae6d93f8d"
+          },
+          {
+              "label": "Rumors and Speculation",
+              "value": "dff9e22f-441e-4cf1-99b6-425399900854"
+          },
+          {
+              "label": "2024 US Presidential Elections",
+              "value": "fe51c1b7-5420-4818-beca-e73204bdd330"
+          },
+          {
+              "label": "Harmful Political Discourse",
+              "value": "558417e8-746d-4bb8-ae75-3eff9ae9fb7b"
+          },
+          {
+              "label": "Harmful Generalization",
+              "value": "5491cf63-7a0a-4678-ad6b-08c673e72a25"
+          },
+          {
+              "label": "Geopolitical Issues: Israel-Palestine conflict",
+              "value": "4f3f386b-2c45-4a9f-a72f-56f6ffff5b57"
+          },
+          {
+              "label": "Media Bias/Manipulation",
+              "value": "4f6fd0d3-e44c-4b1a-a727-28875d064216"
+          },
+          {
+              "label": "Religion",
+              "value": "854a5655-391d-4ae4-b62f-84487e9e92f9"
+          },
+          {
+              "label": "Disinformation and Misleading Information",
+              "value": "36df822b-8b24-49e8-a2d0-8b3bc37cbabf"
+          },
+          {
+              "label": "Geopolitical Issues: Ukraine-Russia conflict",
+              "value": "7d1130a3-455d-4514-af0b-85baa3dd7663"
+          },
+          {
+              "label": "Manipulation and Misrepresentation",
+              "value": "1703ce31-113d-4680-b030-28ce7d02f31f"
+          },
+          {
+              "label": "Misinformation related to Health and wellbeing",
+              "value": "a8b85a3e-55fc-4b15-85f4-cc896b7acf30"
+          },
+          {
+              "label": "Questionable Causal Link",
+              "value": "76c95601-785e-45af-a49d-f35cb2d56417"
+          },
+          {
+              "label": "Social Issues / Culture Wars",
+              "value": "401caaa0-25f7-4410-8354-afd2f2d43b1c"
+          },
+          {
+              "label": "Disinformation related to the Israel-Palestine conflict.",
+              "value": "7fe11007-1b98-4305-ba92-ca8e3e513896"
+          },
+          {
+              "label": "Misogyny",
+              "value": "c35ae3a6-76bd-420d-b426-0256b36d6464"
+          },
+          {
+              "label": "Gender Stereotypes",
+              "value": "e3f3d349-b8f6-4d46-84df-a60df9580a22"
+          },
+          {
+              "label": "Immigration policies",
+              "value": "a0f12346-a11c-4706-8584-79cd8028827c"
+          },
+          {
+              "label": "Geopolitical Issues>Israel-Palestine Conflict",
+              "value": "0921e2ec-8ca6-4479-932c-025bcabea35a"
+          },
+          {
+              "label": "Geopolitical Issues - China-US Relations",
+              "value": "2f94c162-f5b6-4ba5-9442-c7e376d3b64f"
+          },
+          {
+              "label": "Social responsibility",
+              "value": "2e6b2d61-dec4-41fa-82e1-f759d7389fca"
+          },
+          {
+              "label": "Labeling/Name-calling",
+              "value": "d7582314-4061-4d30-ba9d-69e18bc669c9"
+          },
+          {
+              "label": "Criticism of Pope Francis",
+              "value": "1266d5b5-2716-491e-b88c-3d352d6f286e"
+          },
+          {
+              "label": "Defamation",
+              "value": "15881561-b6af-4eea-9326-6dcded876eb9"
+          },
+          {
+              "label": "Sensationalism/Exaggeration",
+              "value": "33769cf0-df25-43f3-b38c-6abe0bf06050"
+          }
+      ],
+      "page_size": 1000,
+      "total_pages": 1,
+      "current_page": 0
+  },
+  "states": [
+      {
+          "label": "Pennsylvania",
+          "value": "Pennsylvania"
+      },
+      {
+          "label": "Wisconsin",
+          "value": "Wisconsin"
+      },
+      {
+          "label": "Florida",
+          "value": "Florida"
+      },
+      {
+          "label": "Arizona",
+          "value": "Arizona"
+      },
+      {
+          "label": "Nevada",
+          "value": "Nevada"
+      },
+      {
+          "label": "New York",
+          "value": "New York"
+      },
+      {
+          "label": "Texas",
+          "value": "Texas"
+      },
+      {
+          "label": "Russia",
+          "value": "Russia"
+      },
+      {
+          "label": "Puerto Rico",
+          "value": "Puerto Rico"
+      },
+      {
+          "label": "Georgia",
+          "value": "Georgia"
+      },
+      {
+          "label": "International",
+          "value": "International"
+      },
+      {
+          "label": "Michigan",
+          "value": "Michigan"
+      }
+  ],
+  "sources": [
+      {
+          "label": "Tu - WZTU - 94.9 FM",
+          "value": "WZTU - 94.9 FM"
+      },
+      {
+          "label": "La Z - WDTW - 1310 AM",
+          "value": "WDTW - 1310 AM"
+      },
+      {
+          "label": "Rumba 106.1 PA - WUMR - 106.1 FM",
+          "value": "WUMR - 106.1 FM"
+      },
+      {
+          "label": "El Patron - WBZW - 96.7 FM",
+          "value": "WBZW - 96.7 FM"
+      },
+      {
+          "label": "Haitian American Radio - WSRF - 99.5 FM",
+          "value": "WSRF - 99.5 FM"
+      },
+      {
+          "label": "Rumba Hits caliente - KRGT - 99.3 FM",
+          "value": "KRGT - 99.3 FM"
+      },
+      {
+          "label": "Mas Radio - KCKO - 107.9 FM",
+          "value": "KCKO - 107.9 FM"
+      },
+      {
+          "label": "ZonaMX - KISF - 103.5 FM",
+          "value": "KISF - 103.5 FM"
+      },
+      {
+          "label": "KNOG - KNOG - 91.7 FM",
+          "value": "KNOG - 91.7 FM"
+      },
+      {
+          "label": "Deportes Vegas - KENO - 1460 AM",
+          "value": "KENO - 1460 AM"
+      },
+      {
+          "label": "El Patron - K229DB - 93.7 FM",
+          "value": "K229DB - 93.7 FM"
+      },
+      {
+          "label": "Radio Salvación - WPHE - 690 AM",
+          "value": "WPHE - 690 AM"
+      },
+      {
+          "label": "LA Poderosa - WOAP - 1080 AM",
+          "value": "WOAP - 1080 AM"
+      },
+      {
+          "label": "Radio Cadena Manantial - KRMC - 91.7 FM",
+          "value": "KRMC - 91.7 FM"
+      },
+      {
+          "label": "Radio Centro - WLCH - 91.3 FM",
+          "value": "WLCH - 91.3 FM"
+      },
+      {
+          "label": "Pura Palabra Radio - WLAZ - 89.1 FM",
+          "value": "WLAZ - 89.1 FM"
+      },
+      {
+          "label": "Manantial FM - KBNL - 89.9 FM",
+          "value": "KBNL - 89.9 FM"
+      },
+      {
+          "label": "Que Buena - KHOT - 105.9 FM",
+          "value": "KHOT - 105.9 FM"
+      },
+      {
+          "label": "Radio Baladi - WMUZ - 1200 AM",
+          "value": "WMUZ - 1200 AM"
+      },
+      {
+          "label": "Radio Universo 1420 - WDJA - 1420 AM",
+          "value": "WDJA - 1420 AM"
+      },
+      {
+          "label": "La Movida - WLMV - 1480 AM",
+          "value": "WLMV - 1480 AM"
+      },
+      {
+          "label": "Monte Carlo Doualiya - MCD",
+          "value": "MCD"
+      },
+      {
+          "label": "Radio Paz - WACC - 830 AM",
+          "value": "WACC - 830 AM"
+      },
+      {
+          "label": "La Explosiva - WSDS - 1480 AM",
+          "value": "WSDS - 1480 AM"
+      },
+      {
+          "label": "Radio Mundo - WNMA - 1210 AM",
+          "value": "WNMA - 1210 AM"
+      },
+      {
+          "label": "Actualidad 1040 - WURN - 1040 AM",
+          "value": "WURN - 1040 AM"
+      },
+      {
+          "label": "LA Caliente - KCMT - 92.1 FM",
+          "value": "KCMT - 92.1 FM"
+      },
+      {
+          "label": "Rumba - WRUM - 100.3 FM",
+          "value": "WRUM - 100.3 FM"
+      },
+      {
+          "label": "Radio Libre 790 - WAXY - 790 AM",
+          "value": "WAXY - 790 AM"
+      },
+      {
+          "label": "MEGA - KMMA - 97.1 FM",
+          "value": "KMMA - 97.1 FM"
+      },
+      {
+          "label": "US Arab Radio - ARAB",
+          "value": "ARAB"
+      },
+      {
+          "label": "Red C apostolic (college) - KYAR - 98.3 FM",
+          "value": "KYAR - 98.3 FM"
+      },
+      {
+          "label": "WNZK-AM - WNZK - 680 AM",
+          "value": "WNZK - 680 AM"
+      },
+      {
+          "label": "Radio Sputnik - WZHF",
+          "value": "WZHF"
+      },
+      {
+          "label": "Z - WBZY - 105.7 FM",
+          "value": "WBZY - 105.7 FM"
+      },
+      {
+          "label": "Fuego - KFUE - 106.7 FM",
+          "value": "KFUE - 106.7 FM"
+      },
+      {
+          "label": "Analisis y Noticias - WKAQ - 580 AM",
+          "value": "WKAQ - 580 AM"
+      },
+      {
+          "label": "America Radio Miami - WSUA - 1260 AM",
+          "value": "WSUA - 1260 AM"
+      },
+      {
+          "label": "Radio Vida - KBIC - 105.7 FM",
+          "value": "KBIC - 105.7 FM"
+      },
+      {
+          "label": "Sputnik Mundo - SPMN",
+          "value": "SPMN"
+      },
+      {
+          "label": "Radio Mambi - WAQI - 710 AM",
+          "value": "WAQI - 710 AM"
+      },
+      {
+          "label": "Aleluya Radio - KABA - 90.3 FM",
+          "value": "KABA - 90.3 FM"
+      },
+      {
+          "label": "KNNR - KNNR - 1400 AM",
+          "value": "KNNR - 1400 AM"
+      },
+      {
+          "label": "KWST - KWST - 1430 AM",
+          "value": "KWST - 1430 AM"
+      },
+      {
+          "label": "La Poderosa - KZLZ - 105.3 FM",
+          "value": "KZLZ - 105.3 FM"
+      },
+      {
+          "label": "Mega - WRUM HD2 - 97.1 FM",
+          "value": "WRUM HD2 - 97.1 FM"
+      },
+      {
+          "label": "La Campeona de Nueva York - WADO - 1280 AM",
+          "value": "WADO - 1280 AM"
+      },
+      {
+          "label": "La Poderosa - WWFE - 670 AM",
+          "value": "WWFE - 670 AM"
+      },
+      {
+          "label": "El Gallo - WLEL - 94.3 FM",
+          "value": "WLEL - 94.3 FM"
+      },
+      {
+          "label": "Rumba - RUMBA 4451",
+          "value": "RUMBA 4451"
+      }
+  ],
+  "labeledBy": [
+      {
+          "label": "by Me",
+          "value": "by_me"
+      },
+      {
+          "label": "by Others",
+          "value": "by_others"
+      }
+  ],
+  "languages": [
+      {
+          "label": "Arabic",
+          "value": "Arabic"
+      },
+      {
+          "label": "Creole",
+          "value": "Creole"
+      },
+      {
+          "label": "English",
+          "value": "English"
+      },
+      {
+          "label": "Portuguese",
+          "value": "Portuguese"
+      },
+      {
+          "label": "Romanian",
+          "value": "Romanian"
+      },
+      {
+          "label": "Creole French",
+          "value": "Creole French"
+      },
+      {
+          "label": "Spanish",
+          "value": "Spanish"
+      },
+      {
+          "label": "French",
+          "value": "French"
+      },
+      {
+          "label": "Spanish/English",
+          "value": "Spanish/English"
+      },
+      {
+          "label": "French Creole",
+          "value": "French Creole"
+      },
+      {
+          "label": "English and Spanish",
+          "value": "English and Spanish"
+      },
+      {
+          "label": "Haitian Creole",
+          "value": "Haitian Creole"
+      }
+  ],
+  "starredBy": [
+      {
+          "label": "by Me",
+          "value": "by_me"
+      },
+      {
+          "label": "by Others",
+          "value": "by_others"
+      }
+  ]
 }

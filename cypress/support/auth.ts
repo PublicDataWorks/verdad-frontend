@@ -1,23 +1,14 @@
+import { mockSupabaseAuth } from '../mocks/supabase'
+
 declare global {
   namespace Cypress {
     interface Chainable {
-      login(email: string, password: string): Chainable<void>
-      mockLoginSuccess(): Chainable<void>
-      mockLoginFailure(): Chainable<void>
+      login(): void
     }
   }
 }
 
-// Login command
-Cypress.Commands.add('login', (email: string, password: string) => {
-  cy.visit('/login')
-  cy.get('input[type="email"]').type(email)
-  cy.get('input[type="password"]').type(password)
-  cy.contains('button', 'Submit').click()
-})
-
-// Mock successful login
-Cypress.Commands.add('mockLoginSuccess', () => {
+Cypress.Commands.add('login', () => {
   cy.intercept('POST', '/api/login', {
     statusCode: 200,
     body: {
@@ -26,18 +17,21 @@ Cypress.Commands.add('mockLoginSuccess', () => {
       }
     }
   }).as('loginRequest')
-})
 
-// Mock failed login
-Cypress.Commands.add('mockLoginFailure', () => {
-  cy.intercept('POST', '/api/login', {
-    statusCode: 401,
-    body: {
-      error: {
-        message: 'Invalid credentials'
-      }
-    }
-  }).as('loginRequest')
+  mockSupabaseAuth.setup()
+
+  cy.intercept('http://localhost:8000/functions/v1/backend/api/liveblocks-auth', {
+    statusCode: 200,
+    body: {}
+  }).as('functions')
+
+  cy.visit('/login')
+
+  cy.get('input[type="email"]').type('test@example.com')
+  cy.get('input[type="password"]').type('password123')
+  cy.contains('button', 'Submit').click()
+
+  cy.url().should('include', '/search')
 })
 
 export {}

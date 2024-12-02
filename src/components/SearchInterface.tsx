@@ -180,7 +180,6 @@ export default function SearchInterface() {
                 dataLength={snippets.length}
                 next={fetchNextPage}
                 hasMore={hasNextPage}
-                data-testid='snippet-list'
                 className='flex h-full flex-col gap-3'
                 scrollableTarget='scrollableDiv'
                 loader={

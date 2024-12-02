@@ -141,9 +141,12 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
   }, [snippet.like_count, snippet.dislike_count])
 
   return (
-    <div className={`mt-2 rounded-lg border bg-white p-6 ${isHidden ? 'opacity-50' : ''}`}>
+    <div className={`mt-2 rounded-lg border bg-white p-6 ${isHidden ? 'opacity-50' : ''}`} data-testid='snippet-card'>
       <div className='mb-2 flex items-start justify-between'>
-        <h3 className='cursor-pointer text-lg font-medium' onClick={() => onSnippetClick(snippet.id)}>
+        <h3
+          className='cursor-pointer text-lg font-medium'
+          onClick={() => onSnippetClick(snippet.id)}
+          data-testid='snippet-title'>
           {snippet.title}
         </h3>
         <div className='flex space-x-2'>
@@ -189,8 +192,10 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
         </div>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
-      <p className='mb-4'>{snippet.summary}</p>
-      <div className='mb-4 flex items-center gap-2'>
+      <p className='mb-4' data-testid='snippet-summary'>
+        {snippet.summary}
+      </p>
+      <div className='mb-4 flex items-center gap-2' data-testid='snippet-actions'>
         <Tooltip>
           <TooltipTrigger asChild>
             <div>
@@ -201,7 +206,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
                 className={`flex items-center gap-4 ${
                   currentLikeStatus === 1 ? 'bg-green-100 hover:bg-green-200' : ''
                 }`}>
-                <ThumbsUp className='h-4 w-4' />
+                <ThumbsUp className='h-4 w-4' data-testid='thumbs-up' />
                 <span>{counts.likeCount}</span>
               </Button>
             </div>
@@ -218,7 +223,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
                 size='sm'
                 onClick={e => handleLikeClick(e, -1)}
                 className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'bg-red-100 hover:bg-red-200' : ''}`}>
-                <ThumbsDown className='h-4 w-4' />
+                <ThumbsDown className='h-4 w-4' data-testid='thumbs-down' />
                 <span>{counts.dislikeCount}</span>
               </Button>
             </div>

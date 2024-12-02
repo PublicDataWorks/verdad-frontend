@@ -1,36 +1,392 @@
 {
   "snippets": [
     {
-      "id": "1",
-      "title": "Test Snippet 1",
-      "content": "This is test content 1",
-      "source": "Test Source 1",
-      "url": "https://example.com/1",
-      "published_at": "2024-01-01T00:00:00Z",
+      "id": "194324b6-80ba-44bb-908e-d82b469a74fd",
+      "title": "Stem Cells: A Magical Solution?",
+      "hidden": false,
+      "labels": [
+        {
+          "id": "cdae0b5d-174f-498b-aeea-dc901a128901",
+          "text": "Healthcare Reform",
+          "applied_at": "2024-12-01T15:35:34.078766+00:00",
+          "applied_by": null,
+          "created_by": null,
+          "upvoted_by": [],
+          "is_ai_suggested": true
+        }
+      ],
+      "context": {
+        "main": "tengo entendido que ustedes se especializan en algo que se llama células madre. ¿No es así, doctor Ángel? Así es, estás en lo correcto, Irma. Las células madre es una gran alternativa, es casi casi mágico, estimada Irma. Eh, de eso vamos a hablar hoy. ¿Quieres que ya comencemos entonces?",
+        "after": "Las células madre en cápsulas reemplazan a las células madre dañadas, deterioradas y las reemplaza por células nuevas. Esto entrega al cuerpo sanación, restauración y curación inmediata al poco tiempo de tomarlas.",
+        "before": "desde que nos levantamos hasta que nos acostamos. Hay que estudiar muy bien esa parte, Irma, y para eso pues estamos acá contigo para poder absolver todas las dudas y por supuesto hablar de salud. Exacto, voy a dar un número para que lo vayan anotando. Hay especiales esta mañana y algo que van a querer utilizar para, así como dijo el doctor Ángel, para que se sientan muy bien y tengan muchísima salud. El número es el 1 800 678 4006, 1 800 678 4006. La primera pregunta de la mañana, doctor Ángel, para los que queremos saber, ¿verdad?, qué precisamente es ser naturópata. Bueno, eh, la naturopatía en realidad, los que nos dedicamos a esto pues tenemos que comunicarles a los oyentes que es, bueno, engloba una gran variedad de técnicas de medicina alternativa, Irma. En realidad el objetivo de la terapia es, escuchen bien, estimular la capacidad curativa innata que tenemos nosotros, que tiene el cuerpo y por supuesto eso facilita a su vez que sus mecanismos o los mecanismos de nuestro cuerpo se mantengan en equilibrio y alcancemos una buena salud. A eso se dedica la naturopatía, en este caso nosotros que tenemos alrededor ya casi de 20 años en esto, pues te lo decimos con total categoría. A eso nos dedicamos, eso es lo que hacemos y de eso vamos a hablar hoy contigo. Muchísimas gracias porque la verdad nos hemos descuidado, doctor Ángel, aquí pues en Estados Unidos, una de las cosas, pues una, no comemos bien, a veces ni siquiera tenemos tiempo de comer, de descansar, por eso es necesario restaurar las células de nuestro cuerpo y",
+        "main_en": "I understand that you specialize in something called stem cells. Isn't that right, Dr. Angel? That's right, you're correct, Irma. Stem cells are a great alternative; it's almost magical, dear Irma. Uh, we're going to talk about that today. Do you want us to start then?",
+        "after_en": "Stem cells in capsules replace damaged, deteriorated stem cells and replace them with new cells. This gives the body healing, restoration, and immediate cure shortly after taking them.",
+        "before_en": "from when we get up until we go to bed. We have to study that part very well, Irma, and for that, well, we are here with you to be able to resolve all the doubts and of course talk about health. Exactly. I'm going to give you a number so you can write it down. There are specials this morning and something you'll want to use so that, just like Dr. Angel said, so that you feel very good and have lots of health. The number is 1-800-678-4006. 1-800-678-4006. The first question of the morning, Dr. Angel, for those of us who want to know, right? What exactly is being a naturopath? Well, uh, naturopathy in reality, those of us who dedicate ourselves to this, well, we have to communicate to the listeners that it is, well, it encompasses a wide variety of alternative medicine techniques, Irma. In reality, the objective of the therapy is, listen carefully, to stimulate the innate healing capacity that we have, that the body has, and of course, that in turn facilitates that its mechanisms or the mechanisms of our body are kept in balance and we achieve good health. That's what naturopathy is dedicated to, in this case, we who have been around for almost 20 years in this, well, we tell you with total certainty. That's what we dedicate ourselves to, that's what we do, and that's what we're going to talk about today with you. Thank you very much because the truth is we have neglected ourselves, Dr. Angel, here in the United States, one of the things, well, one, we don't eat well, sometimes we don't even have time to eat, to rest, that's why it's necessary to restore the cells of our body, and"
+      },
+      "summary": "A radio segment discusses stem cell treatment as a promising alternative medicine approach, almost describing it as \"magical\". The speakers express hope and excitement about its potential to address various health concerns.",
+      "duration": "00:04:30",
+      "end_time": "00:04:00",
+      "language": {
+        "dialect": "Mexican Spanish",
+        "register": "Informal",
+        "primary_language": "Spanish"
+      },
+      "file_path": "radio_69fb50/snippets/snippet_194324b6-80ba-44bb-908e-d82b469a74fd.mp3",
+      "file_size": 2160429,
+      "audio_file": {
+        "id": "75ceadf8-e01c-4995-bcdf-f79c21efdbdf",
+        "location_city": null,
+        "location_state": "Nevada",
+        "radio_station_code": "KISF - 103.5 FM",
+        "radio_station_name": "ZonaMX"
+      },
       "like_count": 10,
-      "dislike_count": 2,
-      "is_liked": null,
-      "is_hidden": false,
-      "political_spectrum": "center",
-      "topic": "politics",
-      "source_type": "news"
+      "start_time": "00:01:30",
+      "explanation": "The speakers promote stem cell treatment as a near \"magical\" solution without providing scientific evidence. Though they mention it's an \"alternative\" medicine approach, the enthusiastic tone might mislead listeners into believing it's a guaranteed cure-all for various conditions, which is a form of misrepresentation within healthcare information. This qualifies as disinformation related to healthcare reform due to its unsubstantiated claims about stem cell treatments.",
+      "recorded_at": "2024-12-01T14:31:47+00:00",
+      "dislike_count": 5,
+      "starred_by_user": false,
+      "user_like_status": null,
+      "confidence_scores": {
+        "overall": 95,
+        "categories": [
+          {
+            "score": 95,
+            "category": "Healthcare Reform"
+          }
+        ]
+      },
+      "political_leaning": {
+        "score": 0.0,
+        "explanation": {
+          "english": "The segment does not contain explicit political endorsements or discussions of political issues. The focus is on health and wellness, which are not inherently tied to any specific political ideology.",
+          "spanish": "El segmento no contiene respaldos políticos explícitos ni discusiones sobre temas políticos. El enfoque está en la salud y el bienestar, que no están intrínsecamente ligados a ninguna ideología política específica."
+        }
+      }
     },
     {
-      "id": "2",
-      "title": "Test Snippet 2",
-      "content": "This is test content 2",
-      "source": "Test Source 2",
-      "url": "https://example.com/2",
-      "published_at": "2024-01-02T00:00:00Z",
-      "like_count": 5,
-      "dislike_count": 1,
-      "is_liked": null,
-      "is_hidden": false,
-      "political_spectrum": "left",
-      "topic": "economy",
-      "source_type": "blog"
+      "id": "15024c6b-e31f-44c6-98e3-c3884c9818d9",
+      "title": "Venezuelan Immigrants Falsely Linked to Crime",
+      "hidden": false,
+      "labels": [
+        {
+          "id": "4f44d0e7-e761-4075-86a9-3353573dcabd",
+          "text": "Immigration Policies",
+          "applied_at": "2024-11-30T17:40:38.959121+00:00",
+          "applied_by": null,
+          "created_by": null,
+          "upvoted_by": [],
+          "is_ai_suggested": true
+        }
+      ],
+      "context": {
+        "main": "Eh ese tren de agua, ahora de los venezolanos, eh las gangas que se han visto en ya en en casi 14, 15, 16 estados eh robando, eh asaltando, matando, eh que vienen de, imagínate, una cultura de Maduro que que que no vienen a a trabajar, no vienen a a mejorar su vida, no vienen a a crear su familia, vienen a a a hacer crímenes, a desastres.",
+        "after": "eh haciendo daño aquí en este país y el presidente no hace absolutamente nada. Eh señores es hora de ir a votar, es hora de votar en contra de todo esto, es hora de votar y sacar la gente que no sirve en este país. Eh yo veo que en la Florida eh la gente no está muy contenta con el gobernador DeSantis, eh no no lo quieren, eh hay muchas personas que dicen que si no fuera por Trump él no estaría en ese puesto. Eh yo creo que eh vamos a ver qué pasa. Eh vamos a ver qué va a pasar en en estas elecciones que vienen eh que van a venir eh muchas sorpresas. Eh también la noticia de hoy de que los Estados Unidos por primera vez está vendiendo petróleo, crudo a China eh eso no se había hecho nunca antes. Eh imagínate ahora estamos exportando petróleo cuando el país está pagando casi $5 por galón de gasolina. Eso es una locura.",
+        "before": "los trabajadores, eh la gente que está aquí trabajando eh mejorando su vida por un trabajo honesto, eh son personas que eh la economía necesita y si la eh público empieza a ver un inflación masiva, una inflación que empieza a subir por falta de trabajadores, porque la realidad es que eh los americanos no tienen eh la gente para hacer este trabajo. Eh la la edad eh mediana de los ciudadanos americanos eh sigue eh subiendo todos los años y los los desplazamientos por nacimientos no existe. Eh igual que en muchos otros países, eh y sin el el el labor de migrantes, sin la gente que eh pueden eh apoyar y y contribuir a la al sistema de por sus impuestos, por su social security, es algo que ya es una parte instrumental en este país. Eh también tenemos que ver que la realidad es que la cantidad de de agentes de ICE en total en el país son 20,000. 20,000 agentes, eh y no son muchos, estamos hablando de eh aproximadamente 15 a 20 millones de personas que están aquí indocumentados. Durante estos dos años han entrado más de 7 millones de personas. Y y la realidad es que muchos latinos votaron por el presidente Trump. Eh no todos pero una gran gran gran parte. Y y y justificando justificando que eh los que llegaron recién le estaban dando hoteles, dinero, comida, recursos, y los que llevan años ahí sufriendo, trabajando, eh pagando impuestos, eh criando sus hijos eh simplemente lo estaban ignorando y eso eso lo lo deja a uno eh molesto. Porque uno piensa eh esto no es justo, cómo van a apoyar tantos de los que están llegando y nosotros que llevamos tanto tiempo aquí eh para nada. Y también escribe, escribe es algo que eh",
+        "main_en": "Uh that wave now of Venezuelans, uh the gangs that have been seen in already in almost 14, 15, 16 states uh stealing, uh assaulting, killing, uh that come from, imagine, a culture of Maduro that that that they don't come to work, they don't come to improve their lives, they don't come to create their families, they come to to to commit crimes, to disasters.",
+        "after_en": "uh doing damage here in this country and the president does absolutely nothing. Uh gentlemen, it's time to go vote, it's time to vote against all of this, it's time to vote and get the people who are not serving this country out. Uh I see that in Florida uh people are not very happy with Governor DeSantis, uh they they don't want him, uh there are many people who say that if it weren't for Trump he wouldn't be in that position. Uh I think that uh we're going to see what happens. Uh we're going to see what's going to happen in in these coming elections uh that there are going to be many surprises. Uh also today's news that the United States for the first time is selling oil, crude oil to China uh that has never been done before. Uh imagine now we are exporting oil when the country is paying almost $5 per gallon of gas. That's crazy.",
+        "before_en": "the workers, uh the people who are here working, uh improving their lives through honest work, uh they are people that uh the economy needs, and if the uh public starts to see massive inflation, an inflation that starts to rise due to a lack of workers, because the reality is that uh Americans don't have uh the people to do this work. Uh the the median age of American citizens uh continues uh to rise every year and the the displacements due to births doesn't exist. Uh same as in many other countries, uh and without the the the labor of migrants, without the people who uh can uh support and and contribute to the to the system through their taxes, through their Social Security, it's something that is already an instrumental part of this country. Uh we also have to see that the reality is that the number of ICE agents in total in the country is 20,000. 20,000 agents, uh and they are not many, we are talking about uh approximately 15 to 20 million people who are here undocumented. During these two years, more than 7 million people have entered. And and the reality is that many Latinos voted for President Trump. Uh not all but a very very large part. And and and justifying, justifying that uh those who arrived recently were being given hotels, money, food, resources, and those who have been there for years suffering, working, uh paying taxes, uh raising their children, uh were simply being ignored and that that leaves one uh upset. Because one thinks uh this is not fair, how are they going to support so many of those who are arriving and us who have been here for so long uh for nothing. And also writes, writes is something that uh"
+      },
+      "summary": "The speaker alleges that Venezuelan immigrants are involved in criminal activity across multiple states, associating them with violence and Maduro's governance, claiming they are not coming to work or improve their lives but to create chaos.",
+      "duration": "00:02:30",
+      "end_time": "00:02:00",
+      "language": {
+        "dialect": "Caribbean Spanish",
+        "register": "Informal",
+        "primary_language": "Spanish"
+      },
+      "file_path": "radio_e52bc5/snippets/snippet_15024c6b-e31f-44c6-98e3-c3884c9818d9.mp3",
+      "file_size": 1200429,
+      "audio_file": {
+        "id": "3cfebe60-8101-4efd-b417-9951dd5ec03c",
+        "location_city": null,
+        "location_state": "New York",
+        "radio_station_code": "WADO - 1280 AM",
+        "radio_station_name": "La Campeona de Nueva York"
+      },
+      "like_count": 0,
+      "start_time": "00:01:30",
+      "explanation": "The audio clip promotes disinformation by making generalizations about Venezuelan immigrants, associating them with criminal activities without providing evidence.  The speaker uses emotionally charged language such as \"gangs\", \"robbing\", \"assaulting\" and \"killing\" to characterize Venezuelans.  The speaker also implies that Venezuelan immigrants are inherently criminal due to the \"culture of Maduro,\" promoting a harmful stereotype.",
+      "recorded_at": "2024-11-30T17:09:49+00:00",
+      "dislike_count": 0,
+      "starred_by_user": false,
+      "user_like_status": null,
+      "confidence_scores": {
+        "overall": 95,
+        "categories": [
+          {
+            "score": 95,
+            "category": "Immigration Policies"
+          }
+        ]
+      },
+      "political_leaning": {
+        "score": 0.6,
+        "explanation": {
+          "english": "The speaker criticizes the current US President's inaction and encourages voting against those in power. While this could indicate dissatisfaction, it lacks specific policy positions to clearly determine a political leaning. However, connecting Venezuelan immigrants to crime and \"Maduro's culture\" aligns with right-wing, anti-immigration rhetoric.",
+          "spanish": "El hablante critica la inacción del actual presidente de Estados Unidos y anima a votar contra quienes están en el poder. Si bien esto podría indicar insatisfacción, carece de posiciones políticas específicas para determinar claramente una inclinación política. Sin embargo, conectar a los inmigrantes venezolanos con la delincuencia y la \"cultura de Maduro\" se alinea con la retórica de derecha y antiinmigración."
+        }
+      }
+    },
+    {
+      "id": "4eaa85db-4785-44dc-b7a3-f2222a61d101",
+      "title": "Venezuelan Gangs and Crime Wave",
+      "hidden": false,
+      "labels": [
+        {
+          "id": "4f44d0e7-e761-4075-86a9-3353573dcabd",
+          "text": "Immigration Policies",
+          "applied_at": "2024-11-30T17:09:06.236621+00:00",
+          "applied_by": null,
+          "created_by": null,
+          "upvoted_by": [],
+          "is_ai_suggested": true
+        }
+      ],
+      "context": {
+        "main": "tren de agua ahora de los venezolanos, eh, las gangas que se han visto en ya en en casi 14, 15, 16 estados",
+        "after": "eh, robando, eh, asaltando, matando, eh, que vienen de una cultura de Maduro que que que no vienen a a trabajar, no vienen a a mejorar su vida, no vienen a a crear su familia, vienen a a hacer crímenes, a desastres.",
+        "before": "mo los desplazamientos por nacimientos no existe. Eh igual que en muchos otros países. Eh y sin el el labor de migrantes sin la gente que eh pueden eh apoyar y y y contribuir a la al sistema de por sus impuestos, por su security, es algo que ya es una parte instrumental en este país. Eh también tenemos que ver que la realidad es que la cantidad de de agentes de ICE en total en el país son 20,000. 20,000 agentes. Eh y no son muchos. Estamos hablando de eh aproximadamente 15 a 20 millones de personas que están aquí indocumentados. Durante estos dos años han entrado más de siete millones de personas. Y y la realidad es que muchos latinos votaron por el presidente Trump. Eh no todos pero una gran gran gran parte. Y y y justificándome justificando que eh los que llegaron recién le estaban dando hoteles, dinero, comida, recursos y los que llevan años ahí sufriendo, trabajando, eh pagando impuestos, eh creando sus hijos, eh simplemente lo estaban ignorando y eso eso lo lo deja a uno eh molesto, porque uno piensa eh esto no es justo, ¿cómo van a apoyar tantos de los que están llegando y nosotros que llevamos tanto tiempo aquí? Eh para nada. Y también el crimen. El crimen es algo que eh de verdad ha tocado eh el corazón de mucha gente en una forma que uno tiene miedo salir a la calle. Eh ese",
+        "main_en": "flood now of Venezuelans, uh, the gangs that have been seen in already in almost 14, 15, 16 states",
+        "after_en": "eh, robbing, eh, assaulting, killing, eh, that they come from a culture of Maduro that that that they don't come to work, they don't come to improve their lives, they don't come to create their families, they come to to commit crimes, to disasters.",
+        "before_en": "but the displacements due to births do not exist. Uh, the same as in many other countries. Uh, and without the the work of migrants, without the people who uh can uh support and and and contribute to the to the system, by their taxes, by their social security, it's something that is already an instrumental part of this country. Uh, we also have to see that the reality is that the number of ICE agents in total in the country are 20,000. 20,000 agents. Uh and they aren't many. We are talking about uh approximately 15 to 20 million people who are undocumented here. During these past two years more than seven million people have entered. And and the reality is that many Latinos voted for President Trump. Uh not all, but a large large large portion. And and and justifying myself, justifying that uh those who have just arrived were being given hotels, money, food, resources, and those who have been there for years suffering, working, uh paying taxes, uh raising their children, uh they were simply being ignored and that that that leaves one uh upset, because one thinks, uh this is not fair, how are they going to support so many of those who are arriving and us who have been here for so long? Uh, for nothing. And also crime. Crime is something that uh truly has touched uh the hearts of many people in a way that makes you afraid to go out on the street. Uh that"
+      },
+      "summary": "The speaker expresses alarm about Venezuelan gangs causing crime in multiple states and claims that they come from a culture of crime associated with the Maduro regime.",
+      "duration": "00:02:10",
+      "end_time": "00:01:40",
+      "language": {
+        "dialect": "Caribbean Spanish",
+        "register": "Informal",
+        "primary_language": "Spanish"
+      },
+      "file_path": "radio_e52bc5/snippets/snippet_4eaa85db-4785-44dc-b7a3-f2222a61d101.mp3",
+      "file_size": 1040493,
+      "audio_file": {
+        "id": "ead0f44b-9b18-4401-b2b4-d1c921679399",
+        "location_city": null,
+        "location_state": "New York",
+        "radio_station_code": "WADO - 1280 AM",
+        "radio_station_name": "La Campeona de Nueva York"
+      },
+      "like_count": 0,
+      "start_time": "00:01:30",
+      "explanation": "This segment could be considered fear-mongering about immigrants, specifically Venezuelans. While there may be isolated incidents of crime, generalizing this behavior to an entire nationality is misleading and potentially harmful. It perpetuates negative stereotypes without providing concrete evidence. The speaker links the alleged criminal activity directly to the \"Maduro culture\", reinforcing a biased narrative about Venezuelan immigrants.  Additionally, the speaker uses hyperbolic language like \"flood\" which exaggerates the number of Venezuelan immigrants and paints a picture of an overwhelming crisis.",
+      "recorded_at": "2024-11-30T16:41:03+00:00",
+      "dislike_count": 0,
+      "starred_by_user": false,
+      "user_like_status": null,
+      "confidence_scores": {
+        "overall": 95,
+        "categories": [
+          {
+            "score": 95,
+            "category": "Immigration Policies"
+          }
+        ]
+      },
+      "political_leaning": {
+        "score": 0.8,
+        "explanation": {
+          "english": "The statement exhibits a right-leaning bias by portraying Venezuelan immigrants as criminals and attributing their alleged actions to their country of origin and its political climate. This aligns with anti-immigration rhetoric often seen on the right of the political spectrum.",
+          "spanish": "La declaración muestra un sesgo de derecha al retratar a los inmigrantes venezolanos como criminales y atribuir sus supuestas acciones a su país de origen y su clima político. Esto se alinea con la retórica antiinmigración que a menudo se ve en la derecha del espectro político."
+        }
+      }
+    },
+    {
+      "id": "371b5e17-0281-40e1-854b-b6376c66caa6",
+      "title": "Emanuelli Accused of Political Manipulation",
+      "hidden": false,
+      "labels": [
+        {
+          "id": "78d8f93b-1fd6-4177-8354-e00a64e73884",
+          "text": "Political Figures and Movements",
+          "applied_at": "2024-11-30T13:37:58.721689+00:00",
+          "applied_by": null,
+          "created_by": null,
+          "upvoted_by": [],
+          "is_ai_suggested": true
+        }
+      ],
+      "context": {
+        "main": "Dice aquí en esta noticia de Metro, el secretario del departamento de Justicia Domingo Emanuelli acusó, o sea que le está acusando. Se acusa. Sí, este señor es para que lo coja ese, ya. No, no, no. Debe de estar ya acomodando sus libros y sus cositas, sus bártulos para largarse del departamento de Justicia. Sí, fácil. Acusó al senador independiente José Vargas Vidot de utilizar el caso del convicto Hermes Ávila como ventaja para hacer campaña política. Increíble.",
+        "after": "Mira, entonces, mira lo que dice, yo no puedo creer esto. Si yo te lo dije. Aquí si acaso falló el senador, o sea, que Vargas Vidot es responsable de que haber soltado a él Mejía Vila y que asesinara una mujer. No está ofi-cha no es correcto. No, pero es que han tenido unos modistas alta costura allí en ese gobierno de él. tranquilo. Que terminaron ya tu sabes cómo terminaron. Y entonces, pues Domingo Manuel y ha caído en lo que cayó.",
+        "before": "con Manuel y que estuvo en estas ondas radiales con David Noriega, con Celeste Benítez que en paz descanse, y Monzón, no me deja Monzón. Monzón también, sí señor. De allá del barrio Coco de Quebradillas. Si señor, allá de mi, de mi tierra de mis ancestros. ¿Eh? Eh ha caído al nivel que ha caído, la verdad que yo nunca pensé que ese ese yo más yo pensaba, fíjate, le le es un le hizo un daño a los analistas políticos. Si. Porque uno decía, bueno, este maestro que hace se ha dedicado al análisis político, ahora irá a hacer un cambio allí. Y confieso No yo más yo recuerdo la esperanza que había cuando se anunció el nombramiento de Domingo Manuelli. Sí. O sea, que todo el mundo lo veía como como como una vuelta a lo que debería ser el secretario de Justicia, el abogado del pueblo de Puerto Rico. No y Claro, y alguien que que alguien que conoce lo que es la corrupción, que conoce cómo aquí los la criminalidad y y las críticas que históricamente se le habían hecho al secretario de Justicia, que muchos de ellos lo que se convertía era en sastre jurídico. Frase que me dijo, cuando yo entreviste a Carlos Romero Barceló me habló de uno, como ya es un sastre jurídico Hernández Colón. Si yo sé, yo sé.",
+        "main_en": "It says here in this Metro news, the Secretary of the Department of Justice, Domingo Emanuelli, accused, meaning that he is accusing him. He accuses himself. Yes, this gentleman is one to grab that, already. No, no, no. He must already be packing his books and his little things, his belongings to leave the Department of Justice. Yes, easy. He accused independent senator José Vargas Vidot of using the case of convict Hermes Ávila as leverage to campaign. Incredible.",
+        "after_en": "Look, then, look at what it says, I can't believe this. Yes, I told you. Here if by any chance the senator failed, meaning that Vargas Vidot is responsible for having released that Mejia Vila and that he murdered a woman. It is not official, it's not correct. No, it is because they have had haute couture fashion designers there in that government of his. Calm down. Who ended up, you already know how they ended up. And then, well, Domingo Manuelli has fallen where he fell.",
+        "before_en": "with Manuelli who was on these radio waves with David Noriega, with Celeste Benítez, may she rest in peace, and Monzón, Monzón won't leave me alone. Monzón too, yes sir. From over there in the Coco neighborhood of Quebradillas. Yes sir, over there in my, in my land of my ancestors. Huh? Uh, he has fallen to the level he has fallen, the truth is that I never thought that that that I, rather, I thought, look, he he it is a he did damage to political analysts. Yes. Because one would say, well, this teacher who for a while has dedicated himself to political analysis, now he's going to make a change there. And I confess No, I, rather, I remember the hope there was when the appointment of Domingo Manuelli was announced. Yes. Meaning that everyone saw it as as as a return to what the Secretary of Justice, the people's lawyer of Puerto Rico, should be. No, and Of course, and someone who who someone who knows what corruption is, who knows how the crime here and and the criticisms that historically had been made to the Secretary of Justice, that many of them what they became was a legal tailor. A phrase that he told me, when I interviewed Carlos Romero Barceló he told me about one, how he is already a legal tailor, Hernández Colón. Yes, I know, I know."
+      },
+      "summary": "The speaker expresses disbelief and disappointment at Secretary of Justice Domingo Emanuelli, accusing him of using the case of convict Hermes Ávila for political gain against Senator José Vargas Vidot. The speaker implies that Emanuelli is damaging political discourse and eroding public trust.",
+      "duration": "00:02:10",
+      "end_time": "00:01:40",
+      "language": {
+        "dialect": "Puerto Rican Spanish",
+        "register": "Informal",
+        "primary_language": "Spanish"
+      },
+      "file_path": "radio_b0be0e/snippets/snippet_371b5e17-0281-40e1-854b-b6376c66caa6.mp3",
+      "file_size": 1040493,
+      "audio_file": {
+        "id": "c0a7ff7b-2e0e-486e-98da-de6dae580112",
+        "location_city": null,
+        "location_state": "Puerto Rico",
+        "radio_station_code": "WKAQ - 580 AM",
+        "radio_station_name": "Analisis y Noticias"
+      },
+      "like_count": 0,
+      "start_time": "00:01:30",
+      "explanation": "The audio clip discusses the actions of Secretary of Justice Domingo Emanuelli. He is accused of using the case of convict Hermes Ávila to attack Senator José Vargas Vidot for political gain. This falls under disinformation related to political figures and movements as it involves a political figure potentially manipulating a legal case to damage a political opponent's reputation and influence public opinion. This behavior erodes public trust and distorts political discourse.",
+      "recorded_at": "2024-11-30T11:34:32+00:00",
+      "dislike_count": 0,
+      "starred_by_user": false,
+      "user_like_status": null,
+      "confidence_scores": {
+        "overall": 100,
+        "categories": [
+          {
+            "score": 100,
+            "category": "Political Figures and Movements"
+          }
+        ]
+      },
+      "political_leaning": {
+        "score": -0.3,
+        "explanation": {
+          "english": "The content exhibits a negative leaning towards Domingo Emanuelli, a member of the Popular Democratic Party (PPD) in Puerto Rico, by criticizing his actions. This criticism suggests an opposing political perspective, possibly from a pro-statehood or pro-independence stance. However, without explicit policy positions, the leaning cannot be definitively categorized beyond a general disapproval of the mentioned official.",
+          "spanish": "El contenido exhibe una inclinación negativa hacia Domingo Emanuelli, miembro del Partido Popular Democrático (PPD) en Puerto Rico, al criticar sus acciones. Esta crítica sugiere una perspectiva política opuesta, posiblemente desde una postura estadista o independentista. Sin embargo, sin posiciones políticas explícitas, la inclinación no puede categorizarse definitivamente más allá de una desaprobación general del funcionario mencionado."
+        }
+      }
+    },
+    {
+      "id": "f0a36e49-54eb-4778-adda-8a6783ad0d71",
+      "title": "Vote for a Better Future",
+      "hidden": true,
+      "labels": [
+        {
+          "id": "2e6b2d61-dec4-41fa-82e1-f759d7389fca",
+          "text": "Social responsibility",
+          "applied_at": "2024-11-30T13:32:48.250646+00:00",
+          "applied_by": null,
+          "created_by": null,
+          "upvoted_by": [],
+          "is_ai_suggested": true
+        }
+      ],
+      "context": {
+        "main": "Vota por tu hija para que tenga buenas escuelas y por tu hermana Lupita, por buenos cuidados médicos para ella y tu futuro sobrino. Vota por el compadre Manuel para que siga trabajando en condiciones dignas.",
+        "after": "Vota por todos, porque tu voto es nuestra voz. Para más información, visita tuvotoenuestranoz.com.",
+        "before": "Saber es poder. Si eres ciudadana o ciudadano y eres mayor de 18 años, te voy a dar muy buenas razones para votar el 5 de noviembre.",
+        "main_en": "Vote for your daughter so she has good schools and for your sister Lupita, for good medical care for her and your future nephew. Vote for compadre Manuel so he can continue working in dignified conditions.",
+        "after_en": "Vote for everyone, because your vote is our voice. For more information, visit tuvotoenuestranoz.com.",
+        "before_en": "Knowledge is power. If you are a citizen and you are over 18 years old, I'm going to give you very good reasons to vote on November 5th."
+      },
+      "summary": "The audio clip encourages citizens to vote in the upcoming election by highlighting the potential positive impact on education, healthcare, and working conditions, using examples like voting for a daughter's better schools, a sister's medical care, and a friend's dignified employment. It emphasizes that voting is a way to contribute to a better future.",
+      "duration": "00:02:20",
+      "end_time": "00:01:50",
+      "language": {
+        "dialect": "Standard Spanish",
+        "register": "Formal",
+        "primary_language": "Spanish"
+      },
+      "file_path": "radio_69fb50/snippets/snippet_f0a36e49-54eb-4778-adda-8a6783ad0d71.mp3",
+      "file_size": 1120557,
+      "audio_file": {
+        "id": "4c22ac7f-8281-4c4d-92ac-6bcdacbb6652",
+        "location_city": null,
+        "location_state": "Nevada",
+        "radio_station_code": "KISF - 103.5 FM",
+        "radio_station_name": "ZonaMX"
+      },
+      "like_count": 0,
+      "start_time": "00:01:30",
+      "explanation": "This audio clip promotes voting and highlights its potential benefits for individuals and the community. It does not contain disinformation. The message encourages civic engagement and participation in the democratic process by presenting potential positive outcomes of voting, such as improved education, healthcare, and working conditions.",
+      "recorded_at": "2024-11-30T11:13:38+00:00",
+      "dislike_count": 0,
+      "starred_by_user": false,
+      "user_like_status": null,
+      "confidence_scores": {
+        "overall": 95,
+        "categories": [
+          {
+            "score": 95,
+            "category": "Election Integrity and Voting Processes"
+          }
+        ]
+      },
+      "political_leaning": {
+        "score": 0.0,
+        "explanation": {
+          "english": "This audio clip encourages voting, which is a fundamental aspect of democratic participation. It does not promote any specific political ideology but focuses on the potential benefits of exercising the right to vote. The message is neutral and does not advocate for any specific political party or policy.",
+          "spanish": "Este audio clip fomenta el voto, que es un aspecto fundamental de la participación democrática. No promueve ninguna ideología política específica, sino que se centra en los beneficios potenciales de ejercer el derecho al voto. El mensaje es neutral y no aboga por ningún partido o política política específica."
+        }
+      }
+    },
+    {
+      "id": "8b66528a-822f-421b-b9e3-0bd2ab2a8f2e",
+      "title": "Get Out the Vote - Your Vote is Our Voice",
+      "hidden": false,
+      "labels": [
+        {
+          "id": "681c2ac4-c336-47e4-aeb4-fb2ffbb13980",
+          "text": "Election Integrity and Voting Processes",
+          "applied_at": "2024-11-30T13:57:49.134747+00:00",
+          "applied_by": null,
+          "created_by": null,
+          "upvoted_by": [],
+          "is_ai_suggested": true
+        }
+      ],
+      "context": {
+        "main": "Saber es poder. Y eres ciudadana o ciudadano de los Estados Unidos y eres mayor de 18 años, te voy a dar muy buenas razones para votar el 5 de noviembre. Vota por tu hija, para que tenga buenas escuelas y bibliotecas. Vota por tu hermana Lupita, por buenos cuidados médicos para ella y tu futuro sobrino. Vota por el compadre Manuel, para que siga trabajando en el campo en condiciones dignas. Vota por el primo Juan que acaba de llegar. Vota por ti, por empleos bien pagados. También por los vecinos, porque unidos somos más y por todo el barrio, para agua, aire y zonas verdes limpias. Vota por tus amigos y seres queridos que aún no pueden hacerlo. Vota por todos, porque tu voto es nuestra voz. Para más información, visita tuvoto, nuestravoz.com.",
+        "after": "Un mensaje de esta emisora y de laredispana.com. Venimos más fuertes que nunca. Con información privilegiada que no encontrarás en ningún otro lugar. Siéntese quien pueda, lunes a viernes a las 2 por Univisión. Estás escuchando Euforia.",
+        "before": "KX 103.5. La diversión está garantizada. Partidazo, hat trick en la final, ¿cómo te sientes? Increíble. Como obtener un nuevo iPhone una y otra vez. Acabo de conseguir hoy el nuevo iPhone 16 Pro. ¿Cómo? Sí, y con AT&T Next Up Anytime puedo hacer un upgrade antes de tiempo cada año. Increíble. Siéntete como un MVP otra vez. Descubre cómo obtener el nuevo iPhone 16 Pro por cuenta nuestra y el último iPhone cada año con Next Up Anytime, AT&T. Conectarlo cambia todo. Sujeto a cambios, aplican cargos, términos y restricciones. La oferta de cero dólares puede no estar disponible en futuros iPhones. La función Next Up Anytime puede descontinuarse en cualquier momento. Visita att.com diagonal iPhone para más detalles. Para artistas apasionados y auténticos, escucha la lista de reproducción Euphoria High. Bailando en la casa, we out here con Euphoria from my sound. Very in the Dominican culture, viviendo en Jersey. Y ahora te saludo desde La Bachata, me representa en Bow, me inspiró de mi cultura. Viral Ni Warhol nació en New York, porque los new yorkers querían más sabor. Deseábamos Viral Ni Warhol, un drink para el vibrante music scene de la ciudad. Ve a nuestro favorite DJ a actuar en Brooklyn at 3 in the morning, Viral Ni Warhol. The best Viral Ni Warhol is in New York. Llegó el mejor Black Friday a JCPenney, con miles de ofertas toda la semana, como electrodomésticos pequeños, Cooks o Black and Decker a 14.99. Botas para damas a solo 19.99 y los suéteres más populares de St. John's Bay a 9.99. Y tenemos el suéter en combinación para tu perrito. Más fiestas, grandes ahorros. JCPenney. Vale la pena. Ofertas válidas hasta el 30 de noviembre en selección de estilos. Las ofertas se excluyen de los cupones de Today's In-Store, jcpenney.com.",
+        "main_en": "Knowledge is power. And you are a citizen of the United States and you are over 18 years old, I am going to give you very good reasons to vote on November 5th. Vote for your daughter, so that she has good schools and libraries. Vote for your sister Lupita, for good medical care for her and your future nephew. Vote for compadre Manuel, so that he can continue working in the fields in dignified conditions. Vote for cousin Juan who has just arrived. Vote for yourself, for well-paying jobs. Also for the neighbors, because united we are more and for the whole neighborhood, for clean water, air and green areas. Vote for your friends and loved ones who still cannot do so. Vote for everyone, because your vote is our voice. For more information, visit tuvoto, nuestravoz.com.",
+        "after_en": "A message from this station and laredispana.com. We are coming back stronger than ever. With insider information that you won't find anywhere else. Have a seat if you can, Monday to Friday at 2 on Univision. You're listening to Euphoria.",
+        "before_en": "KX 103.5. Fun is guaranteed. Great game, hat trick in the final, how do you feel? Incredible. How to get a new iPhone again and again. I just got the new iPhone 16 Pro today. How? Yes, and with AT&T Next Up Anytime I can upgrade early every year. Incredible. Feel like an MVP again. Find out how to get the new iPhone 16 Pro on us and the latest iPhone every year with Next Up Anytime, AT&T. Connecting it changes everything. Subject to change, fees, terms and conditions apply. The zero dollar offer may not be available on future iPhones. Next Up Anytime may be discontinued at any time. Visit att.com/iphone for more details. For passionate and authentic artists, listen to the Euphoria High playlist. Dancing in the house, we out here with Euphoria from my sound. Very in the Dominican culture, living in Jersey. And now I greet you from La Bachata, it represents me in Bow, it inspired me from my culture. Viral Ni Warhol was born in New York, because New Yorkers wanted more flavor. We wanted Viral Ni Warhol, a drink for the vibrant music scene of the city. See our favorite DJ perform in Brooklyn at 3 in the morning, Viral Ni Warhol. The best Viral Ni Warhol is in New York. The best Black Friday has arrived at JCPenney, with thousands of offers all week long, like small appliances, Cooks or Black and Decker at 14.99. Women's boots for only 19.99 and the most popular St. John's Bay sweaters at 9.99. And we have the matching sweater for your puppy. More parties, big savings. JCPenney. Worth it. Offers valid until November 30th on select styles. Offers are excluded from Today's In-Store coupons, jcpenney.com."
+      },
+      "summary": "A non-partisan message encouraging voting and highlighting its importance for positive change. The message uses personal stories to motivate listeners to exercise their right to vote and emphasizes the collective power of voting.",
+      "duration": "00:02:50",
+      "end_time": "00:02:20",
+      "language": {
+        "dialect": "Neutral Spanish",
+        "register": "Formal",
+        "primary_language": "Spanish"
+      },
+      "file_path": "radio_69fb50/snippets/snippet_8b66528a-822f-421b-b9e3-0bd2ab2a8f2e.mp3",
+      "file_size": 1360557,
+      "audio_file": {
+        "id": "12adfec7-3ae7-4c59-805f-82a2d3088fae",
+        "location_city": null,
+        "location_state": "Nevada",
+        "radio_station_code": "KISF - 103.5 FM",
+        "radio_station_name": "ZonaMX"
+      },
+      "like_count": 0,
+      "start_time": "00:01:30",
+      "explanation": "This audio clip encourages voting in the November 5th election and highlights the importance of civic participation. The content doesn't promote false information but rather uses personal stories to encourage listeners to exercise their right to vote by emphasizing how their vote can bring positive changes to various members of their community, as well as the community as a whole. While no specific election is mentioned, encouraging voting is part of a healthy democracy and is not inherently disinformation. Even if the date mentioned is past the actual election date of 2024, it's likely referring to local elections and is framed as a general call to participate in the electoral process.",
+      "recorded_at": "2024-11-30T05:52:47+00:00",
+      "dislike_count": 0,
+      "starred_by_user": false,
+      "user_like_status": null,
+      "confidence_scores": {
+        "overall": 100,
+        "categories": [
+          {
+            "score": 100,
+            "category": "Election Integrity and Voting Processes"
+          }
+        ]
+      },
+      "political_leaning": {
+        "score": 0.0,
+        "explanation": {
+          "english": "This message receives a score of 0.0 as it promotes civic engagement, which is a non-partisan value. It focuses on the act of voting itself, highlighting potential benefits without advocating for specific political views or outcomes. This can be seen in examples like 'vote for your daughter' and 'vote for everyone'.",
+          "spanish": "Este mensaje recibe una puntuación de 0.0 ya que promueve la participación cívica, que es un valor no partidista. Se centra en el acto de votar en sí mismo, destacando los beneficios potenciales sin abogar por puntos de vista o resultados políticos específicos. Esto se puede ver en ejemplos como 'vota por tu hija' y 'vota por todos'."
+        }
+      }
     }
   ],
-  "total_pages": 1,
-  "num_of_snippets": 2
+  "page_size": 5,
+  "total_pages": 162,
+  "current_page": 0,
+  "num_of_snippets": 3229
 }

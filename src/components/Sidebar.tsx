@@ -70,7 +70,9 @@ export default function Sidebar() {
   }
 
   return (
-    <div className='hide-scrollbar fixed  inset-0 z-50 h-[100svh] overflow-y-auto bg-white md:relative md:inset-auto  md:h-full md:w-80'>
+    <div
+      className='hide-scrollbar fixed  inset-0 z-50 h-[100svh] overflow-y-auto bg-white md:relative md:inset-auto  md:h-full md:w-80'
+      data-testid='sidebar'>
       <div className='p-6'>
         <div className='mb-4 flex h-[24px] items-center justify-between'>
           <CountUp
@@ -107,6 +109,7 @@ export default function Sidebar() {
             value={selectedLanguages}
             placeholder={t.selectLanguages}
             maxCount={2}
+            name='sourceLanguage'
             className='w-full'
           />
 
@@ -117,6 +120,7 @@ export default function Sidebar() {
             value={selectedStates}
             placeholder={t.selectStates}
             maxCount={2}
+            name='state'
             className='w-full'
           />
 
@@ -127,6 +131,7 @@ export default function Sidebar() {
             value={selectedSources}
             placeholder={t.selectSources}
             maxCount={2}
+            name='source'
             className='w-full'
           />
 
@@ -137,6 +142,7 @@ export default function Sidebar() {
             value={selectedLabels}
             placeholder={t.selectLabels}
             maxCount={3}
+            name='label'
             className='w-full'
           />
 
