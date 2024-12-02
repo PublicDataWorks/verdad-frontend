@@ -88,7 +88,7 @@ export default function AudioPlayer({ audioSrc, startTime }: AudioPlayerProps) {
   }
 
   return (
-    <div className='mx-auto w-full max-w-3xl rounded-lg bg-background p-4 shadow-md'>
+    <div className='w-full max-w-3xl rounded-lg bg-background p-4 shadow-md'>
       <audio ref={audioRef} src={audioSrc} />
       <div className='space-y-4'>
         <div className='flex items-center justify-between'>
