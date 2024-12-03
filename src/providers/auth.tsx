@@ -78,7 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const loginWithGoogle = async (redirectTo?: string): Promise<{ error: AuthError | null }> => {
     try {
-      const redirectUrl = `${window.location.origin}${redirectTo}`
+      const redirectUrl = `${window.location.origin}${redirectTo ? redirectTo : import.meta.env.VITE_AUTH_REDIRECT_URL}`
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
