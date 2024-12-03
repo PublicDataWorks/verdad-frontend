@@ -30,7 +30,7 @@ export default function LanguageTabs({
   const englishRef = useRef<HTMLSpanElement>(null)
   const [activeTab, setActiveTab] = useState(sourceLanguage)
 
-  const isSourceEnglish = sourceLanguage.toLowerCase() === 'english'
+  const isSourceEnglish = sourceLanguage && sourceLanguage?.toLowerCase() === 'english'
 
   const scrollToHighlight = (ref: React.RefObject<HTMLSpanElement>) => {
     if (ref.current) {

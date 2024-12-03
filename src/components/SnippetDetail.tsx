@@ -61,7 +61,7 @@ const SnippetDetail: FC = () => {
     dislikeCount: snippet?.dislike_count || 0
   })
   const [snippetLanguage, setSnippetLanguage] = useState<string | undefined>(
-    snippet?.language?.primary_language.toLowerCase()
+    snippet?.language?.primary_language?.toLowerCase()
   )
 
   const likeSnippetMutation = useLikeSnippet()
@@ -180,7 +180,7 @@ const SnippetDetail: FC = () => {
   useEffect(() => {
     if (snippet) {
       setLabels(snippet.labels || [])
-      setSnippetLanguage(snippet.language?.primary_language.toLowerCase())
+      setSnippetLanguage(snippet.language?.primary_language?.toLowerCase())
       setCurrentLikeStatus(snippet.user_like_status ?? null)
       setCounts({
         likeCount: snippet.like_count || 0,
@@ -408,7 +408,7 @@ const SnippetDetail: FC = () => {
                   main_en: snippet.context.main_en,
                   after_en: snippet.context.after_en
                 }}
-                sourceLanguage={snippet.language?.primary_language.toLowerCase()}
+                sourceLanguage={snippet.language?.primary_language?.toLowerCase() || 'english'}
               />
 
               <div className='flex flex-wrap items-center gap-2'>
