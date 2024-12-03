@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '../providers/auth'
@@ -13,6 +13,7 @@ type LoginFormData = {
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { login, loginWithGoogle, user } = useAuth()
 
   const {
@@ -27,11 +28,15 @@ export default function LoginPage() {
     }
   })
 
+  // Extract the redirect path from query parameters
+  const params = new URLSearchParams(location.search)
+  const redirectTo = params.get('redirect') || '/search'
+
   useEffect(() => {
     if (user) {
-      navigate('/search')
+      navigate(redirectTo)
     }
-  }, [user, navigate])
+  }, [user, navigate, redirectTo])
 
   const onSubmit = async (data: LoginFormData) => {
     const { error } = await login(data.email, data.password)
@@ -40,12 +45,12 @@ export default function LoginPage() {
         message: error.message
       })
     } else {
-      navigate('/search')
+      navigate(redirectTo)
     }
   }
 
   const handleGoogleSignIn = async () => {
-    const { error } = await loginWithGoogle()
+    const { error } = await loginWithGoogle(redirectTo)
     if (error) {
       setError('root', {
         message: error.message
@@ -94,7 +99,7 @@ export default function LoginPage() {
               {errors.password && <p className='mt-1 text-sm text-red-500'>{errors.password.message}</p>}
             </div>
 
-            <div className='flex items-center justify-between flex-wrap'>
+            <div className='flex flex-wrap items-center justify-between'>
               <Button
                 variant='link'
                 className='h-auto p-0 text-blue-600'

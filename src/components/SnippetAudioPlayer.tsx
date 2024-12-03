@@ -110,7 +110,6 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
         <div className='flex-1'>
           <Slider value={[currentTime]} max={duration} step={1} onValueChange={onProgressChange} />
         </div>
-        {/* Display current time and duration */}
         <span className='text-sm text-muted-foreground'>
           {formatTime(currentTime)} / {formatTime(duration)}
         </span>

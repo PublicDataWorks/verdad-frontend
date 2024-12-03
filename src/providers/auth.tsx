@@ -6,7 +6,7 @@ interface AuthContextType {
   session: Session | null
   login: (email: string, password: string) => Promise<{ error: AuthError | null }>
   logout: () => Promise<{ error: AuthError | null }>
-  loginWithGoogle: () => Promise<{ error: AuthError | null }>
+  loginWithGoogle: (redirectTo?: string) => Promise<{ error: AuthError | null }>
   signUp: (
     email: string,
     password: string,
@@ -76,9 +76,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  const loginWithGoogle = async (): Promise<{ error: AuthError | null }> => {
+  const loginWithGoogle = async (redirectTo?: string): Promise<{ error: AuthError | null }> => {
     try {
-      const redirectUrl = (import.meta.env.VITE_AUTH_REDIRECT_URL as string) || '/dashboard'
+      const redirectUrl = `${window.location.origin}${redirectTo}`
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
