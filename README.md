@@ -78,7 +78,3 @@ coding.
 
 Please note that the unassigned imports (i.e. `import './*.scss'`) are ignored
 by the linter, please put them together with the sibling import group.
-
-## Translation
-
-See detail [here](./i18n-script/README.md)
