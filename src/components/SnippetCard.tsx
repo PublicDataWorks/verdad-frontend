@@ -147,7 +147,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
       onClick={e => onSnippetClick(e, snippet.id)}>
       <div className='mb-2 flex items-start justify-between'>
         <h3 className='cursor-pointer text-lg font-medium'>{snippet.title}</h3>
-        <div className='flex space-x-2'>
+        <div className='flex space-x-2' onClick={e => e.stopPropagation()}>
           <Tooltip>
             <TooltipTrigger asChild>
               <div>
@@ -191,7 +191,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
       <p className='mb-4'>{snippet.summary}</p>
-      <SnippetAudioPlayer path={snippet.file_path} initialStartTime={snippet.start_time || 0} />
+      <SnippetAudioPlayer path={snippet.file_path} initialStartTime={snippet.start_time || '0'} />
       <div className='mb-4 flex items-center gap-2'>
         <Tooltip>
           <TooltipTrigger asChild>
