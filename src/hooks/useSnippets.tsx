@@ -4,15 +4,22 @@ import { PaginatedResponse, Snippet, PublicSnippetData } from '@/types/snippet'
 
 export const snippetKeys = {
   all: ['snippets'] as const,
-  lists: (pageSize: number, filters: any, language: string, orderBy: string) =>
-    [...snippetKeys.all, 'list', { pageSize, filters, language, orderBy }] as const,
+  lists: (pageSize: number, filters: any, language: string, orderBy: string, searchTerm: string) =>
+    [...snippetKeys.all, 'list', { pageSize, filters, language, orderBy, searchTerm }] as const,
   detail: (id: string, language: string) => [...snippetKeys.all, 'detail', id, { language }] as const
 }
 
-export function useSnippets({ pageSize = 10, filters = {}, language = 'english', orderBy = 'latest' }) {
+export function useSnippets({
+  pageSize = 10,
+  filters = {},
+  language = 'english',
+  orderBy = 'latest',
+  searchTerm = ''
+}) {
   return useInfiniteQuery<PaginatedResponse, Error>({
-    queryKey: snippetKeys.lists(pageSize, filters, language, orderBy),
-    queryFn: ({ pageParam }) => fetchSnippets({ pageParam: pageParam ?? 0, pageSize, filters, language, orderBy }),
+    queryKey: snippetKeys.lists(pageSize, filters, language, orderBy, searchTerm),
+    queryFn: ({ pageParam }) =>
+      fetchSnippets({ pageParam: pageParam ?? 0, pageSize, filters, language, orderBy, searchTerm }),
     initialPageParam: 0,
     getNextPageParam: lastPage => {
       if (lastPage.currentPage >= lastPage.total_pages - 1) {

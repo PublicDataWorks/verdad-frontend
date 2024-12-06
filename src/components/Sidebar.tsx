@@ -40,7 +40,13 @@ export default function Sidebar() {
 
   const { languages = [], states = [], sources = [], labels = { items: [] } } = data || {}
 
-  const { data: snippetData, isLoading } = useSnippets({ pageSize: PAGE_SIZE, filters, language })
+  const { data: snippetData, isLoading } = useSnippets({
+    pageSize: PAGE_SIZE,
+    filters,
+    language,
+    orderBy: filters.order_by || 'latest',
+    searchTerm: filters.searchTerm || ''
+  })
 
   const lastValueRef = useRef(0)
 
@@ -48,7 +54,7 @@ export default function Sidebar() {
     if (!isLoading && snippetData?.pages[0].total_snippets !== undefined) {
       lastValueRef.current = snippetData.pages[0].total_snippets
     }
-  }, [isLoading, snippetData?.pages[0].total_snippets])
+  }, [isLoading, snippetData])
 
   const handleClearAll = () => {
     clearAll()

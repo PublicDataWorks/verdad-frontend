@@ -1,18 +1,20 @@
+import { translations } from '@/constants/translations'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { FileX } from 'lucide-react'
 
 export const NoSnippetsMessage = ({ language, searchTerm }: { language: string; searchTerm: string }) => {
   const { clearAll } = useSnippetFilters()
+  const t = translations[language as keyof typeof translations]
 
   if (searchTerm) {
     return (
       <div className='flex h-full flex-col items-center justify-center p-4 text-center'>
-        <p className='mb-2 text-lg font-semibold'>No results matching "{searchTerm}"</p>
-        <p className='mb-4 text-muted-foreground'>The filters could be hiding results.</p>
+        <p className='mb-2 text-lg font-semibold'>{t.searchTerm(searchTerm)}</p>
+        <p className='mb-4 text-muted-foreground'>{t.hidingResults}</p>
         <button
           onClick={clearAll}
           className='rounded-md bg-[#E8F1FF] px-4 py-2 text-[#005EF4] transition-colors hover:bg-[#D1E5FF]'>
-          Clear filters
+          {t.clearFilters}
         </button>
       </div>
     )

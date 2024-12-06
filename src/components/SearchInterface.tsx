@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { Filter, Loader, ArrowUpDown, Search } from 'lucide-react'
+import { Loader, ArrowUpDown, Search } from 'lucide-react'
 import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '../providers/language'
 
-import RoundedToggleButton from './RoundedToggleButton'
 import SnippetCard from './SnippetCard'
 import Sidebar from './Sidebar'
 import { useSnippets } from '@/hooks/useSnippets'
@@ -12,7 +11,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { fetchFilteringOptions } from '@/hooks/useFilterOptions'
 import supabaseClient from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { isMobile } from 'react-device-detect'
@@ -45,14 +44,13 @@ export default function SearchInterface() {
   const navigate = useNavigate()
 
   const scrollAreaRef = useRef<HTMLDivElement>(null)
-  const [searchTerm, setSearchTerm] = useState('')
 
   const { data, error, fetchNextPage, hasNextPage, status } = useSnippets({
     pageSize: PAGE_SIZE,
     filters,
     language,
     orderBy: filters.order_by || 'latest',
-    searchTerm
+    searchTerm: filters.searchTerm || ''
   })
 
   const handleSnippetClick = (event: React.MouseEvent, snippetId: string) => {
@@ -121,7 +119,7 @@ export default function SearchInterface() {
             <Input
               type='search'
               placeholder={t.searchPlaceholder}
-              onChange={debounce(e => setSearchTerm(e.target.value), 300)}
+              onChange={debounce(e => setFilter('searchTerm', e.target.value), 300)}
               className='h-8 w-full pl-9'
             />
           </div>
