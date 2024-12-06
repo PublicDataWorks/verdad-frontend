@@ -4,6 +4,7 @@ import { Composer, Thread } from '@liveblocks/react-ui'
 import Spinner from './Spinner'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
+import { useEffect } from 'react'
 
 interface LiveblocksCommentsProps {
   snippetId: string
@@ -26,6 +27,18 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
   const { threads, error, isLoading } = useThreads()
   const { language } = useLanguage()
   const t = translations[language]
+
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      if (e.target instanceof HTMLElement && e.target.closest('.comment-input')) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
+    document.addEventListener('scroll', handleScroll, { passive: false })
+    return () => document.removeEventListener('scroll', handleScroll)
+  }, [])
 
   if (isLoading) {
     return (
