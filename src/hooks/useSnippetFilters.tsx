@@ -104,8 +104,11 @@ function useSnippetFilters() {
     if (order_by) {
       newParams.set('order_by', order_by)
     }
+    if (searchTerm) {
+      newParams.set('searchTerm', searchTerm)
+    }
     setSearchParams(newParams)
-  }, [setSearchParams, order_by])
+  }, [setSearchParams, order_by, searchTerm])
 
   return {
     filters,

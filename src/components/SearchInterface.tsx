@@ -118,6 +118,7 @@ export default function SearchInterface() {
             <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
             <Input
               type='search'
+              defaultValue={filters.searchTerm || ''}
               placeholder={t.searchPlaceholder}
               onChange={debounce(e => setFilter('searchTerm', e.target.value), 300)}
               className='h-8 w-full pl-9'
@@ -164,7 +165,7 @@ export default function SearchInterface() {
               <Loader className='h-6 w-6 animate-spin text-primary' />
             </div>
           ) : snippets.length === 0 ? (
-            <NoSnippetsMessage language={language} searchTerm={searchTerm} />
+            <NoSnippetsMessage />
           ) : (
             <>
               {showWelcomeCard && <WelcomeCard />}
