@@ -1,9 +1,12 @@
 import { translations } from '@/constants/translations'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
+import { useLanguage } from '@/providers/language'
 import { FileX } from 'lucide-react'
 
-export const NoSnippetsMessage = ({ language, searchTerm }: { language: string; searchTerm: string }) => {
-  const { clearAll } = useSnippetFilters()
+export const NoSnippetsMessage = () => {
+  const { language } = useLanguage()
+  const { clearAll, filters } = useSnippetFilters()
+  const searchTerm = filters.searchTerm
   const t = translations[language as keyof typeof translations]
 
   if (searchTerm) {
