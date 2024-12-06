@@ -1,0 +1,8 @@
+const ACCESS_TOKEN = 'access_token'
+const GOOGLE_OAUTH = 'Authenticate with Google'
+const SCROLL_THRESHOLD = 0.8
+const DEBOUNCE_DELAY = 300
+const DEFAULT_ORDER = 'latest'
+const PAGE_SIZE = 20
+
+export { ACCESS_TOKEN, GOOGLE_OAUTH, SCROLL_THRESHOLD, DEBOUNCE_DELAY, DEFAULT_ORDER, PAGE_SIZE }

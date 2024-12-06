@@ -28,13 +28,15 @@ export const fetchSnippets = async ({
   pageSize = 10,
   filters,
   language,
-  orderBy
+  orderBy,
+  searchTerm = ''
 }: {
   pageParam: number
   pageSize: number
   filters: any
   language: string
   orderBy: string
+  searchTerm?: string
 }): Promise<PaginatedResponse> => {
   // Remove unset filter properties
   const actualFilters = { ...filters }
@@ -47,7 +49,8 @@ export const fetchSnippets = async ({
     page_size: pageSize,
     p_language: language,
     p_filter: actualFilters,
-    p_order_by: orderBy
+    p_order_by: orderBy,
+    p_search_term: searchTerm
   })
 
   if (error) {

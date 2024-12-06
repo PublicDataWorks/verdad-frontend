@@ -54,14 +54,22 @@ export const translations = {
       showSnippet: 'Show snippet',
       hideSnippet: 'Hide snippet',
       misinfo: 'Mark as mis/disinformation',
-      notMisinfo: 'Mark as not mis/disinformation'
+      notMisinfo: 'Mark as not mis/disinformation',
+      toggleSidebar: 'Toggle sidebar',
+      showWelcomeCard: 'Show welcome card',
+      showInbox: 'Show inbox',
+      changeLanguage: 'Change language'
     },
     sortBy: {
       mostRecentActivities: 'Recent user activities',
       mostUpvotes: 'Most upvotes',
       mostComments: 'Most comments',
       mostRecentRecordings: 'Recently recorded'
-    }
+    },
+    searchPlaceholder: 'Search snippets',
+    searchTerm: (searchTerm: string) => `No results matching "${searchTerm}"`,
+    hidingResults: 'The filters could be hiding results.',
+    clearFilters: 'Clear filters'
   },
   spanish: {
     filters: 'Filtros',
@@ -118,13 +126,21 @@ export const translations = {
       showSnippet: 'Mostrar snippet',
       hideSnippet: 'Ocultar snippet',
       misinfo: 'Marcar como desinformación',
-      notMisinfo: 'Marcar como no desinformación'
+      notMisinfo: 'Marcar como no desinformación',
+      toggleSidebar: 'Mostrar barra lateral',
+      showWelcomeCard: 'Mostrar tarjeta de bienvenida',
+      showInbox: 'Mostrar bandeja de entrada',
+      changeLanguage: 'Cambiar idioma'
     },
     sortBy: {
       mostRecentActivities: 'Reciente actividad de usuario',
       mostUpvotes: 'Más votos',
       mostComments: 'Más comentarios',
       mostRecentRecordings: 'Recientemente grabado'
-    }
+    },
+    searchPlaceholder: 'Buscar fragmentos',
+    searchTerm: (searchTerm: string) => `No se encontraron resultados para "${searchTerm}"`,
+    hidingResults: 'Los filtros podrían estar ocultando resultados.',
+    clearFilters: 'Limpiar filtros'
   }
 }

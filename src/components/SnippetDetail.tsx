@@ -238,7 +238,7 @@ const SnippetDetail: FC = () => {
               <TooltipTrigger asChild>
                 <Button variant='ghost' className='flex items-center space-x-2 px-2' onClick={goBack}>
                   <ArrowLeft className='h-4 w-4' />
-                  <span>{t.back}</span>
+                  <span className='hidden sm:inline'>{t.back}</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -302,7 +302,7 @@ const SnippetDetail: FC = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div>
-                    <ShareButton snippetId={snippetId} showLabel />
+                    <ShareButton snippetId={snippetId} showLabel={false} />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -314,11 +314,11 @@ const SnippetDetail: FC = () => {
                 <TooltipTrigger asChild>
                   <Button
                     variant='ghost'
-                    className='flex items-center space-x-2'
+                    className='flex items-center justify-center p-2'
                     onMouseEnter={() => setIsStarHovered(true)}
                     onMouseLeave={() => setIsStarHovered(false)}
                     onClick={handleStarClick}>
-                    <img src={getStarIcon()} alt='Star' className='h-4 w-4' />
+                    <img src={getStarIcon()} alt='Star' className='h-6 w-6 min-w-[24px]' />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -330,7 +330,14 @@ const SnippetDetail: FC = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
-                      <SnippetVisibilityToggle isHidden={isHidden ? true : false} snippetId={snippet.id} />
+                      <Button
+                        variant='ghost'
+                        className='flex items-center justify-center p-2'
+                        onMouseEnter={() => setIsStarHovered(true)}
+                        onMouseLeave={() => setIsStarHovered(false)}
+                        onClick={handleStarClick}>
+                        <SnippetVisibilityToggle isHidden={isHidden ? true : false} snippetId={snippet.id} />
+                      </Button>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>

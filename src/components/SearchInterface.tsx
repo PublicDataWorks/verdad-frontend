@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { Filter, Loader, FileX, X, ArrowUpDown } from 'lucide-react'
+import { Loader, ArrowUpDown, Search } from 'lucide-react'
 import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '../providers/language'
 
-import RoundedToggleButton from './RoundedToggleButton'
 import SnippetCard from './SnippetCard'
 import Sidebar from './Sidebar'
 import { useSnippets } from '@/hooks/useSnippets'
@@ -28,8 +27,10 @@ import {
   DropdownMenuTrigger
 } from './ui/dropdown-menu'
 import { translations } from '@/constants/translations'
-
-export const PAGE_SIZE = 20
+import { Input } from './ui/input'
+import { debounce } from 'lodash'
+import { NoSnippetsMessage } from './NoSnippetsMessage'
+import { PAGE_SIZE } from '@/constants'
 
 export default function SearchInterface() {
   const { showSidebar, setShowSidebar } = useSidebar()
@@ -42,14 +43,15 @@ export default function SearchInterface() {
 
   const navigate = useNavigate()
 
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
+
   const { data, error, fetchNextPage, hasNextPage, status } = useSnippets({
     pageSize: PAGE_SIZE,
     filters,
     language,
-    orderBy: filters.order_by || 'latest'
+    orderBy: filters.order_by || 'latest',
+    searchTerm: filters.searchTerm || ''
   })
-
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   const handleSnippetClick = (event: React.MouseEvent, snippetId: string) => {
     if (event.ctrlKey || event.metaKey) {
@@ -105,39 +107,22 @@ export default function SearchInterface() {
 
   const snippets = data?.pages.flatMap(page => page.snippets) || []
 
-  const NoSnippetsMessage = () => (
-    <div className='flex h-full flex-col items-center justify-center p-4 text-center'>
-      <FileX className='mb-4 h-16 w-16 text-muted-foreground' />
-      <h2 className='mb-2 text-2xl font-semibold'>
-        {language === 'spanish' ? 'No se encontraron snippets' : 'No snippets found'}
-      </h2>
-      <p className='text-muted-foreground'>
-        {language === 'spanish'
-          ? 'Intenta ajustar tus filtros o busca algo diferente.'
-          : 'Try adjusting your filters or search for something different.'}
-      </p>
-    </div>
-  )
-
   const padding = showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'px-6 md:px-20 lg:px-40 2xl:px-80'
 
   return (
     <div className='flex h-[calc(-60px+100svh)] flex-1 rounded-lg'>
       {showSidebar && <Sidebar />}
-      <div className={`flex w-full flex-col pt-6`}>
-        <div className={`${padding} mb-6 flex justify-between`}>
-          {isMobile && (
-            <div className='flex'>
-              <div className='flex space-x-2'>
-                <RoundedToggleButton
-                  label={language === 'spanish' ? 'Filtrar' : 'Filter'}
-                  isActive={showSidebar}
-                  onClick={toggleSidebar}
-                  icon={<Filter className='mr-2 h-4 w-4' />}
-                />
-              </div>
-            </div>
-          )}
+      <div className='flex w-full flex-col pt-6'>
+        <div className={`${padding} mb-6 flex justify-between gap-2`}>
+          <div className='relative flex-grow'>
+            <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+            <Input
+              type='search'
+              placeholder={t.searchPlaceholder}
+              onChange={debounce(e => setFilter('searchTerm', e.target.value), 300)}
+              className='h-8 w-full pl-9'
+            />
+          </div>
           <div className={isMobile ? '' : 'ml-auto'}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -179,7 +164,7 @@ export default function SearchInterface() {
               <Loader className='h-6 w-6 animate-spin text-primary' />
             </div>
           ) : snippets.length === 0 ? (
-            <NoSnippetsMessage />
+            <NoSnippetsMessage language={language} searchTerm={searchTerm} />
           ) : (
             <>
               {showWelcomeCard && <WelcomeCard />}
