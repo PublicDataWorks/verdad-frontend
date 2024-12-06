@@ -54,7 +54,11 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant='ghost' size='icon' onClick={handleToggleClick} disabled={hideSnippetMutation.isPending}>
-              {isHidden ? <PlusCircle className='h-4 w-4' /> : <MinusCircle className='h-4 w-4' />}
+              {isHidden ? (
+                <PlusCircle className='h-6 w-6 min-w-[24px]' />
+              ) : (
+                <MinusCircle className='h-6 w-6 min-w-[24px]' />
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent>

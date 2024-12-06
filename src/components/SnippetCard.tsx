@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ThumbsUp, ThumbsDown, PauseIcon, PlayIcon } from 'lucide-react'
+import { ThumbsUp, ThumbsDown } from 'lucide-react'
 import { isNil } from 'lodash'
 
 import { Button } from '@/components/ui/button'

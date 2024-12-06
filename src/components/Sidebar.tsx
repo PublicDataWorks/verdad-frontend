@@ -11,9 +11,8 @@ import { translations } from '@/constants/translations'
 import { useFilters } from '@/hooks/useFilterOptions'
 import useSnippetFilters, { SnippetFilters } from '@/hooks/useSnippetFilters'
 import { useSnippets } from '@/hooks/useSnippets'
-import { PAGE_SIZE } from '@/components/SearchInterface'
 import { useEffect, useRef } from 'react'
-
+import { PAGE_SIZE } from '@/constants'
 export default function Sidebar() {
   const { setShowSidebar } = useSidebar()
   const { filters, setFilter, clearAll, isEmpty } = useSnippetFilters()
