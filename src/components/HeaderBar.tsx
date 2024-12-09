@@ -15,6 +15,7 @@ import { useToggleWelcomeCard } from '@/hooks/useSnippetActions'
 import { useSidebar } from '@/providers/sidebar'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+import { ModeToggle } from './ui/mode-toggle'
 
 const HeaderBar: React.FC = () => {
   const { user } = useAuth()
@@ -62,6 +63,14 @@ const HeaderBar: React.FC = () => {
               <TooltipContent side='bottom'>{t.tooltips.showWelcomeCard}</TooltipContent>
             </Tooltip>
           )}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='ghost' size='icon'>
+                <ModeToggle />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='bottom'>{t.tooltips.toggleTheme}</TooltipContent>
+          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant='ghost' size='icon'>

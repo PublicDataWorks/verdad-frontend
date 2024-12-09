@@ -58,7 +58,8 @@ export const translations = {
       toggleSidebar: 'Toggle sidebar',
       showWelcomeCard: 'Show welcome card',
       showInbox: 'Show inbox',
-      changeLanguage: 'Change language'
+      changeLanguage: 'Change language',
+      toggleTheme: 'Toggle theme'
     },
     sortBy: {
       mostRecentActivities: 'Recent user activities',
@@ -130,7 +131,8 @@ export const translations = {
       toggleSidebar: 'Mostrar barra lateral',
       showWelcomeCard: 'Mostrar tarjeta de bienvenida',
       showInbox: 'Mostrar bandeja de entrada',
-      changeLanguage: 'Cambiar idioma'
+      changeLanguage: 'Cambiar idioma',
+      toggleTheme: 'Cambiar tema'
     },
     sortBy: {
       mostRecentActivities: 'Reciente actividad de usuario',
