@@ -37,7 +37,7 @@ const HeaderBar: React.FC = () => {
 
   return (
     <TooltipProvider delayDuration={100}>
-      <header className='flex items-center justify-between bg-gradient-to-b from-header-blue to-header-white px-8 py-2'>
+      <header className='from-background-header-from to-background-header-to flex items-center justify-between bg-gradient-to-b px-8 py-2'>
         <div className='flex items-center gap-4'>
           <Tooltip>
             <TooltipTrigger asChild>

@@ -10,13 +10,11 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
   theme: Theme
   setTheme: (theme: Theme) => void
-  toggleTheme: () => void
 }
 
 const initialState: ThemeProviderState = {
   theme: 'light',
-  setTheme: () => null,
-  toggleTheme: () => null
+  setTheme: () => null
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
@@ -26,20 +24,16 @@ export function ThemeProvider({ children, storageKey = 'app-theme', ...props }: 
 
   useEffect(() => {
     const root = window.document.documentElement
-    root.removeAttribute('data-theme')
+    root.classList.remove('light', 'dark')
+    root.classList.add(theme)
     root.setAttribute('data-theme', theme)
-  }, [theme])
+    localStorage.setItem(storageKey, theme)
+  }, [theme, storageKey])
 
   const value = {
     theme,
     setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
       setTheme(theme)
-    },
-    toggleTheme: () => {
-      const newTheme = theme === 'light' ? 'dark' : 'light'
-      localStorage.setItem(storageKey, newTheme)
-      setTheme(newTheme)
     }
   }
 

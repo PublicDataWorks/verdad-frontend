@@ -460,6 +460,8 @@ video {
     --background-blue-light: hsla(217, 100%, 95%, 1);
     --background-blue-medium: hsla(217, 100%, 77%, 1);
     --background-blue-dark: hsla(217, 100%, 48%, 1);
+    --background-header-from: hsla(217, 100%, 48%, 1);
+    --background-header-to: hsla(212, 96%, 78%, 1);
     --border-gray-light: hsla(240, 5%, 84%, 1);
   }
 
@@ -467,7 +469,6 @@ video {
     --background: 240 3.7% 15.88%;
     --card: 240 4% 14%;
     --foreground: 0 0% 98%;
-
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
@@ -518,6 +519,8 @@ video {
     --background-blue-light: hsla(217, 100%, 48%, 0.2);
     --background-blue-medium: hsla(217, 100%, 48%, 0.3);
     --background-blue-dark: hsla(217, 100%, 48%, 1);
+    --background-header-from: hsla(217, 100%, 48%, 1);
+    --background-header-to: hsla(240, 4%, 14%, 1);
     --border-gray-light: hsla(240, 5%, 26%, 1);
   }
 }

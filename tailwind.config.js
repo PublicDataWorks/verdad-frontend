@@ -74,6 +74,8 @@ const config = {
         'button-to': 'var(--button-to)',
         'selected-from': 'var(--selected-from)',
         'selected-to': 'var(--selected-to)',
+        'background-header-from': 'var(--background-header-from)',
+        'background-header-to': 'var(--background-header-to)',
         text: {
           primary: 'var(--text-primary)',
           secondary: 'var(--text-secondary)',
