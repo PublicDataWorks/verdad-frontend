@@ -24,13 +24,15 @@ import Star from '../assets/star.svg'
 import Starred from '../assets/starred.svg'
 import StarHover from '../assets/star_hover.svg'
 import { SnippetAudioPlayer } from './SnippetAudioPlayer'
+import { highlightText } from '@/utils/highlightText'
 
 interface SnippetCardProps {
   snippet: Snippet
+  searchTerm?: string
   onSnippetClick: (event: React.MouseEvent, id: string) => void
 }
 
-const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) => {
+const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onSnippetClick }) => {
   const { language } = useLanguage()
   const t = translations[language]
 
@@ -146,7 +148,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
       className={`mt-2 rounded-lg border bg-white p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
       onClick={e => onSnippetClick(e, snippet.id)}>
       <div className='mb-2 flex items-start justify-between'>
-        <h3 className='cursor-pointer text-lg font-medium'>{snippet.title}</h3>
+        <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet.title, searchTerm)}</h3>
         <div className='flex space-x-2' onClick={e => e.stopPropagation()}>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -190,7 +192,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, onSnippetClick }) =>
         </div>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
-      <p className='mb-4'>{snippet.summary}</p>
+      <p className='mb-4'>{highlightText(snippet.summary, searchTerm)}</p>
       <SnippetAudioPlayer path={snippet.file_path} initialStartTime={snippet.start_time || '0'} />
       <div className='mb-4 flex items-center gap-2'>
         <Tooltip>
