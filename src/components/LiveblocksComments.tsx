@@ -42,7 +42,7 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
 
   if (isLoading) {
     return (
-      <div className='mx-6 mt-4'>
+      <div className='flex h-full items-center justify-center'>
         <Spinner />
       </div>
     )

@@ -11,7 +11,7 @@ export const translations = {
     selectSources: 'Select sources',
     labeled: 'Labeled',
     starred: 'Starred',
-    upvoted: 'Upvote',
+    upvoted: 'Upvoted',
     label: 'Label',
     byMe: 'by Me',
     byOthers: 'by Others',
@@ -70,7 +70,11 @@ export const translations = {
     searchPlaceholder: 'Search snippets',
     searchTerm: (searchTerm: string) => `No results matching "${searchTerm}"`,
     hidingResults: 'The filters could be hiding results.',
-    clearFilters: 'Clear filters'
+    clearFilters: 'Clear filters',
+    noMoreSnippets: 'No more snippets',
+    relatedSnippets: 'Related Snippets',
+    comment: 'Comment',
+    comments: 'Comments'
   },
   spanish: {
     filters: 'Filtros',
@@ -143,6 +147,10 @@ export const translations = {
     searchPlaceholder: 'Buscar fragmentos',
     searchTerm: (searchTerm: string) => `No se encontraron resultados para "${searchTerm}"`,
     hidingResults: 'Los filtros podrían estar ocultando resultados.',
-    clearFilters: 'Limpiar filtros'
+    clearFilters: 'Limpiar filtros',
+    noMoreSnippets: 'No hay más fragmentos',
+    relatedSnippets: 'Fragmentos relacionados',
+    comment: 'Comentario',
+    comments: 'Comentarios'
   }
 }

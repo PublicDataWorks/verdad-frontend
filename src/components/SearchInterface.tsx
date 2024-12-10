@@ -28,13 +28,13 @@ import {
 } from './ui/dropdown-menu'
 import { translations } from '@/constants/translations'
 import { Input } from './ui/input'
-import { debounce } from 'lodash'
+import { debounce, isEmpty } from 'lodash'
 import { NoSnippetsMessage } from './NoSnippetsMessage'
 import { PAGE_SIZE } from '@/constants'
 import { useTheme } from '@/providers/theme'
 
 export default function SearchInterface() {
-  const { showSidebar, setShowSidebar } = useSidebar()
+  const { showSidebar } = useSidebar()
   const { filters, setFilter } = useSnippetFilters()
   const { user } = useAuth()
   const showWelcomeCard = user?.user_metadata?.dismiss_welcome_card
@@ -46,12 +46,14 @@ export default function SearchInterface() {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
+  const { searchTerm, order_by } = filters
+
   const { data, error, fetchNextPage, hasNextPage, status } = useSnippets({
     pageSize: PAGE_SIZE,
     filters,
     language,
-    orderBy: filters.order_by || 'latest',
-    searchTerm: filters.searchTerm || ''
+    orderBy: order_by || 'latest',
+    searchTerm: searchTerm || ''
   })
 
   const handleSnippetClick = (event: React.MouseEvent, snippetId: string) => {
@@ -115,7 +117,7 @@ export default function SearchInterface() {
             <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
             <Input
               type='search'
-              defaultValue={filters.searchTerm || ''}
+              defaultValue={searchTerm || ''}
               placeholder={t.searchPlaceholder}
               onChange={debounce(e => setFilter('searchTerm', e.target.value), 300)}
               className='h-8 w-full pl-9'
@@ -127,18 +129,18 @@ export default function SearchInterface() {
                 <Button variant='outline' size='sm'>
                   <ArrowUpDown className='mr-2 h-4 w-4' />
                   Sort:{' '}
-                  {filters.order_by === 'activities'
+                  {order_by === 'activities'
                     ? t.sortBy.mostRecentActivities
-                    : filters.order_by === 'upvotes'
+                    : order_by === 'upvotes'
                       ? t.sortBy.mostUpvotes
-                      : filters.order_by === 'comments'
+                      : order_by === 'comments'
                         ? t.sortBy.mostComments
                         : t.sortBy.mostRecentRecordings}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='start'>
                 <DropdownMenuRadioGroup
-                  value={filters.order_by || 'latest'}
+                  value={order_by || 'latest'}
                   onValueChange={value => setFilter('order_by', value)}>
                   <DropdownMenuRadioItem value='activities'>{t.sortBy.mostRecentActivities}</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value='upvotes'>{t.sortBy.mostUpvotes}</DropdownMenuRadioItem>
@@ -165,7 +167,7 @@ export default function SearchInterface() {
             <NoSnippetsMessage />
           ) : (
             <>
-              {showWelcomeCard && <WelcomeCard />}
+              {showWelcomeCard && isEmpty(searchTerm) && <WelcomeCard />}
               <InfiniteScroll
                 dataLength={snippets.length}
                 next={fetchNextPage}
@@ -177,12 +179,14 @@ export default function SearchInterface() {
                     <Loader className='h-6 w-6 animate-spin text-primary' />
                   </div>
                 }
+                endMessage={<div className='my-4 flex w-full justify-center'>{t.noMoreSnippets}</div>}
                 scrollThreshold={0.8}>
                 <TooltipProvider delayDuration={100}>
                   {snippets.map(snippet => (
                     <SnippetCard
                       key={`${language}-${snippet.id}`}
                       snippet={snippet}
+                      searchTerm={searchTerm || ''}
                       onSnippetClick={handleSnippetClick}
                     />
                   ))}

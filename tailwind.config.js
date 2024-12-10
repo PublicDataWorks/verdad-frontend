@@ -135,6 +135,7 @@ const config = {
           'border-radius': 'var(--missive-border-radius)',
           'conversation-list-background': 'var(--missive-conversation-list-background-color)'
         }
+        'border-gray-medium': 'hsla(240, 5%, 65%, 1)'
       },
       borderRadius: {
         lg: 'var(--radius)',
