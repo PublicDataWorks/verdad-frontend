@@ -31,10 +31,10 @@ export default function RelatedSnippets({ snippets }: RelatedSnippetsProps) {
     e.stopPropagation()
     try {
       if (navigator.clipboard) {
-        await navigator.clipboard.writeText(publicUrl)
+        await navigator.clipboard.writeText(`${publicUrl}/${id}`)
       } else {
         const textArea = document.createElement('textarea')
-        textArea.value = publicUrl
+        textArea.value = `${publicUrl}/${id}`
         document.body.appendChild(textArea)
         textArea.select()
         document.execCommand('copy')
