@@ -5,11 +5,11 @@ import { FileX } from 'lucide-react'
 
 export const NoSnippetsMessage = () => {
   const { language } = useLanguage()
-  const { clearAll, filters } = useSnippetFilters()
+  const { clearAll, filters, isEmpty } = useSnippetFilters()
   const searchTerm = filters.searchTerm
   const t = translations[language as keyof typeof translations]
 
-  if (searchTerm) {
+  if (searchTerm && !isEmpty()) {
     return (
       <div className='flex h-full flex-col items-center justify-center p-4 text-center'>
         <p className='mb-2 text-lg font-semibold'>{t.searchTerm(searchTerm)}</p>

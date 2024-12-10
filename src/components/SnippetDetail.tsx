@@ -19,7 +19,7 @@ import LiveblocksComments from '../components/LiveblocksComments'
 import ShareButton from './ShareButton'
 import SnippetVisibilityToggle from './ui/hide-button'
 
-import { useSnippet } from '@/hooks/useSnippets'
+import { useRelatedSnippets, useSnippet } from '@/hooks/useSnippets'
 import { useLikeSnippet } from '@/hooks/useSnippetActions'
 import { useLanguage } from '@/providers/language'
 import { useIsAdmin } from '@/hooks/usePermission'
@@ -35,6 +35,7 @@ import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import StarIcon from '../assets/star.svg'
 import StarredIcon from '../assets/starred.svg'
 import StarHoverIcon from '../assets/star_hover.svg'
+import RelatedSnippets from './RelatedSnippets'
 
 import type { Label, LikeStatus } from '@/types/snippet'
 
@@ -47,6 +48,10 @@ const SnippetDetail: FC = () => {
   const t = translations[language]
 
   const { data: snippet, isLoading, isError } = useSnippet(snippetId || '', language)
+  const { data: relatedSnippets, isLoading: isRelatedSnippetsLoading } = useRelatedSnippets({
+    snippetId: snippetId || '',
+    language
+  })
   const { data: isAdmin } = useIsAdmin()
 
   const [labels, setLabels] = useState<Label[]>([])
@@ -232,7 +237,7 @@ const SnippetDetail: FC = () => {
   return (
     <TooltipProvider delayDuration={100}>
       <div className={`mx-auto h-full w-full max-w-3xl p-2 sm:py-6 ${isHidden ? 'opacity-50' : ''}`}>
-        <Card className='w-full'>
+        <Card className='mb-8 w-full'>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -433,6 +438,13 @@ const SnippetDetail: FC = () => {
           </CardContent>
           <LiveblocksComments snippetId={snippetId} showFullComments />
         </Card>
+        {isRelatedSnippetsLoading ? (
+          <div className='flex h-full items-center justify-center'>
+            <Spinner />
+          </div>
+        ) : (
+          <RelatedSnippets snippets={relatedSnippets || []} />
+        )}
       </div>
     </TooltipProvider>
   )
