@@ -72,7 +72,7 @@ export default function RelatedSnippets({ snippets }: RelatedSnippetsProps) {
           {snippets.map(snippet => (
             <Card
               key={snippet.id}
-              className='flex cursor-pointer flex-col gap-3 p-6'
+              className='flex cursor-pointer flex-col gap-3 px-6 py-4'
               onClick={() => handleSnippetClick(snippet.id)}>
               <CardHeader className='flex flex-row items-center gap-2 p-0'>
                 <div className='flex-grow'>
@@ -118,7 +118,7 @@ export default function RelatedSnippets({ snippets }: RelatedSnippetsProps) {
                     <Badge
                       key={index}
                       variant='secondary'
-                      className='flex h-8 items-center space-x-1 rounded-full border-none bg-blue-light px-3 text-blue-accent hover:bg-blue-200'>
+                      className='flex h-8 items-center space-x-1 rounded-full border-none bg-blue-light px-3 text-blue-accent hover:bg-blue-light'>
                       {label.text}
                     </Badge>
                   ))}
