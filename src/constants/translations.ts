@@ -71,7 +71,7 @@ export const translations = {
     hidingResults: 'The filters could be hiding results.',
     clearFilters: 'Clear filters',
     noMoreSnippets: 'No more snippets',
-    relatedSnippets: 'Related Snippets',
+    relatedSnippets: 'Related',
     comment: 'Comment',
     comments: 'Comments'
   },
