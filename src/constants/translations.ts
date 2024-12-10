@@ -11,7 +11,7 @@ export const translations = {
     selectSources: 'Select sources',
     labeled: 'Labeled',
     starred: 'Starred',
-    upvoted: 'Upvote',
+    upvoted: 'Upvoted',
     label: 'Label',
     byMe: 'by Me',
     byOthers: 'by Others',
