@@ -1,6 +1,6 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
 import { fetchSnippet, fetchSnippets, fetchPublicSnippet, fetchRelatedSnippets } from '@/apis/snippet'
-import { PaginatedResponse, Snippet, PublicSnippetData, RelatedSnippet } from '@/types/snippet'
+import { PaginatedResponse, Snippet, PublicSnippetData, IRelatedSnippet } from '@/types/snippet'
 
 export const snippetKeys = {
   all: ['snippets'] as const,
@@ -48,7 +48,7 @@ export function usePublicSnippet(snippetId: string) {
 }
 
 export function useRelatedSnippets({ snippetId, language }: { snippetId: string; language: string }) {
-  return useQuery<RelatedSnippet[], Error>({
+  return useQuery<IRelatedSnippet[], Error>({
     queryKey: snippetKeys.related(snippetId, language),
     queryFn: () => fetchRelatedSnippets({ snippetId, language }),
     enabled: !!snippetId

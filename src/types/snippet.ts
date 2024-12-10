@@ -113,7 +113,7 @@ export interface LikeResponse {
   dislike_count: number
 }
 
-export interface RelatedSnippet {
+export interface IRelatedSnippet {
   id: string
   title: string
   radio_station_name: string
@@ -127,4 +127,5 @@ export interface RelatedSnippet {
   recorded_at: string
   comment_count: number
   similarity: number
+  starred_by_user: boolean
 }

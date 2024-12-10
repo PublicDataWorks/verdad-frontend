@@ -8,7 +8,7 @@ import {
   LikeResponse,
   HideResponse,
   PublicSnippetData,
-  RelatedSnippet
+  IRelatedSnippet
 } from '../types/snippet'
 
 export const fetchSnippet = async (id: string, language: string): Promise<Snippet> => {
@@ -132,8 +132,19 @@ export const fetchRelatedSnippets = async ({
 }: {
   snippetId: string
   language: string
-}): Promise<RelatedSnippet[]> => {
-  const { data, error } = await supabase.rpc('search_related_snippets', { snippet_id: snippetId, p_language: language })
+}): Promise<IRelatedSnippet[]> => {
+  const { data, error } = await supabase.rpc('search_related_snippets_demo', {
+    snippet_id: snippetId,
+    p_language: language
+  })
+  if (error) throw error
+  return data
+}
+
+export const starSnippet = async (snippetId: string): Promise<void> => {
+  const { data, error } = await supabase.rpc('toggle_star_snippet', {
+    snippet_id: snippetId
+  })
   if (error) throw error
   return data
 }
