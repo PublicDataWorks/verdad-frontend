@@ -88,9 +88,10 @@ function useSnippetFilters() {
       labels.length === 0 &&
       labeledBy.length === 0 &&
       starredBy.length === 0 &&
+      upvotedBy.length === 0 &&
       !politicalSpectrum
     )
-  }, [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, order_by, upvotedBy])
+  }, [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, upvotedBy])
 
   const setFilter = useCallback(
     (category: keyof SnippetFilters, values: any) => {

@@ -70,7 +70,10 @@ export const translations = {
     searchTerm: (searchTerm: string) => `No results matching "${searchTerm}"`,
     hidingResults: 'The filters could be hiding results.',
     clearFilters: 'Clear filters',
-    noMoreSnippets: 'No more snippets'
+    noMoreSnippets: 'No more snippets',
+    relatedSnippets: 'Related Snippets',
+    comment: 'Comment',
+    comments: 'Comments'
   },
   spanish: {
     filters: 'Filtros',
@@ -143,6 +146,9 @@ export const translations = {
     searchTerm: (searchTerm: string) => `No se encontraron resultados para "${searchTerm}"`,
     hidingResults: 'Los filtros podrían estar ocultando resultados.',
     clearFilters: 'Limpiar filtros',
-    noMoreSnippets: 'No hay más fragmentos'
+    noMoreSnippets: 'No hay más fragmentos',
+    relatedSnippets: 'Fragmentos relacionados',
+    comment: 'Comentario',
+    comments: 'Comentarios'
   }
 }
