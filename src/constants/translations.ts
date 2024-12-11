@@ -66,12 +66,12 @@ export const translations = {
       mostComments: 'Most comments',
       mostRecentRecordings: 'Recently recorded'
     },
-    searchPlaceholder: 'Search snippets',
+    searchPlaceholder: 'Search',
     searchTerm: (searchTerm: string) => `No results matching "${searchTerm}"`,
     hidingResults: 'The filters could be hiding results.',
     clearFilters: 'Clear filters',
     noMoreSnippets: 'No more snippets',
-    relatedSnippets: 'Related Snippets',
+    relatedSnippets: 'Related',
     comment: 'Comment',
     comments: 'Comments'
   },
@@ -142,12 +142,12 @@ export const translations = {
       mostComments: 'Más comentarios',
       mostRecentRecordings: 'Recientemente grabado'
     },
-    searchPlaceholder: 'Buscar fragmentos',
+    searchPlaceholder: 'Buscar',
     searchTerm: (searchTerm: string) => `No se encontraron resultados para "${searchTerm}"`,
     hidingResults: 'Los filtros podrían estar ocultando resultados.',
     clearFilters: 'Limpiar filtros',
     noMoreSnippets: 'No hay más fragmentos',
-    relatedSnippets: 'Fragmentos relacionados',
+    relatedSnippets: 'Relacionados',
     comment: 'Comentario',
     comments: 'Comentarios'
   }
