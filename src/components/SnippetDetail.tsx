@@ -19,7 +19,7 @@ import LiveblocksComments from '../components/LiveblocksComments'
 import ShareButton from './ShareButton'
 import SnippetVisibilityToggle from './ui/hide-button'
 
-import { useRelatedSnippets, useSnippet } from '@/hooks/useSnippets'
+import { useSnippet } from '@/hooks/useSnippets'
 import { useLikeSnippet } from '@/hooks/useSnippetActions'
 import { useLanguage } from '@/providers/language'
 import { useIsAdmin } from '@/hooks/usePermission'
@@ -48,10 +48,6 @@ const SnippetDetail: FC = () => {
   const t = translations[language]
 
   const { data: snippet, isLoading, isError } = useSnippet(snippetId || '', language)
-  const { data: relatedSnippets, isLoading: isRelatedSnippetsLoading } = useRelatedSnippets({
-    snippetId: snippetId || '',
-    language
-  })
   const { data: isAdmin } = useIsAdmin()
 
   const [labels, setLabels] = useState<Label[]>([])
@@ -438,13 +434,7 @@ const SnippetDetail: FC = () => {
           </CardContent>
           <LiveblocksComments snippetId={snippetId} showFullComments />
         </Card>
-        {isRelatedSnippetsLoading ? (
-          <div className='flex h-full items-center justify-center'>
-            <Spinner />
-          </div>
-        ) : (
-          <RelatedSnippets snippets={relatedSnippets || []} />
-        )}
+        <RelatedSnippets snippetId={snippetId} />
       </div>
     </TooltipProvider>
   )

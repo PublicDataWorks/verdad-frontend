@@ -133,15 +133,15 @@ const PublicSnippet: FC = () => {
         </CardHeader>
         <CardContent>
           <div className='space-y-4'>
-            {/* Snippet Subtitle */}
             <div>
-              <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
+              <h2 className='text-2xl font-bold'>{snippet.title}</h2>
+              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
             </div>
-
-            {/* Audio Player */}
+            <div className='space-y-2'>
+              <h3 className='font-semibold'>{t.summary}</h3>
+              <p className='text-sm'>{snippet.summary}</p>
+            </div>
             <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
-
-            {/* Language Tabs */}
             <LanguageTabs
               language={snippetLanguage}
               setLanguage={setSnippetLanguage}
