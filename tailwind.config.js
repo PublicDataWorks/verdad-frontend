@@ -112,7 +112,8 @@ const config = {
 
         'border-gray': {
           DEFAULT: 'var(--border-gray)',
-          light: 'var(--border-gray-light)'
+          light: 'var(--border-gray-light)',
+          dark: 'var(--border-gray-dark)'
         },
 
         'background-gray': {

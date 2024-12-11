@@ -94,7 +94,7 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
   const getUpvoteButtonClasses = () => {
     const baseClasses = 'rounded-full border-none flex items-center space-x-1'
     return isUpvoted
-      ? `${baseClasses} bg-gradient-to-r from-blue-deep to-blue-rich text-white hover:from-blue-deep hover:to-blue-rich hover:text-white`
+      ? `${baseClasses} bg-gradient-to-r from-button-from to-button-to text-white hover:from-button-from hover:to-button-to hover:text-white`
       : `${baseClasses} bg-blue-light text-blue-accent hover:bg-blue-200`
   }
 
@@ -107,8 +107,7 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
           className={`${getUpvoteButtonClasses()} whitespace-nowrap`}
           onClick={handleUpvote}
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
+          onMouseLeave={() => setIsHovered(false)}>
           <span>{label?.text}</span>
           <img src={isUpvoted ? Upvoted : Upvote} alt='Upvote' className='h-4 w-4' />
           <span>{upvoteCount}</span>

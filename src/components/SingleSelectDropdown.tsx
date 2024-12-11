@@ -34,8 +34,7 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({ selectedIte
           <DropdownMenuItem
             key={item}
             onSelect={handleItemClick(item)}
-            className={selectedItem === item ? 'bg-accent' : ''}
-          >
+            className={selectedItem === item ? 'bg-background-gray-lightest' : ''}>
             {item}
           </DropdownMenuItem>
         ))}

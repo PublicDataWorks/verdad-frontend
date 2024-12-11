@@ -85,7 +85,7 @@ export default function Sidebar() {
             duration={1.5}
             separator=','
             preserveValue={true}
-            className='text-sm font-medium text-gray-600'
+            className='text-text-primary text-sm font-medium'
             formattingFn={n => {
               if (n >= 1000) {
                 return `${(n / 1000).toFixed(1)}k snippets`
@@ -95,7 +95,7 @@ export default function Sidebar() {
           />
           <div className='flex items-center gap-2'>
             {!isEmpty() && (
-              <Button variant='ghost' onClick={handleClearAll} className='px-2 font-normal text-blue-600'>
+              <Button variant='ghost' onClick={handleClearAll} className='px-2 font-normal text-text-blue'>
                 {t.reset}
               </Button>
             )}
@@ -106,47 +106,47 @@ export default function Sidebar() {
         </div>
 
         <div>
-          <h3 className='mb-2 mt-6 font-medium'>{t.sourceLanguage}</h3>
+          <h3 className='text-text-primary mb-2 mt-6 font-medium'>{t.sourceLanguage}</h3>
           <MultiSelect
             options={languages}
             onValueChange={values => setFilter('languages', values)}
             value={selectedLanguages}
             placeholder={t.selectLanguages}
             maxCount={2}
-            className='w-full'
+            className='text-text-tertiary w-full'
           />
 
-          <h3 className='mb-2 mt-6 font-medium'>{t.state}</h3>
+          <h3 className='text-text-primary mb-2 mt-6 font-medium'>{t.state}</h3>
           <MultiSelect
             options={states}
             onValueChange={values => setFilter('states', values)}
             value={selectedStates}
             placeholder={t.selectStates}
             maxCount={2}
-            className='w-full'
+            className='text-text-tertiary w-full'
           />
 
-          <h3 className='mb-2 mt-6 font-medium'>{t.source}</h3>
+          <h3 className='text-text-primary mb-2 mt-6 font-medium'>{t.source}</h3>
           <MultiSelect
             options={sources}
             onValueChange={values => setFilter('sources', values)}
             value={selectedSources}
             placeholder={t.selectSources}
             maxCount={2}
-            className='w-full'
+            className='text-text-tertiary w-full'
           />
 
-          <h3 className='mb-2 mt-6 font-medium'>{t.label}</h3>
+          <h3 className='text-text-primary mb-2 mt-6 font-medium'>{t.label}</h3>
           <MultiSelect
             options={labels.items}
             onValueChange={values => setFilter('labels', values)}
             value={selectedLabels}
             placeholder={t.selectLabels}
             maxCount={3}
-            className='w-full'
+            className='text-text-tertiary w-full'
           />
 
-          <h3 className='mb-2 mt-6 font-medium'>{t.politicalSpectrum}</h3>
+          <h3 className='mb-2 mt-6 font-medium text-text-secondary'>{t.politicalSpectrum}</h3>
           <PoliticalSpectrum value={politicalSpectrum} onChange={handlePoliticalSpectrumChange} />
         </div>
 

@@ -211,7 +211,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              'flex h-auto min-h-10 w-full items-center justify-between rounded-md border bg-inherit p-1 hover:bg-inherit',
+              'border-border-gray-light flex h-auto min-h-10 w-full items-center justify-between rounded-md border bg-inherit p-1 hover:bg-inherit',
               className
             )}>
             {selectedValues.length > 0 ? (
@@ -244,7 +244,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   {selectedValues.length > maxCount && (
                     <Badge
                       className={cn(
-                        'border-foreground/1 bg-transparent text-foreground hover:bg-transparent',
+                        'border-border-gray-light bg-transparent text-foreground hover:bg-transparent',
                         isAnimating ? 'animate-bounce' : '',
                         multiSelectVariants({ variant })
                       )}
@@ -287,7 +287,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                 <CommandItem key='all' onSelect={toggleAll} className='cursor-pointer'>
                   <div
                     className={cn(
-                      'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                      'border-border-gray-light mr-2 flex h-4 w-4 items-center justify-center rounded-sm border',
                       selectedValues.length === options.length
                         ? 'bg-primary text-primary-foreground'
                         : 'opacity-50 [&_svg]:invisible'
@@ -305,7 +305,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       className='cursor-pointer'>
                       <div
                         className={cn(
-                          'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                          'border-border-gray-light mr-2 flex h-4 w-4 items-center justify-center rounded-sm border',
                           isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible'
                         )}>
                         <CheckIcon className='h-4 w-4' />
