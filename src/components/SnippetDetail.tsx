@@ -19,7 +19,7 @@ import LiveblocksComments from '../components/LiveblocksComments'
 import ShareButton from './ShareButton'
 import SnippetVisibilityToggle from './ui/hide-button'
 
-import { useRelatedSnippets, useSnippet } from '@/hooks/useSnippets'
+import { useSnippet } from '@/hooks/useSnippets'
 import { useLikeSnippet } from '@/hooks/useSnippetActions'
 import { useLanguage } from '@/providers/language'
 import { useIsAdmin } from '@/hooks/usePermission'
