@@ -17,6 +17,7 @@ import { useStarSnippet } from '@/hooks/useSnippetActions'
 import StarIcon from '../assets/star.svg'
 import StarredIcon from '../assets/starred.svg'
 import StarHoverIcon from '../assets/star_hover.svg'
+import { SnippetAudioPlayer } from './SnippetAudioPlayer'
 
 interface RelatedSnippetProps {
   snippet: IRelatedSnippet
@@ -137,6 +138,7 @@ export function RelatedSnippet({ snippet, parentSnippetId }: RelatedSnippetProps
         </div>
       </CardHeader>
       <CardContent className='p-0 text-sm'>{snippet.summary}</CardContent>
+      <SnippetAudioPlayer path={snippet.file_path} initialStartTime={snippet.start_time || '0'} />
       <CardFooter className='flex flex-col items-start gap-3 p-0'>
         <Label className='text-xs text-muted-foreground'>
           {format(new Date(snippet.recorded_at), 'MMM d, yyyy HH:mm zzz')}
@@ -153,7 +155,7 @@ export function RelatedSnippet({ snippet, parentSnippetId }: RelatedSnippetProps
           <div className='ml-auto'>
             <Button variant='ghost' size='sm' className='gap-1 px-2 text-xs' disabled>
               <MessageSquare className='h-4 w-4' />
-              {snippet.comment_count} {snippet.comment_count < 2 ? t.comment : t.comments}
+              {snippet.comment_count} {snippet.comment_count == 1 ? t.comment : t.comments}
             </Button>
           </div>
         </div>

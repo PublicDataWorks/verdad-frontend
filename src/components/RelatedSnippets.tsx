@@ -21,7 +21,7 @@ export default function RelatedSnippets({ snippetId }: RelatedSnippetsProps) {
   if (!snippets) return null
 
   return (
-    <div className='border-border-gray-medium mt-2 border-t'>
+    <div className='mt-2'>
       <h2 className='pt-6 text-2xl font-semibold '>{translations[language].relatedSnippets}</h2>
       <div className='py-6'>
         <div className='flex flex-col gap-3'>

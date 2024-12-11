@@ -133,7 +133,7 @@ export const fetchRelatedSnippets = async ({
   snippetId: string
   language: string
 }): Promise<IRelatedSnippet[]> => {
-  const { data, error } = await supabase.rpc('search_related_snippets_demo', {
+  const { data, error } = await supabase.rpc('search_related_snippets', {
     snippet_id: snippetId,
     p_language: language
   })
