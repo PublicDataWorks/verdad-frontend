@@ -83,41 +83,57 @@ export function RelatedSnippet({ snippet, parentSnippetId }: RelatedSnippetProps
           </h3>
         </div>
         <div className='flex items-center gap-2 space-y-0' onClick={e => e.stopPropagation()}>
-          <Button
-            variant='ghost'
-            size='icon'
-            onClick={() => toggleStar(snippet.id)}
-            onMouseEnter={() => setIsStarHovered(true)}
-            onMouseLeave={() => setIsStarHovered(false)}>
-            <img src={getStarIcon()} alt='Star' className='h-6 w-6 min-w-[24px]' />
-          </Button>
-          <Popover modal>
-            <PopoverTrigger asChild>
-              <Button variant='ghost' className='size-icon'>
-                <Share2 className='h-4 w-4' />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent hideWhenDetached align='end' className='z-40 w-[300px]'>
-              <div className='flex-col items-start'>
-                <div className='mb-2 text-sm font-medium'>Share snippet</div>
-                <div className='flex w-full items-center gap-2'>
-                  <code className='flex-1 truncate rounded bg-muted px-2 py-1'>
-                    {publicUrl}/{snippet.id}
-                  </code>
-                  <Tooltip open={open}>
-                    <TooltipTrigger asChild>
-                      <Button variant='outline' size='sm' onClick={handleCopy}>
-                        {copied ? <Check className='h-4 w-4' /> : <Copy className='h-4 w-4' />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{copied ? 'Copied!' : 'Copy link'}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant='ghost' className='size-icon'>
+                      <Share2 className='h-4 w-4' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent hideWhenDetached align='end' className='z-40 w-[300px]'>
+                    <div className='flex-col items-start'>
+                      <div className='mb-2 text-sm font-medium'>Share snippet</div>
+                      <div className='flex w-full items-center gap-2'>
+                        <code className='flex-1 truncate rounded bg-muted px-2 py-1'>
+                          {publicUrl}/{snippet.id}
+                        </code>
+                        <Tooltip open={open}>
+                          <TooltipTrigger asChild>
+                            <Button variant='outline' size='sm' onClick={handleCopy}>
+                              {copied ? <Check className='h-4 w-4' /> : <Copy className='h-4 w-4' />}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{copied ? 'Copied!' : 'Copy link'}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
-            </PopoverContent>
-          </Popover>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t.tooltips.share}</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='ghost'
+                size='icon'
+                onClick={() => toggleStar(snippet.id)}
+                onMouseEnter={() => setIsStarHovered(true)}
+                onMouseLeave={() => setIsStarHovered(false)}>
+                <img src={getStarIcon()} alt='Star' className='h-6 w-6 min-w-[24px]' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{snippet.starred_by_user ? t.tooltips.removeFavorite : t.tooltips.addFavorite}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </CardHeader>
       <CardContent className='p-0 text-sm'>{snippet.summary}</CardContent>
