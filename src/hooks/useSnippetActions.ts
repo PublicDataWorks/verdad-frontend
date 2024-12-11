@@ -3,8 +3,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { snippetKeys } from './useSnippets'
-import { likeSnippet, hideSnippet, unhideSnippet, dismissWelcomeCard, toggleWelcomeCard } from '@/apis/snippet'
-import { LikeSnippetVariables, LikeResponse, HideResponse, Snippet } from '@/types/snippet'
+import {
+  likeSnippet,
+  hideSnippet,
+  unhideSnippet,
+  dismissWelcomeCard,
+  toggleWelcomeCard,
+  starSnippet
+} from '@/apis/snippet'
+import { LikeSnippetVariables, LikeResponse, HideResponse, Snippet, IRelatedSnippet } from '@/types/snippet'
 import { useAuth } from '@/providers/auth'
 
 export function useLikeSnippet() {
@@ -194,6 +201,51 @@ export function useToggleWelcomeCard() {
     mutationFn: toggleWelcomeCard,
     onSuccess: () => {
       refreshUser()
+    }
+  })
+}
+
+export function useStarSnippet(parentSnippetId: string, language: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation<void, Error, string>({
+    mutationFn: starSnippet,
+    onMutate: async (snippetId: string) => {
+      // Cancel any outgoing refetches for this query
+      await queryClient.cancelQueries({ queryKey: snippetKeys.related(parentSnippetId, language) })
+
+      // Snapshot previous value
+      const previousSnippets = queryClient.getQueryData<IRelatedSnippet[]>(
+        snippetKeys.related(parentSnippetId, language)
+      )
+
+      // Optimistically update cache
+      queryClient.setQueryData<IRelatedSnippet[]>(snippetKeys.related(parentSnippetId, language), old => {
+        if (old) {
+          return old.map(snippet => {
+            if (snippet.id === snippetId) {
+              return { ...snippet, starred_by_user: !snippet.starred_by_user }
+            }
+            return snippet
+          })
+        }
+        return old
+      })
+
+      return { previousSnippets }
+    },
+    onError: (err, snippetId, context) => {
+      // Revert the cache to the previous value
+      if (context?.previousSnippets) {
+        queryClient.setQueryData<IRelatedSnippet[]>(
+          snippetKeys.related(parentSnippetId, language),
+          context.previousSnippets
+        )
+      }
+    },
+    onSettled: () => {
+      // Invalidate queries so they refetch
+      queryClient.invalidateQueries({ queryKey: snippetKeys.related(parentSnippetId, language) })
     }
   })
 }

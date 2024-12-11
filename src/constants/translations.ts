@@ -147,7 +147,7 @@ export const translations = {
     hidingResults: 'Los filtros podrían estar ocultando resultados.',
     clearFilters: 'Limpiar filtros',
     noMoreSnippets: 'No hay más fragmentos',
-    relatedSnippets: 'Fragmentos relacionados',
+    relatedSnippets: 'Relacionados',
     comment: 'Comentario',
     comments: 'Comentarios'
   }
