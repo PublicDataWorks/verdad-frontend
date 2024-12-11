@@ -76,7 +76,7 @@ export default function Sidebar() {
   }
 
   return (
-    <div className='hide-scrollbar fixed  inset-0 z-50 h-[100svh] overflow-y-auto bg-white md:relative md:inset-auto  md:h-full md:w-80'>
+    <div className='hide-scrollbar bg-background-gray-lightest  fixed inset-0 z-50 h-[100svh] overflow-y-auto md:relative md:inset-auto  md:h-full md:w-80'>
       <div className='p-6'>
         <div className='mb-4 flex h-[24px] items-center justify-between'>
           <CountUp

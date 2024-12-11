@@ -53,9 +53,10 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
   }
 
   return (
-    <div className='mt-8'>
+    <div className='b mt-8'>
       {threads.map(thread => (
         <Thread
+          className='bg-background-gray-lightest text-background-gray-lightest'
           key={thread.id}
           thread={thread}
           overrides={{
@@ -64,6 +65,7 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
         />
       ))}
       <Composer
+        className='bg-background-gray-lightest'
         metadata={{
           snippetId
         }}

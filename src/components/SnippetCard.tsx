@@ -145,7 +145,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
 
   return (
     <div
-      className={`mt-2 rounded-lg border bg-white p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
+      className={`bg-background-gray-lightest mt-2 rounded-lg border p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
       onClick={e => onSnippetClick(e, snippet.id)}>
       <div className='mb-2 flex items-start justify-between'>
         <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet.title, searchTerm)}</h3>

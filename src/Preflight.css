@@ -511,8 +511,8 @@ video {
     --button-to: hsla(217, 100%, 48%, 1);
     --selected-from: hsla(217, 90%, 58%, 1);
     --selected-to: hsla(217, 100%, 39%, 1);
-    --background-gray-lightest: hsla(215, 28%, 17%, 1);
-    --background-gray-light: hsla(217, 19%, 27%, 1);
+    --background-gray-lightest: hsla(240, 4%, 14%, 1);
+    --background-gray-light: hsla(240, 4%, 16%, 1);
     --background-gray-medium: hsla(217, 19%, 27%, 1);
     --background-gray-dark: hsla(220, 9%, 46%, 1);
     --background-gray-darkest: hsla(220, 9%, 46%, 1);
