@@ -3,6 +3,7 @@ import { useLanguage } from '@/providers/language'
 import { RelatedSnippet } from './RelatedSnippet'
 import { useRelatedSnippets } from '@/hooks/useSnippets'
 import Spinner from './Spinner'
+import { isEmpty } from 'lodash'
 
 interface RelatedSnippetsProps {
   snippetId: string
@@ -18,7 +19,7 @@ export default function RelatedSnippets({ snippetId }: RelatedSnippetsProps) {
         <Spinner />
       </div>
     )
-  if (!snippets) return null
+  if (isEmpty(snippets)) return null
 
   return (
     <div className='mt-2'>
