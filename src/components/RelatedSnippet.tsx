@@ -65,8 +65,12 @@ export function RelatedSnippet({ snippet, parentSnippetId }: RelatedSnippetProps
     }
   }
 
-  const handleSnippetClick = () => {
-    navigate(`/snippet/${snippet.id}`)
+  const handleSnippetClick = (event: React.MouseEvent) => {
+    if (event.ctrlKey || event.metaKey) {
+      window.open(`/snippet/${snippet.id}`, '_blank')
+    } else {
+      navigate(`/snippet/${snippet.id}`)
+    }
   }
 
   const getStarIcon = () => {
@@ -76,7 +80,9 @@ export function RelatedSnippet({ snippet, parentSnippetId }: RelatedSnippetProps
   }
 
   return (
-    <Card className='flex cursor-pointer flex-col gap-3 px-6 py-4' onClick={handleSnippetClick}>
+    <Card
+      className='flex cursor-pointer flex-col gap-3 border-2 border-transparent px-6 py-4 transition-all duration-700 ease-in-out hover:border-blue-600'
+      onClick={handleSnippetClick}>
       <CardHeader className='flex flex-row items-center gap-2 p-0'>
         <div className='flex-grow'>
           <h3 className='text-base font-semibold'>
