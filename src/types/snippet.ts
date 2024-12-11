@@ -102,6 +102,8 @@ export interface PublicSnippetData {
   context: Context
   language: string
   audio_file: AudioFileInfo
+  title: string
+  summary: string
 }
 
 export interface HideResponse {
