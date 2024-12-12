@@ -1,5 +1,4 @@
 import { translations } from '@/constants/translations'
-import { useLanguage } from '@/providers/language'
 import { RelatedSnippet } from './RelatedSnippet'
 import { useRelatedSnippets } from '@/hooks/useSnippets'
 import Spinner from './Spinner'
@@ -7,10 +6,10 @@ import { isEmpty } from 'lodash'
 
 interface RelatedSnippetsProps {
   snippetId: string
+  language: 'english' | 'spanish'
 }
 
-export default function RelatedSnippets({ snippetId }: RelatedSnippetsProps) {
-  const { language } = useLanguage()
+export default function RelatedSnippets({ snippetId, language }: RelatedSnippetsProps) {
   const { data: snippets, isLoading } = useRelatedSnippets({ snippetId, language })
 
   if (isLoading)
@@ -27,7 +26,7 @@ export default function RelatedSnippets({ snippetId }: RelatedSnippetsProps) {
       <div className='py-6'>
         <div className='flex flex-col gap-3'>
           {snippets.map(snippet => (
-            <RelatedSnippet key={snippet.id} snippet={snippet} parentSnippetId={snippetId} />
+            <RelatedSnippet language={language} key={snippet.id} snippet={snippet} parentSnippetId={snippetId} />
           ))}
         </div>
       </div>

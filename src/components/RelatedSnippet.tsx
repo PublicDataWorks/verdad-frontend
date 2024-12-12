@@ -22,11 +22,11 @@ import { SnippetAudioPlayer } from './SnippetAudioPlayer'
 interface RelatedSnippetProps {
   snippet: IRelatedSnippet
   parentSnippetId: string
+  language: 'english' | 'spanish'
 }
 
-export function RelatedSnippet({ snippet, parentSnippetId }: RelatedSnippetProps) {
+export function RelatedSnippet({ snippet, parentSnippetId, language }: RelatedSnippetProps) {
   const navigate = useNavigate()
-  const { language } = useLanguage()
   const t = translations[language]
 
   const [copied, setCopied] = useState(false)

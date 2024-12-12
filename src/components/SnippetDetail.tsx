@@ -434,7 +434,7 @@ const SnippetDetail: FC = () => {
           </CardContent>
           <LiveblocksComments snippetId={snippetId} showFullComments />
         </Card>
-        <RelatedSnippets snippetId={snippetId} />
+        <RelatedSnippets snippetId={snippetId} language={language} />
       </div>
     </TooltipProvider>
   )

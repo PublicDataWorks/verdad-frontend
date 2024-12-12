@@ -22,6 +22,7 @@ import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { toast } from '@/hooks/use-toast'
 import { translations } from '@/constants/translations'
 import { usePublicSnippet } from '@/hooks/useSnippets'
+import RelatedSnippets from './RelatedSnippets'
 
 const PublicSnippet: FC = () => {
   const navigate = useNavigate()
@@ -159,6 +160,7 @@ const PublicSnippet: FC = () => {
             />
           </div>
         </CardContent>
+        <RelatedSnippets snippetId={snippetId} language={'english'} />
       </Card>
     </>
   )
