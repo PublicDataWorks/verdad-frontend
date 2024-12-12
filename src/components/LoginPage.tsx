@@ -59,7 +59,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-white'>
+    <div className='bg flex min-h-screen items-center justify-center'>
       <div className='w-full max-w-md space-y-8 p-8'>
         <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-gray-900'>Login to VERDAD</h2>
 

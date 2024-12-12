@@ -40,7 +40,7 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
   }
 
   return (
-    <TooltipProvider>
+    <>
       {showConfirmation ? (
         <div className='flex space-x-2'>
           <Button variant='destructive' size='sm' onClick={handleConfirm} disabled={hideSnippetMutation.isPending}>
@@ -66,6 +66,6 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
           </TooltipContent>
         </Tooltip>
       )}
-    </TooltipProvider>
+    </>
   )
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ThumbsUp, ThumbsDown } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Star } from 'lucide-react'
 import { isNil } from 'lodash'
 
 import { Button } from '@/components/ui/button'
@@ -20,9 +20,6 @@ import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/storage'
 import supabaseClient from '@/lib/supabase'
 
-import Star from '../assets/star.svg'
-import Starred from '../assets/starred.svg'
-import StarHover from '../assets/star_hover.svg'
 import { SnippetAudioPlayer } from './SnippetAudioPlayer'
 import { highlightText } from '@/utils/highlightText'
 
@@ -56,9 +53,10 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
   const isHidden = snippet.hidden
 
   const getStarIcon = () => {
-    if (isStarred) return Starred
-    if (isStarHovered) return StarHover
-    return Star
+    const starClasses = 'h-6 w-6 min-w-[24px]'
+    if (isStarred) return <Star className={starClasses} fill='gold' stroke='gold' />
+    if (isStarHovered) return <Star className={starClasses} fill='lightgray' />
+    return <Star className={starClasses} />
   }
 
   const handleStarClick = async (e: React.MouseEvent) => {
@@ -145,7 +143,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
 
   return (
     <div
-      className={`mt-2 rounded-lg border bg-white p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
+      className={`bg-background-gray-lightest mt-2 rounded-lg border p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
       onClick={e => onSnippetClick(e, snippet.id)}>
       <div className='mb-2 flex items-start justify-between'>
         <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet.title, searchTerm)}</h3>
@@ -163,14 +161,15 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant='ghost'
-                className='flex items-center justify-center p-2'
-                onMouseEnter={() => setIsStarHovered(true)}
-                onMouseLeave={() => setIsStarHovered(false)}
-                onClick={handleStarClick}>
-                <img src={getStarIcon()} alt='Star' className='h-6 w-6 min-w-[24px]' />
-              </Button>
+              <div>
+                <Button
+                  variant='ghost'
+                  onMouseEnter={() => setIsStarHovered(true)}
+                  onMouseLeave={() => setIsStarHovered(false)}
+                  onClick={handleStarClick}>
+                  {getStarIcon()}
+                </Button>
+              </div>
             </TooltipTrigger>
             <TooltipContent>
               <p>{isStarred ? t.tooltips.removeFavorite : t.tooltips.addFavorite}</p>

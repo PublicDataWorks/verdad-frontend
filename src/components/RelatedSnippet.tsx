@@ -1,4 +1,4 @@
-import { Share2, MessageSquare, Check, Copy } from 'lucide-react'
+import { Share2, MessageSquare, Check, Copy, Star } from 'lucide-react'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -14,9 +14,6 @@ import { translations } from '@/constants/translations'
 import { useLanguage } from '@/providers/language'
 import { useStarSnippet } from '@/hooks/useSnippetActions'
 
-import StarIcon from '../assets/star.svg'
-import StarredIcon from '../assets/starred.svg'
-import StarHoverIcon from '../assets/star_hover.svg'
 import { SnippetAudioPlayer } from './SnippetAudioPlayer'
 
 interface RelatedSnippetProps {
@@ -74,9 +71,10 @@ export function RelatedSnippet({ snippet, parentSnippetId }: RelatedSnippetProps
   }
 
   const getStarIcon = () => {
-    if (snippet.starred_by_user) return StarredIcon
-    if (isStarHovered) return StarHoverIcon
-    return StarIcon
+    const starClasses = 'h-6 w-6 min-w-[24px]'
+    if (snippet.starred_by_user) return <Star className={starClasses} fill='gold' stroke='gold' />
+    if (isStarHovered) return <Star className={starClasses} fill='lightgray' />
+    return <Star className={starClasses} />
   }
 
   return (
@@ -134,7 +132,7 @@ export function RelatedSnippet({ snippet, parentSnippetId }: RelatedSnippetProps
                 onClick={() => toggleStar(snippet.id)}
                 onMouseEnter={() => setIsStarHovered(true)}
                 onMouseLeave={() => setIsStarHovered(false)}>
-                <img src={getStarIcon()} alt='Star' className='h-6 w-6 min-w-[24px]' />
+                {getStarIcon()}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
