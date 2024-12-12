@@ -5,7 +5,6 @@ import { useToggleWelcomeCard } from '@/hooks/useSnippetActions'
 import { useWelcomeCard } from '@/hooks/useWelcomeCard'
 import { useLanguage } from '@/providers/language'
 import { DynamicIcon } from './dynamic-icon'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip'
 
 export default function WelcomeCard() {
   const { mutate: toggleWelcomeCard } = useToggleWelcomeCard()
@@ -18,50 +17,48 @@ export default function WelcomeCard() {
   }
 
   return (
-    <TooltipProvider>
-      <Card className='from-background-header-from to-background-header-to relative mb-6 w-full overflow-hidden border-none bg-gradient-to-b'>
+    <>
+      <Card className='relative mb-6 w-full overflow-hidden border-none bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800'>
         <CardHeader className='pb-2'>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant='ghost'
-                size='icon'
-                className='absolute right-2 top-2'
-                onClick={() => toggleWelcomeCard(false)}
-                aria-label='Dismiss welcome message'>
-                <X className='h-4 w-4' />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Dismiss</TooltipContent>
-          </Tooltip>
-          <h2 className='text-xl font-bold text-white'>{title}</h2>
-          {subtitle && <p className='text-sm text-white'>{subtitle}</p>}
+          <Button
+            variant='ghost'
+            size='icon'
+            className='absolute right-2 top-2'
+            onClick={() => toggleWelcomeCard(false)}
+            aria-label='Dismiss welcome message'>
+            <X className='h-4 w-4' />
+          </Button>
+          <h2 className='text-xl font-bold text-blue-900 dark:text-blue-100'>{title}</h2>
+          {subtitle && <p className='text-sm text-blue-800 dark:text-blue-200'>{subtitle}</p>}
         </CardHeader>
         <CardContent className='grid gap-4 pb-4'>
           <div className='grid gap-2 text-sm'>
             {features?.map((feature, index) => {
               return (
                 <div key={index} className='flex items-start gap-2'>
-                  <DynamicIcon name={feature.icon as any} className='mt-0.5 h-4 w-4 flex-shrink-0 text-ghost-white' />
-                  <p className='text-ghost-white'>{feature.text}</p>
+                  <DynamicIcon
+                    name={feature.icon as any}
+                    className='mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600 dark:text-blue-400'
+                  />
+                  <p className='text-blue-800 dark:text-blue-200'>{feature.text}</p>
                 </div>
               )
             })}
           </div>
-          {footer_text && <p className='text-xs text-ghost-white'>{footer_text}</p>}
+          {footer_text && <p className='text-xs text-blue-700 dark:text-blue-300'>{footer_text}</p>}
           {contact_email && contact_text && (
             <div className='flex flex-wrap items-center gap-2 text-xs'>
               <div className='flex items-center gap-2'>
-                <Mail className='h-3 w-3 text-ghost-white' />
-                <span className='text-ghost-white'>{contact_text}</span>
+                <Mail className='h-3 w-3 text-blue-600 dark:text-blue-400' />
+                <span className='text-blue-700 dark:text-blue-300'>{contact_text}</span>
               </div>
-              <a href={`mailto:${contact_email}`} className='inline text-ghost-white hover:underline'>
+              <a href={`mailto:${contact_email}`} className='inline text-blue-600 hover:underline dark:text-blue-400'>
                 {contact_email}
               </a>
             </div>
           )}
         </CardContent>
       </Card>
-    </TooltipProvider>
+    </>
   )
 }
