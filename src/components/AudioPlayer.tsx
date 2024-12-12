@@ -3,10 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import Rewind5 from '../assets/rewind_5.svg'
-import Forward5 from '../assets/forward_5.svg'
-import Play from '../assets/play_filled.svg'
-import { Pause, ChevronDown } from 'lucide-react'
+import { Pause, ChevronDown, Rewind5Icon, FastForward, Play, Rewind, Forward } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
 interface AudioPlayerProps {
   audioSrc: string
@@ -93,35 +91,46 @@ export default function AudioPlayer({ audioSrc, startTime }: AudioPlayerProps) {
       <div className='space-y-4'>
         <div className='flex items-center justify-between'>
           <div className='space-x-4'>
-            <Button
-              variant='ghost'
-              onClick={() => skip(-5)}
-              aria-label='Rewind 5 seconds'
-              className='group relative border-none bg-transparent p-2 hover:bg-transparent'>
-              <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10'></div>
-              <img src={Rewind5} alt='Rewind 5 seconds' className='relative h-8 w-8' />
-            </Button>
-            <Button
-              variant='ghost'
-              size='icon'
-              className='group relative h-12 w-12 border-none bg-transparent p-2 hover:bg-transparent'
-              onClick={togglePlayPause}
-              aria-label={isPlaying ? 'Pause' : 'Play'}>
-              <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10'></div>
-              {isPlaying ? (
-                <Pause className='relative h-8 w-8' />
-              ) : (
-                <img src={Play} alt='Play' className='relative h-8 w-8' />
-              )}
-            </Button>
-            <Button
-              variant='ghost'
-              onClick={() => skip(5)}
-              aria-label='Forward 5 seconds'
-              className='group relative border-none bg-transparent p-2 hover:bg-transparent'>
-              <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10'></div>
-              <img src={Forward5} alt='Forward 5 seconds' className='relative h-8 w-8' />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='ghost'
+                  onClick={() => skip(-5)}
+                  aria-label='Rewind 5 seconds'
+                  className='group relative border-none bg-transparent p-2 hover:bg-transparent'>
+                  <div className='bg-bagr absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10'></div>
+                  <Rewind className='relative h-8 w-8' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Rewind 5 seconds</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='group relative h-12 w-12 border-none bg-transparent p-2 hover:bg-transparent'
+                  onClick={togglePlayPause}
+                  aria-label={isPlaying ? 'Pause' : 'Play'}>
+                  <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10'></div>
+                  {isPlaying ? <Pause className='relative h-8 w-8' /> : <Play className='relative h-8 w-8' />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{isPlaying ? 'Pause' : 'Play'}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='ghost'
+                  onClick={() => skip(5)}
+                  aria-label='Forward 5 seconds'
+                  className='group relative border-none bg-transparent p-2 hover:bg-transparent'>
+                  <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10'></div>
+                  <FastForward className='relative h-8 w-8' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Forward 5 seconds</TooltipContent>
+            </Tooltip>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

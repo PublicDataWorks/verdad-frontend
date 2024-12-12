@@ -120,7 +120,7 @@ export default function SearchInterface() {
               defaultValue={searchTerm || ''}
               placeholder={t.searchPlaceholder}
               onChange={debounce(e => setFilter('searchTerm', e.target.value), 300)}
-              className='h-8 w-full pl-9'
+              className='bg-background-gray-lightest border-border-gray-lightest h-8 w-full pl-9'
             />
           </div>
           <div className={isMobile ? '' : 'ml-auto'}>
