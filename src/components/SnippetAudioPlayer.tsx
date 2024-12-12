@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { PauseIcon, PlayIcon } from 'lucide-react'
 import { AudioContext } from '@/providers/audio'
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
 export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> = ({ path, initialStartTime }) => {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -104,9 +105,18 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
     <div onClick={handleClick} className='my-4'>
       <audio ref={audioRef} src={`${import.meta.env.VITE_AUDIO_BASE_URL}/${path}`} />
       <div className='flex items-center gap-2'>
-        <Button variant='ghost' size='icon' className='h-8 w-8' onClick={togglePlayPause}>
-          {isPlaying ? <PauseIcon className='h-4 w-4 fill-current' /> : <PlayIcon className='h-4 w-4 fill-current' />}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost' size='icon' className='h-8 w-8' onClick={togglePlayPause}>
+              {isPlaying ? (
+                <PauseIcon className='h-4 w-4 fill-current' />
+              ) : (
+                <PlayIcon className='h-4 w-4 fill-current' />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{isPlaying ? 'Pause' : 'Play'}</TooltipContent>
+        </Tooltip>
         <div className='flex-1'>
           <Slider value={[currentTime]} max={duration} step={1} onValueChange={onProgressChange} />
         </div>
