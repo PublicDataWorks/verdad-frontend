@@ -92,7 +92,7 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
     const baseClasses = 'rounded-full border-none flex items-center space-x-1'
     return isUpvoted
       ? `${baseClasses} bg-gradient-to-b from-button-from to-button-to text-white hover:from-button-from hover:to-button-to hover:text-white`
-      : `${baseClasses} bg-background-blue-light text-text-blue hover:bg-blue-200`
+      : `${baseClasses} bg-background-blue-light text-text-blue hover:border-border-blue hover:bg-background-blue-light hover:text-text-blue  hover:border-solid`
   }
 
   return (

@@ -202,10 +202,10 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
                 size='sm'
                 onClick={e => handleLikeClick(e, 1)}
                 className={`flex items-center gap-4 ${
-                  currentLikeStatus === 1 ? 'bg-green-100 hover:bg-green-200' : ''
+                  currentLikeStatus === 1 ? 'text-background-gray-darkest bg-green-200 hover:bg-green-300' : ''
                 }`}>
                 <ThumbsUp className='h-4 w-4' />
-                <span>{counts.likeCount}</span>
+                <span className={``}>{counts.likeCount}</span>
               </Button>
             </div>
           </TooltipTrigger>
@@ -220,7 +220,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
                 variant='outline'
                 size='sm'
                 onClick={e => handleLikeClick(e, -1)}
-                className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'bg-red-100 hover:bg-red-200' : ''}`}>
+                className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'text-background-gray-darkest bg-red-200 hover:bg-red-300' : ''}`}>
                 <ThumbsDown className='h-4 w-4' />
                 <span>{counts.dislikeCount}</span>
               </Button>

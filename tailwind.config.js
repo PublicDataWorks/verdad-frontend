@@ -136,14 +136,15 @@ const config = {
           'border-radius': 'var(--missive-border-radius)',
           'conversation-list-background': 'var(--missive-conversation-list-background-color)'
         },
-        'border-gray-medium': 'hsla(240, 5%, 65%, 1)'
+        'border-gray-medium': 'hsla(240, 5%, 65%, 1)',
+        'border-blue': 'var(--border-blue)',
+        gold: '#FFD700'
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
-      },
-      gold: '#FFD700'
+      }
     }
   },
   plugins: [require('tailwindcss-animate')]
