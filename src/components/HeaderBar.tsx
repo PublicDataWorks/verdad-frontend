@@ -42,7 +42,12 @@ const HeaderBar: React.FC = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant='ghost' size='icon' className='shrink-0' onClick={() => setShowSidebar(!showSidebar)}>
-                <Menu className={cn('h-5 w-5 text-white transition-transform duration-200 ease-in-out', showSidebar)} />
+                <Menu
+                  className={cn(
+                    'hover:text-text-primary h-5 w-5 text-white transition-transform duration-200 ease-in-out',
+                    showSidebar
+                  )}
+                />
               </Button>
             </TooltipTrigger>
             <TooltipContent side='bottom'>{t.tooltips.toggleSidebar}</TooltipContent>
@@ -56,8 +61,7 @@ const HeaderBar: React.FC = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant='ghost' size='icon' onClick={() => toggleWelcomeCard(true)}>
-                  <Info className='h-5 w-5' />
-                  <span className='sr-only'>{t.tooltips.showWelcomeCard}</span>
+                  <Info className='hover:text-text-primary h-5 w-5 text-white' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side='bottom'>{t.tooltips.showWelcomeCard}</TooltipContent>

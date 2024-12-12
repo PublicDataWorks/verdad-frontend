@@ -12,7 +12,7 @@ const RoundedToggleButton: React.FC<RoundedToggleButtonProps> = ({ label, isActi
   <Button
     variant={isActive ? 'default' : 'outline'}
     size='sm'
-    className={`rounded-full px-3 text-xs font-normal ${isActive ? 'text-text-primary bg-background-gray-lightest !border-border-gray-dark' : ''} ${icon ? 'flex items-center' : ''}`}
+    className={`rounded-full px-3 text-xs font-normal ${isActive ? 'text-background-gray-lightest bg-background-gray-darkest border-text-primary border border-solid' : ''} ${icon ? 'flex items-center' : ''}`}
     onClick={onClick}>
     {icon ?? <span>{icon}</span>}
     {label}

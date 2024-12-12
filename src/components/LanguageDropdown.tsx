@@ -13,7 +13,7 @@ export default function LanguageDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-transparent'>
-          <Globe className='h-6 w-6 text-white' />
+          <Globe className='hover:text-text-primary h-6 w-6 text-white' />
           <span className='sr-only'>{t.changeLanguage}</span>
         </Button>
       </DropdownMenuTrigger>

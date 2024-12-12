@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ClientSideSuspense } from '@liveblocks/react'
 import { useSnippet } from '@/hooks/useSnippets'
+import { InboxIcon } from 'lucide-react'
 
 function Inbox({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const { inboxNotifications } = useInboxNotifications()
@@ -92,20 +93,7 @@ export function InboxPopover() {
               <InboxPopoverUnreadCount />
             </ClientSideSuspense>
           </ErrorBoundary>
-          <svg className='h-8 w-8 text-white' fill='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
-            <path
-              d='m3.6 9.8 1.9-4.6A2 2 0 0 1 7.3 4h5.4a2 2 0 0 1 1.8 1.2l2 4.6V13a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2V9.8Z'
-              stroke='currentColor'
-              strokeWidth='1.5'
-              strokeLinejoin='round'
-            />
-            <path
-              d='M3.5 10h3c.3 0 .6.1.8.4l.9 1.2c.2.3.5.4.8.4h2c.3 0 .6-.1.8-.4l.9-1.2c.2-.3.5-.4.8-.4h3'
-              stroke='currentColor'
-              strokeWidth='1.5'
-              strokeLinejoin='round'
-            />
-          </svg>
+          <InboxIcon className='hover:text-text-primary h-6 w-6 text-white' />
         </Button>
       </Popover.Trigger>
       <Popover.Portal>
@@ -115,7 +103,7 @@ export function InboxPopover() {
           <ErrorBoundary
             fallback={<div className='p-3 text-center text-sm text-red-500'>Error loading notifications</div>}>
             <ClientSideSuspense fallback={<div className='p-3 text-center text-sm'>Loading...</div>}>
-              <div className='sticky top-0 z-10 flex flex-col border-b border-gray-200 bg-white p-3'>
+              <div className='bg-background-gray-lightest sticky top-0 z-10 flex flex-col border-b border-gray-200 p-3'>
                 <h3 className='mb-2 text-base font-semibold'>Notifications</h3>
                 <div className='flex space-x-2'>
                   <Button

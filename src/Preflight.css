@@ -464,6 +464,7 @@ video {
     --background-header-to: hsla(212, 96%, 78%, 1);
     --border-gray-light: hsla(240, 5%, 84%, 1);
     --border-gray-dark: hsla(240, 5%, 34%, 1);
+    --border-blue: hsl(217, 100%, 69%);
   }
 
   [data-theme='dark'] {
@@ -524,6 +525,7 @@ video {
     --background-header-to: hsla(240, 4%, 14%, 1);
     --border-gray-light: hsla(240, 5%, 26%, 1);
     --border-gray-dark: hsla(240, 4%, 14%, 1);
+    --border-blue: hsl(217, 100%, 69%);
   }
 }
 @layer base {
