@@ -13,6 +13,7 @@ import LanguageTabs from '@/components/LanguageTab'
 import Spinner from './Spinner'
 import PublicHeaderBar from './PublicHeaderBar'
 import ShareButton from './ShareButton'
+import RelatedSnippets from './RelatedSnippets'
 
 import { useLanguage } from '@/providers/language'
 import { useAuth } from '@/providers/auth'
@@ -159,6 +160,7 @@ const PublicSnippet: FC = () => {
             />
           </div>
         </CardContent>
+        <RelatedSnippets snippetId={snippetId} />
       </Card>
     </>
   )
