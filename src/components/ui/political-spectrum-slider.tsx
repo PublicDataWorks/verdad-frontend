@@ -67,14 +67,14 @@ export default function PoliticalSpectrumSlider({
           <SliderPrimitive.Track className='slider-track relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200'></SliderPrimitive.Track>
           <SliderPrimitive.Thumb
             className={cn(
-              'slider-thumb block h-3 w-3 rounded-full border-2 border-black bg-black ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+              'slider-thumb bg-background-gray-light border-background-gray-light block h-3 w-3 rounded-full border-2 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
               value === null && 'is-grayed-out'
             )}
           />
         </SliderPrimitive.Root>
         <div className='absolute left-0 right-0 top-full mt-1 flex justify-between'>
           {positions.map(position => (
-            <div key={position} className={cn('h-2 w-2 rounded-full bg-secondary')} />
+            <div key={position} className={cn('bg-background-gray-medium h-2 w-2 rounded-full')} />
           ))}
         </div>
       </div>
