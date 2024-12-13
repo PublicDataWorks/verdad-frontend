@@ -50,14 +50,15 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
         <Button
           variant='outline'
           className='w-full justify-between'
-          aria-label={`Select ${allItemsLabel.toLowerCase()}`}
-        >
+          aria-label={`Select ${allItemsLabel.toLowerCase()}`}>
           <span className='font-normal text-dropdown-text'> {displayValue} </span>
           <ChevronDown className='h-4 w-4' />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-full'>
-        <DropdownMenuItem onSelect={e => handleItemClick(allItemsLabel, e)} className={allSelected ? 'bg-accent' : ''}>
+        <DropdownMenuItem
+          onSelect={e => handleItemClick(allItemsLabel, e)}
+          className={allSelected ? 'bg-background-gray-lightest' : ''}>
           {allItemsLabel}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -67,8 +68,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
             <DropdownMenuItem
               key={item}
               onSelect={e => handleItemClick(item, e)}
-              className={selectedItems.includes(item) ? 'bg-accent' : ''}
-            >
+              className={selectedItems.includes(item) ? 'bg-background-gray-lightest' : ''}>
               {item}
             </DropdownMenuItem>
           ))}

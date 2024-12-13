@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Info, LogOut } from 'lucide-react'
+import { Info, LogOut, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InboxPopover } from './InboxPopover'
 import { useAuth } from '@/providers/auth'
@@ -12,13 +12,20 @@ import { useLanguage } from '../providers/language'
 import { translations } from '@/constants/translations'
 import LanguageDropdown from './LanguageDropdown'
 import { useToggleWelcomeCard } from '@/hooks/useSnippetActions'
+import { useSidebar } from '@/providers/sidebar'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
+import { ModeToggle } from './ui/mode-toggle'
 
 const HeaderBar: React.FC = () => {
   const { user } = useAuth()
   const { language } = useLanguage()
+  const { showSidebar, setShowSidebar } = useSidebar()
+
+  const { mutate: toggleWelcomeCard } = useToggleWelcomeCard()
+
   const t = translations[language]
   const showInfoIcon = !user?.user_metadata?.dismiss_welcome_card
-  const { mutate: toggleWelcomeCard } = useToggleWelcomeCard()
 
   const getInitials = (email: string) => {
     return email.split('@')[0].slice(0, 2).toUpperCase()
@@ -29,20 +36,53 @@ const HeaderBar: React.FC = () => {
   }
 
   return (
-    <header className='flex items-center justify-between bg-gradient-to-b from-header-blue to-header-white px-8 py-2'>
-      <Link to='/' className='no-underline'>
-        <div className='font-inter cursor-pointer py-2 text-2xl font-bold leading-7 tracking-wide text-white'>
-          VERDAD
-        </div>
-      </Link>
+    <header className='from-background-header-from to-background-header-to flex items-center justify-between bg-gradient-to-r px-8 py-2'>
+      <div className='flex items-center gap-4'>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost' size='icon' className='shrink-0' onClick={() => setShowSidebar(!showSidebar)}>
+              <Menu
+                className={cn(
+                  'hover:text-text-primary h-5 w-5 text-white transition-transform duration-200 ease-in-out',
+                  showSidebar
+                )}
+              />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom'>{t.tooltips.toggleSidebar}</TooltipContent>
+        </Tooltip>
+        <Link to='/' className='flex items-center gap-2 no-underline'>
+          <span className='font-inter text-xl font-bold tracking-tight text-white'>VERDAD</span>
+        </Link>
+      </div>
       <div className='flex items-center space-x-4'>
         {showInfoIcon && (
-          <Button className='hover:bg-transparent' variant='ghost' size='icon' onClick={() => toggleWelcomeCard(true)}>
-            <Info className='h-6 w-6 text-white' />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='ghost' size='icon' onClick={() => toggleWelcomeCard(true)}>
+                <Info className='hover:text-text-primary h-5 w-5 text-white' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='bottom'>{t.tooltips.showWelcomeCard}</TooltipContent>
+          </Tooltip>
         )}
-        <InboxPopover />
-        <LanguageDropdown />
+        <ModeToggle />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost' size='icon'>
+              <InboxPopover />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom'>{t.tooltips.showInbox}</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost' size='icon'>
+              <LanguageDropdown />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom'>{t.tooltips.changeLanguage}</TooltipContent>
+        </Tooltip>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='ghost' size='icon' className='h-8 w-8 p-0 hover:bg-transparent'>

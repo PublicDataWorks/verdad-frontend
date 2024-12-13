@@ -4,6 +4,10 @@ import { Composer, Thread } from '@liveblocks/react-ui'
 import Spinner from './Spinner'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
+import { useEffect } from 'react'
+
+import '@liveblocks/react-ui/styles.css'
+import '@liveblocks/react-ui/styles/dark/attributes.css'
 
 interface LiveblocksCommentsProps {
   snippetId: string
@@ -27,9 +31,21 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
   const { language } = useLanguage()
   const t = translations[language]
 
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      if (e.target instanceof HTMLElement && e.target.closest('.comment-input')) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
+    document.addEventListener('scroll', handleScroll, { passive: false })
+    return () => document.removeEventListener('scroll', handleScroll)
+  }, [])
+
   if (isLoading) {
     return (
-      <div className='mx-6 mt-4'>
+      <div className='flex h-full items-center justify-center'>
         <Spinner />
       </div>
     )
@@ -40,9 +56,10 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
   }
 
   return (
-    <div className='mt-8'>
+    <div className='b mb-2 mt-8'>
       {threads.map(thread => (
         <Thread
+          className='!rounded-full'
           key={thread.id}
           thread={thread}
           overrides={{

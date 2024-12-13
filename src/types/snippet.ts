@@ -102,6 +102,8 @@ export interface PublicSnippetData {
   context: Context
   language: string
   audio_file: AudioFileInfo
+  title: string
+  summary: string
 }
 
 export interface HideResponse {
@@ -111,4 +113,23 @@ export interface HideResponse {
 export interface LikeResponse {
   like_count: number
   dislike_count: number
+}
+
+export interface IRelatedSnippet {
+  id: string
+  title: string
+  radio_station_name: string
+  radio_station_code: string
+  location_state: string
+  summary: string
+  labels: Array<{
+    text: string
+    text_spanish: string
+  }>
+  recorded_at: string
+  comment_count: number
+  similarity: number
+  starred_by_user: boolean
+  file_path: string
+  start_time: string
 }

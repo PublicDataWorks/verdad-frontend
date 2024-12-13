@@ -22,14 +22,14 @@ import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { toast } from '@/hooks/use-toast'
 import { translations } from '@/constants/translations'
 import { usePublicSnippet } from '@/hooks/useSnippets'
+import RelatedSnippets from './RelatedSnippets'
 
 const PublicSnippet: FC = () => {
   const navigate = useNavigate()
   const { snippetId } = useParams<{ snippetId: string }>()
 
   const { user } = useAuth()
-  const { language } = useLanguage()
-  const t = translations[language]
+  const t = translations['english']
 
   const [snippetLanguage, setSnippetLanguage] = useState<string>('Spanish')
   const { data: snippet, isLoading, isError } = usePublicSnippet(snippetId || '')
@@ -133,32 +133,33 @@ const PublicSnippet: FC = () => {
         </CardHeader>
         <CardContent>
           <div className='space-y-4'>
-            {/* Snippet Subtitle */}
             <div>
-              <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
+              <h2 className='text-2xl font-bold'>{snippet?.title}</h2>
+              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, 'english')}</p>
             </div>
-
-            {/* Audio Player */}
-            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
-
-            {/* Language Tabs */}
+            <div className='space-y-2'>
+              <h3 className='font-semibold'>{t.summary}</h3>
+              <p className='text-sm'>{snippet.summary}</p>
+            </div>
+            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet?.file_path}`} startTime={snippet?.start_time} />
             <LanguageTabs
               language={snippetLanguage}
               setLanguage={setSnippetLanguage}
               sourceText={{
-                before: snippet.context.before,
-                main: snippet.context.main,
-                after: snippet.context.after
+                before: snippet?.context?.before,
+                main: snippet?.context?.main,
+                after: snippet?.context?.after
               }}
               englishText={{
-                before_en: snippet.context.before_en,
-                main_en: snippet.context.main_en,
-                after_en: snippet.context.after_en
+                before_en: snippet?.context?.before_en,
+                main_en: snippet?.context?.main_en,
+                after_en: snippet?.context?.after_en
               }}
               sourceLanguage={sourceLanguage}
             />
           </div>
         </CardContent>
+        <RelatedSnippets snippetId={snippetId} language={'english'} isPublic={true} />
       </Card>
     </>
   )

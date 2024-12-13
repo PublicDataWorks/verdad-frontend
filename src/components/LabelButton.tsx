@@ -88,18 +88,15 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
     }
   }
 
-  const getGradientWrapperClasses = () =>
-    isUpvoted ? 'p-0' : `p-[1px] ${isHovered ? 'bg-gradient-to-b' : 'bg-gradient-to-t'} from-blue-accent`
-
   const getUpvoteButtonClasses = () => {
     const baseClasses = 'rounded-full border-none flex items-center space-x-1'
     return isUpvoted
-      ? `${baseClasses} bg-gradient-to-r from-blue-deep to-blue-rich text-white hover:from-blue-deep hover:to-blue-rich hover:text-white`
-      : `${baseClasses} bg-blue-light text-blue-accent hover:bg-blue-200`
+      ? `${baseClasses} bg-gradient-to-b from-button-from to-button-to text-white hover:from-button-from hover:to-button-to hover:text-white`
+      : `${baseClasses} bg-background-blue-light text-text-blue hover:border-border-blue hover:bg-background-blue-light hover:text-text-blue  hover:border-solid`
   }
 
   return (
-    <div className={`rounded-full ${getGradientWrapperClasses()}`}>
+    <div className={`rounded-full`}>
       <div>
         <Button
           variant='outline'
@@ -107,8 +104,7 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
           className={`${getUpvoteButtonClasses()} whitespace-nowrap`}
           onClick={handleUpvote}
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
+          onMouseLeave={() => setIsHovered(false)}>
           <span>{label?.text}</span>
           <img src={isUpvoted ? Upvoted : Upvote} alt='Upvote' className='h-4 w-4' />
           <span>{upvoteCount}</span>

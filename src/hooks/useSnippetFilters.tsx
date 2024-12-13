@@ -10,6 +10,8 @@ export type SnippetFilters = {
   starredBy: string[]
   politicalSpectrum?: 'center' | 'center_left' | 'center_right' | 'left' | 'right'
   order_by?: 'activities' | 'upvotes' | 'comments' | 'latest'
+  upvotedBy: string[]
+  searchTerm?: string
 }
 
 const parseArrayParam = (param: string | null): string[] => {
@@ -33,6 +35,8 @@ function useSnippetFilters() {
   const starredBy = parseArrayParam(searchParams.get('starredBy')) as SnippetFilters['starredBy']
   const politicalSpectrum = searchParams.get('politicalSpectrum') as SnippetFilters['politicalSpectrum']
   const order_by = searchParams.get('order_by') as SnippetFilters['order_by']
+  const upvotedBy = parseArrayParam(searchParams.get('upvotedBy')) as SnippetFilters['upvotedBy']
+  const searchTerm = searchParams.get('searchTerm') as SnippetFilters['searchTerm']
 
   const setSnippetFilters = useCallback(
     (filters: SnippetFilters) => {
@@ -44,6 +48,7 @@ function useSnippetFilters() {
       setArrayParam(newParams, 'labels', filters.labels)
       setArrayParam(newParams, 'labeledBy', filters.labeledBy)
       setArrayParam(newParams, 'starredBy', filters.starredBy)
+      setArrayParam(newParams, 'upvotedBy', filters.upvotedBy)
 
       if (filters.politicalSpectrum) {
         newParams.set('politicalSpectrum', filters.politicalSpectrum)
@@ -51,6 +56,10 @@ function useSnippetFilters() {
 
       if (filters.order_by) {
         newParams.set('order_by', filters.order_by)
+      }
+
+      if (filters.searchTerm) {
+        newParams.set('searchTerm', filters.searchTerm.trim())
       }
 
       setSearchParams(newParams)
@@ -66,7 +75,9 @@ function useSnippetFilters() {
     labeledBy,
     starredBy,
     politicalSpectrum,
-    order_by
+    order_by,
+    upvotedBy,
+    searchTerm
   }
 
   const isEmpty = useCallback(() => {
@@ -77,9 +88,10 @@ function useSnippetFilters() {
       labels.length === 0 &&
       labeledBy.length === 0 &&
       starredBy.length === 0 &&
+      upvotedBy.length === 0 &&
       !politicalSpectrum
     )
-  }, [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, order_by])
+  }, [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, upvotedBy])
 
   const setFilter = useCallback(
     (category: keyof SnippetFilters, values: any) => {
@@ -93,8 +105,11 @@ function useSnippetFilters() {
     if (order_by) {
       newParams.set('order_by', order_by)
     }
+    if (searchTerm) {
+      newParams.set('searchTerm', searchTerm)
+    }
     setSearchParams(newParams)
-  }, [setSearchParams, order_by])
+  }, [setSearchParams, order_by, searchTerm])
 
   return {
     filters,

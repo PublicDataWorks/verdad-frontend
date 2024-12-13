@@ -108,7 +108,7 @@ const AuthenticatedLayout: React.FC = () => {
       }}>
       <div className='flex min-h-svh flex-col'>
         <HeaderBar />
-        <div className='flex-grow overflow-hidden bg-ghost-white'>
+        <div className='flex-grow overflow-hidden'>
           <Outlet />
         </div>
       </div>

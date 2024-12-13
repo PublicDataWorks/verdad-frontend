@@ -11,6 +11,7 @@ export const translations = {
     selectSources: 'Select sources',
     labeled: 'Labeled',
     starred: 'Starred',
+    upvoted: 'Upvoted',
     label: 'Label',
     byMe: 'by Me',
     byOthers: 'by Others',
@@ -53,8 +54,27 @@ export const translations = {
       showSnippet: 'Show snippet',
       hideSnippet: 'Hide snippet',
       misinfo: 'Mark as mis/disinformation',
-      notMisinfo: 'Mark as not mis/disinformation'
-    }
+      notMisinfo: 'Mark as not mis/disinformation',
+      toggleSidebar: 'Toggle sidebar',
+      showWelcomeCard: 'Show welcome card',
+      showInbox: 'Show inbox',
+      changeLanguage: 'Change language',
+      toggleTheme: 'Toggle theme'
+    },
+    sortBy: {
+      mostRecentActivities: 'Recent user activities',
+      mostUpvotes: 'Most upvotes',
+      mostComments: 'Most comments',
+      mostRecentRecordings: 'Recently recorded'
+    },
+    searchPlaceholder: 'Search',
+    searchTerm: (searchTerm: string) => `No results matching "${searchTerm}"`,
+    hidingResults: 'The filters could be hiding results.',
+    clearFilters: 'Clear filters',
+    noMoreSnippets: 'No more snippets',
+    relatedSnippets: 'Related',
+    comment: 'Comment',
+    comments: 'Comments'
   },
   spanish: {
     filters: 'Filtros',
@@ -101,6 +121,7 @@ export const translations = {
     clear: 'Limpiar',
     writeAComment: 'Escribe un comentario',
     replyToThread: 'Responder al hilo',
+    upvoted: 'Votado',
     tooltips: {
       back: 'Volver',
       download: 'Descargar contenido',
@@ -110,7 +131,26 @@ export const translations = {
       showSnippet: 'Mostrar snippet',
       hideSnippet: 'Ocultar snippet',
       misinfo: 'Marcar como desinformación',
-      notMisinfo: 'Marcar como no desinformación'
-    }
+      notMisinfo: 'Marcar como no desinformación',
+      toggleSidebar: 'Mostrar barra lateral',
+      showWelcomeCard: 'Mostrar tarjeta de bienvenida',
+      showInbox: 'Mostrar bandeja de entrada',
+      changeLanguage: 'Cambiar idioma',
+      toggleTheme: 'Cambiar tema'
+    },
+    sortBy: {
+      mostRecentActivities: 'Reciente actividad de usuario',
+      mostUpvotes: 'Más votos',
+      mostComments: 'Más comentarios',
+      mostRecentRecordings: 'Recientemente grabado'
+    },
+    searchPlaceholder: 'Buscar',
+    searchTerm: (searchTerm: string) => `No se encontraron resultados para "${searchTerm}"`,
+    hidingResults: 'Los filtros podrían estar ocultando resultados.',
+    clearFilters: 'Limpiar filtros',
+    noMoreSnippets: 'No hay más fragmentos',
+    relatedSnippets: 'Relacionados',
+    comment: 'Comentario',
+    comments: 'Comentarios'
   }
 }

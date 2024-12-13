@@ -7,7 +7,8 @@ import {
   LikeSnippetVariables,
   LikeResponse,
   HideResponse,
-  PublicSnippetData
+  PublicSnippetData,
+  IRelatedSnippet
 } from '../types/snippet'
 
 export const fetchSnippet = async (id: string, language: string): Promise<Snippet> => {
@@ -28,13 +29,15 @@ export const fetchSnippets = async ({
   pageSize = 10,
   filters,
   language,
-  orderBy
+  orderBy,
+  searchTerm = ''
 }: {
   pageParam: number
   pageSize: number
   filters: any
   language: string
   orderBy: string
+  searchTerm?: string
 }): Promise<PaginatedResponse> => {
   // Remove unset filter properties
   const actualFilters = { ...filters }
@@ -47,7 +50,8 @@ export const fetchSnippets = async ({
     page_size: pageSize,
     p_language: language,
     p_filter: actualFilters,
-    p_order_by: orderBy
+    p_order_by: orderBy,
+    p_search_term: searchTerm
   })
 
   if (error) {
@@ -119,5 +123,28 @@ export const toggleWelcomeCard = async (status: boolean): Promise<void> => {
     throw error
   }
 
+  return data
+}
+
+export const fetchRelatedSnippets = async ({
+  snippetId,
+  language
+}: {
+  snippetId: string
+  language: string
+}): Promise<IRelatedSnippet[]> => {
+  const { data, error } = await supabase.rpc('search_related_snippets_public', {
+    snippet_id: snippetId,
+    p_language: language
+  })
+  if (error) throw error
+  return data
+}
+
+export const starSnippet = async (snippetId: string): Promise<void> => {
+  const { data, error } = await supabase.rpc('toggle_star_snippet', {
+    snippet_id: snippetId
+  })
+  if (error) throw error
   return data
 }

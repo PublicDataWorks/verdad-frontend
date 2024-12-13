@@ -2,7 +2,7 @@ const defaultConfig = require('tailwindcss/defaultConfig')
 
 /** @type {import('tailwindcss/types').Config} */
 const config = {
-  darkMode: ['class'],
+  darkMode: ['class', '[data-theme="dark"]'],
   content: ['index.html', 'src/**/*.tsx'],
   theme: {
     fontFamily: {
@@ -20,11 +20,6 @@ const config = {
         'blue-rich': '#004DC7',
         'header-blue': '#005EF4',
         'header-white': '#93C5FD',
-        'missive-background-color': 'var(--missive-background-color)',
-        'missive-blue-color': 'var(--missive-blue-color)',
-        'missive-light-border-color': 'var(--missive-light-border-color)',
-        'missive-border-radius': 'var(--missive-border-radius)',
-        'missive-conversation-list-background-color': 'var(--missive-conversation-list-background-color)',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -55,7 +50,7 @@ const config = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))'
         },
-        tertiary: '#A1A1AA',
+        tertiary: 'hsl(var(--tertiary))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -65,7 +60,85 @@ const config = {
           3: 'hsl(var(--chart-3))',
           4: 'hsl(var(--chart-4))',
           5: 'hsl(var(--chart-5))'
-        }
+        },
+        'blue-light': 'var(--blue-light)',
+        blue: 'var(--blue)',
+        'border-gray': 'var(--border-gray)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-primary': 'var(--text-primary)',
+        'icon-secondary': 'var(--icon-secondary)',
+        'text-tertiary': 'var(--text-tertiary)',
+        'text-blue': 'var(--text-blue)',
+        'icon-blue': 'var(--icon-blue)',
+        'button-from': 'var(--button-from)',
+        'button-to': 'var(--button-to)',
+        'selected-from': 'var(--selected-from)',
+        'selected-to': 'var(--selected-to)',
+        'background-header-from': 'var(--background-header-from)',
+        'background-header-to': 'var(--background-header-to)',
+        text: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          tertiary: 'var(--text-tertiary)',
+          blue: 'var(--text-blue)',
+          red: 'var(--text-red)',
+          yellow: 'var(--text-yellow)',
+          green: 'var(--text-green)',
+          purple: 'var(--text-purple)',
+          disable: 'var(--text-disable)'
+        },
+
+        icon: {
+          primary: 'var(--icon-primary)',
+          secondary: 'var(--icon-secondary)',
+          tertiary: 'var(--icon-tertiary)',
+          blue: 'var(--icon-blue)'
+        },
+
+        blue: {
+          DEFAULT: 'var(--blue)',
+          light: 'var(--blue-light)'
+        },
+
+        button: {
+          from: 'var(--button-from)',
+          to: 'var(--button-to)'
+        },
+
+        selected: {
+          from: 'var(--selected-from)',
+          to: 'var(--selected-to)'
+        },
+
+        'border-gray': {
+          DEFAULT: 'var(--border-gray)',
+          light: 'var(--border-gray-light)',
+          dark: 'var(--border-gray-dark)'
+        },
+
+        'background-gray': {
+          lightest: 'var(--background-gray-lightest)',
+          light: 'var(--background-gray-light)',
+          medium: 'var(--background-gray-medium)',
+          dark: 'var(--background-gray-dark)',
+          darkest: 'var(--background-gray-darkest)'
+        },
+
+        'background-blue': {
+          light: 'var(--background-blue-light)',
+          medium: 'var(--background-blue-medium)',
+          dark: 'var(--background-blue-dark)'
+        },
+        missive: {
+          background: 'var(--missive-background-color)',
+          blue: 'var(--missive-blue-color)',
+          'light-border': 'var(--missive-light-border-color)',
+          'border-radius': 'var(--missive-border-radius)',
+          'conversation-list-background': 'var(--missive-conversation-list-background-color)'
+        },
+        'border-gray-medium': 'hsla(240, 5%, 65%, 1)',
+        'border-blue': 'var(--border-blue)',
+        gold: '#FFD700'
       },
       borderRadius: {
         lg: 'var(--radius)',

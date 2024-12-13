@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { MinusCircle, PlusCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useHideSnippet, useUnhideSnippet } from '@/hooks/useSnippetActions'
 
 interface SnippetVisibilityToggleProps {
@@ -40,7 +40,7 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
   }
 
   return (
-    <TooltipProvider>
+    <>
       {showConfirmation ? (
         <div className='flex space-x-2'>
           <Button variant='destructive' size='sm' onClick={handleConfirm} disabled={hideSnippetMutation.isPending}>
@@ -54,7 +54,11 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant='ghost' size='icon' onClick={handleToggleClick} disabled={hideSnippetMutation.isPending}>
-              {isHidden ? <PlusCircle className='h-4 w-4' /> : <MinusCircle className='h-4 w-4' />}
+              {isHidden ? (
+                <PlusCircle className='h-6 w-6 min-w-[24px]' />
+              ) : (
+                <MinusCircle className='h-6 w-6 min-w-[24px]' />
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -62,6 +66,6 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
           </TooltipContent>
         </Tooltip>
       )}
-    </TooltipProvider>
+    </>
   )
 }
