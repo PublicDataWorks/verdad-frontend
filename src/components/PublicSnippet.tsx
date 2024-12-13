@@ -29,8 +29,7 @@ const PublicSnippet: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
 
   const { user } = useAuth()
-  const { language } = useLanguage()
-  const t = translations[language]
+  const t = translations['english']
 
   const [snippetLanguage, setSnippetLanguage] = useState<string>('Spanish')
   const { data: snippet, isLoading, isError } = usePublicSnippet(snippetId || '')
@@ -135,26 +134,26 @@ const PublicSnippet: FC = () => {
         <CardContent>
           <div className='space-y-4'>
             <div>
-              <h2 className='text-2xl font-bold'>{snippet.title}</h2>
-              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
+              <h2 className='text-2xl font-bold'>{snippet?.title}</h2>
+              <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, 'english')}</p>
             </div>
             <div className='space-y-2'>
               <h3 className='font-semibold'>{t.summary}</h3>
               <p className='text-sm'>{snippet.summary}</p>
             </div>
-            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
+            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet?.file_path}`} startTime={snippet?.start_time} />
             <LanguageTabs
               language={snippetLanguage}
               setLanguage={setSnippetLanguage}
               sourceText={{
-                before: snippet.context.before,
-                main: snippet.context.main,
-                after: snippet.context.after
+                before: snippet?.context?.before,
+                main: snippet?.context?.main,
+                after: snippet?.context?.after
               }}
               englishText={{
-                before_en: snippet.context.before_en,
-                main_en: snippet.context.main_en,
-                after_en: snippet.context.after_en
+                before_en: snippet?.context?.before_en,
+                main_en: snippet?.context?.main_en,
+                after_en: snippet?.context?.after_en
               }}
               sourceLanguage={sourceLanguage}
             />

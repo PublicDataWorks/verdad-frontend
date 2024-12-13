@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash'
 interface RelatedSnippetsProps {
   snippetId: string
   language: 'english' | 'spanish'
-  isPublic: boolean
+  isPublic?: boolean
 }
 
 export default function RelatedSnippets({ snippetId, language, isPublic = false }: RelatedSnippetsProps) {

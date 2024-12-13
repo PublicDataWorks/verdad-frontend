@@ -143,15 +143,15 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
 
   return (
     <div
-      className={`bg-background-gray-lightest mt-2 rounded-lg border p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
-      onClick={e => onSnippetClick(e, snippet.id)}>
+      className={`mt-2 rounded-lg border bg-background-gray-lightest p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
+      onClick={e => onSnippetClick(e, snippet?.id)}>
       <div className='mb-2 flex items-start justify-between'>
-        <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet.title, searchTerm)}</h3>
+        <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet?.title, searchTerm)}</h3>
         <div className='flex space-x-2' onClick={e => e.stopPropagation()}>
           <Tooltip>
             <TooltipTrigger asChild>
               <div>
-                <ShareButton snippetId={snippet.id} />
+                <ShareButton snippetId={snippet?.id} />
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -180,7 +180,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
             <Tooltip>
               <TooltipTrigger asChild>
                 <div>
-                  <SnippetVisibilityToggle isHidden={isHidden} snippetId={snippet.id} />
+                  <SnippetVisibilityToggle isHidden={isHidden} snippetId={snippet?.id} />
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -191,8 +191,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
         </div>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
-      <p className='mb-4'>{highlightText(snippet.summary, searchTerm)}</p>
-      <SnippetAudioPlayer path={snippet.file_path} initialStartTime={snippet.start_time || '0'} />
+      <p className='mb-4'>{highlightText(snippet?.summary, searchTerm)}</p>
+      <SnippetAudioPlayer path={snippet?.file_path} initialStartTime={snippet?.start_time || '0'} />
       <div className='mb-4 flex items-center gap-2'>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -202,7 +202,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
                 size='sm'
                 onClick={e => handleLikeClick(e, 1)}
                 className={`flex items-center gap-4 ${
-                  currentLikeStatus === 1 ? 'text-background-gray-darkest bg-green-200 hover:bg-green-300' : ''
+                  currentLikeStatus === 1 ? 'bg-green-200 text-background-gray-darkest hover:bg-green-300' : ''
                 }`}>
                 <ThumbsUp className='h-4 w-4' />
                 <span className={``}>{counts.likeCount}</span>
@@ -220,7 +220,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
                 variant='outline'
                 size='sm'
                 onClick={e => handleLikeClick(e, -1)}
-                className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'text-background-gray-darkest bg-red-200 hover:bg-red-300' : ''}`}>
+                className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'bg-red-200 text-background-gray-darkest hover:bg-red-300' : ''}`}>
                 <ThumbsDown className='h-4 w-4' />
                 <span>{counts.dislikeCount}</span>
               </Button>
@@ -235,16 +235,16 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
         <div className='flex flex-wrap items-baseline gap-2'>
           {labels.map((label, index) => (
             <LabelButton
-              key={`${snippet.id}-${label.id}-${index}`}
+              key={`${snippet?.id}-${label?.id}-${index}`}
               label={label}
-              snippetId={snippet.id}
+              snippetId={snippet?.id}
               onLabelDeleted={handleLabelDeleted}
             />
           ))}
-          <AddLabelButton snippetId={snippet.id} onLabelAdded={handleLabelAdded} />
+          <AddLabelButton snippetId={snippet?.id} onLabelAdded={handleLabelAdded} />
         </div>
       </div>
-      <LiveblocksComments snippetId={snippet.id} showFullComments={true} />
+      <LiveblocksComments snippetId={snippet?.id} showFullComments={true} />
     </div>
   )
 }

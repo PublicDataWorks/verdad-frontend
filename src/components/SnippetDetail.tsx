@@ -229,7 +229,7 @@ const SnippetDetail: FC = () => {
   }
 
   return (
-    <div className={`bg-background-gray-light mx-auto h-full w-full max-w-3xl p-2 sm:py-6`}>
+    <div className={`mx-auto h-full w-full max-w-3xl bg-background-gray-light p-2 sm:py-6`}>
       <Card className={`mb-8 w-full ${isHidden ? 'opacity-50' : ''}`}>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <Tooltip>
@@ -356,7 +356,7 @@ const SnippetDetail: FC = () => {
                         currentLikeStatus === 1 ? 'bg-green-100 hover:bg-green-200' : ''
                       }`}>
                       <ThumbsUp className='h-4 w-4' />
-                      <span>{counts.likeCount}</span>
+                      <span>{counts?.likeCount}</span>
                     </Button>
                   </div>
                 </TooltipTrigger>
@@ -373,7 +373,7 @@ const SnippetDetail: FC = () => {
                       onClick={e => handleLikeClick(e, -1)}
                       className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'bg-red-100 hover:bg-red-200' : ''}`}>
                       <ThumbsDown className='h-4 w-4' />
-                      <span>{counts.dislikeCount}</span>
+                      <span>{counts?.dislikeCount}</span>
                     </Button>
                   </div>
                 </TooltipTrigger>
@@ -388,24 +388,24 @@ const SnippetDetail: FC = () => {
               <p className='text-sm'>{snippet.summary}</p>
             </div>
             <div className='space-y-2'>
-              <p className='text-sm text-muted-foreground'>{snippet.explanation}</p>
+              <p className='text-sm text-muted-foreground'>{snippet?.explanation}</p>
             </div>
 
-            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
+            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet?.file_path}`} startTime={snippet?.start_time} />
             <LanguageTabs
               language={snippetLanguage || 'english'}
               setLanguage={setSnippetLanguage}
               sourceText={{
-                before: snippet.context.before,
-                main: snippet.context.main,
-                after: snippet.context.after
+                before: snippet?.context?.before,
+                main: snippet?.context?.main,
+                after: snippet?.context?.after
               }}
               englishText={{
-                before_en: snippet.context.before_en,
-                main_en: snippet.context.main_en,
-                after_en: snippet.context.after_en
+                before_en: snippet?.context?.before_en,
+                main_en: snippet?.context?.main_en,
+                after_en: snippet?.context?.after_en
               }}
-              sourceLanguage={snippet.language?.primary_language?.toLowerCase() || 'english'}
+              sourceLanguage={snippet?.language?.primary_language?.toLowerCase() || 'english'}
             />
 
             <div className='flex flex-wrap items-center gap-2'>
