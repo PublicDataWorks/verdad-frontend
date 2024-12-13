@@ -60,14 +60,14 @@ export default function LanguageTabs({
   }
 
   return (
-    <Tabs value={activeTab} onValueChange={handleLanguageChange} className='w-full'>
+    <Tabs value={activeTab} onValueChange={handleLanguageChange} className='w-full' data-testid='language-tabs'>
       <TabsList className={`grid w-full ${isSourceEnglish ? 'grid-cols-1' : 'grid-cols-2'}`}>
         <TabsTrigger className='capitalize' value={sourceLanguage}>
-          {isSourceEnglish ? 'English' : sourceLanguage}
+          {isSourceEnglish ? 'english' : sourceLanguage}
         </TabsTrigger>
         {!isSourceEnglish && (
           <TabsTrigger className='capitalize' value='english'>
-            English
+            english
           </TabsTrigger>
         )}
       </TabsList>

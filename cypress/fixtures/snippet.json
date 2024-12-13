@@ -1,0 +1,55 @@
+{
+  "id": "123",
+  "title": "Stem Cells: A Magical Solution?",
+  "labels": [],
+  "status": "published",
+  "context": {
+    "main": "This is the main context of the snippet.",
+    "before": "Some text before the main content.",
+    "after": "Some text after the main content.",
+    "main_en": "This is the main context of the snippet in english.",
+    "before_en": "Some text before the main content in english.",
+    "after_en": "Some text after the main content in english."
+  },
+  "summary": "Summary of the snippet.",
+  "duration": "0:30",
+  "end_time": "00:00:30",
+  "file_path": "audio/example.mp3",
+  "file_size": 1024,
+  "audio_file": {
+    "id": "123",
+    "location_city": "miami",
+    "location_state": "Florida",
+    "radio_station_code": "WAQI",
+    "radio_station_name": "Radio Mambi"
+  },
+  "start_time": "00:00:00",
+  "explanation": "Explanation of the snippet.",
+  "recorded_at": "2024-11-22T12:00:00Z",
+  "error_message": null,
+  "starred_by_user": false,
+  "confidence_scores": {
+    "overall": 0.8,
+    "categories": [
+      {
+        "score": 0.9,
+        "category": "misinformation"
+      }
+    ]
+  },
+  "language": {
+    "dialect": "cuban",
+    "primary_language": "spanish",
+    "register": "formal"
+  },
+  "political_leaning": {
+    "score": 0.2,
+    "explanation": {
+      "english": "This snippet is slightly left-leaning.",
+      "spanish": "Este fragmento tiene una ligera inclinación hacia la izquierda."
+    }
+  },
+  "user_like_status": 0,
+  "like_count": 10,
+  "dislike_count": 5
+}

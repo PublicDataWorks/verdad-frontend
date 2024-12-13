@@ -22,8 +22,8 @@ export default function RelatedSnippets({ snippetId, language, isPublic = false 
   if (isEmpty(snippets)) return null
 
   return (
-    <div className='mt-2 px-4'>
-      <h2 className='pt-6 text-2xl font-semibold '>{translations[language].relatedSnippets}</h2>
+    <div className='mt-2 px-4' data-testid='related-snippets-container'>
+      <h2 className='pt-6 text-2xl font-semibold'>{translations[language].relatedSnippets}</h2>
       <div className='py-6'>
         <div className='flex flex-col gap-3'>
           {snippets.map(snippet => (

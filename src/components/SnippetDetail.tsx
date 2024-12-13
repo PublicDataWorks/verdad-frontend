@@ -70,7 +70,7 @@ const SnippetDetail: FC = () => {
 
   const getStarIcon = () => {
     const starClasses = 'h-6 w-6 min-w-[24px]'
-    if (isStarred) return <Star className={starClasses} fill='gold' stroke='gold' />
+    if (isStarred) return <Star className={starClasses} fill='gold' stroke='gold' data-testid='star-filled' />
     if (isStarHovered) return <Star className={starClasses} fill='lightgray' />
     return <Star className={starClasses} />
   }
@@ -314,6 +314,7 @@ const SnippetDetail: FC = () => {
                   className='flex items-center justify-center p-2'
                   onMouseEnter={() => setIsStarHovered(true)}
                   onMouseLeave={() => setIsStarHovered(false)}
+                  data-testid='star'
                   onClick={handleStarClick}>
                   {getStarIcon()}
                 </Button>
@@ -355,7 +356,7 @@ const SnippetDetail: FC = () => {
                       className={`flex items-center gap-4 ${
                         currentLikeStatus === 1 ? 'bg-green-100 hover:bg-green-200' : ''
                       }`}>
-                      <ThumbsUp className='h-4 w-4' />
+                      <ThumbsUp className='h-4 w-4' data-testid='thumbs-up' />
                       <span>{counts?.likeCount}</span>
                     </Button>
                   </div>
@@ -372,7 +373,7 @@ const SnippetDetail: FC = () => {
                       size='sm'
                       onClick={e => handleLikeClick(e, -1)}
                       className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'bg-red-100 hover:bg-red-200' : ''}`}>
-                      <ThumbsDown className='h-4 w-4' />
+                      <ThumbsDown className='h-4 w-4' data-testid='thumbs-down' />
                       <span>{counts?.dislikeCount}</span>
                     </Button>
                   </div>

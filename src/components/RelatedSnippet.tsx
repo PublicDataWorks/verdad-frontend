@@ -80,6 +80,7 @@ export function RelatedSnippet({ snippet, parentSnippetId, language, isPublic }:
   return (
     <Card
       className='flex cursor-pointer flex-col gap-3 border-2 border-transparent px-6 py-4 transition-all duration-700 ease-in-out hover:border-blue-600'
+      data-testid='related-snippet-card'
       onClick={handleSnippetClick}>
       <CardHeader className='flex flex-row items-center gap-2 p-0'>
         <div className='flex-grow'>

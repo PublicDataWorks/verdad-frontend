@@ -33,26 +33,20 @@ describe('SearchInterface', () => {
       .first()
       .within(() => {
         // Check each element individually with better error messages
-        cy.get('[data-testid="snippet-title"]')
-          .should('exist')
-          .should('be.visible')
-          .then($el => {
-            cy.log('Found title:', $el.text())
-          })
+        cy.get('[data-testid="snippet-title"]').should('exist').should('be.visible')
+      })
+    cy.get('[data-testid="snippet-summary"]')
+      .should('exist')
+      .should('be.visible')
+      .then($el => {
+        cy.log('Found summary:', $el.text())
+      })
 
-        cy.get('[data-testid="snippet-summary"]')
-          .should('exist')
-          .should('be.visible')
-          .then($el => {
-            cy.log('Found summary:', $el.text())
-          })
-
-        cy.get('[data-testid="snippet-actions"]')
-          .should('exist')
-          .should('be.visible')
-          .then($el => {
-            cy.log('Found actions:', $el.html())
-          })
+    cy.get('[data-testid="snippet-actions"]')
+      .should('exist')
+      .should('be.visible')
+      .then($el => {
+        cy.log('Found actions:', $el.html())
       })
   })
 
@@ -95,7 +89,7 @@ describe('Snippet Like/Dislike Interactions', () => {
   })
 
   it('should handle thumbs up interaction correctly', () => {
-    cy.get('[data-testid="snippet-card"]')
+    cy.get('[data-testid="snippet-actions"]')
       .first()
       .within(() => {
         // Initial state
@@ -116,7 +110,7 @@ describe('Snippet Like/Dislike Interactions', () => {
   })
 
   it('should handle thumbs down interaction correctly', () => {
-    cy.get('[data-testid="snippet-card"]')
+    cy.get('[data-testid="snippet-actions"]')
       .first()
       .within(() => {
         // Initial state
@@ -134,7 +128,7 @@ describe('Snippet Like/Dislike Interactions', () => {
   })
 
   it('should toggle like status when clicking multiple times', () => {
-    cy.get('[data-testid="snippet-card"]')
+    cy.get('[data-testid="snippet-actions"]')
       .first()
       .within(() => {
         // Click thumbs up twice
@@ -147,7 +141,7 @@ describe('Snippet Like/Dislike Interactions', () => {
   })
 
   it('should handle switching between like and dislike', () => {
-    cy.get('[data-testid="snippet-card"]')
+    cy.get('[data-testid="snippet-actions"]')
       .first()
       .within(() => {
         // Click thumbs up
@@ -167,7 +161,7 @@ describe('Snippet Like/Dislike Interactions', () => {
       body: { error: 'Internal Server Error' }
     }).as('likeSnippetError')
 
-    cy.get('[data-testid="snippet-card"]')
+    cy.get('[data-testid="snippet-actions"]')
       .first()
       .within(() => {
         const initialLikeCount = 10

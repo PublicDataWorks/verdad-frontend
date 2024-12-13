@@ -144,10 +144,11 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
   return (
     <div
       className={`mt-2 rounded-lg border bg-background-gray-lightest p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
-      data-testid='snippet-card'
       onClick={e => onSnippetClick(e, snippet?.id)}>
-      <div className='mb-2 flex items-start justify-between'>
-        <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet?.title, searchTerm)}</h3>
+      <div className='mb-2 flex items-start justify-between' data-testid='snippet-card'>
+        <h3 className='cursor-pointer text-lg font-medium' data-testid='snippet-title'>
+          {highlightText(snippet?.title, searchTerm)}
+        </h3>
         <div className='flex space-x-2' onClick={e => e.stopPropagation()}>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -198,21 +199,20 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
         {highlightText(snippet?.summary, searchTerm)}
       </p>
       <SnippetAudioPlayer path={snippet?.file_path} initialStartTime={snippet?.start_time || '0'} />
-      <div className='mb-4 flex items-center gap-2'>
+      <div className='mb-4 flex items-center gap-2' data-testid='snippet-actions'>
         <Tooltip>
           <TooltipTrigger asChild>
             <div>
               <Button
                 variant='outline'
                 size='sm'
+                data-testid='thumbs-up-button'
                 onClick={e => handleLikeClick(e, 1)}
                 className={`flex items-center gap-4 ${
                   currentLikeStatus === 1 ? 'bg-green-200 text-background-gray-darkest hover:bg-green-300' : ''
                 }`}>
                 <ThumbsUp className='h-4 w-4' data-testid='thumbs-up' />
                 <span>{counts.likeCount}</span>
-                <ThumbsUp className='h-4 w-4' />
-                <span className={``}>{counts.likeCount}</span>
               </Button>
             </div>
           </TooltipTrigger>
@@ -227,6 +227,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
                 variant='outline'
                 size='sm'
                 onClick={e => handleLikeClick(e, -1)}
+                data-testid='thumbs-down-button'
                 className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'bg-red-200 text-background-gray-darkest hover:bg-red-300' : ''}`}>
                 <ThumbsDown className='h-4 w-4' data-testid='thumbs-down' />
                 <span>{counts.dislikeCount}</span>

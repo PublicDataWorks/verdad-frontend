@@ -1,0 +1,42 @@
+[
+  {
+    "id": "456",
+    "title": "Another Snippet",
+    "radio_station_name": "Radio Example",
+    "radio_station_code": "REX",
+    "location_state": "California",
+    "summary": "This is another snippet summary.",
+    "labels": [
+      {
+        "text": "Health",
+        "text_spanish": "Salud"
+      }
+    ],
+    "recorded_at": "2024-11-23T10:00:00Z",
+    "comment_count": 2,
+    "similarity": 0.8,
+    "starred_by_user": false,
+    "file_path": "audio/example2.mp3",
+    "start_time": "00:00:10"
+  },
+  {
+    "id": "789",
+    "title": "Yet Another Snippet",
+    "radio_station_name": "Radio Sample",
+    "radio_station_code": "RSA",
+    "location_state": "New York",
+    "summary": "This is yet another snippet summary.",
+    "labels": [
+      {
+        "text": "Politics",
+        "text_spanish": "Política"
+      }
+    ],
+    "recorded_at": "2024-11-24T14:00:00Z",
+    "comment_count": 5,
+    "similarity": 0.7,
+    "starred_by_user": true,
+    "file_path": "audio/example3.mp3",
+    "start_time": "00:00:20"
+  }
+]

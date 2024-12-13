@@ -107,7 +107,9 @@ export default function SearchInterface() {
   const padding = showSidebar ? 'px-20 md:px-20 lg:px-40 2xl:px-80' : 'px-6 md:px-20 lg:px-40 2xl:px-80'
 
   return (
-    <div className='flex h-[calc(-60px+100svh)] flex-1 rounded-lg bg-background-gray-light'>
+    <div
+      className='flex h-[calc(-60px+100svh)] flex-1 rounded-lg bg-background-gray-light'
+      data-testid='search-interface'>
       {showSidebar && <Sidebar />}
       <div className='flex w-full flex-col pt-6'>
         <div className={`${padding} mb-6 flex justify-between gap-2`}>

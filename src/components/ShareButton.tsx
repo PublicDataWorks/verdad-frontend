@@ -48,7 +48,10 @@ const ShareButton: React.FC<ShareButtonProps> = ({ snippetId, showLabel = false 
   return (
     <Popover modal>
       <PopoverTrigger asChild>
-        <Button variant='ghost' className={showLabel ? 'flex items-center space-x-2' : 'size-icon'}>
+        <Button
+          data-testid='share-button'
+          variant='ghost'
+          className={showLabel ? 'flex items-center space-x-2' : 'size-icon'}>
           <Share2 className={showLabel ? 'h-4 w-4' : 'h-5 w-5'} />
           {showLabel && <span>Share</span>}
         </Button>
