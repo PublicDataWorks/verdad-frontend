@@ -15,14 +15,16 @@ import { useLanguage } from '@/providers/language'
 import { useStarSnippet } from '@/hooks/useSnippetActions'
 
 import { SnippetAudioPlayer } from './SnippetAudioPlayer'
+import { useAuth } from '@/providers/auth'
 
 interface RelatedSnippetProps {
   snippet: IRelatedSnippet
   parentSnippetId: string
   language: 'english' | 'spanish'
+  isPublic: boolean
 }
 
-export function RelatedSnippet({ snippet, parentSnippetId, language }: RelatedSnippetProps) {
+export function RelatedSnippet({ snippet, parentSnippetId, language, isPublic }: RelatedSnippetProps) {
   const navigate = useNavigate()
   const t = translations[language]
 
@@ -124,21 +126,23 @@ export function RelatedSnippet({ snippet, parentSnippetId, language }: RelatedSn
               <p>{t.tooltips.share}</p>
             </TooltipContent>
           </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant='ghost'
-                size='icon'
-                onClick={() => toggleStar(snippet.id)}
-                onMouseEnter={() => setIsStarHovered(true)}
-                onMouseLeave={() => setIsStarHovered(false)}>
-                {getStarIcon()}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{snippet.starred_by_user ? t.tooltips.removeFavorite : t.tooltips.addFavorite}</p>
-            </TooltipContent>
-          </Tooltip>
+          {!isPublic && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => toggleStar(snippet.id)}
+                  onMouseEnter={() => setIsStarHovered(true)}
+                  onMouseLeave={() => setIsStarHovered(false)}>
+                  {getStarIcon()}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{snippet.starred_by_user ? t.tooltips.removeFavorite : t.tooltips.addFavorite}</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </CardHeader>
       <CardContent className='p-0 text-sm'>{snippet.summary}</CardContent>

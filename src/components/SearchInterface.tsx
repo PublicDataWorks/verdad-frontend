@@ -15,7 +15,6 @@ import { useEffect, useRef } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { isMobile } from 'react-device-detect'
-import { TooltipProvider } from './ui/tooltip'
 import WelcomeCard from './ui/welcome-card'
 import { useAuth } from '@/providers/auth'
 import { Button } from './ui/button'
@@ -31,7 +30,6 @@ import { Input } from './ui/input'
 import { debounce, isEmpty } from 'lodash'
 import { NoSnippetsMessage } from './NoSnippetsMessage'
 import { PAGE_SIZE } from '@/constants'
-import { useTheme } from '@/providers/theme'
 
 export default function SearchInterface() {
   const { showSidebar } = useSidebar()
@@ -181,16 +179,14 @@ export default function SearchInterface() {
                 }
                 endMessage={<div className='my-4 flex w-full justify-center'>{t.noMoreSnippets}</div>}
                 scrollThreshold={0.8}>
-                <TooltipProvider delayDuration={100}>
-                  {snippets.map(snippet => (
-                    <SnippetCard
-                      key={`${language}-${snippet.id}`}
-                      snippet={snippet}
-                      searchTerm={searchTerm || ''}
-                      onSnippetClick={handleSnippetClick}
-                    />
-                  ))}
-                </TooltipProvider>
+                {snippets.map(snippet => (
+                  <SnippetCard
+                    key={`${language}-${snippet.id}`}
+                    snippet={snippet}
+                    searchTerm={searchTerm || ''}
+                    onSnippetClick={handleSnippetClick}
+                  />
+                ))}
               </InfiniteScroll>
             </>
           )}
