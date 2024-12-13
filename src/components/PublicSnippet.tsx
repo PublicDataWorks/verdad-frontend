@@ -22,7 +22,7 @@ import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { toast } from '@/hooks/use-toast'
 import { translations } from '@/constants/translations'
 import { usePublicSnippet } from '@/hooks/useSnippets'
-import { TooltipProvider } from './ui/tooltip'
+import RelatedSnippets from './RelatedSnippets'
 
 const PublicSnippet: FC = () => {
   const navigate = useNavigate()
@@ -96,7 +96,7 @@ const PublicSnippet: FC = () => {
   const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
 
   return (
-    <TooltipProvider>
+    <>
       <PublicHeaderBar />
       <Card className='mx-auto mt-6 w-full max-w-3xl'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
@@ -160,8 +160,9 @@ const PublicSnippet: FC = () => {
             />
           </div>
         </CardContent>
+        <RelatedSnippets snippetId={snippetId} language={'english'} isPublic={true} />
       </Card>
-    </TooltipProvider>
+    </>
   )
 }
 
