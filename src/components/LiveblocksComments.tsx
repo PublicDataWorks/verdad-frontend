@@ -6,6 +6,9 @@ import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { useEffect } from 'react'
 
+import '@liveblocks/react-ui/styles.css'
+import '@liveblocks/react-ui/styles/dark/attributes.css'
+
 interface LiveblocksCommentsProps {
   snippetId: string
   showFullComments?: boolean
@@ -53,9 +56,10 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
   }
 
   return (
-    <div className='mt-8'>
+    <div className='b mb-2 mt-8'>
       {threads.map(thread => (
         <Thread
+          className='!rounded-full'
           key={thread.id}
           thread={thread}
           overrides={{

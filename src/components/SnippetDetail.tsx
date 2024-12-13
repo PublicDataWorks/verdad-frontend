@@ -3,7 +3,7 @@ import { useState, useEffect, FC } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { isEmpty, isNil } from 'lodash'
 
-import { ArrowLeft, Download, ChevronDown, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { ArrowLeft, Download, ChevronDown, ThumbsUp, ThumbsDown, Star } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -32,9 +32,6 @@ import supabase from '@/lib/supabase'
 import { translations } from '@/constants/translations'
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 
-import StarIcon from '../assets/star.svg'
-import StarredIcon from '../assets/starred.svg'
-import StarHoverIcon from '../assets/star_hover.svg'
 import RelatedSnippets from './RelatedSnippets'
 
 import type { Label, LikeStatus } from '@/types/snippet'
@@ -72,9 +69,10 @@ const SnippetDetail: FC = () => {
   const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
 
   const getStarIcon = () => {
-    if (isStarred) return StarredIcon
-    if (isStarHovered) return StarHoverIcon
-    return StarIcon
+    const starClasses = 'h-6 w-6 min-w-[24px]'
+    if (isStarred) return <Star className={starClasses} fill='gold' stroke='gold' />
+    if (isStarHovered) return <Star className={starClasses} fill='lightgray' />
+    return <Star className={starClasses} />
   }
 
   const calculateOptimisticCounts = (
@@ -232,7 +230,8 @@ const SnippetDetail: FC = () => {
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div className={`mx-auto h-full w-full max-w-3xl p-2 sm:py-6 ${isHidden ? 'opacity-50' : ''}`}>
+      <div
+        className={`bg-background-gray-light mx-auto h-full w-full max-w-3xl p-2 sm:py-6 ${isHidden ? 'opacity-50' : ''}`}>
         <Card className='mb-8 w-full'>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <Tooltip>
@@ -246,8 +245,7 @@ const SnippetDetail: FC = () => {
                 <p>{t.tooltips.back}</p>
               </TooltipContent>
             </Tooltip>
-
-            <div className='flex items-center space-x-2'>
+            <div className='flex items-center space-x-2' onClick={e => e.stopPropagation()}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <DropdownMenu>
@@ -319,7 +317,7 @@ const SnippetDetail: FC = () => {
                     onMouseEnter={() => setIsStarHovered(true)}
                     onMouseLeave={() => setIsStarHovered(false)}
                     onClick={handleStarClick}>
-                    <img src={getStarIcon()} alt='Star' className='h-6 w-6 min-w-[24px]' />
+                    {getStarIcon()}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -331,14 +329,7 @@ const SnippetDetail: FC = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
-                      <Button
-                        variant='ghost'
-                        className='flex items-center justify-center p-2'
-                        onMouseEnter={() => setIsStarHovered(true)}
-                        onMouseLeave={() => setIsStarHovered(false)}
-                        onClick={handleStarClick}>
-                        <SnippetVisibilityToggle isHidden={isHidden ? true : false} snippetId={snippet.id} />
-                      </Button>
+                      <SnippetVisibilityToggle isHidden={isHidden ? true : false} snippetId={snippet.id} />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>

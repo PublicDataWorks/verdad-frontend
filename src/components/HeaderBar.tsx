@@ -15,6 +15,7 @@ import { useToggleWelcomeCard } from '@/hooks/useSnippetActions'
 import { useSidebar } from '@/providers/sidebar'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+import { ModeToggle } from './ui/mode-toggle'
 
 const HeaderBar: React.FC = () => {
   const { user } = useAuth()
@@ -36,12 +37,17 @@ const HeaderBar: React.FC = () => {
 
   return (
     <TooltipProvider delayDuration={100}>
-      <header className='flex items-center justify-between bg-gradient-to-b from-header-blue to-header-white px-8 py-2'>
+      <header className='from-background-header-from to-background-header-to flex items-center justify-between bg-gradient-to-r px-8 py-2'>
         <div className='flex items-center gap-4'>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant='ghost' size='icon' className='shrink-0' onClick={() => setShowSidebar(!showSidebar)}>
-                <Menu className={cn('h-5 w-5 text-white transition-transform duration-200 ease-in-out', showSidebar)} />
+                <Menu
+                  className={cn(
+                    'hover:text-text-primary h-5 w-5 text-white transition-transform duration-200 ease-in-out',
+                    showSidebar
+                  )}
+                />
               </Button>
             </TooltipTrigger>
             <TooltipContent side='bottom'>{t.tooltips.toggleSidebar}</TooltipContent>
@@ -55,13 +61,13 @@ const HeaderBar: React.FC = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant='ghost' size='icon' onClick={() => toggleWelcomeCard(true)}>
-                  <Info className='h-5 w-5' />
-                  <span className='sr-only'>{t.tooltips.showWelcomeCard}</span>
+                  <Info className='hover:text-text-primary h-5 w-5 text-white' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side='bottom'>{t.tooltips.showWelcomeCard}</TooltipContent>
             </Tooltip>
           )}
+          <ModeToggle />
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant='ghost' size='icon'>

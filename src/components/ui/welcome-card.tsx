@@ -1,11 +1,10 @@
 import { Mail, X } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useDismissWelcomeCard, useToggleWelcomeCard } from '@/hooks/useSnippetActions'
+import { useToggleWelcomeCard } from '@/hooks/useSnippetActions'
 import { useWelcomeCard } from '@/hooks/useWelcomeCard'
 import { useLanguage } from '@/providers/language'
 import { DynamicIcon } from './dynamic-icon'
-import Spinner from '../Spinner'
 
 export default function WelcomeCard() {
   const { mutate: toggleWelcomeCard } = useToggleWelcomeCard()
