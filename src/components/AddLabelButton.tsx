@@ -104,11 +104,11 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
             autoFocus
           />
           {suggestions.length > 0 && (
-            <ul className='absolute z-10 mt-1 max-h-32 w-full overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg'>
+            <ul className='absolute z-10 mt-1 max-h-32 w-full overflow-y-auto rounded-md border border-border-gray-dark bg-background-gray-lightest shadow-lg'>
               {suggestions.map((suggestion, index) => (
                 <li
                   key={index}
-                  className='cursor-pointer px-2 py-1 hover:bg-gray-100'
+                  className='cursor-pointer px-2 py-1 hover:bg-background-gray-light'
                   onClick={() => createLabel(suggestion)}>
                   {suggestion}
                 </li>

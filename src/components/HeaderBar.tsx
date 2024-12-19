@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Info, LogOut, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InboxPopover } from './InboxPopover'
@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils'
 import { ModeToggle } from './ui/mode-toggle'
 
 const HeaderBar: React.FC = () => {
+  const { pathname } = useLocation()
   const { user } = useAuth()
   const { language } = useLanguage()
   const { showSidebar, setShowSidebar } = useSidebar()
@@ -36,21 +37,23 @@ const HeaderBar: React.FC = () => {
   }
 
   return (
-    <header className='from-background-header-from to-background-header-to flex items-center justify-between bg-gradient-to-r px-8 py-2'>
+    <header className='flex items-center justify-between bg-gradient-to-r from-background-header-from to-background-header-to px-8 py-2'>
       <div className='flex items-center gap-4'>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant='ghost' size='icon' className='shrink-0' onClick={() => setShowSidebar(!showSidebar)}>
-              <Menu
-                className={cn(
-                  'hover:text-text-primary h-5 w-5 text-white transition-transform duration-200 ease-in-out',
-                  showSidebar
-                )}
-              />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side='bottom'>{t.tooltips.toggleSidebar}</TooltipContent>
-        </Tooltip>
+        {!pathname.includes('snippet') && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='ghost' size='icon' className='shrink-0' onClick={() => setShowSidebar(!showSidebar)}>
+                <Menu
+                  className={cn(
+                    'h-5 w-5 text-white transition-transform duration-200 ease-in-out hover:text-text-primary',
+                    showSidebar
+                  )}
+                />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='bottom'>{t.tooltips.toggleSidebar}</TooltipContent>
+          </Tooltip>
+        )}
         <Link to='/' className='flex items-center gap-2 no-underline'>
           <span className='font-inter text-xl font-bold tracking-tight text-white'>VERDAD</span>
         </Link>
@@ -60,7 +63,7 @@ const HeaderBar: React.FC = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant='ghost' size='icon' onClick={() => toggleWelcomeCard(true)}>
-                <Info className='hover:text-text-primary h-5 w-5 text-white' />
+                <Info className='h-5 w-5 text-white hover:text-text-primary' />
               </Button>
             </TooltipTrigger>
             <TooltipContent side='bottom'>{t.tooltips.showWelcomeCard}</TooltipContent>
