@@ -24,7 +24,7 @@ export const fetchSnippet = async (id: string, language: string): Promise<Snippe
   return data
 }
 
-export const fetchSnippets = async ({
+export const fetchSnippetPreviews = async ({
   pageParam = 0,
   pageSize = 10,
   filters,
@@ -38,14 +38,14 @@ export const fetchSnippets = async ({
   language: string
   orderBy: string
   searchTerm?: string
-}): Promise<PaginatedResponse> => {
+}): Promise<PaginatedPreviewResponse> => {
   // Remove unset filter properties
   const actualFilters = { ...filters }
   if (!actualFilters?.politicalSpectrum) {
     delete actualFilters.politicalSpectrum
   }
 
-  const { data, error } = await supabase.rpc('get_snippets', {
+  const { data, error } = await supabase.rpc('get_snippets_preview', {
     page: pageParam,
     page_size: pageSize,
     p_language: language,
@@ -55,7 +55,7 @@ export const fetchSnippets = async ({
   })
 
   if (error) {
-    console.error('Error fetching snippets:', error)
+    console.error('Error fetching snippet previews:', error)
     throw error
   }
 
@@ -65,6 +65,19 @@ export const fetchSnippets = async ({
     currentPage: pageParam,
     total_snippets: Number(data.num_of_snippets)
   }
+}
+
+export const fetchSnippetDetails = async (id: string, language: string): Promise<Snippet> => {
+  const { data, error } = await supabase.rpc('get_snippet_details', {
+    snippet_id: id,
+    p_language: language
+  })
+
+  if (error) {
+    console.error('Error fetching snippet details:', error)
+    throw error
+  }
+  return data
 }
 
 export const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariables): Promise<LikeResponse> => {

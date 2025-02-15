@@ -44,8 +44,19 @@ const SnippetDetail: FC = () => {
   const { language } = useLanguage()
   const t = translations[language]
 
-  const { data: snippet, isLoading, isError } = useSnippet(snippetId || '', language)
+  const { data: snippet, isLoading, isError } = useSnippetDetails(snippetId || '', language)
   const { data: isAdmin } = useIsAdmin()
+
+  // Enable related snippets prefetching
+  const queryClient = useQueryClient()
+  useEffect(() => {
+    if (snippet) {
+      queryClient.prefetchQuery({
+        queryKey: snippetKeys.related(snippetId || '', language),
+        queryFn: () => fetchRelatedSnippets({ snippetId: snippetId || '', language })
+      })
+    }
+  }, [snippet, snippetId, language, queryClient])
 
   const [labels, setLabels] = useState<Label[]>([])
   const [isStarHovered, setIsStarHovered] = useState<boolean>(false)
