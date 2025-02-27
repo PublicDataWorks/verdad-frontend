@@ -15,7 +15,7 @@ export const snippetKeys = {
 }
 
 export function useSnippets({
-  pageSize = 10,
+  pageSize = 20,
   filters = {},
   language = 'english',
   orderBy = 'latest',
@@ -23,7 +23,7 @@ export function useSnippets({
 }) {
   const queryClient = useQueryClient();
 
-  return useInfiniteQuery<PaginatedPreviewResponse, Error>({
+  const result = useInfiniteQuery<PaginatedPreviewResponse, Error>({
     queryKey: snippetKeys.lists(pageSize, filters, language, orderBy, searchTerm),
     queryFn: ({ pageParam }) =>
       fetchSnippetPreviews({ pageParam: pageParam ?? 0, pageSize, filters, language, orderBy, searchTerm }),
@@ -33,8 +33,31 @@ export function useSnippets({
         return undefined
       }
       return lastPage.currentPage + 1
+    },
+    // Improved caching strategy
+    staleTime: 5 * 60 * 1000, // Data stays fresh for 5 minutes
+    cacheTime: 15 * 60 * 1000, // Keep data in cache for 15 minutes
+    refetchOnWindowFocus: false, // Prevent refetching on window focus
+    refetchOnMount: false, // Prevent refetching on component mount if data is fresh
+  });
+
+  // Background prefetching of next page
+  useEffect(() => {
+    if (result.data && !result.isFetchingNextPage && result.hasNextPage) {
+      const nextPage = result.data.pages[result.data.pages.length - 1].currentPage + 1;
+      
+      // Prefetch next page in the background
+      queryClient.prefetchInfiniteQuery({
+        queryKey: snippetKeys.lists(pageSize, filters, language, orderBy, searchTerm),
+        queryFn: ({ pageParam }) => 
+          fetchSnippetPreviews({ pageParam: nextPage, pageSize, filters, language, orderBy, searchTerm }),
+        pages: [...(result.data?.pages || [])],
+        pageParams: [...(result.data?.pageParams || []), nextPage]
+      });
     }
-  })
+  }, [result.data, result.isFetchingNextPage, result.hasNextPage, queryClient, pageSize, filters, language, orderBy, searchTerm]);
+
+  return result;
 }
 
 export function useSnippetDetails(id: string, language: string) {
