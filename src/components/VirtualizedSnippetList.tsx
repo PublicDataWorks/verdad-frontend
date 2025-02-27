@@ -5,7 +5,7 @@ import InfiniteLoader from 'react-window-infinite-loader';
 import { SnippetPreview } from '@/types/snippet-preview';
 import SnippetCard from './SnippetCard';
 import { useWindowSize } from '@/hooks/useWindowSize';
-import NoSnippetsMessage from './NoSnippetsMessage';
+import { NoSnippetsMessage } from './NoSnippetsMessage';
 
 interface VirtualizedSnippetListProps {
   snippets: SnippetPreview[];
