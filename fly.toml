@@ -3,6 +3,8 @@ primary_region = 'sea'
 
 [build]
   dockerfile = "Dockerfile"
+  [build.args]
+    VITE_APP_BUILD = "true"
 
 [http_service]
   internal_port = 8080
