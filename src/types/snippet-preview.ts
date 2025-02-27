@@ -1,3 +1,5 @@
+import { Label, LikeStatus, AudioFileInfo, ConfidenceScores } from './snippet'
+
 export interface SnippetPreview {
   id: string
   title: string
@@ -11,6 +13,15 @@ export interface SnippetPreview {
   like_count: number
   dislike_count: number
   hidden: boolean | null
+  audio_file?: AudioFileInfo  // Optional since not returned by get_snippets_preview
+  political_leaning?: {
+    score: number
+    explanation?: {
+      english: string
+      spanish: string
+    }
+  }
+  confidence_scores?: ConfidenceScores
 }
 
 export interface PaginatedPreviewResponse {

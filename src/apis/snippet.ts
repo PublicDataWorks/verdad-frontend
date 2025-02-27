@@ -10,6 +10,7 @@ import {
   PublicSnippetData,
   IRelatedSnippet
 } from '../types/snippet'
+import { PaginatedPreviewResponse } from '../types/snippet-preview'
 
 export const fetchSnippet = async (id: string, language: string): Promise<Snippet> => {
   const { data, error } = await supabase.rpc('get_snippet', {
