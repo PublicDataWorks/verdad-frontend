@@ -1,7 +1,9 @@
+import React, { useEffect, useCallback } from 'react'
 import { useQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchSnippet, fetchSnippetPreviews, fetchSnippetDetails, fetchPublicSnippet, fetchRelatedSnippets } from '@/apis/snippet'
 import { PaginatedResponse, Snippet, PublicSnippetData, IRelatedSnippet } from '@/types/snippet'
 import { PaginatedPreviewResponse, SnippetPreview } from '@/types/snippet-preview'
+import { useLanguage } from '@/providers/language'
 
 export const snippetKeys = {
   all: ['snippets'] as const,
@@ -45,7 +47,7 @@ export function useSnippetDetails(id: string, language: string) {
   });
 
   // Prefetch related snippets when details are loaded
-  React.useEffect(() => {
+  useEffect(() => {
     if (result.data) {
       queryClient.prefetchQuery({
         queryKey: snippetKeys.related(id, language),
@@ -62,7 +64,7 @@ export function usePrefetchSnippetDetails() {
   const queryClient = useQueryClient();
   const language = useLanguage().language;
 
-  return React.useCallback(
+  return useCallback(
     (id: string) => {
       if (id) {
         queryClient.prefetchQuery({

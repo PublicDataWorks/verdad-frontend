@@ -1,3 +1,4 @@
+SET search_path = public, "$user";
 create extension if not exists "fuzzystrmatch" with schema "extensions";
 
 create extension if not exists "http" with schema "extensions";
@@ -18,14 +19,9 @@ create extension if not exists "unaccent" with schema "extensions";
 
 create extension if not exists "vector" with schema "extensions";
 
-
-create extension if not exists "mansueli-supa_queue" with schema "public" version '1.0.4';
-
 create extension if not exists "moddatetime" with schema "public" version '1.0';
 
 create extension if not exists "pg_trgm" with schema "public" version '1.6';
-
-create extension if not exists "supabase-dbdev" with schema "public" version '0.0.5';
 
 create type "public"."processing_status" as enum ('New', 'Processing', 'Processed', 'Error');
 
@@ -402,38 +398,38 @@ CREATE OR REPLACE FUNCTION public.create_apply_and_upvote_label(snippet_id uuid,
  LANGUAGE plpgsql
  SECURITY DEFINER
 AS $function$
-DECLARE 
-    current_user_id UUID; 
-    snippet_label_id UUID; 
-    label_id UUID; 
-BEGIN 
-    -- Check if the user is authenticated 
-    current_user_id := auth.uid(); 
-    IF current_user_id IS NULL THEN 
-        RAISE EXCEPTION 'Only logged-in users can call this function'; 
+DECLARE
+    current_user_id UUID;
+    snippet_label_id UUID;
+    label_id UUID;
+BEGIN
+    -- Check if the user is authenticated
+    current_user_id := auth.uid();
+    IF current_user_id IS NULL THEN
+        RAISE EXCEPTION 'Only logged-in users can call this function';
     END IF;
-    
+
     -- Ensure that the label exists
-    SELECT id INTO label_id 
-    FROM public.labels 
-    WHERE text = label_text 
+    SELECT id INTO label_id
+    FROM public.labels
+    WHERE text = label_text
     LIMIT 1;
 
-    IF label_id IS NULL THEN 
+    IF label_id IS NULL THEN
         -- Create the label
-        INSERT INTO public.labels (created_by, is_ai_suggested, text) 
-        VALUES (current_user_id, FALSE, label_text) 
+        INSERT INTO public.labels (created_by, is_ai_suggested, text)
+        VALUES (current_user_id, FALSE, label_text)
         RETURNING id INTO label_id;
-    END IF; 
+    END IF;
 
     -- Ensure that the label is applied to the snippet
-    SELECT id INTO snippet_label_id 
-    FROM public.snippet_labels 
-    WHERE snippet = snippet_id AND label = label_id; 
+    SELECT id INTO snippet_label_id
+    FROM public.snippet_labels
+    WHERE snippet = snippet_id AND label = label_id;
 
-    IF snippet_label_id IS NULL THEN 
+    IF snippet_label_id IS NULL THEN
         -- Apply the label to the snippet
-        INSERT INTO public.snippet_labels (snippet, label, applied_by) 
+        INSERT INTO public.snippet_labels (snippet, label, applied_by)
         VALUES (snippet_id, label_id, current_user_id)
         RETURNING id INTO snippet_label_id;
     END IF;
@@ -441,11 +437,11 @@ BEGIN
     -- Proceed to upvote the label
     INSERT INTO public.label_upvotes (upvoted_by, snippet_label)
     VALUES (current_user_id, snippet_label_id)
-    ON CONFLICT (upvoted_by, snippet_label) DO NOTHING;    
+    ON CONFLICT (upvoted_by, snippet_label) DO NOTHING;
 
-    -- Return the result of the get_snippet_labels function 
-    RETURN get_snippet_labels(snippet_id); 
-END; 
+    -- Return the result of the get_snippet_labels function
+    RETURN get_snippet_labels(snippet_id);
+END;
 $function$
 ;
 
@@ -465,31 +461,31 @@ CREATE OR REPLACE FUNCTION public.get_filtering_options()
  LANGUAGE plpgsql
  SECURITY DEFINER
 AS $function$
-DECLARE 
-    current_user_id UUID; 
-    result jsonb; 
-BEGIN 
-    -- Check if the user is authenticated 
-    current_user_id := auth.uid(); 
-    IF current_user_id IS NULL THEN 
-        RAISE EXCEPTION 'Only logged-in users can call this function'; 
-    END IF; 
+DECLARE
+    current_user_id UUID;
+    result jsonb;
+BEGIN
+    -- Check if the user is authenticated
+    current_user_id := auth.uid();
+    IF current_user_id IS NULL THEN
+        RAISE EXCEPTION 'Only logged-in users can call this function';
+    END IF;
 
-    RETURN jsonb_build_object( 
-        'languages', jsonb_build_array(), 
-        'states', jsonb_build_array(), 
-        'sources', jsonb_build_array(), 
-        'labeled', jsonb_build_array( 
-            jsonb_build_object('value', 'by_me', 'display', 'by Me'), 
-            jsonb_build_object('value', 'by_others', 'display', 'by Others') 
-        ), 
-        'starred', jsonb_build_array( 
-            jsonb_build_object('value', 'by_me', 'display', 'by Me'), 
-            jsonb_build_object('value', 'by_others', 'display', 'by Others') 
-        ), 
-        'labels', jsonb_build_array() 
-    ); 
-END; 
+    RETURN jsonb_build_object(
+        'languages', jsonb_build_array(),
+        'states', jsonb_build_array(),
+        'sources', jsonb_build_array(),
+        'labeled', jsonb_build_array(
+            jsonb_build_object('value', 'by_me', 'display', 'by Me'),
+            jsonb_build_object('value', 'by_others', 'display', 'by Others')
+        ),
+        'starred', jsonb_build_array(
+            jsonb_build_object('value', 'by_me', 'display', 'by Me'),
+            jsonb_build_object('value', 'by_others', 'display', 'by Others')
+        ),
+        'labels', jsonb_build_array()
+    );
+END;
 $function$
 ;
 
@@ -700,29 +696,29 @@ CREATE OR REPLACE FUNCTION public.get_users_by_emails(emails text[])
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
-AS $function$ 
-DECLARE 
+AS $function$
+DECLARE
     current_user_id UUID;
-    result jsonb; 
-BEGIN 
+    result jsonb;
+BEGIN
     -- Check if the user is authenticated
     current_user_id := auth.uid();
     IF current_user_id IS NULL THEN
         RAISE EXCEPTION 'Only logged-in users can call this function';
     END IF;
 
-    -- Return specified fields of users from the auth schema based on provided emails 
-    SELECT jsonb_agg(jsonb_build_object( 
-        'id', u.id, 
-        'email', u.email, 
-        'raw_user_meta_data', u.raw_user_meta_data 
-    )) 
-    INTO result 
-    FROM auth.users u 
-    WHERE u.email = ANY(emails); 
+    -- Return specified fields of users from the auth schema based on provided emails
+    SELECT jsonb_agg(jsonb_build_object(
+        'id', u.id,
+        'email', u.email,
+        'raw_user_meta_data', u.raw_user_meta_data
+    ))
+    INTO result
+    FROM auth.users u
+    WHERE u.email = ANY(emails);
 
-    RETURN COALESCE(result, '[]'::jsonb); 
-END; 
+    RETURN COALESCE(result, '[]'::jsonb);
+END;
 $function$
 ;
 
@@ -903,46 +899,46 @@ CREATE OR REPLACE FUNCTION public.undo_upvote_label(snippet_id uuid, label_text 
  LANGUAGE plpgsql
  SECURITY DEFINER
 AS $function$
-DECLARE 
-    current_user_id UUID; 
-    label_id UUID; 
-    is_ai_suggested BOOLEAN; 
-    snippet_label_id UUID; 
-BEGIN 
-    -- Check if the user is authenticated 
-    current_user_id := auth.uid(); 
-    IF current_user_id IS NULL THEN 
-        RAISE EXCEPTION 'Only logged-in users can call this function'; 
-    END IF; 
+DECLARE
+    current_user_id UUID;
+    label_id UUID;
+    is_ai_suggested BOOLEAN;
+    snippet_label_id UUID;
+BEGIN
+    -- Check if the user is authenticated
+    current_user_id := auth.uid();
+    IF current_user_id IS NULL THEN
+        RAISE EXCEPTION 'Only logged-in users can call this function';
+    END IF;
 
-    -- Get the label ID and is_ai_suggested for the specified label text 
-    SELECT l.id, l.is_ai_suggested 
-    INTO label_id, is_ai_suggested 
-    FROM public.labels l 
-    WHERE l.text = label_text 
-    LIMIT 1; 
+    -- Get the label ID and is_ai_suggested for the specified label text
+    SELECT l.id, l.is_ai_suggested
+    INTO label_id, is_ai_suggested
+    FROM public.labels l
+    WHERE l.text = label_text
+    LIMIT 1;
 
-    -- Get the snippet_label_id for the specified snippet and label 
-    snippet_label_id := (SELECT id FROM public.snippet_labels WHERE snippet = snippet_id AND label = label_id LIMIT 1); 
+    -- Get the snippet_label_id for the specified snippet and label
+    snippet_label_id := (SELECT id FROM public.snippet_labels WHERE snippet = snippet_id AND label = label_id LIMIT 1);
 
-    -- Delete the upvote record if it exists 
-    DELETE FROM public.label_upvotes 
-    WHERE upvoted_by = current_user_id 
-      AND snippet_label = snippet_label_id; 
+    -- Delete the upvote record if it exists
+    DELETE FROM public.label_upvotes
+    WHERE upvoted_by = current_user_id
+      AND snippet_label = snippet_label_id;
 
-    -- Check if the label should be deleted 
-    IF label_id IS NOT NULL THEN 
-        -- Check if the label was not suggested by AI and has zero upvotes 
-        IF is_ai_suggested = false AND 
-           (SELECT COUNT(*) FROM public.label_upvotes WHERE snippet_label = snippet_label_id) = 0 THEN 
-            -- Delete the label 
-            DELETE FROM public.labels WHERE id = label_id; 
-        END IF; 
-    END IF; 
+    -- Check if the label should be deleted
+    IF label_id IS NOT NULL THEN
+        -- Check if the label was not suggested by AI and has zero upvotes
+        IF is_ai_suggested = false AND
+           (SELECT COUNT(*) FROM public.label_upvotes WHERE snippet_label = snippet_label_id) = 0 THEN
+            -- Delete the label
+            DELETE FROM public.labels WHERE id = label_id;
+        END IF;
+    END IF;
 
-    -- Return the result of the get_snippet_labels function 
-    RETURN get_snippet_labels(snippet_id); 
-END; 
+    -- Return the result of the get_snippet_labels function
+    RETURN get_snippet_labels(snippet_id);
+END;
 $function$
 ;
 
@@ -951,42 +947,42 @@ CREATE OR REPLACE FUNCTION public.upvote_label(snippet_id uuid, label_text text)
  LANGUAGE plpgsql
  SECURITY DEFINER
 AS $function$
-DECLARE 
-    current_user_id UUID; 
-    snippet_label_id UUID; 
-    label_id UUID; 
-BEGIN 
-    -- Check if the user is authenticated 
-    current_user_id := auth.uid(); 
-    IF current_user_id IS NULL THEN 
-        RAISE EXCEPTION 'Only logged-in users can call this function'; 
+DECLARE
+    current_user_id UUID;
+    snippet_label_id UUID;
+    label_id UUID;
+BEGIN
+    -- Check if the user is authenticated
+    current_user_id := auth.uid();
+    IF current_user_id IS NULL THEN
+        RAISE EXCEPTION 'Only logged-in users can call this function';
     END IF;
 
-    -- Check if the label exists 
-    SELECT id INTO label_id 
-    FROM public.labels 
-    WHERE text = label_text 
-    LIMIT 1; 
-    IF label_id IS NULL THEN 
-        RAISE EXCEPTION 'The label with text ''%'' does not exist.', label_text; 
-    END IF; 
+    -- Check if the label exists
+    SELECT id INTO label_id
+    FROM public.labels
+    WHERE text = label_text
+    LIMIT 1;
+    IF label_id IS NULL THEN
+        RAISE EXCEPTION 'The label with text ''%'' does not exist.', label_text;
+    END IF;
 
-    -- Check if the found label has been applied to the given snippet or not 
-    SELECT id INTO snippet_label_id 
-    FROM public.snippet_labels 
-    WHERE snippet = snippet_id AND label = label_id; 
-    IF snippet_label_id IS NULL THEN 
-        RAISE EXCEPTION 'The label ''%'' has not been applied to the given snippet yet.', label_text; 
-    END IF; 
+    -- Check if the found label has been applied to the given snippet or not
+    SELECT id INTO snippet_label_id
+    FROM public.snippet_labels
+    WHERE snippet = snippet_id AND label = label_id;
+    IF snippet_label_id IS NULL THEN
+        RAISE EXCEPTION 'The label ''%'' has not been applied to the given snippet yet.', label_text;
+    END IF;
 
     -- Proceed to upvote the label
     INSERT INTO public.label_upvotes (upvoted_by, snippet_label)
     VALUES (current_user_id, snippet_label_id)
     ON CONFLICT (upvoted_by, snippet_label) DO NOTHING;
 
-    -- Return the result of the get_snippet_labels function 
-    RETURN get_snippet_labels(snippet_id); 
-END; 
+    -- Return the result of the get_snippet_labels function
+    RETURN get_snippet_labels(snippet_id);
+END;
 $function$
 ;
 
@@ -1032,47 +1028,47 @@ grant truncate on table "public"."audio_files" to "service_role";
 
 grant update on table "public"."audio_files" to "service_role";
 
-grant delete on table "public"."current_jobs" to "anon";
+-- grant delete on table "public"."current_jobs" to "anon";
 
-grant insert on table "public"."current_jobs" to "anon";
+-- grant insert on table "public"."current_jobs" to "anon";
 
-grant references on table "public"."current_jobs" to "anon";
+-- grant references on table "public"."current_jobs" to "anon";
 
-grant select on table "public"."current_jobs" to "anon";
+-- grant select on table "public"."current_jobs" to "anon";
 
-grant trigger on table "public"."current_jobs" to "anon";
+-- grant trigger on table "public"."current_jobs" to "anon";
 
-grant truncate on table "public"."current_jobs" to "anon";
+-- grant truncate on table "public"."current_jobs" to "anon";
 
-grant update on table "public"."current_jobs" to "anon";
+-- grant update on table "public"."current_jobs" to "anon";
 
-grant delete on table "public"."current_jobs" to "authenticated";
+-- grant delete on table "public"."current_jobs" to "authenticated";
 
-grant insert on table "public"."current_jobs" to "authenticated";
+-- grant insert on table "public"."current_jobs" to "authenticated";
 
-grant references on table "public"."current_jobs" to "authenticated";
+-- grant references on table "public"."current_jobs" to "authenticated";
 
-grant select on table "public"."current_jobs" to "authenticated";
+-- grant select on table "public"."current_jobs" to "authenticated";
 
-grant trigger on table "public"."current_jobs" to "authenticated";
+-- grant trigger on table "public"."current_jobs" to "authenticated";
 
-grant truncate on table "public"."current_jobs" to "authenticated";
+-- grant truncate on table "public"."current_jobs" to "authenticated";
 
-grant update on table "public"."current_jobs" to "authenticated";
+-- grant update on table "public"."current_jobs" to "authenticated";
 
-grant delete on table "public"."current_jobs" to "service_role";
+-- grant delete on table "public"."current_jobs" to "service_role";
 
-grant insert on table "public"."current_jobs" to "service_role";
+-- grant insert on table "public"."current_jobs" to "service_role";
 
-grant references on table "public"."current_jobs" to "service_role";
+-- grant references on table "public"."current_jobs" to "service_role";
 
-grant select on table "public"."current_jobs" to "service_role";
+-- grant select on table "public"."current_jobs" to "service_role";
 
-grant trigger on table "public"."current_jobs" to "service_role";
+-- grant trigger on table "public"."current_jobs" to "service_role";
 
-grant truncate on table "public"."current_jobs" to "service_role";
+-- grant truncate on table "public"."current_jobs" to "service_role";
 
-grant update on table "public"."current_jobs" to "service_role";
+-- grant update on table "public"."current_jobs" to "service_role";
 
 grant delete on table "public"."draft_audio_files" to "anon";
 
@@ -1326,47 +1322,47 @@ grant truncate on table "public"."draft_users" to "service_role";
 
 grant update on table "public"."draft_users" to "service_role";
 
-grant delete on table "public"."job_queue" to "anon";
+-- grant delete on table "public"."job_queue" to "anon";
 
-grant insert on table "public"."job_queue" to "anon";
+-- grant insert on table "public"."job_queue" to "anon";
 
-grant references on table "public"."job_queue" to "anon";
+-- grant references on table "public"."job_queue" to "anon";
 
-grant select on table "public"."job_queue" to "anon";
+-- grant select on table "public"."job_queue" to "anon";
 
-grant trigger on table "public"."job_queue" to "anon";
+-- grant trigger on table "public"."job_queue" to "anon";
 
-grant truncate on table "public"."job_queue" to "anon";
+-- grant truncate on table "public"."job_queue" to "anon";
 
-grant update on table "public"."job_queue" to "anon";
+-- grant update on table "public"."job_queue" to "anon";
 
-grant delete on table "public"."job_queue" to "authenticated";
+-- grant delete on table "public"."job_queue" to "authenticated";
 
-grant insert on table "public"."job_queue" to "authenticated";
+-- grant insert on table "public"."job_queue" to "authenticated";
 
-grant references on table "public"."job_queue" to "authenticated";
+-- grant references on table "public"."job_queue" to "authenticated";
 
-grant select on table "public"."job_queue" to "authenticated";
+-- grant select on table "public"."job_queue" to "authenticated";
 
-grant trigger on table "public"."job_queue" to "authenticated";
+-- grant trigger on table "public"."job_queue" to "authenticated";
 
-grant truncate on table "public"."job_queue" to "authenticated";
+-- grant truncate on table "public"."job_queue" to "authenticated";
 
-grant update on table "public"."job_queue" to "authenticated";
+-- grant update on table "public"."job_queue" to "authenticated";
 
-grant delete on table "public"."job_queue" to "service_role";
+-- grant delete on table "public"."job_queue" to "service_role";
 
-grant insert on table "public"."job_queue" to "service_role";
+-- grant insert on table "public"."job_queue" to "service_role";
 
-grant references on table "public"."job_queue" to "service_role";
+-- grant references on table "public"."job_queue" to "service_role";
 
-grant select on table "public"."job_queue" to "service_role";
+-- grant select on table "public"."job_queue" to "service_role";
 
-grant trigger on table "public"."job_queue" to "service_role";
+-- grant trigger on table "public"."job_queue" to "service_role";
 
-grant truncate on table "public"."job_queue" to "service_role";
+-- grant truncate on table "public"."job_queue" to "service_role";
 
-grant update on table "public"."job_queue" to "service_role";
+-- grant update on table "public"."job_queue" to "service_role";
 
 grant delete on table "public"."label_upvotes" to "anon";
 
@@ -1662,47 +1658,47 @@ grant truncate on table "public"."user_star_snippets" to "service_role";
 
 grant update on table "public"."user_star_snippets" to "service_role";
 
-grant delete on table "public"."workers" to "anon";
+-- grant delete on table "public"."workers" to "anon";
 
-grant insert on table "public"."workers" to "anon";
+-- grant insert on table "public"."workers" to "anon";
 
-grant references on table "public"."workers" to "anon";
+-- grant references on table "public"."workers" to "anon";
 
-grant select on table "public"."workers" to "anon";
+-- grant select on table "public"."workers" to "anon";
 
-grant trigger on table "public"."workers" to "anon";
+-- grant trigger on table "public"."workers" to "anon";
 
-grant truncate on table "public"."workers" to "anon";
+-- grant truncate on table "public"."workers" to "anon";
 
-grant update on table "public"."workers" to "anon";
+-- grant update on table "public"."workers" to "anon";
 
-grant delete on table "public"."workers" to "authenticated";
+-- grant delete on table "public"."workers" to "authenticated";
 
-grant insert on table "public"."workers" to "authenticated";
+-- grant insert on table "public"."workers" to "authenticated";
 
-grant references on table "public"."workers" to "authenticated";
+-- grant references on table "public"."workers" to "authenticated";
 
-grant select on table "public"."workers" to "authenticated";
+-- grant select on table "public"."workers" to "authenticated";
 
-grant trigger on table "public"."workers" to "authenticated";
+-- grant trigger on table "public"."workers" to "authenticated";
 
-grant truncate on table "public"."workers" to "authenticated";
+-- grant truncate on table "public"."workers" to "authenticated";
 
-grant update on table "public"."workers" to "authenticated";
+-- grant update on table "public"."workers" to "authenticated";
 
-grant delete on table "public"."workers" to "service_role";
+-- grant delete on table "public"."workers" to "service_role";
 
-grant insert on table "public"."workers" to "service_role";
+-- grant insert on table "public"."workers" to "service_role";
 
-grant references on table "public"."workers" to "service_role";
+-- grant references on table "public"."workers" to "service_role";
 
-grant select on table "public"."workers" to "service_role";
+-- grant select on table "public"."workers" to "service_role";
 
-grant trigger on table "public"."workers" to "service_role";
+-- grant trigger on table "public"."workers" to "service_role";
 
-grant truncate on table "public"."workers" to "service_role";
+-- grant truncate on table "public"."workers" to "service_role";
 
-grant update on table "public"."workers" to "service_role";
+-- grant update on table "public"."workers" to "service_role";
 
 create policy "Enable read access for authenticated users only"
 on "public"."audio_files"
@@ -1756,7 +1752,7 @@ CREATE TRIGGER draft_user_feedback_update_timestamp BEFORE UPDATE ON public.draf
 
 CREATE TRIGGER draft_users_update_timestamp BEFORE UPDATE ON public.draft_users FOR EACH ROW EXECUTE FUNCTION draft_update_timestamp();
 
-CREATE TRIGGER process_job_trigger AFTER INSERT ON public.job_queue FOR EACH ROW EXECUTE FUNCTION process_job();
+-- CREATE TRIGGER process_job_trigger AFTER INSERT ON public.job_queue FOR EACH ROW EXECUTE FUNCTION process_job();
 
 CREATE TRIGGER label_upvotes_handle_updated_at BEFORE UPDATE ON public.label_upvotes FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');
 
