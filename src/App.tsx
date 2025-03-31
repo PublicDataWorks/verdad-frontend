@@ -30,7 +30,26 @@ import LandingPage from './pages/Landing'
 import { AudioProvider } from './providers/audio'
 import { ThemeProvider } from './providers/theme'
 import { TooltipProvider } from './components/ui/tooltip'
-const queryClient = new QueryClient()
+
+// Create a new QueryClient with increased timeout settings
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      refetchOnWindowFocus: false,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      networkMode: 'always'
+    },
+    mutations: {
+      retry: 2,
+      retryDelay: 3000
+    }
+  }
+})
 
 export default function App(): ReactElement {
   return (
