@@ -19,6 +19,8 @@ type FormData = {
   lastName: string
 }
 
+const AUTH_CHECK_TIMEOUT_MS = 3000
+
 export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isCheckingAuth, setIsCheckingAuth] = useState(true)
@@ -66,7 +68,7 @@ export default function OnboardingPage() {
               setIsCheckingAuth(false) // Stop loading to show form
               // Don't redirect immediately - let user try manual entry
             }
-          }, 3000)
+          }, AUTH_CHECK_TIMEOUT_MS)
         }
       } catch (error) {
         console.error('Session retrieval error:', error)
@@ -205,7 +207,7 @@ export default function OnboardingPage() {
         <div className='flex flex-grow items-center justify-center'>
           <div className='text-center'>
             <Loader2 className='mx-auto h-8 w-8 animate-spin' />
-            <p className='mt-2 text-sm text-muted-foreground'>Loading...</p>
+            <p className='mt-2 text-sm text-muted-foreground'>Checking authentication...</p>
           </div>
         </div>
       </div>

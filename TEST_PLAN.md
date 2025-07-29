@@ -15,7 +15,7 @@
 - [ ] Check console for auth state logs
 - [ ] Verify email field behavior:
   - If session exists: Email should auto-populate
-  - If no session: Should redirect to login after 3 seconds
+  - If no session after 3 seconds: Email field becomes editable for manual entry
 
 ### 3. Magic Link Flow
 - [ ] Request a magic link
