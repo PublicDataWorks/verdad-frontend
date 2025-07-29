@@ -19,8 +19,11 @@ type FormData = {
   lastName: string
 }
 
+const AUTH_CHECK_TIMEOUT_MS = 3000
+
 export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -35,25 +38,62 @@ export default function OnboardingPage() {
   } = useForm<FormData>()
 
   useEffect(() => {
-    const updateSessionAndEmail = async () => {
+    let isMounted = true
+    let timeoutId: ReturnType<typeof setTimeout>
+    
+    // Listen for auth state changes (handles magic link authentication)
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!isMounted) return
+      
+      if (session?.user?.email) {
+        clearTimeout(timeoutId)
+        setValue('email', session.user.email)
+        setIsCheckingAuth(false)
+      } else if (session === null) {
+        // Clear email if user signs out (e.g., in another tab)
+        setValue('email', '')
+      }
+    })
+    
+    const checkSession = async () => {
       try {
-        const {
-          data: { session }
-        } = await supabase.auth.getSession()
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        if (!isMounted) return
+        
         if (session?.user?.email) {
           setValue('email', session.user.email)
+          setIsCheckingAuth(false)
+        } else {
+          // No session found, set timeout to allow for magic link processing
+          timeoutId = setTimeout(() => {
+            if (isMounted) {
+              setIsCheckingAuth(false) // Stop loading to show form
+              // Don't redirect immediately - let user try manual entry
+            }
+          }, AUTH_CHECK_TIMEOUT_MS)
         }
       } catch (error) {
         console.error('Session retrieval error:', error)
-        toast({
-          variant: 'destructive',
-          title: 'Authentication Error',
-          description: 'Failed to retrieve user session'
-        })
+        if (isMounted) {
+          toast({
+            variant: 'destructive',
+            title: 'Authentication Error',
+            description: 'Failed to retrieve user session'
+          })
+          setIsCheckingAuth(false)
+        }
       }
     }
-
-    updateSessionAndEmail()
+    
+    checkSession()
+    
+    // Cleanup
+    return () => {
+      isMounted = false
+      clearTimeout(timeoutId)
+      authListener?.subscription.unsubscribe()
+    }
   }, [setValue, toast])
 
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -163,6 +203,20 @@ export default function OnboardingPage() {
 
   const watchFirstName = watch('firstName')
 
+  if (isCheckingAuth) {
+    return (
+      <div className='flex min-h-screen flex-col'>
+        <PublicHeader />
+        <div className='flex flex-grow items-center justify-center'>
+          <div className='text-center'>
+            <Loader2 className='mx-auto h-8 w-8 animate-spin' />
+            <p className='mt-2 text-sm text-muted-foreground'>Checking authentication...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='flex min-h-screen flex-col'>
       <PublicHeader />
@@ -210,9 +264,15 @@ export default function OnboardingPage() {
                   <Label htmlFor='email'>Email</Label>
                   <Input
                     id='email'
-                    {...register('email', { required: 'Email is required' })}
-                    placeholder='Email'
-                    disabled
+                    {...register('email', { 
+                      required: 'Email is required',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'Invalid email address'
+                      }
+                    })}
+                    placeholder='Enter your email'
+                    disabled={!!watch('email')}
                   />
                   {errors.email && <p className='text-sm text-destructive'>{errors.email.message}</p>}
                 </div>
@@ -236,7 +296,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <Button type='submit' className='w-full' disabled={isLoading}>
+              <Button type='submit' className='w-full bg-blue-600 text-white hover:bg-blue-700' disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className='mr-2 h-4 w-4 animate-spin' />
