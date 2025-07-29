@@ -49,6 +49,9 @@ export default function OnboardingPage() {
         clearTimeout(timeoutId)
         setValue('email', session.user.email)
         setIsCheckingAuth(false)
+      } else if (session === null) {
+        // Clear email if user signs out (e.g., in another tab)
+        setValue('email', '')
       }
     })
     
