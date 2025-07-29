@@ -36,53 +36,60 @@ export default function OnboardingPage() {
   } = useForm<FormData>()
 
   useEffect(() => {
-    let authSubscription: { data?: { subscription?: { unsubscribe: () => void } } }
+    let isMounted = true
+    let timeoutId: ReturnType<typeof setTimeout>
     
-    const updateSessionAndEmail = async () => {
+    // Listen for auth state changes (handles magic link authentication)
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!isMounted) return
+      
+      if (session?.user?.email) {
+        clearTimeout(timeoutId)
+        setValue('email', session.user.email)
+        setIsCheckingAuth(false)
+      }
+    })
+    
+    const checkSession = async () => {
       try {
-        // First try to get the current session
-        const {
-          data: { session }
-        } = await supabase.auth.getSession()
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        if (!isMounted) return
         
         if (session?.user?.email) {
           setValue('email', session.user.email)
           setIsCheckingAuth(false)
+        } else {
+          // No session found, set timeout to allow for magic link processing
+          timeoutId = setTimeout(() => {
+            if (isMounted) {
+              setIsCheckingAuth(false) // Stop loading to show form
+              // Don't redirect immediately - let user try manual entry
+            }
+          }, 3000)
         }
       } catch (error) {
         console.error('Session retrieval error:', error)
+        if (isMounted) {
+          toast({
+            variant: 'destructive',
+            title: 'Authentication Error',
+            description: 'Failed to retrieve user session'
+          })
+          setIsCheckingAuth(false)
+        }
       }
     }
-
-    // Initial check
-    updateSessionAndEmail()
     
-    // Listen for auth state changes (handles magic link authentication)
-    authSubscription = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user?.email) {
-        setValue('email', session.user.email)
-        setIsCheckingAuth(false)
-      } else if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
-        // Give it a moment for magic link auth to complete
-        setTimeout(() => {
-          if (!session) {
-            toast({
-              title: 'Please log in',
-              description: 'You need to log in to complete your profile setup',
-            })
-            navigate('/login')
-          }
-        }, 3000)
-      }
-    })
-
-    // Cleanup subscription
+    checkSession()
+    
+    // Cleanup
     return () => {
-      if (authSubscription?.data?.subscription) {
-        authSubscription.data.subscription.unsubscribe()
-      }
+      isMounted = false
+      clearTimeout(timeoutId)
+      authListener?.subscription.unsubscribe()
     }
-  }, [setValue, toast, navigate])
+  }, [setValue, toast])
 
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
