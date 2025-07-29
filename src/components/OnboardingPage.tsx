@@ -21,6 +21,7 @@ type FormData = {
 
 export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -35,26 +36,53 @@ export default function OnboardingPage() {
   } = useForm<FormData>()
 
   useEffect(() => {
+    let authSubscription: { data?: { subscription?: { unsubscribe: () => void } } }
+    
     const updateSessionAndEmail = async () => {
       try {
+        // First try to get the current session
         const {
           data: { session }
         } = await supabase.auth.getSession()
+        
         if (session?.user?.email) {
           setValue('email', session.user.email)
+          setIsCheckingAuth(false)
         }
       } catch (error) {
         console.error('Session retrieval error:', error)
-        toast({
-          variant: 'destructive',
-          title: 'Authentication Error',
-          description: 'Failed to retrieve user session'
-        })
       }
     }
 
+    // Initial check
     updateSessionAndEmail()
-  }, [setValue, toast])
+    
+    // Listen for auth state changes (handles magic link authentication)
+    authSubscription = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user?.email) {
+        setValue('email', session.user.email)
+        setIsCheckingAuth(false)
+      } else if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+        // Give it a moment for magic link auth to complete
+        setTimeout(() => {
+          if (!session) {
+            toast({
+              title: 'Please log in',
+              description: 'You need to log in to complete your profile setup',
+            })
+            navigate('/login')
+          }
+        }, 3000)
+      }
+    })
+
+    // Cleanup subscription
+    return () => {
+      if (authSubscription?.data?.subscription) {
+        authSubscription.data.subscription.unsubscribe()
+      }
+    }
+  }, [setValue, toast, navigate])
 
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -163,6 +191,20 @@ export default function OnboardingPage() {
 
   const watchFirstName = watch('firstName')
 
+  if (isCheckingAuth) {
+    return (
+      <div className='flex min-h-screen flex-col'>
+        <PublicHeader />
+        <div className='flex flex-grow items-center justify-center'>
+          <div className='text-center'>
+            <Loader2 className='mx-auto h-8 w-8 animate-spin' />
+            <p className='mt-2 text-sm text-muted-foreground'>Loading...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='flex min-h-screen flex-col'>
       <PublicHeader />
@@ -210,9 +252,15 @@ export default function OnboardingPage() {
                   <Label htmlFor='email'>Email</Label>
                   <Input
                     id='email'
-                    {...register('email', { required: 'Email is required' })}
-                    placeholder='Email'
-                    disabled
+                    {...register('email', { 
+                      required: 'Email is required',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'Invalid email address'
+                      }
+                    })}
+                    placeholder='Enter your email'
+                    disabled={!!watch('email')}
                   />
                   {errors.email && <p className='text-sm text-destructive'>{errors.email.message}</p>}
                 </div>
