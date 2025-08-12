@@ -3,16 +3,28 @@ import { getPoliticalLabel } from './getPoliticalLabel'
 import { ConfidenceChart } from '@/components/ui/ConfidenceScoreBar'
 import { Language } from '@/providers/language'
 import { translations } from '@/constants/translations'
+import { Snippet } from '@/types/snippet'
+import { SnippetPreview } from '@/types/snippet-preview'
 
-export function getSnippetSubtitle(snippet: any, language: Language): JSX.Element {
-  const parts = [
-    snippet?.audio_file?.radio_station_name,
-    snippet?.audio_file?.radio_station_code,
-    snippet?.audio_file?.location_state,
-    snippet?.recorded_at ? format(new Date(snippet.recorded_at), 'MMM d, yyyy HH:mm zzz') : null
-  ].filter(Boolean)
+export function getSnippetSubtitle(snippet: Snippet | SnippetPreview | any, language: Language): JSX.Element {
+  // Handle both full Snippet objects and SnippetPreview objects
+  const parts = []
+  
+  // For SnippetPreview objects, we might not have the audio_file property
+  // since it's not returned by the get_snippets_preview function
+  if (snippet?.audio_file) {
+    if (snippet.audio_file.radio_station_name) parts.push(snippet.audio_file.radio_station_name)
+    if (snippet.audio_file.radio_station_code) parts.push(snippet.audio_file.radio_station_code)
+    if (snippet.audio_file.location_state) parts.push(snippet.audio_file.location_state)
+  }
+  
+  // Both types have recorded_at
+  if (snippet?.recorded_at) {
+    // Make sure to have at least the date for preview displays
+    parts.push(format(new Date(snippet.recorded_at), 'MMM d, yyyy HH:mm zzz'))
+  }
 
-  // Get the political label
+  // The political_leaning might not be available in SnippetPreview objects
   const score = snippet?.political_leaning?.score
   const label = score !== null && score !== undefined ? getPoliticalLabel(score, language) : ''
 

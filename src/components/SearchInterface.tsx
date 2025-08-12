@@ -3,15 +3,14 @@ import { Loader, ArrowUpDown, Search } from 'lucide-react'
 import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '../providers/language'
 
-import SnippetCard from './SnippetCard'
 import Sidebar from './Sidebar'
 import { useSnippets } from '@/hooks/useSnippets'
+import VirtualizedSnippetList from './VirtualizedSnippetList'
 
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { fetchFilteringOptions } from '@/hooks/useFilterOptions'
 import supabaseClient from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { filterKeys } from '@/hooks/useFilterOptions'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { isMobile } from 'react-device-detect'
@@ -29,7 +28,6 @@ import { translations } from '@/constants/translations'
 import { Input } from './ui/input'
 import { debounce, isEmpty } from 'lodash'
 import { NoSnippetsMessage } from './NoSnippetsMessage'
-import { PAGE_SIZE } from '@/constants'
 
 export default function SearchInterface() {
   const { showSidebar } = useSidebar()
@@ -46,8 +44,9 @@ export default function SearchInterface() {
 
   const { searchTerm, order_by } = filters
 
-  const { data, error, fetchNextPage, hasNextPage, status } = useSnippets({
-    pageSize: PAGE_SIZE,
+  // Use a reasonable page size for virtualized list (20 items)
+  const { data, error, fetchNextPage, hasNextPage, status, isLoading } = useSnippets({
+    pageSize: 20,
     filters,
     language,
     orderBy: order_by || 'latest',
@@ -153,42 +152,26 @@ export default function SearchInterface() {
           ref={scrollAreaRef}
           id='scrollableDiv'
           className={`${padding} custom-scrollbar flex-1 overflow-y-scroll rounded-lg`}>
+          {showWelcomeCard && isEmpty(searchTerm) && <WelcomeCard />}
+          
           {status === 'error' ? (
             <div className='p-4 text-center text-destructive'>
               {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
             </div>
-          ) : status === 'pending' ? (
+          ) : status === 'pending' && snippets.length === 0 ? (
             <div className='flex h-full items-center justify-center'>
               <Loader className='h-6 w-6 animate-spin text-primary' />
             </div>
-          ) : snippets.length === 0 ? (
-            <NoSnippetsMessage />
           ) : (
-            <>
-              {showWelcomeCard && isEmpty(searchTerm) && <WelcomeCard />}
-              <InfiniteScroll
-                dataLength={snippets.length}
-                next={fetchNextPage}
-                hasMore={hasNextPage}
-                className='flex h-full flex-col gap-3'
-                scrollableTarget='scrollableDiv'
-                loader={
-                  <div className='my-4 flex w-full justify-center'>
-                    <Loader className='h-6 w-6 animate-spin text-primary' />
-                  </div>
-                }
-                endMessage={<div className='my-4 flex w-full justify-center'>{t.noMoreSnippets}</div>}
-                scrollThreshold={0.8}>
-                {snippets.map(snippet => (
-                  <SnippetCard
-                    key={`${language}-${snippet.id}`}
-                    snippet={snippet}
-                    searchTerm={searchTerm || ''}
-                    onSnippetClick={handleSnippetClick}
-                  />
-                ))}
-              </InfiniteScroll>
-            </>
+            <VirtualizedSnippetList
+              snippets={snippets}
+              totalSnippets={data?.pages[0]?.total_snippets || 0}
+              isLoading={isLoading}
+              isError={status === 'error'}
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage}
+              searchTerm={searchTerm || ''}
+            />
           )}
         </div>
       </div>

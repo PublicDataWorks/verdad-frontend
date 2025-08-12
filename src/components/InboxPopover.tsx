@@ -12,14 +12,14 @@ import {
 import { Button } from '@/components/ui/button'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ClientSideSuspense } from '@liveblocks/react'
-import { useSnippet } from '@/hooks/useSnippets'
+import { useSnippetDetails } from '@/hooks/useSnippets'
 import { InboxIcon } from 'lucide-react'
 
 function Inbox({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const { inboxNotifications } = useInboxNotifications()
 
   const NotificationContent = ({ roomId, user }: { roomId: string; user?: string }) => {
-    const { data: snippet } = useSnippet(roomId, 'english')
+    const { data: snippet } = useSnippetDetails(roomId, 'english')
     const title = snippet?.title || roomId
 
     if (user) {
