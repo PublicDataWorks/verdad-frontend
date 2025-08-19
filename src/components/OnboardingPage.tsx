@@ -22,6 +22,9 @@ type FormData = {
 
 const AUTH_CHECK_TIMEOUT_MS = 3000
 
+// Auth tokens to remove from URL hash for security
+const AUTH_TOKENS_TO_CLEAR = ['access_token', 'refresh_token', 'expires_in', 'token_type', 'provider_token']
+
 // Extract email from URL hash containing JWT access token
 const extractEmailFromUrl = (): string | null => {
   const hashParams = new URLSearchParams(window.location.hash.substring(1))
@@ -47,7 +50,7 @@ const clearAuthFragment = (): void => {
   
   const params = new URLSearchParams(url.hash.substring(1))
   // Remove common auth fragments introduced by providers
-  ;['access_token', 'refresh_token', 'expires_in', 'token_type', 'provider_token'].forEach(k => params.delete(k))
+  AUTH_TOKENS_TO_CLEAR.forEach(k => params.delete(k))
   
   const newHash = params.toString()
   const newUrl = `${url.origin}${url.pathname}${url.search}${newHash ? '#' + newHash : ''}`
@@ -75,16 +78,22 @@ export default function OnboardingPage() {
     let isMounted = true
     let timeoutId: ReturnType<typeof setTimeout>
     
+    // Handle successful session establishment (DRY helper)
+    const handleSessionEstablished = (email: string) => {
+      if (!isMounted) return
+      clearTimeout(timeoutId)
+      setValue('email', email)
+      setEmailLocked(true) // Lock email when it comes from verified session
+      setIsCheckingAuth(false)
+      clearAuthFragment() // Clear sensitive tokens from URL
+    }
+    
     // Listen for auth state changes (handles magic link authentication)
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return
       
       if (session?.user?.email) {
-        clearTimeout(timeoutId)
-        setValue('email', session.user.email)
-        setEmailLocked(true) // Lock email when it comes from verified session
-        setIsCheckingAuth(false)
-        clearAuthFragment() // Clear sensitive tokens from URL
+        handleSessionEstablished(session.user.email)
       } else if (session === null) {
         // Clear email if user signs out (e.g., in another tab)
         setValue('email', '')
@@ -107,10 +116,7 @@ export default function OnboardingPage() {
         if (!isMounted) return
         
         if (session?.user?.email) {
-          setValue('email', session.user.email)
-          setEmailLocked(true) // Lock email when it comes from verified session
-          setIsCheckingAuth(false)
-          clearAuthFragment() // Clear sensitive tokens from URL
+          handleSessionEstablished(session.user.email)
         } else {
           // No session found, set timeout to allow for magic link processing
           timeoutId = setTimeout(() => {
