@@ -41,6 +41,32 @@ export default function OnboardingPage() {
     let isMounted = true
     let timeoutId: ReturnType<typeof setTimeout>
     
+    // Extract email from URL hash if present (for magic links)
+    const extractEmailFromUrl = () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1))
+      const accessToken = hashParams.get('access_token')
+      
+      if (accessToken) {
+        // Decode JWT to get email
+        try {
+          const base64Url = accessToken.split('.')[1]
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split('')
+              .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+              .join('')
+          )
+          const payload = JSON.parse(jsonPayload)
+          return payload.email || null
+        } catch (error) {
+          console.error('Error extracting email from token:', error)
+          return null
+        }
+      }
+      return null
+    }
+    
     // Listen for auth state changes (handles magic link authentication)
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return
@@ -57,6 +83,13 @@ export default function OnboardingPage() {
     
     const checkSession = async () => {
       try {
+        // First, try to extract email from URL (for browsers with stricter cookie policies)
+        const urlEmail = extractEmailFromUrl()
+        if (urlEmail) {
+          setValue('email', urlEmail)
+          // Don't stop checking auth yet - wait for proper session
+        }
+        
         const { data: { session } } = await supabase.auth.getSession()
         
         if (!isMounted) return
@@ -69,7 +102,7 @@ export default function OnboardingPage() {
           timeoutId = setTimeout(() => {
             if (isMounted) {
               setIsCheckingAuth(false) // Stop loading to show form
-              // Don't redirect immediately - let user try manual entry
+              // Email may already be set from URL extraction
             }
           }, AUTH_CHECK_TIMEOUT_MS)
         }
