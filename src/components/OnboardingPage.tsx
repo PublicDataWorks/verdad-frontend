@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Upload, Loader2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
+import { jwtDecode } from 'jwt-decode'
 import supabase from '@/lib/supabase'
 import PublicHeader from './PublicHeader'
 
@@ -20,6 +21,24 @@ type FormData = {
 }
 
 const AUTH_CHECK_TIMEOUT_MS = 3000
+
+// Extract email from URL hash containing JWT access token
+const extractEmailFromUrl = (): string | null => {
+  const hashParams = new URLSearchParams(window.location.hash.substring(1))
+  const accessToken = hashParams.get('access_token')
+
+  if (!accessToken) {
+    return null
+  }
+
+  try {
+    const payload: { email?: string } = jwtDecode(accessToken)
+    return payload.email || null
+  } catch (error) {
+    console.error('Error decoding token from URL:', error)
+    return null
+  }
+}
 
 export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -40,32 +59,6 @@ export default function OnboardingPage() {
   useEffect(() => {
     let isMounted = true
     let timeoutId: ReturnType<typeof setTimeout>
-    
-    // Extract email from URL hash if present (for magic links)
-    const extractEmailFromUrl = () => {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1))
-      const accessToken = hashParams.get('access_token')
-      
-      if (accessToken) {
-        // Decode JWT to get email
-        try {
-          const base64Url = accessToken.split('.')[1]
-          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-          const jsonPayload = decodeURIComponent(
-            atob(base64)
-              .split('')
-              .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-              .join('')
-          )
-          const payload = JSON.parse(jsonPayload)
-          return payload.email || null
-        } catch (error) {
-          console.error('Error extracting email from token:', error)
-          return null
-        }
-      }
-      return null
-    }
     
     // Listen for auth state changes (handles magic link authentication)
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
