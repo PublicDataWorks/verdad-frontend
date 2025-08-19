@@ -40,9 +40,24 @@ const extractEmailFromUrl = (): string | null => {
   }
 }
 
+// Clear sensitive tokens from URL hash after processing
+const clearAuthFragment = (): void => {
+  const url = new URL(window.location.href)
+  if (!url.hash) return
+  
+  const params = new URLSearchParams(url.hash.substring(1))
+  // Remove common auth fragments introduced by providers
+  ;['access_token', 'refresh_token', 'expires_in', 'token_type', 'provider_token'].forEach(k => params.delete(k))
+  
+  const newHash = params.toString()
+  const newUrl = `${url.origin}${url.pathname}${url.search}${newHash ? '#' + newHash : ''}`
+  window.history.replaceState(null, '', newUrl)
+}
+
 export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  const [emailLocked, setEmailLocked] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -67,10 +82,13 @@ export default function OnboardingPage() {
       if (session?.user?.email) {
         clearTimeout(timeoutId)
         setValue('email', session.user.email)
+        setEmailLocked(true) // Lock email when it comes from verified session
         setIsCheckingAuth(false)
+        clearAuthFragment() // Clear sensitive tokens from URL
       } else if (session === null) {
         // Clear email if user signs out (e.g., in another tab)
         setValue('email', '')
+        setEmailLocked(false)
       }
     })
     
@@ -80,6 +98,7 @@ export default function OnboardingPage() {
         const urlEmail = extractEmailFromUrl()
         if (urlEmail) {
           setValue('email', urlEmail)
+          setEmailLocked(false) // Prefill only; allow edits until session is established
           // Don't stop checking auth yet - wait for proper session
         }
         
@@ -89,13 +108,16 @@ export default function OnboardingPage() {
         
         if (session?.user?.email) {
           setValue('email', session.user.email)
+          setEmailLocked(true) // Lock email when it comes from verified session
           setIsCheckingAuth(false)
+          clearAuthFragment() // Clear sensitive tokens from URL
         } else {
           // No session found, set timeout to allow for magic link processing
           timeoutId = setTimeout(() => {
             if (isMounted) {
               setIsCheckingAuth(false) // Stop loading to show form
-              // Email may already be set from URL extraction
+              // Email may already be set from URL extraction; clear sensitive tokens from URL hash
+              clearAuthFragment()
             }
           }, AUTH_CHECK_TIMEOUT_MS)
         }
@@ -298,7 +320,7 @@ export default function OnboardingPage() {
                       }
                     })}
                     placeholder='Enter your email'
-                    disabled={!!watch('email')}
+                    disabled={emailLocked}
                   />
                   {errors.email && <p className='text-sm text-destructive'>{errors.email.message}</p>}
                 </div>
