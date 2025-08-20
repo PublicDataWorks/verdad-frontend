@@ -19,7 +19,9 @@ import LiveblocksComments from '../components/LiveblocksComments'
 import ShareButton from './ShareButton'
 import SnippetVisibilityToggle from './ui/hide-button'
 
-import { useSnippet } from '@/hooks/useSnippets'
+import { useSnippetDetails, snippetKeys } from '@/hooks/useSnippets'
+import { useQueryClient } from '@tanstack/react-query'
+import { fetchRelatedSnippets } from '@/apis/snippet'
 import { useLikeSnippet } from '@/hooks/useSnippetActions'
 import { useLanguage } from '@/providers/language'
 import { useIsAdmin } from '@/hooks/usePermission'
@@ -44,8 +46,19 @@ const SnippetDetail: FC = () => {
   const { language } = useLanguage()
   const t = translations[language]
 
-  const { data: snippet, isLoading, isError } = useSnippet(snippetId || '', language)
+  const { data: snippet, isLoading, isError } = useSnippetDetails(snippetId || '', language)
   const { data: isAdmin } = useIsAdmin()
+
+  // Enable related snippets prefetching
+  const queryClient = useQueryClient()
+  useEffect(() => {
+    if (snippet) {
+      queryClient.prefetchQuery({
+        queryKey: snippetKeys.related(snippetId || '', language),
+        queryFn: () => fetchRelatedSnippets({ snippetId: snippetId || '', language })
+      })
+    }
+  }, [snippet, snippetId, language, queryClient])
 
   const [labels, setLabels] = useState<Label[]>([])
   const [isStarHovered, setIsStarHovered] = useState<boolean>(false)

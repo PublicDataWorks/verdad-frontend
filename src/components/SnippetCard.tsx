@@ -23,13 +23,17 @@ import supabaseClient from '@/lib/supabase'
 import { SnippetAudioPlayer } from './SnippetAudioPlayer'
 import { highlightText } from '@/utils/highlightText'
 
+import { usePrefetchSnippetDetails } from '@/hooks/useSnippets'
+import type { SnippetPreview } from '@/types/snippet-preview'
+
 interface SnippetCardProps {
-  snippet: Snippet
+  snippet: SnippetPreview
   searchTerm?: string
   onSnippetClick: (event: React.MouseEvent, id: string) => void
 }
 
 const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onSnippetClick }) => {
+  const prefetchDetails = usePrefetchSnippetDetails()
   const { language } = useLanguage()
   const t = translations[language]
 
@@ -144,7 +148,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
   return (
     <div
       className={`mt-2 rounded-lg border bg-background-gray-lightest p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
-      onClick={e => onSnippetClick(e, snippet?.id)}>
+      onClick={e => onSnippetClick(e, snippet?.id)}
+      onMouseEnter={() => prefetchDetails(snippet.id)}>
       <div className='mb-2 flex items-start justify-between'>
         <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet?.title, searchTerm)}</h3>
         <div className='flex space-x-2' onClick={e => e.stopPropagation()}>
