@@ -61,9 +61,9 @@ export const fetchSnippets = async ({
 
   return {
     snippets: data.snippets,
-    total_pages: Number(data.total_pages),
+    total_pages: data.total_pages,
     currentPage: pageParam,
-    total_snippets: Number(data.num_of_snippets)
+    total_snippets: data.num_of_snippets
   }
 }
 
