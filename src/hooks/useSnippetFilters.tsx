@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-export type Timespan = '24h' | '7d' | '30d' | 'all'
+export type Timespan = '24h' | '7d' | '30d' | '90d' | 'all'
 
 export type SnippetFilters = {
   languages: string[]
