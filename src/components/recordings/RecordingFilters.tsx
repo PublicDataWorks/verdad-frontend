@@ -1,10 +1,9 @@
-import { X, RotateCcw, Star, Tag, Filter } from 'lucide-react'
+import { X, Star, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { useRecordingFilterOptions } from '@/hooks/useRecordings'
 import useRecordingFilters from '@/hooks/useRecordingFilters'
 import { cn } from '@/lib/utils'
@@ -29,58 +28,46 @@ export default function RecordingFilters({ isOpen, onClose, totalCount, loadedCo
   return (
     <>
       {/* Mobile overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={onClose} />
-      )}
+      {isOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={onClose} />}
 
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed lg:relative inset-y-0 left-0 z-50 w-80 bg-background border-r transform transition-transform duration-200 ease-in-out lg:transform-none',
+          'hide-scrollbar bg-background-gray-lightest fixed inset-0 z-50 h-screen overflow-y-auto lg:relative lg:inset-auto lg:h-full lg:w-80',
+          'transform transition-transform duration-200 ease-in-out lg:transform-none',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
-        <div className="flex flex-col h-full">
+        <div className="p-6">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b">
-            <div className="flex items-center gap-2">
-              <Filter className="h-5 w-5" />
-              <h2 className="font-semibold">Filters</h2>
-            </div>
+          <div className="mb-4 flex h-[24px] items-center justify-between">
+            <p className="text-text-primary text-sm font-medium">
+              {totalCount !== undefined && totalCount > 0 ? (
+                loadedCount !== undefined && loadedCount < totalCount ? (
+                  <>
+                    {loadedCount.toLocaleString()} of {totalCount.toLocaleString()} recordings
+                  </>
+                ) : (
+                  <>{totalCount.toLocaleString()} recordings</>
+                )
+              ) : (
+                'Recordings'
+              )}
+            </p>
             <div className="flex items-center gap-2">
               {!isEmpty() && (
-                <Button variant="ghost" size="sm" onClick={clearAll}>
-                  <RotateCcw className="h-4 w-4 mr-1" />
+                <Button variant="ghost" onClick={clearAll} className="px-2 font-normal text-text-blue">
                   Reset
                 </Button>
               )}
-              <Button variant="ghost" size="icon" className="lg:hidden" onClick={onClose}>
-                <X className="h-5 w-5" />
+              <Button variant="ghost" onClick={onClose} className="lg:hidden">
+                <X className="h-6 w-6" />
               </Button>
             </div>
           </div>
 
-          {/* Recording count */}
-          {totalCount !== undefined && totalCount > 0 && (
-            <div className="px-4 py-3 bg-muted/50">
-              <p className="text-sm text-muted-foreground">
-                {loadedCount !== undefined && loadedCount < totalCount ? (
-                  <>
-                    Showing <span className="font-semibold text-foreground">{loadedCount.toLocaleString()}</span> of{' '}
-                    <span className="font-semibold text-foreground">{totalCount.toLocaleString()}</span> recordings
-                  </>
-                ) : (
-                  <>
-                    <span className="font-semibold text-foreground">{totalCount.toLocaleString()}</span> recordings
-                  </>
-                )}
-              </p>
-            </div>
-          )}
-
           {/* Filters */}
-          <ScrollArea className="flex-1">
-            <div className="p-4 space-y-6">
+          <div className="space-y-6">
               {/* Has Snippets Filter */}
               <div className="space-y-2">
                 <Label className="text-sm font-medium flex items-center gap-2">
@@ -207,8 +194,7 @@ export default function RecordingFilters({ isOpen, onClose, totalCount, loadedCo
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-          </ScrollArea>
+          </div>
         </div>
       </aside>
     </>

@@ -1,7 +1,7 @@
 # Fly.io configuration for the Recording Browser app
 # Deploy with: fly deploy -c fly.browser.toml
 app = 'verdad-browser'
-primary_region = 'sea'
+primary_region = 'sjc'
 
 [build]
   dockerfile = "Dockerfile"

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Calendar, MapPin, Radio, Clock, FileAudio, Tag } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+// Using custom card style to match main app
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { RecordingPreview } from '@/types/recording'
@@ -54,16 +54,16 @@ export default function RecordingCard({ recording }: RecordingCardProps) {
   }
 
   return (
-    <Card
+    <div
       className={cn(
-        'cursor-pointer transition-all hover:shadow-md',
+        'mt-2 rounded-lg border-2 bg-background-gray-lightest p-6 cursor-pointer',
+        'border-transparent transition-all duration-700 ease-in-out hover:border-blue-600',
         // Pale yellow highlight for recordings with snippets
         recording.has_snippets && 'bg-yellow-50 dark:bg-yellow-950/20 border-l-4 border-l-yellow-400'
       )}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
     >
-      <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             {/* Station and Location */}
@@ -140,7 +140,6 @@ export default function RecordingCard({ recording }: RecordingCardProps) {
             )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+    </div>
   )
 }
