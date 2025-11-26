@@ -3,10 +3,11 @@ import { Button } from './ui/button'
 import Upvote from '../assets/upvote.svg'
 import Upvoted from '../assets/upvoted.svg'
 import supabase from '@/lib/supabase'
-import { Label } from '../hooks/useSnippets'
+import { Label } from '@/types/snippet'
 import { useAuth } from '@/providers/auth'
 import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
 import { toast } from '@/hooks/use-toast'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface LabelButtonProps {
   label: Label
@@ -17,15 +18,16 @@ interface LabelButtonProps {
 const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDeleted }) => {
   const [isHovered, setIsHovered] = useState(false)
   const { user } = useAuth()
+  const queryClient = useQueryClient()
 
   const [isUpvoted, setIsUpvoted] = useState(() => {
     const localUpvoted = getLocalStorageItem(`upvoted_${snippetId}_${label.id}`)
-    return localUpvoted !== null ? localUpvoted : label.upvoted_by.some(upvoter => upvoter.email === user?.email)
+    return localUpvoted !== null ? localUpvoted : label.upvoted_by_me
   })
 
   const [upvoteCount, setUpvoteCount] = useState(() => {
     const localCount = getLocalStorageItem(`upvoteCount_${snippetId}_${label.id}`)
-    return localCount !== null ? localCount : label.upvoted_by.length
+    return localCount !== null ? localCount : label.upvote_count
   })
 
   useEffect(() => {
@@ -37,11 +39,10 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
 
   useEffect(() => {
     if (user) {
-      const isCurrentlyUpvoted = label.upvoted_by.some(upvoter => upvoter.email === user.email)
-      setIsUpvoted(isCurrentlyUpvoted)
-      setUpvoteCount(label.upvoted_by.length)
+      setIsUpvoted(label.upvoted_by_me)
+      setUpvoteCount(label.upvote_count)
     }
-  }, [user, label.upvoted_by])
+  }, [user, label.upvoted_by_me, label.upvote_count])
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -75,6 +76,11 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
       if (!data || (Array.isArray(data) && data.length === 0) || (data.labels && data.labels.length === 0)) {
         onLabelDeleted(label.id)
       }
+
+      // Invalidate all snippets lists to refresh data
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'snippets' && query.queryKey[1] === 'list'
+      })
     } catch (error) {
       console.error('Error toggling upvote:', error)
       toast({

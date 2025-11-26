@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Upload, Loader2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
+import { jwtDecode } from 'jwt-decode'
 import supabase from '@/lib/supabase'
 import PublicHeader from './PublicHeader'
 
@@ -19,8 +20,47 @@ type FormData = {
   lastName: string
 }
 
+const AUTH_CHECK_TIMEOUT_MS = 3000
+
+// Auth tokens to remove from URL hash for security
+const AUTH_TOKENS_TO_CLEAR = ['access_token', 'refresh_token', 'expires_in', 'token_type', 'provider_token']
+
+// Extract email from URL hash containing JWT access token
+const extractEmailFromUrl = (): string | null => {
+  const hashParams = new URLSearchParams(window.location.hash.substring(1))
+  const accessToken = hashParams.get('access_token')
+
+  if (!accessToken) {
+    return null
+  }
+
+  try {
+    const payload: { email?: string } = jwtDecode(accessToken)
+    return payload.email || null
+  } catch (error) {
+    console.error('Error decoding token from URL:', error)
+    return null
+  }
+}
+
+// Clear sensitive tokens from URL hash after processing
+const clearAuthFragment = (): void => {
+  const url = new URL(window.location.href)
+  if (!url.hash) return
+  
+  const params = new URLSearchParams(url.hash.substring(1))
+  // Remove common auth fragments introduced by providers
+  AUTH_TOKENS_TO_CLEAR.forEach(k => params.delete(k))
+  
+  const newHash = params.toString()
+  const newUrl = `${url.origin}${url.pathname}${url.search}${newHash ? '#' + newHash : ''}`
+  window.history.replaceState(null, '', newUrl)
+}
+
 export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  const [emailLocked, setEmailLocked] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -35,25 +75,79 @@ export default function OnboardingPage() {
   } = useForm<FormData>()
 
   useEffect(() => {
-    const updateSessionAndEmail = async () => {
+    let isMounted = true
+    let timeoutId: ReturnType<typeof setTimeout>
+    
+    // Handle successful session establishment (DRY helper)
+    const handleSessionEstablished = (email: string) => {
+      if (!isMounted) return
+      clearTimeout(timeoutId)
+      setValue('email', email)
+      setEmailLocked(true) // Lock email when it comes from verified session
+      setIsCheckingAuth(false)
+      clearAuthFragment() // Clear sensitive tokens from URL
+    }
+    
+    // Listen for auth state changes (handles magic link authentication)
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!isMounted) return
+      
+      if (session?.user?.email) {
+        handleSessionEstablished(session.user.email)
+      } else if (session === null) {
+        // Clear email if user signs out (e.g., in another tab)
+        setValue('email', '')
+        setEmailLocked(false)
+      }
+    })
+    
+    const checkSession = async () => {
       try {
-        const {
-          data: { session }
-        } = await supabase.auth.getSession()
+        // First, try to extract email from URL (for browsers with stricter cookie policies)
+        const urlEmail = extractEmailFromUrl()
+        if (urlEmail) {
+          setValue('email', urlEmail)
+          setEmailLocked(false) // Prefill only; allow edits until session is established
+          // Don't stop checking auth yet - wait for proper session
+        }
+        
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        if (!isMounted) return
+        
         if (session?.user?.email) {
-          setValue('email', session.user.email)
+          handleSessionEstablished(session.user.email)
+        } else {
+          // No session found, set timeout to allow for magic link processing
+          timeoutId = setTimeout(() => {
+            if (isMounted) {
+              setIsCheckingAuth(false) // Stop loading to show form
+              // Email may already be set from URL extraction; clear sensitive tokens from URL hash
+              clearAuthFragment()
+            }
+          }, AUTH_CHECK_TIMEOUT_MS)
         }
       } catch (error) {
         console.error('Session retrieval error:', error)
-        toast({
-          variant: 'destructive',
-          title: 'Authentication Error',
-          description: 'Failed to retrieve user session'
-        })
+        if (isMounted) {
+          toast({
+            variant: 'destructive',
+            title: 'Authentication Error',
+            description: 'Failed to retrieve user session'
+          })
+          setIsCheckingAuth(false)
+        }
       }
     }
-
-    updateSessionAndEmail()
+    
+    checkSession()
+    
+    // Cleanup
+    return () => {
+      isMounted = false
+      clearTimeout(timeoutId)
+      authListener?.subscription.unsubscribe()
+    }
   }, [setValue, toast])
 
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -163,6 +257,20 @@ export default function OnboardingPage() {
 
   const watchFirstName = watch('firstName')
 
+  if (isCheckingAuth) {
+    return (
+      <div className='flex min-h-screen flex-col'>
+        <PublicHeader />
+        <div className='flex flex-grow items-center justify-center'>
+          <div className='text-center'>
+            <Loader2 className='mx-auto h-8 w-8 animate-spin' />
+            <p className='mt-2 text-sm text-muted-foreground'>Checking authentication...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='flex min-h-screen flex-col'>
       <PublicHeader />
@@ -210,9 +318,15 @@ export default function OnboardingPage() {
                   <Label htmlFor='email'>Email</Label>
                   <Input
                     id='email'
-                    {...register('email', { required: 'Email is required' })}
-                    placeholder='Email'
-                    disabled
+                    {...register('email', { 
+                      required: 'Email is required',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'Invalid email address'
+                      }
+                    })}
+                    placeholder='Enter your email'
+                    disabled={emailLocked}
                   />
                   {errors.email && <p className='text-sm text-destructive'>{errors.email.message}</p>}
                 </div>
@@ -236,7 +350,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <Button type='submit' className='w-full' disabled={isLoading}>
+              <Button type='submit' className='w-full bg-blue-600 text-white hover:bg-blue-700' disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className='mr-2 h-4 w-4 animate-spin' />

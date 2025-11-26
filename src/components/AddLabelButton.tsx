@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { Label } from '../hooks/useSnippets'
+import { Label } from '@/types/snippet'
 import supabase from '@/lib/supabase'
 import { useLabels } from '@/hooks/useLabels'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface AddLabelButtonProps {
   snippetId: string
-  onLabelAdded: (newLabels: Label[]) => void
+  onLabelAdded: (newLabels: Label[] | ((prevLabels: Label[]) => Label[])) => void
 }
 
 const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded }) => {
@@ -16,6 +17,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
   const [suggestions, setSuggestions] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
   const { data: allLabels } = useLabels()
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -35,11 +37,8 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
     const newLabel: Label = {
       id: Date.now().toString(),
       text: labelText,
-      applied_at: new Date().toISOString(),
-      applied_by: null,
-      created_by: null,
-      upvoted_by: [{ id: 'temp', email: 'temp', upvoted_at: new Date().toISOString() }],
-      is_ai_suggested: false
+      upvote_count: 1,
+      upvoted_by_me: true
     }
 
     // Optimistic update - add the new label to the existing list
@@ -57,6 +56,11 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
       if (data && data.labels) {
         onLabelAdded(data.labels)
       }
+
+      // Invalidate all snippets lists to refresh data
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'snippets' && query.queryKey[1] === 'list'
+      })
     } catch (error) {
       console.error('Error creating label:', error)
       // Remove the optimistically added label if there's an error

@@ -18,7 +18,7 @@ export default function WelcomeCard() {
 
   return (
     <>
-      <Card className='relative mb-6 w-full overflow-hidden border-none bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800'>
+      <Card className='relative w-full overflow-hidden border-none bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800'>
         <CardHeader className='pb-2'>
           <Button
             variant='ghost'

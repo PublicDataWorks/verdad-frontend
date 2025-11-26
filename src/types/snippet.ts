@@ -24,11 +24,8 @@ export interface Upvoter {
 export interface Label {
   id: string
   text: string
-  applied_at: string
-  applied_by: string | null
-  created_by: string | null
-  upvoted_by: Upvoter[]
-  is_ai_suggested: boolean
+  upvote_count: number
+  upvoted_by_me: boolean
 }
 
 export interface ConfidenceScore {
