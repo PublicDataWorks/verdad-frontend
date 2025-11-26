@@ -33,7 +33,8 @@ export const fetchRecordingPreviews = async ({
   return {
     recordings: data.recordings || [],
     next_cursor: data.next_cursor,
-    has_more: data.has_more
+    has_more: data.has_more,
+    total_count: data.total_count
   }
 }
 

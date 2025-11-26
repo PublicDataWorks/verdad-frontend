@@ -67,6 +67,7 @@ export interface RecordingsResponse {
   recordings: RecordingPreview[]
   next_cursor: string | null
   has_more: boolean
+  total_count?: number // Only included on first page
 }
 
 export interface RecordingFilterOptions {

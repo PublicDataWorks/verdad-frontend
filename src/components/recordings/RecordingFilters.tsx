@@ -13,9 +13,10 @@ interface RecordingFiltersProps {
   isOpen: boolean
   onClose: () => void
   totalCount?: number
+  loadedCount?: number
 }
 
-export default function RecordingFilters({ isOpen, onClose, totalCount }: RecordingFiltersProps) {
+export default function RecordingFilters({ isOpen, onClose, totalCount, loadedCount }: RecordingFiltersProps) {
   const { data: filterOptions, isLoading: optionsLoading } = useRecordingFilterOptions()
   const { filters, setFilter, clearAll, isEmpty } = useRecordingFilters()
 
@@ -60,10 +61,19 @@ export default function RecordingFilters({ isOpen, onClose, totalCount }: Record
           </div>
 
           {/* Recording count */}
-          {totalCount !== undefined && (
+          {totalCount !== undefined && totalCount > 0 && (
             <div className="px-4 py-3 bg-muted/50">
               <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">{totalCount.toLocaleString()}</span> recordings
+                {loadedCount !== undefined && loadedCount < totalCount ? (
+                  <>
+                    Showing <span className="font-semibold text-foreground">{loadedCount.toLocaleString()}</span> of{' '}
+                    <span className="font-semibold text-foreground">{totalCount.toLocaleString()}</span> recordings
+                  </>
+                ) : (
+                  <>
+                    <span className="font-semibold text-foreground">{totalCount.toLocaleString()}</span> recordings
+                  </>
+                )}
               </p>
             </div>
           )}

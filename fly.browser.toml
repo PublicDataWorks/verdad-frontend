@@ -6,7 +6,11 @@ primary_region = 'sea'
 [build]
   dockerfile = "Dockerfile"
   [build.args]
-    VITE_APP_BUILD = "true"
+    VITE_SUPABASE_URL = "https://dzujjhzgzguciwryzwlx.supabase.co"
+    VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6dWpqaHpnemd1Y2l3cnl6d2x4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU1NzU4OTgsImV4cCI6MjA0MTE1MTg5OH0.siE0Uya6nIp0EpTfnIjIB4-YC9YAhGhER3XH7Bws_Bo"
+    VITE_AUDIO_BASE_URL = "https://audio.verdad.app"
+    VITE_BASE_URL = ""
+    VITE_AUTH_REDIRECT_URL = "/recordings"
 
 [http_service]
   internal_port = 8080

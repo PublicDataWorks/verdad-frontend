@@ -44,7 +44,9 @@ export default function RecordingBrowser() {
 
   // Flatten pages into single array
   const recordings = data?.pages.flatMap(page => page.recordings) ?? []
-  const totalCount = recordings.length
+  // Get total count from first page (server-side count of all matching records)
+  const totalCount = data?.pages[0]?.total_count ?? 0
+  const loadedCount = recordings.length
 
   // Restore scroll position on back navigation
   useEffect(() => {
@@ -106,6 +108,7 @@ export default function RecordingBrowser() {
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           totalCount={totalCount}
+          loadedCount={loadedCount}
         />
 
         {/* Main content */}
