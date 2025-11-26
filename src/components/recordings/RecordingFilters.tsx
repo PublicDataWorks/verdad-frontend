@@ -120,11 +120,13 @@ export default function RecordingFilters({ isOpen, onClose, totalCount, loadedCo
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All States</SelectItem>
-                    {filterOptions?.states.map(state => (
-                      <SelectItem key={state} value={state}>
-                        {state}
-                      </SelectItem>
-                    ))}
+                    {filterOptions?.states
+                      .filter(state => state && state.trim() !== '')
+                      .map(state => (
+                        <SelectItem key={state} value={state}>
+                          {state}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -142,11 +144,13 @@ export default function RecordingFilters({ isOpen, onClose, totalCount, loadedCo
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Stations</SelectItem>
-                    {filterOptions?.radio_stations.map(station => (
-                      <SelectItem key={station.code} value={station.name}>
-                        {station.name} ({station.code})
-                      </SelectItem>
-                    ))}
+                    {filterOptions?.radio_stations
+                      .filter(station => station.name && station.name.trim() !== '')
+                      .map(station => (
+                        <SelectItem key={station.code} value={station.name}>
+                          {station.name} ({station.code})
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -164,11 +168,13 @@ export default function RecordingFilters({ isOpen, onClose, totalCount, loadedCo
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Languages</SelectItem>
-                    {filterOptions?.languages.map(lang => (
-                      <SelectItem key={lang} value={lang}>
-                        {lang}
-                      </SelectItem>
-                    ))}
+                    {filterOptions?.languages
+                      .filter(lang => lang && lang.trim() !== '')
+                      .map(lang => (
+                        <SelectItem key={lang} value={lang}>
+                          {lang}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -186,11 +192,14 @@ export default function RecordingFilters({ isOpen, onClose, totalCount, loadedCo
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Labels</SelectItem>
-                    {filterOptions?.labels.slice(0, 50).map(label => (
-                      <SelectItem key={label.id} value={label.text}>
-                        {label.text}
-                      </SelectItem>
-                    ))}
+                    {filterOptions?.labels
+                      .filter(label => label.text && label.text.trim() !== '')
+                      .slice(0, 50)
+                      .map(label => (
+                        <SelectItem key={label.id} value={label.text}>
+                          {label.text}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
