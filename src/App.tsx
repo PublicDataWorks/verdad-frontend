@@ -19,8 +19,11 @@ import {
   PUBLIC_SNIPPET_PATH,
   SEARCH_PATH,
   SNIPPET_DETAIL_PATH,
-  SIGNUP_PATH
+  SIGNUP_PATH,
+  RECORDINGS_PATH,
+  RECORDING_DETAIL_PATH
 } from './constants/routes'
+import { RecordingBrowser, RecordingDetail } from './components/recordings'
 import { ResetPassword } from './components/ResetPassword'
 import { SidebarProvider } from './providers/sidebar'
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'
@@ -68,6 +71,9 @@ export default function App(): ReactElement {
                       <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
                       <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
                       <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />
+                      {/* Recording Browser routes - no auth required */}
+                      <Route path={RECORDINGS_PATH} element={<RecordingBrowser />} />
+                      <Route path={RECORDING_DETAIL_PATH} element={<RecordingDetail />} />
                       <Route element={<AuthenticatedLayout />}>
                         <Route path={SEARCH_PATH} element={<SearchInterface />} />
                         <Route path={SNIPPET_DETAIL_PATH} element={<SnippetDetail />} />

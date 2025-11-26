@@ -1,0 +1,21 @@
+# Fly.io configuration for the Recording Browser app
+# Deploy with: fly deploy -c fly.browser.toml
+app = 'verdad-browser'
+primary_region = 'sea'
+
+[build]
+  dockerfile = "Dockerfile"
+  [build.args]
+    VITE_APP_BUILD = "true"
+
+[http_service]
+  internal_port = 8080
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+    memory = '1gb'
+    cpu_kind = 'shared'
+    cpus = 2

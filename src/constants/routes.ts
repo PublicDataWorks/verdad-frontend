@@ -10,6 +10,10 @@ const SEARCH_PATH = '/search'
 const SNIPPET_DETAIL_PATH = '/snippet/:snippetId'
 const SIGNUP_PATH = '/signup'
 
+// Recording Browser routes (for browser.verdad.app)
+const RECORDINGS_PATH = '/recordings'
+const RECORDING_DETAIL_PATH = '/recordings/:recordingId'
+
 export {
   LOGIN_PATH,
   LOGOUT_PATH,
@@ -21,5 +25,7 @@ export {
   PUBLIC_SNIPPET_PATH,
   SEARCH_PATH,
   SNIPPET_DETAIL_PATH,
-  SIGNUP_PATH
+  SIGNUP_PATH,
+  RECORDINGS_PATH,
+  RECORDING_DETAIL_PATH
 }
