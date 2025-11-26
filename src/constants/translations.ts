@@ -74,7 +74,18 @@ export const translations = {
     noMoreSnippets: 'No more snippets',
     relatedSnippets: 'Related',
     comment: 'Comment',
-    comments: 'Comments'
+    comments: 'Comments',
+    trendingTopics: 'Trending Topics',
+    trendingFiltered: 'Based on your filters',
+    trendingAll: 'All snippets',
+    errorLoadingTrending: 'Unable to load trending topics',
+    noTrendingTopics: 'No trending topics found',
+    // Focus Mode
+    backToTrending: 'Back to trending',
+    snippetsInPeriod: 'snippets',
+    vsPreviousPeriod: 'vs previous period',
+    topicNotFound: 'Topic not found',
+    errorLoadingTopic: 'Unable to load topic details'
   },
   spanish: {
     filters: 'Filtros',
@@ -151,6 +162,17 @@ export const translations = {
     noMoreSnippets: 'No hay más fragmentos',
     relatedSnippets: 'Relacionados',
     comment: 'Comentario',
-    comments: 'Comentarios'
+    comments: 'Comentarios',
+    trendingTopics: 'Temas Populares',
+    trendingFiltered: 'Según tus filtros',
+    trendingAll: 'Todos los fragmentos',
+    errorLoadingTrending: 'No se pudieron cargar los temas populares',
+    noTrendingTopics: 'No se encontraron temas populares',
+    // Focus Mode
+    backToTrending: 'Volver a tendencias',
+    snippetsInPeriod: 'fragmentos',
+    vsPreviousPeriod: 'vs período anterior',
+    topicNotFound: 'Tema no encontrado',
+    errorLoadingTopic: 'No se pudo cargar el tema'
   }
 }

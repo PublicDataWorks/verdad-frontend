@@ -16,6 +16,7 @@ import { filterKeys } from '@/hooks/useFilterOptions'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { isMobile } from 'react-device-detect'
 import WelcomeCard from './ui/welcome-card'
+import TrendingCard from './ui/trending-card'
 import { useAuth } from '@/providers/auth'
 import { Button } from './ui/button'
 import {
@@ -30,6 +31,7 @@ import { Input } from './ui/input'
 import { debounce, isEmpty } from 'lodash'
 import { NoSnippetsMessage } from './NoSnippetsMessage'
 import { PAGE_SIZE } from '@/constants'
+import { cn } from '@/lib/utils'
 
 export default function SearchInterface() {
   const { showSidebar } = useSidebar()
@@ -165,7 +167,18 @@ export default function SearchInterface() {
             <NoSnippetsMessage />
           ) : (
             <>
-              {showWelcomeCard && isEmpty(searchTerm) && <WelcomeCard />}
+              {isEmpty(searchTerm) && (
+                <div className={cn(
+                  'mb-6 grid gap-4',
+                  showSidebar ? 'xl:grid-cols-2' : 'md:grid-cols-2'
+                )}>
+                  {showWelcomeCard && <WelcomeCard />}
+                  <TrendingCard
+                    expanded={!showWelcomeCard}
+                    className={showWelcomeCard ? '' : (showSidebar ? 'xl:col-span-2' : 'md:col-span-2')}
+                  />
+                </div>
+              )}
               <InfiniteScroll
                 dataLength={snippets.length}
                 next={fetchNextPage}
