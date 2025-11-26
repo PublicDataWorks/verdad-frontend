@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Calendar, MapPin, Radio, Clock, FileAudio, Tag } from 'lucide-react'
+import { Calendar, MapPin, Radio, FileAudio, Tag } from 'lucide-react'
 // Using custom card style to match main app
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -9,12 +9,14 @@ import RecordingShareButton from './RecordingShareButton'
 import RecordingStarToggle from './RecordingStarToggle'
 import { usePrefetchRecordingDetails } from '@/hooks/useRecordings'
 import { cn } from '@/lib/utils'
+import { highlightText } from '@/utils/highlightText'
 
 interface RecordingCardProps {
   recording: RecordingPreview
+  searchTerm?: string
 }
 
-export default function RecordingCard({ recording }: RecordingCardProps) {
+export default function RecordingCard({ recording, searchTerm }: RecordingCardProps) {
   const navigate = useNavigate()
   const prefetchDetails = usePrefetchRecordingDetails()
   const [localStarred, setLocalStarred] = useState(recording.starred)
@@ -38,13 +40,15 @@ export default function RecordingCard({ recording }: RecordingCardProps) {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
+    const time = date.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit'
     })
+    const weekday = date.toLocaleDateString('en-US', { weekday: 'long' })
+    const day = date.getDate()
+    const month = date.toLocaleDateString('en-US', { month: 'long' })
+    const year = date.getFullYear()
+    return `${time} on ${weekday}, ${day} ${month} ${year}`
   }
 
   const formatFileSize = (bytes: number) => {
@@ -84,11 +88,10 @@ export default function RecordingCard({ recording }: RecordingCardProps) {
               </div>
             )}
 
-            {/* Date and Day */}
+            {/* Date and Time */}
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
               <Calendar className="h-4 w-4 flex-shrink-0" />
               <span>{formatDate(recording.recorded_at)}</span>
-              <span className="text-muted-foreground">({recording.recording_day_of_week})</span>
             </div>
 
             {/* File info */}
@@ -103,6 +106,15 @@ export default function RecordingCard({ recording }: RecordingCardProps) {
                 </div>
               )}
             </div>
+
+            {/* Search excerpt - shown when searching */}
+            {recording.search_excerpt && searchTerm && (
+              <div className="mt-3 pt-3 border-t border-border">
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  {highlightText(recording.search_excerpt, searchTerm)}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Right side - actions and snippet count */}

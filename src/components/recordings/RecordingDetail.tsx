@@ -35,14 +35,15 @@ export default function RecordingDetail() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
+    const time = date.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit'
     })
+    const weekday = date.toLocaleDateString('en-US', { weekday: 'long' })
+    const day = date.getDate()
+    const month = date.toLocaleDateString('en-US', { month: 'long' })
+    const year = date.getFullYear()
+    return `${time} on ${weekday}, ${day} ${month} ${year}`
   }
 
   const formatFileSize = (bytes: number) => {
