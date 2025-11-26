@@ -83,9 +83,6 @@ export default function RecordingBrowser() {
               <Menu className="h-5 w-5" />
             </Button>
 
-            {/* Title */}
-            <h1 className="text-xl font-bold hidden sm:block">Recording Browser</h1>
-
             {/* Search bar */}
             <form onSubmit={handleSearchSubmit} className="flex-1 max-w-xl">
               <div className="relative">
