@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { fetchTrendingTopics, fetchTopicDetails } from '@/apis/trending'
 import { TrendingTopicsResponse, TopicDetailsResponse } from '@/types/trending'
 import { SnippetFilters } from '@/hooks/useSnippetFilters'
@@ -25,7 +25,8 @@ export const useTrendingTopics = ({
   return useQuery<TrendingTopicsResponse, Error>({
     queryKey: trendingKeys.topics(timespan, filters, language),
     queryFn: () => fetchTrendingTopics({ timespan, filters, language, limit }),
-    staleTime: 1000 * 60 * 5 // Cache for 5 minutes
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    placeholderData: keepPreviousData // Keep showing previous data while fetching
   })
 }
 
@@ -46,6 +47,7 @@ export const useTopicDetails = ({
     queryKey: trendingKeys.topicDetails(topicId || '', timespan, filters, language),
     queryFn: () => fetchTopicDetails({ topicId: topicId!, timespan, filters, language }),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    placeholderData: keepPreviousData, // Keep showing previous data while fetching
     enabled: enabled && !!topicId
   })
 }

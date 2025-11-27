@@ -38,6 +38,7 @@ const TIMESPAN_OPTIONS: { value: Timespan; label: string }[] = [
   { value: '24h', label: '24h' },
   { value: '7d', label: '7d' },
   { value: '30d', label: '30d' },
+  { value: '90d', label: '90d' },
   { value: 'all', label: 'All' }
 ]
 
@@ -85,7 +86,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
   const queryClient = useQueryClient()
 
   // Local state for timespan - doesn't affect URL or other components
-  const [timespan, setTimespan] = useState<Timespan>('all')
+  const [timespan, setTimespan] = useState<Timespan>('30d')
 
   // Track if content is fading for animation
   const [isFading, setIsFading] = useState(false)
@@ -93,6 +94,14 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
 
   // Check if we're in Focus Mode
   const focusedTopicId = filters.focusedTopic
+
+  // Exit Focus Mode if multiple labels are selected (user added another filter)
+  useEffect(() => {
+    if (focusedTopicId && filters.labels && filters.labels.length > 1) {
+      // Clear focusedTopic but keep the labels
+      setFilters({ focusedTopic: undefined })
+    }
+  }, [focusedTopicId, filters.labels, setFilters])
 
   // Fetch trending topics (Discovery Mode)
   const { data: trendingData, isLoading: trendingLoading, error: trendingError } = useTrendingTopics({
