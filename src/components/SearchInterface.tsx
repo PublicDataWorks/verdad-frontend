@@ -167,7 +167,7 @@ export default function SearchInterface() {
             <NoSnippetsMessage />
           ) : (
             <>
-              {isEmpty(searchTerm) && (
+              {isEmpty(searchTerm) && (filters.labels.length === 0 || filters.focusedTopic) && (
                 <div className={cn(
                   'mb-6 grid gap-4',
                   showSidebar ? 'xl:grid-cols-2' : 'md:grid-cols-2'

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { TrendingUp, Loader, Filter, ArrowLeft, TrendingDown, Minus, X } from 'lucide-react'
+import { TrendingUp, Filter, ArrowLeft, TrendingDown, Minus, X, Globe, MapPin, Radio, Gauge } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Sparkline from '@/components/ui/sparkline'
@@ -26,6 +26,79 @@ const hasActiveFilters = (filters: Record<string, unknown>): boolean => {
     (states && states.length > 0) ||
     (sources && sources.length > 0) ||
     !!politicalSpectrum
+  )
+}
+
+// Get active filter summary for display
+const getFilterSummary = (filters: Record<string, unknown>) => {
+  const { languages, states, sources, politicalSpectrum } = filters as {
+    languages?: string[]
+    states?: string[]
+    sources?: string[]
+    politicalSpectrum?: string
+  }
+
+  const items: { icon: React.ReactNode; label: string }[] = []
+
+  if (languages && languages.length > 0) {
+    items.push({
+      icon: <Globe className='h-3 w-3' />,
+      label: languages.length === 1 ? languages[0] : `${languages.length} languages`
+    })
+  }
+
+  if (states && states.length > 0) {
+    items.push({
+      icon: <MapPin className='h-3 w-3' />,
+      label: states.length === 1 ? states[0] : `${states.length} states`
+    })
+  }
+
+  if (sources && sources.length > 0) {
+    items.push({
+      icon: <Radio className='h-3 w-3' />,
+      label: sources.length === 1 ? sources[0] : `${sources.length} sources`
+    })
+  }
+
+  if (politicalSpectrum) {
+    const spectrumLabels: Record<string, string> = {
+      left: 'Left',
+      center_left: 'Center-Left',
+      center: 'Center',
+      center_right: 'Center-Right',
+      right: 'Right'
+    }
+    items.push({
+      icon: <Gauge className='h-3 w-3' />,
+      label: spectrumLabels[politicalSpectrum] || politicalSpectrum
+    })
+  }
+
+  return items
+}
+
+// Compact filter summary component
+function FilterSummary({ filters, label, className }: { filters: Record<string, unknown>; label?: string; className?: string }) {
+  const items = getFilterSummary(filters)
+
+  if (items.length === 0) return null
+
+  return (
+    <div className={cn('flex flex-wrap items-center gap-2', className)}>
+      {label && (
+        <span className='text-xs text-orange-600 dark:text-orange-400'>{label}</span>
+      )}
+      {items.map((item, index) => (
+        <div
+          key={index}
+          className='flex items-center gap-1 rounded-full bg-orange-200/60 dark:bg-orange-800/60 px-2 py-0.5 text-xs text-orange-700 dark:text-orange-200'
+        >
+          {item.icon}
+          <span className='truncate max-w-[100px]'>{item.label}</span>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -92,16 +165,8 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
   const [isFading, setIsFading] = useState(false)
   const prevDataRef = useRef<string | null>(null)
 
-  // Check if we're in Focus Mode
-  const focusedTopicId = filters.focusedTopic
-
-  // Exit Focus Mode if multiple labels are selected (user added another filter)
-  useEffect(() => {
-    if (focusedTopicId && filters.labels && filters.labels.length > 1) {
-      // Clear focusedTopic but keep the labels
-      setFilters({ focusedTopic: undefined })
-    }
-  }, [focusedTopicId, filters.labels, setFilters])
+  // Check if we're in Focus Mode - either explicitly set or when exactly one label is selected
+  const focusedTopicId = filters.focusedTopic || (filters.labels?.length === 1 ? filters.labels[0] : undefined)
 
   // Fetch trending topics (Discovery Mode)
   const { data: trendingData, isLoading: trendingLoading, error: trendingError } = useTrendingTopics({
@@ -234,10 +299,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
         {/* Filter indicator in Focus Mode */}
         {isFiltered && (
           <div className='mt-3 pt-3 border-t border-orange-200/50 dark:border-orange-700/50'>
-            <div className='flex items-center gap-1.5 text-xs text-orange-600 dark:text-orange-400'>
-              <Filter className='h-3 w-3' />
-              <span>{t.trendingFiltered || 'Based on your filters'}</span>
-            </div>
+            <FilterSummary filters={filters} label={t.trendingFiltered || 'Based on your filters:'} />
           </div>
         )}
       </div>
@@ -329,16 +391,14 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
               )}
             </div>
             {!focusedTopicId && (
-              <div className='ml-7 flex items-center gap-1.5'>
-                {isFiltered && <Filter className='h-3 w-3 text-orange-500 dark:text-orange-400' />}
-                <span className={cn(
-                  'text-xs transition-all duration-300',
-                  isFiltered
-                    ? 'text-orange-600 dark:text-orange-300'
-                    : 'text-orange-500/70 dark:text-orange-400/60'
-                )}>
-                  {isFiltered ? (t.trendingFiltered || 'Based on your filters') : (t.trendingAll || 'All snippets')}
-                </span>
+              <div className='ml-7'>
+                {isFiltered ? (
+                  <FilterSummary filters={filters} label={t.trendingFiltered || 'Based on your filters:'} />
+                ) : (
+                  <span className='text-xs text-orange-500/70 dark:text-orange-400/60'>
+                    {t.trendingAll || 'All snippets'}
+                  </span>
+                )}
               </div>
             )}
           </div>
