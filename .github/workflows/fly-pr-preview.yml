@@ -1,0 +1,130 @@
+name: Fly PR Preview
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  FLY_ORG: verdad
+  FLY_REGION: sjc
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    # Only one deployment per PR at a time
+    concurrency:
+      group: pr-${{ github.event.number }}
+      cancel-in-progress: true
+
+    # GitHub Deployments integration - shows URL in PR
+    environment:
+      name: pr-${{ github.event.number }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: Checkout
+        if: github.event.action != 'closed'
+        uses: actions/checkout@v4
+
+      - name: Setup Fly CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Set app name
+        id: app-name
+        run: echo "name=pr-${{ github.event.number }}-verdad-frontend" >> $GITHUB_OUTPUT
+
+      # Deploy on open/update
+      - name: Deploy Preview
+        id: deploy
+        if: github.event.action != 'closed'
+        run: |
+          APP_NAME="${{ steps.app-name.outputs.name }}"
+
+          # Check if app exists
+          if ! flyctl apps list | grep -q "$APP_NAME"; then
+            echo "Creating new app: $APP_NAME"
+            flyctl apps create "$APP_NAME" --org "$FLY_ORG"
+          fi
+
+          # Deploy with build args
+          flyctl deploy \
+            --app "$APP_NAME" \
+            --config fly.preview.toml \
+            --region "$FLY_REGION" \
+            --remote-only \
+            --build-arg VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
+            --build-arg VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+            --build-arg VITE_BASE_URL="${{ secrets.VITE_BASE_URL }}" \
+            --build-arg VITE_LIVEBLOCKS_PUBKEY="${{ secrets.VITE_LIVEBLOCKS_PUBKEY }}" \
+            --build-arg VITE_AUTH_REDIRECT_URL="${{ secrets.VITE_AUTH_REDIRECT_URL }}" \
+            --build-arg VITE_AUDIO_BASE_URL="${{ secrets.VITE_AUDIO_BASE_URL }}"
+
+          # Get the app URL
+          URL="https://${APP_NAME}.fly.dev"
+          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "Preview deployed to: $URL"
+
+      # Comment on PR with preview URL
+      - name: Comment Preview URL
+        if: github.event.action != 'closed'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = '${{ steps.deploy.outputs.url }}';
+            const body = `## 🚀 Preview Deployment Ready!\n\n**URL:** ${url}\n\nThis preview will be automatically destroyed when the PR is closed.`;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Preview Deployment Ready')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+      # Destroy on PR close
+      - name: Destroy Preview
+        if: github.event.action == 'closed'
+        run: |
+          APP_NAME="${{ steps.app-name.outputs.name }}"
+
+          if flyctl apps list | grep -q "$APP_NAME"; then
+            echo "Destroying app: $APP_NAME"
+            flyctl apps destroy "$APP_NAME" --yes
+          else
+            echo "App $APP_NAME not found, skipping destroy"
+          fi
+
+      # Clean up GitHub environment
+      - name: Delete GitHub Environment
+        if: github.event.action == 'closed'
+        uses: strumwolf/delete-deployment-environment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: pr-${{ github.event.number }}
+          onlyRemoveDeployments: true
