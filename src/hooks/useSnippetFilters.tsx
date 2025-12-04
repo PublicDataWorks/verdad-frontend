@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
+export type Timespan = '24h' | '7d' | '30d' | '90d' | 'all'
+
 export type SnippetFilters = {
   languages: string[]
   states: string[]
@@ -12,6 +14,8 @@ export type SnippetFilters = {
   order_by?: 'activities' | 'upvotes' | 'comments' | 'latest'
   upvotedBy: string[]
   searchTerm?: string
+  timespan?: Timespan
+  focusedTopic?: string // ID of the topic in Focus Mode
 }
 
 const parseArrayParam = (param: string | null): string[] => {
@@ -37,6 +41,8 @@ function useSnippetFilters() {
   const order_by = searchParams.get('order_by') as SnippetFilters['order_by']
   const upvotedBy = parseArrayParam(searchParams.get('upvotedBy')) as SnippetFilters['upvotedBy']
   const searchTerm = searchParams.get('searchTerm') as SnippetFilters['searchTerm']
+  const timespan = (searchParams.get('timespan') as SnippetFilters['timespan']) || '7d'
+  const focusedTopic = searchParams.get('focusedTopic') as SnippetFilters['focusedTopic']
 
   const setSnippetFilters = useCallback(
     (filters: SnippetFilters) => {
@@ -62,6 +68,14 @@ function useSnippetFilters() {
         newParams.set('searchTerm', filters.searchTerm.trim())
       }
 
+      if (filters.timespan && filters.timespan !== '7d') {
+        newParams.set('timespan', filters.timespan)
+      }
+
+      if (filters.focusedTopic) {
+        newParams.set('focusedTopic', filters.focusedTopic)
+      }
+
       setSearchParams(newParams)
     },
     [setSearchParams]
@@ -77,7 +91,9 @@ function useSnippetFilters() {
     politicalSpectrum,
     order_by,
     upvotedBy,
-    searchTerm
+    searchTerm,
+    timespan,
+    focusedTopic
   }
 
   const isEmpty = useCallback(() => {
@@ -100,6 +116,14 @@ function useSnippetFilters() {
     [setSnippetFilters, filters]
   )
 
+  // Set multiple filters at once to avoid race conditions
+  const setFilters = useCallback(
+    (updates: Partial<SnippetFilters>) => {
+      setSnippetFilters({ ...filters, ...updates })
+    },
+    [setSnippetFilters, filters]
+  )
+
   const clearAll = useCallback(() => {
     const newParams = new URLSearchParams()
     if (order_by) {
@@ -114,6 +138,7 @@ function useSnippetFilters() {
   return {
     filters,
     setFilter,
+    setFilters,
     clearAll,
     isEmpty
   }
