@@ -101,7 +101,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email,
         password,
         options: {
-          emailRedirectTo: (import.meta.env.VITE_BASE_URL as string) + '/onboarding'
+          emailRedirectTo: `${window.location.origin}/onboarding`
         }
       })
 
