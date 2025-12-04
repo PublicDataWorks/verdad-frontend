@@ -7,7 +7,6 @@ on:
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
   FLY_ORG: verdad
-  FLY_REGION: sjc
 
 jobs:
   preview:
@@ -37,6 +36,44 @@ jobs:
         id: app-name
         run: echo "name=pr-${{ github.event.number }}-verdad-frontend" >> $GITHUB_OUTPUT
 
+      # Post "deploying" status comment
+      - name: Comment Deploying Status
+        if: github.event.action != 'closed'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const appName = 'pr-${{ github.event.number }}-verdad-frontend';
+            const url = `https://${appName}.fly.dev`;
+            const sha = '${{ github.event.pull_request.head.sha }}'.substring(0, 7);
+            const body = `## 🔄 Preview Deployment\n\n**Status:** Building and deploying...\n**Commit:** \`${sha}\`\n**URL:** ${url} *(will be available shortly)*`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Preview Deployment')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
       # Deploy on open/update
       - name: Deploy Preview
         id: deploy
@@ -54,7 +91,6 @@ jobs:
           flyctl deploy \
             --app "$APP_NAME" \
             --config fly.preview.toml \
-            --region "$FLY_REGION" \
             --remote-only \
             --build-arg VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
             --build-arg VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
@@ -75,9 +111,9 @@ jobs:
         with:
           script: |
             const url = '${{ steps.deploy.outputs.url }}';
-            const body = `## 🚀 Preview Deployment Ready!\n\n**URL:** ${url}\n\nThis preview will be automatically destroyed when the PR is closed.`;
+            const sha = '${{ github.event.pull_request.head.sha }}'.substring(0, 7);
+            const body = `## ✅ Preview Deployment Ready!\n\n**URL:** ${url}\n**Commit:** \`${sha}\`\n\n---\n*Preview auto-updates on push. Destroyed when PR closes.*`;
 
-            // Find existing comment
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -86,11 +122,10 @@ jobs:
 
             const botComment = comments.find(comment =>
               comment.user.type === 'Bot' &&
-              comment.body.includes('Preview Deployment Ready')
+              comment.body.includes('Preview Deployment')
             );
 
             if (botComment) {
-              // Update existing comment
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -98,7 +133,6 @@ jobs:
                 body: body
               });
             } else {
-              // Create new comment
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
