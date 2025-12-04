@@ -42,5 +42,6 @@ i18n-script/docker-compose.yml
 .eslintcache
 .vscode
 
-# Deploy script which contains build secrets
+# Deploy script and production secrets
 deploy-production.sh
+.env.production

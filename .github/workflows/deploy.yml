@@ -1,0 +1,28 @@
+name: Deploy to Fly.io
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Fly CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: |
+          flyctl deploy --remote-only \
+            --build-arg VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
+            --build-arg VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+            --build-arg VITE_BASE_URL="${{ secrets.VITE_BASE_URL }}" \
+            --build-arg VITE_LIVEBLOCKS_PUBKEY="${{ secrets.VITE_LIVEBLOCKS_PUBKEY }}" \
+            --build-arg VITE_AUTH_REDIRECT_URL="${{ secrets.VITE_AUTH_REDIRECT_URL }}" \
+            --build-arg VITE_AUDIO_BASE_URL="${{ secrets.VITE_AUDIO_BASE_URL }}"
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
