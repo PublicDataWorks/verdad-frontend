@@ -1,5 +1,6 @@
 // src/api/api.ts
 
+import posthog from 'posthog-js'
 import supabase from '@/lib/supabase'
 import {
   Snippet,
@@ -10,6 +11,8 @@ import {
   PublicSnippetData,
   IRelatedSnippet
 } from '../types/snippet'
+
+const SLOW_THRESHOLD_MS = 20_000
 
 export const fetchSnippet = async (id: string, language: string): Promise<Snippet> => {
   const { data, error } = await supabase.rpc('get_snippet', {
@@ -30,7 +33,8 @@ export const fetchSnippets = async ({
   filters,
   language,
   orderBy,
-  searchTerm = ''
+  searchTerm = '',
+  abortSignal
 }: {
   pageParam: number
   pageSize: number
@@ -38,26 +42,51 @@ export const fetchSnippets = async ({
   language: string
   orderBy: string
   searchTerm?: string
+  abortSignal: AbortSignal
 }): Promise<PaginatedResponse> => {
   // Remove unset filter properties
   const actualFilters = { ...filters }
   if (!actualFilters?.politicalSpectrum) {
     delete actualFilters.politicalSpectrum
   }
-
-  const { data, error } = await supabase.rpc('get_snippets', {
+  const getSnippetsOptions = {
     page: pageParam,
     page_size: pageSize,
     p_language: language,
     p_filter: actualFilters,
     p_order_by: orderBy,
     p_search_term: searchTerm
-  })
+  }
+
+  const startTime = performance.now()
+
+  const { data, error } = await supabase.rpc('get_snippets', getSnippetsOptions).abortSignal(abortSignal)
+
+  const durationMs = Math.round(performance.now() - startTime)
 
   if (error) {
     console.error('Error fetching snippets:', error)
+
+    const isAborted = /AbortError/i.test(error.message)
+    if (!isAborted) {
+      const isTimeout = /timeout|canceling statement/i.test(error.message)
+      posthog.captureException(error, {
+        ...getSnippetsOptions,
+        duration_ms: durationMs,
+        is_timeout: isTimeout
+      })
+    }
+
     throw error
   }
+
+  posthog.capture('get_snippets_rpc', {
+    ...getSnippetsOptions,
+    duration_ms: durationMs,
+    status: durationMs > SLOW_THRESHOLD_MS ? 'warning' : 'success',
+    total_pages: data.total_pages,
+    total_snippets: data.num_of_snippets
+  })
 
   return {
     snippets: data.snippets,
