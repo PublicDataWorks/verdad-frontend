@@ -97,9 +97,7 @@ jobs:
             --build-arg VITE_BASE_URL="${{ secrets.VITE_BASE_URL }}" \
             --build-arg VITE_LIVEBLOCKS_PUBKEY="${{ secrets.VITE_LIVEBLOCKS_PUBKEY }}" \
             --build-arg VITE_AUTH_REDIRECT_URL="${{ secrets.VITE_AUTH_REDIRECT_URL }}" \
-            --build-arg VITE_AUDIO_BASE_URL="${{ secrets.VITE_AUDIO_BASE_URL }}" \
-            --build-arg VITE_POSTHOG_KEY="${{ secrets.VITE_POSTHOG_KEY }}" \
-            --build-arg VITE_POSTHOG_HOST="${{ secrets.VITE_POSTHOG_HOST }}"
+            --build-arg VITE_AUDIO_BASE_URL="${{ secrets.VITE_AUDIO_BASE_URL }}"
 
           # Get the app URL
           URL="https://${APP_NAME}.fly.dev"
