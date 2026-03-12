@@ -1,6 +1,6 @@
 // src/api/api.ts
 
-import posthog from 'posthog-js'
+import { capture, captureException } from '@/lib/posthog'
 import supabase from '@/lib/supabase'
 import {
   Snippet,
@@ -70,7 +70,7 @@ export const fetchSnippets = async ({
     const isAborted = /AbortError/i.test(error.message)
     if (!isAborted) {
       const isTimeout = /timeout|canceling statement/i.test(error.message)
-      posthog.captureException(error, {
+      captureException(error, {
         ...getSnippetsOptions,
         duration_ms: durationMs,
         is_timeout: isTimeout
@@ -80,7 +80,7 @@ export const fetchSnippets = async ({
     throw error
   }
 
-  posthog.capture('get_snippets_rpc', {
+  capture('get_snippets_rpc', {
     ...getSnippetsOptions,
     duration_ms: durationMs,
     status: durationMs > SLOW_THRESHOLD_MS ? 'warning' : 'success',
