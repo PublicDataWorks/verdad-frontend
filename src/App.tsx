@@ -30,6 +30,8 @@ import LandingPage from './pages/Landing'
 import { AudioProvider } from './providers/audio'
 import { ThemeProvider } from './providers/theme'
 import { TooltipProvider } from './components/ui/tooltip'
+import PostHogProvider from './providers/posthog'
+
 const queryClient = new QueryClient()
 
 export default function App(): ReactElement {
@@ -38,27 +40,29 @@ export default function App(): ReactElement {
       <ThemeProvider>
         <TooltipProvider delayDuration={100}>
           <AuthProvider>
-            <AudioProvider>
-              <SidebarProvider>
-                <LanguageProvider>
-                  <Router>
-                    <Routes>
-                      <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
-                      <Route path={LOGIN_PATH} element={<LoginPage />} />
-                      <Route path={SIGNUP_PATH} element={<SignupPage />} />
-                      <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
-                      <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
-                      <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />
-                      <Route element={<AuthenticatedLayout />}>
-                        <Route path={SEARCH_PATH} element={<SearchInterface />} />
-                        <Route path={SNIPPET_DETAIL_PATH} element={<SnippetDetail />} />
-                      </Route>
-                      <Route path='*' element={<LandingPage />} />
-                    </Routes>
-                  </Router>
-                </LanguageProvider>
-              </SidebarProvider>
-            </AudioProvider>
+            <PostHogProvider>
+              <AudioProvider>
+                <SidebarProvider>
+                  <LanguageProvider>
+                    <Router>
+                      <Routes>
+                        <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
+                        <Route path={LOGIN_PATH} element={<LoginPage />} />
+                        <Route path={SIGNUP_PATH} element={<SignupPage />} />
+                        <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
+                        <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
+                        <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />
+                        <Route element={<AuthenticatedLayout />}>
+                          <Route path={SEARCH_PATH} element={<SearchInterface />} />
+                          <Route path={SNIPPET_DETAIL_PATH} element={<SnippetDetail />} />
+                        </Route>
+                        <Route path='*' element={<LandingPage />} />
+                      </Routes>
+                    </Router>
+                  </LanguageProvider>
+                </SidebarProvider>
+              </AudioProvider>
+            </PostHogProvider>
           </AuthProvider>
         </TooltipProvider>
       </ThemeProvider>

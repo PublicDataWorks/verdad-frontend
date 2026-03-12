@@ -19,8 +19,16 @@ export function useSnippets({
 }) {
   return useInfiniteQuery<PaginatedResponse, Error>({
     queryKey: snippetKeys.lists(pageSize, filters, language, orderBy, searchTerm),
-    queryFn: ({ pageParam }) =>
-      fetchSnippets({ pageParam: pageParam ?? 0, pageSize, filters, language, orderBy, searchTerm }),
+    queryFn: ({ pageParam, signal }) =>
+      fetchSnippets({
+        pageParam: pageParam ?? 0,
+        pageSize,
+        filters,
+        language,
+        orderBy,
+        searchTerm,
+        abortSignal: signal
+      }),
     initialPageParam: 0,
     getNextPageParam: lastPage => {
       if (lastPage.currentPage >= lastPage.total_pages - 1) {

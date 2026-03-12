@@ -125,7 +125,6 @@ export interface IRelatedSnippet {
   }>
   recorded_at: string
   comment_count: number
-  similarity: number
   starred_by_user: boolean
   file_path: string
   start_time: string
