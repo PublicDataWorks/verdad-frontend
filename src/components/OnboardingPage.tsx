@@ -94,6 +94,12 @@ export default function OnboardingPage() {
       
       if (session?.user?.email) {
         handleSessionEstablished(session.user.email)
+      } else if (session?.user && !session.user.email) {
+        // Session exists but email is missing - clear the bad state
+        console.error('Auth state change: Session without email detected', session.user)
+        setValue('email', '')
+        setEmailLocked(false)
+        void supabase.auth.signOut() // Clear the problematic session
       } else if (session === null) {
         // Clear email if user signs out (e.g., in another tab)
         setValue('email', '')
@@ -117,6 +123,20 @@ export default function OnboardingPage() {
         
         if (session?.user?.email) {
           handleSessionEstablished(session.user.email)
+        } else if (session?.user && !session.user.email) {
+          // Session exists but email is missing - this is an error state
+          console.error('Session found but email is missing:', session.user)
+          if (isMounted) {
+            setEmailLocked(false) // Ensure field is not locked
+            setIsCheckingAuth(false)
+            toast({
+              variant: 'destructive',
+              title: 'Authentication Issue',
+              description: 'Your session is missing email information. Please try signing in again.'
+            })
+            // Clear the problematic session
+            void supabase.auth.signOut()
+          }
         } else {
           // No session found, set timeout to allow for magic link processing
           timeoutId = setTimeout(() => {
@@ -318,6 +338,11 @@ export default function OnboardingPage() {
                   <Label htmlFor='email'>Email</Label>
                   <Input
                     id='email'
+                    type='email'
+                    autoComplete='email'
+                    autoCapitalize='none'
+                    autoCorrect='off'
+                    spellCheck='false'
                     {...register('email', { 
                       required: 'Email is required',
                       pattern: {
@@ -374,6 +399,11 @@ export default function OnboardingPage() {
                 Sign in with Google
               </Button>
             </form>
+            {debugInfo && (
+              <div className='mt-4 p-2 bg-gray-100 rounded text-xs font-mono whitespace-pre-wrap'>
+                Debug Info:{debugInfo}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
