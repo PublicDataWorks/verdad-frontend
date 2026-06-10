@@ -36,6 +36,9 @@ const resolveNextPath = (next: string | null): string => {
 const EXPIRED_OR_USED_LINK_MESSAGE =
   'This link is invalid or was already used. If you already confirmed your email, your account may be ready; try logging in. Otherwise, sign up again to receive a new confirmation email.'
 
+const MALFORMED_LINK_MESSAGE =
+  'This confirmation link is incomplete or malformed. Open the most recent email we sent you and use its full link, or sign up again to receive a new one.'
+
 const getErrorMessage = (error: AuthError | null): string => {
   if (!error) return EXPIRED_OR_USED_LINK_MESSAGE
   // Expired, already-consumed (e.g. by an email link scanner), or malformed tokens
@@ -55,10 +58,13 @@ export default function AuthConfirmPage() {
   const nextPath = useMemo(() => resolveNextPath(searchParams.get('next')), [searchParams])
   const isValidType = type ? VALID_EMAIL_OTP_TYPES.has(type) : false
   const canConfirm = Boolean(tokenHash && isValidType)
+  // A malformed link (missing/unknown token_hash or type) can never be confirmed,
+  // so surface the error state immediately instead of a silently disabled button.
+  const displayError = errorMessage ?? (canConfirm ? null : MALFORMED_LINK_MESSAGE)
 
   const handleConfirm = async () => {
     if (!tokenHash || !type || !isValidType) {
-      setErrorMessage('This confirmation link is missing required verification details.')
+      setErrorMessage(MALFORMED_LINK_MESSAGE)
       return
     }
 
@@ -86,7 +92,7 @@ export default function AuthConfirmPage() {
       <main className='flex flex-grow items-center justify-center px-4 py-10'>
         <Card className='w-full max-w-md'>
           <CardHeader className='text-center'>
-            {errorMessage ? (
+            {displayError ? (
               <MailWarning className='mx-auto h-12 w-12 text-destructive' aria-hidden='true' />
             ) : (
               <CheckCircle2 className='mx-auto h-12 w-12 text-blue-600' aria-hidden='true' />
@@ -95,8 +101,8 @@ export default function AuthConfirmPage() {
             <CardDescription>Continue to finish creating your VERDAD account.</CardDescription>
           </CardHeader>
           <CardContent className='space-y-4 text-center'>
-            {errorMessage ? (
-              <p className='text-sm text-destructive'>{errorMessage}</p>
+            {displayError ? (
+              <p className='text-sm text-destructive'>{displayError}</p>
             ) : (
               <p className='text-sm text-muted-foreground'>
                 This final step verifies your email address and opens onboarding.
@@ -104,7 +110,7 @@ export default function AuthConfirmPage() {
             )}
           </CardContent>
           <CardFooter className='flex flex-col gap-3'>
-            {errorMessage ? (
+            {displayError ? (
               <>
                 <Button className='h-11 w-full bg-[#005EF4] hover:bg-[#004ED1]' onClick={() => navigate(LOGIN_PATH)}>
                   Back to login
