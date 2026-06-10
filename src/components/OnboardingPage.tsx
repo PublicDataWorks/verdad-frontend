@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Upload, Loader2 } from 'lucide-react'
+import { Upload, Loader2, MailWarning } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import { jwtDecode } from 'jwt-decode'
@@ -20,10 +20,39 @@ type FormData = {
   lastName: string
 }
 
+type AuthFragmentError = {
+  title: string
+  description: string
+}
+
 const AUTH_CHECK_TIMEOUT_MS = 3000
 
-// Auth tokens to remove from URL hash for security
-const AUTH_TOKENS_TO_CLEAR = ['access_token', 'refresh_token', 'expires_in', 'token_type', 'provider_token']
+// Auth tokens and errors to remove from URL hash for security
+const AUTH_FRAGMENT_KEYS_TO_CLEAR = [
+  'access_token',
+  'refresh_token',
+  'expires_in',
+  'token_type',
+  'provider_token',
+  'error',
+  'error_code',
+  'error_description',
+  'sb'
+]
+
+const getAuthFragmentError = (): AuthFragmentError | null => {
+  const hashParams = new URLSearchParams(window.location.hash.substring(1))
+  const errorCode = hashParams.get('error_code')
+
+  if (errorCode === 'otp_expired') {
+    return {
+      title: 'Confirmation link expired',
+      description: 'Your confirmation link is invalid or has expired. Please sign up again to receive a new email.'
+    }
+  }
+
+  return null
+}
 
 // Extract email from URL hash containing JWT access token
 const extractEmailFromUrl = (): string | null => {
@@ -47,11 +76,11 @@ const extractEmailFromUrl = (): string | null => {
 const clearAuthFragment = (): void => {
   const url = new URL(window.location.href)
   if (!url.hash) return
-  
+
   const params = new URLSearchParams(url.hash.substring(1))
   // Remove common auth fragments introduced by providers
-  AUTH_TOKENS_TO_CLEAR.forEach(k => params.delete(k))
-  
+  AUTH_FRAGMENT_KEYS_TO_CLEAR.forEach(k => params.delete(k))
+
   const newHash = params.toString()
   const newUrl = `${url.origin}${url.pathname}${url.search}${newHash ? '#' + newHash : ''}`
   window.history.replaceState(null, '', newUrl)
@@ -60,6 +89,7 @@ const clearAuthFragment = (): void => {
 export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  const [authFragmentError, setAuthFragmentError] = useState<AuthFragmentError | null>(null)
   const [emailLocked, setEmailLocked] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
@@ -76,22 +106,33 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     let isMounted = true
-    let timeoutId: ReturnType<typeof setTimeout>
-    
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+    const authError = getAuthFragmentError()
+    if (authError) {
+      setAuthFragmentError(authError)
+      setIsCheckingAuth(false)
+      clearAuthFragment()
+      return () => {
+        isMounted = false
+        if (timeoutId) clearTimeout(timeoutId)
+      }
+    }
+
     // Handle successful session establishment (DRY helper)
     const handleSessionEstablished = (email: string) => {
       if (!isMounted) return
-      clearTimeout(timeoutId)
+      if (timeoutId) clearTimeout(timeoutId)
       setValue('email', email)
       setEmailLocked(true) // Lock email when it comes from verified session
       setIsCheckingAuth(false)
       clearAuthFragment() // Clear sensitive tokens from URL
     }
-    
+
     // Listen for auth state changes (handles magic link authentication)
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return
-      
+
       if (session?.user?.email) {
         handleSessionEstablished(session.user.email)
       } else if (session === null) {
@@ -100,7 +141,7 @@ export default function OnboardingPage() {
         setEmailLocked(false)
       }
     })
-    
+
     const checkSession = async () => {
       try {
         // First, try to extract email from URL (for browsers with stricter cookie policies)
@@ -110,11 +151,13 @@ export default function OnboardingPage() {
           setEmailLocked(false) // Prefill only; allow edits until session is established
           // Don't stop checking auth yet - wait for proper session
         }
-        
-        const { data: { session } } = await supabase.auth.getSession()
-        
+
+        const {
+          data: { session }
+        } = await supabase.auth.getSession()
+
         if (!isMounted) return
-        
+
         if (session?.user?.email) {
           handleSessionEstablished(session.user.email)
         } else {
@@ -139,13 +182,13 @@ export default function OnboardingPage() {
         }
       }
     }
-    
+
     checkSession()
-    
+
     // Cleanup
     return () => {
       isMounted = false
-      clearTimeout(timeoutId)
+      if (timeoutId) clearTimeout(timeoutId)
       authListener?.subscription.unsubscribe()
     }
   }, [setValue, toast])
@@ -271,6 +314,31 @@ export default function OnboardingPage() {
     )
   }
 
+  if (authFragmentError) {
+    return (
+      <div className='flex min-h-screen flex-col'>
+        <PublicHeader />
+        <div className='flex flex-grow items-center justify-center px-4 py-10'>
+          <Card className='w-full max-w-md'>
+            <CardHeader className='text-center'>
+              <MailWarning className='mx-auto h-12 w-12 text-destructive' aria-hidden='true' />
+              <CardTitle className='text-3xl font-semibold'>{authFragmentError.title}</CardTitle>
+              <p className='mt-4 text-base font-normal text-muted-foreground'>{authFragmentError.description}</p>
+            </CardHeader>
+            <CardContent className='flex flex-col gap-3'>
+              <Button className='w-full bg-blue-600 text-white hover:bg-blue-700' onClick={() => navigate('/signup')}>
+                Sign up again
+              </Button>
+              <Button variant='link' type='button' onClick={() => navigate('/login')}>
+                Back to login
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='flex min-h-screen flex-col'>
       <PublicHeader />
@@ -298,7 +366,8 @@ export default function OnboardingPage() {
                     type='button'
                     variant='outline'
                     className='w-40'
-                    onClick={() => document.getElementById('avatar-upload')?.click()}>
+                    onClick={() => document.getElementById('avatar-upload')?.click()}
+                  >
                     <Upload className='mr-2 h-4 w-4' />
                     Upload Avatar
                   </Button>
@@ -318,7 +387,7 @@ export default function OnboardingPage() {
                   <Label htmlFor='email'>Email</Label>
                   <Input
                     id='email'
-                    {...register('email', { 
+                    {...register('email', {
                       required: 'Email is required',
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,

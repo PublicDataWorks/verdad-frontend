@@ -6,10 +6,12 @@ import { CheckCircle2, Loader2, MailWarning } from 'lucide-react'
 import PublicHeader from './PublicHeader'
 import { Button } from './ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
-import { LOGIN_PATH, ONBOARDING_PATH } from '../constants/routes'
+import { LOGIN_PATH, ONBOARDING_PATH, SIGNUP_PATH } from '../constants/routes'
 import supabase from '../lib/supabase'
 
-const VALID_EMAIL_OTP_TYPES = new Set(['email', 'signup', 'invite', 'magiclink', 'recovery', 'email_change'])
+// Only signup-confirmation tokens belong on this page. Recovery and magic-link
+// emails have their own landing pages (e.g. /reset-password).
+const VALID_EMAIL_OTP_TYPES = new Set(['email', 'signup'])
 
 const resolveNextPath = (next: string | null): string => {
   if (!next) return ONBOARDING_PATH
@@ -26,8 +28,16 @@ const resolveNextPath = (next: string | null): string => {
   }
 }
 
-const getErrorMessage = (error: AuthError | null): string =>
-  error?.message ?? 'This confirmation link is invalid or has expired. Please request a new sign-up email.'
+const EXPIRED_OR_USED_LINK_MESSAGE =
+  'This link is invalid or was already used. If you already confirmed your email, your account may be ready; try logging in. Otherwise, sign up again to receive a new confirmation email.'
+
+const getErrorMessage = (error: AuthError | null): string => {
+  if (!error) return EXPIRED_OR_USED_LINK_MESSAGE
+  // Expired, already-consumed (e.g. by an email link scanner), or malformed tokens
+  // surface as 403s with an "expired or is invalid" message.
+  if (error.status === 403 || /expired|invalid/i.test(error.message)) return EXPIRED_OR_USED_LINK_MESSAGE
+  return error.message
+}
 
 export default function AuthConfirmPage() {
   const navigate = useNavigate()
@@ -89,25 +99,38 @@ export default function AuthConfirmPage() {
             )}
           </CardContent>
           <CardFooter className='flex flex-col gap-3'>
-            <Button
-              className='h-11 w-full bg-[#005EF4] hover:bg-[#004ED1]'
-              onClick={() => {
-                void handleConfirm()
-              }}
-              disabled={!canConfirm || isConfirming}
-            >
-              {isConfirming ? (
-                <>
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' aria-hidden='true' />
-                  Confirming...
-                </>
-              ) : (
-                'Confirm email'
-              )}
-            </Button>
-            <Button variant='link' type='button' onClick={() => navigate(LOGIN_PATH)}>
-              Back to login
-            </Button>
+            {errorMessage ? (
+              <>
+                <Button className='h-11 w-full bg-[#005EF4] hover:bg-[#004ED1]' onClick={() => navigate(LOGIN_PATH)}>
+                  Back to login
+                </Button>
+                <Button variant='link' type='button' onClick={() => navigate(SIGNUP_PATH)}>
+                  Sign up again
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className='h-11 w-full bg-[#005EF4] hover:bg-[#004ED1]'
+                  onClick={() => {
+                    void handleConfirm()
+                  }}
+                  disabled={!canConfirm || isConfirming}
+                >
+                  {isConfirming ? (
+                    <>
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' aria-hidden='true' />
+                      Confirming...
+                    </>
+                  ) : (
+                    'Confirm email'
+                  )}
+                </Button>
+                <Button variant='link' type='button' onClick={() => navigate(LOGIN_PATH)}>
+                  Back to login
+                </Button>
+              </>
+            )}
           </CardFooter>
         </Card>
       </main>
