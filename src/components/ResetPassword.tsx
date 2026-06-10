@@ -29,6 +29,7 @@ const getResetErrorMessage = (error: AuthError | null): string => {
 export function ResetPassword() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isTokenVerified, setIsTokenVerified] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const navigate = useNavigate()
@@ -62,10 +63,12 @@ export function ResetPassword() {
 
     const establishLegacySession = async () => {
       try {
-        await supabase.auth.setSession({
+        // setSession resolves with { error } rather than throwing on invalid/expired tokens.
+        const { error: sessionError } = await supabase.auth.setSession({
           access_token: legacyHashParams.access_token,
           refresh_token: legacyHashParams.refresh_token
         })
+        if (sessionError) setError(EXPIRED_LINK_MESSAGE)
       } catch {
         setError(EXPIRED_LINK_MESSAGE)
       }
@@ -82,8 +85,10 @@ export function ResetPassword() {
 
     try {
       // Redeem the one-time recovery token now (scanner-safe), establishing a session
-      // before we change the password.
-      if (tokenHash) {
+      // before we change the password. The token is single-use, so only verify it once:
+      // if updateUser later fails (e.g. weak/duplicate password) and the user retries,
+      // we reuse the session already established instead of re-redeeming a spent token.
+      if (tokenHash && !isTokenVerified) {
         const { error: verifyError } = await supabase.auth.verifyOtp({
           token_hash: tokenHash,
           type: (tokenType ?? 'recovery') as EmailOtpType
@@ -92,6 +97,7 @@ export function ResetPassword() {
           setError(getResetErrorMessage(verifyError))
           return
         }
+        setIsTokenVerified(true)
       }
 
       const { error: updateError } = await supabase.auth.updateUser({
