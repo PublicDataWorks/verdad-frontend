@@ -9,9 +9,51 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { LOGIN_PATH, ONBOARDING_PATH, SIGNUP_PATH } from '../constants/routes'
 import supabase from '../lib/supabase'
 
-// Only signup-confirmation tokens belong on this page. Recovery and magic-link
-// emails have their own landing pages (e.g. /reset-password).
-const VALID_EMAIL_OTP_TYPES = new Set(['email', 'signup'])
+interface ConfirmCopy {
+  title: string
+  description: string
+  body: string
+  cta: string
+}
+
+// Per-flow copy for the button-gated confirmation page. Each of these OTP types
+// only establishes a session and redirects, so they share this page.
+// `recovery` is deliberately excluded — it needs a password-set step and has its
+// own page (/reset-password).
+const CONFIRM_COPY: Record<string, ConfirmCopy> = {
+  email: {
+    title: 'Confirm your email',
+    description: 'Continue to finish creating your VERDAD account.',
+    body: 'This final step verifies your email address and opens onboarding.',
+    cta: 'Confirm email'
+  },
+  signup: {
+    title: 'Confirm your email',
+    description: 'Continue to finish creating your VERDAD account.',
+    body: 'This final step verifies your email address and opens onboarding.',
+    cta: 'Confirm email'
+  },
+  magiclink: {
+    title: 'Sign in to VERDAD',
+    description: 'Continue to finish signing in.',
+    body: 'Click below to securely complete your sign-in.',
+    cta: 'Sign in'
+  },
+  invite: {
+    title: 'Accept your invitation',
+    description: 'Continue to set up your VERDAD account.',
+    body: 'Click below to accept your invitation and get started.',
+    cta: 'Accept invitation'
+  },
+  email_change: {
+    title: 'Confirm your email change',
+    description: 'Continue to update your email address.',
+    body: 'Click below to confirm this change to your VERDAD account email.',
+    cta: 'Confirm email change'
+  }
+}
+
+const VALID_EMAIL_OTP_TYPES = new Set(Object.keys(CONFIRM_COPY))
 
 const resolveNextPath = (next: string | null): string => {
   if (!next) return ONBOARDING_PATH
@@ -58,6 +100,7 @@ export default function AuthConfirmPage() {
   const nextPath = useMemo(() => resolveNextPath(searchParams.get('next')), [searchParams])
   const isValidType = type ? VALID_EMAIL_OTP_TYPES.has(type) : false
   const canConfirm = Boolean(tokenHash && isValidType)
+  const copy = isValidType && type ? CONFIRM_COPY[type] : CONFIRM_COPY.email
   // A malformed link (missing/unknown token_hash or type) can never be confirmed,
   // so surface the error state immediately instead of a silently disabled button.
   const displayError = errorMessage ?? (canConfirm ? null : MALFORMED_LINK_MESSAGE)
@@ -97,16 +140,14 @@ export default function AuthConfirmPage() {
             ) : (
               <CheckCircle2 className='mx-auto h-12 w-12 text-blue-600' aria-hidden='true' />
             )}
-            <CardTitle className='text-2xl'>Confirm your email</CardTitle>
-            <CardDescription>Continue to finish creating your VERDAD account.</CardDescription>
+            <CardTitle className='text-2xl'>{copy.title}</CardTitle>
+            <CardDescription>{copy.description}</CardDescription>
           </CardHeader>
           <CardContent className='space-y-4 text-center'>
             {displayError ? (
               <p className='text-sm text-destructive'>{displayError}</p>
             ) : (
-              <p className='text-sm text-muted-foreground'>
-                This final step verifies your email address and opens onboarding.
-              </p>
+              <p className='text-sm text-muted-foreground'>{copy.body}</p>
             )}
           </CardContent>
           <CardFooter className='flex flex-col gap-3'>
@@ -134,7 +175,7 @@ export default function AuthConfirmPage() {
                       Confirming...
                     </>
                   ) : (
-                    'Confirm email'
+                    copy.cta
                   )}
                 </Button>
                 <Button variant='link' type='button' onClick={() => navigate(LOGIN_PATH)}>
