@@ -22,6 +22,11 @@ const resolveNextPath = (next: string | null): string => {
       return ONBOARDING_PATH
     }
 
+    // Protocol-relative paths (//host) would be treated as cross-origin URLs by history.pushState.
+    if (nextUrl.pathname.startsWith('//')) {
+      return ONBOARDING_PATH
+    }
+
     return `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`
   } catch {
     return ONBOARDING_PATH
