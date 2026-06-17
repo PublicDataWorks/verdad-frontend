@@ -4,16 +4,31 @@ import React, { useState } from 'react'
 import { InboxNotification, InboxNotificationList } from '@liveblocks/react-ui'
 import * as Popover from '@radix-ui/react-popover'
 import {
+  ClientSideSuspense,
   useDeleteAllInboxNotifications,
-  useInboxNotifications,
   useMarkAllInboxNotificationsAsRead,
   useUnreadInboxNotificationsCount
 } from '@liveblocks/react'
+import { useInboxNotifications } from '@liveblocks/react/suspense'
 import { Button } from '@/components/ui/button'
-import { ErrorBoundary } from 'react-error-boundary'
-import { ClientSideSuspense } from '@liveblocks/react'
+import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 import { useSnippet } from '@/hooks/useSnippets'
 import { InboxIcon } from 'lucide-react'
+
+function NotificationsError({ resetErrorBoundary }: FallbackProps) {
+  return (
+    <div className='flex flex-col items-center gap-2 p-3 text-center text-sm text-red-500'>
+      <span>Error loading notifications</span>
+      <Button
+        variant='ghost'
+        size='sm'
+        onClick={resetErrorBoundary}
+        className='text-xs text-blue-600 hover:text-blue-700'>
+        Try again
+      </Button>
+    </div>
+  )
+}
 
 function Inbox({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const { inboxNotifications } = useInboxNotifications()
@@ -100,8 +115,7 @@ export function InboxPopover() {
         <Popover.Content
           className='mr-2 flex max-h-[calc(100vh-5rem)] w-[calc(100vw-2rem)] max-w-[460px] flex-col overflow-hidden rounded-xl bg-white shadow-lg outline-none'
           sideOffset={5}>
-          <ErrorBoundary
-            fallback={<div className='p-3 text-center text-sm text-red-500'>Error loading notifications</div>}>
+          <ErrorBoundary FallbackComponent={NotificationsError}>
             <ClientSideSuspense fallback={<div className='p-3 text-center text-sm'>Loading...</div>}>
               <div className='bg-background-gray-lightest sticky top-0 z-10 flex flex-col border-b border-gray-200 p-3'>
                 <h3 className='mb-2 text-base font-semibold'>Notifications</h3>

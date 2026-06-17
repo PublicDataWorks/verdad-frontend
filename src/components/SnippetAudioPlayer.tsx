@@ -77,7 +77,12 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
         if (currentAudio.id && currentAudio.id !== id && currentAudio.pause) {
           currentAudio.pause()
         }
-        audio.play()
+        // Set playing synchronously so a rapid second click pauses instead of
+        // re-triggering play(); revert if the clip fails to load or is blocked.
+        setIsPlaying(true)
+        void audio.play().catch(() => {
+          setIsPlaying(false)
+        })
       }
     }
   }
