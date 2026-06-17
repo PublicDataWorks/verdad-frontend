@@ -77,7 +77,11 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
         if (currentAudio.id && currentAudio.id !== id && currentAudio.pause) {
           currentAudio.pause()
         }
-        audio.play()
+        void audio.play().catch(() => {
+          // play() rejects if the clip fails to load or playback is blocked;
+          // the 'play' event never fires, so isPlaying stays false.
+          setIsPlaying(false)
+        })
       }
     }
   }
