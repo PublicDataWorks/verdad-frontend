@@ -4,14 +4,14 @@ import React, { useState } from 'react'
 import { InboxNotification, InboxNotificationList } from '@liveblocks/react-ui'
 import * as Popover from '@radix-ui/react-popover'
 import {
+  ClientSideSuspense,
   useDeleteAllInboxNotifications,
-  useInboxNotifications,
   useMarkAllInboxNotificationsAsRead,
   useUnreadInboxNotificationsCount
 } from '@liveblocks/react'
+import { useInboxNotifications } from '@liveblocks/react/suspense'
 import { Button } from '@/components/ui/button'
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
-import { ClientSideSuspense } from '@liveblocks/react'
 import { useSnippet } from '@/hooks/useSnippets'
 import { InboxIcon } from 'lucide-react'
 
