@@ -50,10 +50,8 @@ export default function AudioPlayer({ audioSrc, startTime }: AudioPlayerProps) {
         audio.pause()
         setIsPlaying(false)
       } else {
-        audio.play().then(
-          () => setIsPlaying(true),
-          () => setIsPlaying(false)
-        )
+        setIsPlaying(true)
+        audio.play().catch(() => setIsPlaying(false))
       }
     }
   }
