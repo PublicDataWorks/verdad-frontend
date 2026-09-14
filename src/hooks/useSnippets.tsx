@@ -15,7 +15,7 @@ export const snippetKeys = {
  * `pages[0]` rather than the page that was just fetched.
  */
 export const getNextSnippetsPageParam = (lastPage: PaginatedResponse, allPages: PaginatedResponse[]) => {
-  const totalPages = allPages[0]?.total_pages ?? lastPage.total_pages
+  const totalPages = allPages[0].total_pages
   if (totalPages === null || lastPage.currentPage >= totalPages - 1) {
     return undefined
   }
