@@ -24,7 +24,13 @@ export function useSnippets({
   orderBy?: string
   searchTerm?: string
 }) {
-  return useInfiniteQuery<PaginatedResponse, Error, InfiniteData<PaginatedResponse>, ReturnType<typeof snippetKeys.lists>, number>({
+  return useInfiniteQuery<
+    PaginatedResponse,
+    Error,
+    InfiniteData<PaginatedResponse>,
+    ReturnType<typeof snippetKeys.lists>,
+    number
+  >({
     queryKey: snippetKeys.lists(pageSize, filters, language, orderBy, searchTerm),
     queryFn: ({ pageParam, signal }) =>
       fetchSnippets({

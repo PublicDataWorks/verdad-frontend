@@ -82,7 +82,7 @@ const clearAuthFragment = (): void => {
   AUTH_FRAGMENT_KEYS_TO_CLEAR.forEach(k => params.delete(k))
 
   const newHash = params.toString()
-  const newUrl = `${url.origin}${url.pathname}${url.search}${newHash ? `#${  newHash}` : ''}`
+  const newUrl = `${url.origin}${url.pathname}${url.search}${newHash ? `#${newHash}` : ''}`
   window.history.replaceState(null, '', newUrl)
 }
 

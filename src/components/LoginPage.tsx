@@ -104,14 +104,16 @@ export default function LoginPage() {
                 variant='link'
                 className='h-auto p-0 text-blue-600'
                 type='button'
-                onClick={() => navigate(SIGNUP_PATH)}>
+                onClick={() => navigate(SIGNUP_PATH)}
+              >
                 Don&apos;t have an account?
               </Button>
               <Button
                 variant='link'
                 className='h-auto p-0 text-blue-600'
                 type='button'
-                onClick={() => navigate('/forget-password')}>
+                onClick={() => navigate('/forget-password')}
+              >
                 Forgot password?
               </Button>
             </div>

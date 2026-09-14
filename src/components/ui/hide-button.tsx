@@ -40,28 +40,28 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
   }
 
   return showConfirmation ? (
-        <div className='flex space-x-2'>
-          <Button variant='destructive' size='sm' onClick={handleConfirm} disabled={hideSnippetMutation.isPending}>
-            {hideSnippetMutation.isPending ? (isHidden ? 'Unhiding...' : 'Hiding...') : isHidden ? 'Unhide' : 'Hide'}
-          </Button>
-          <Button variant='outline' size='sm' onClick={handleCancel}>
-            Cancel
-          </Button>
-        </div>
-      ) : (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant='ghost' size='icon' onClick={handleToggleClick} disabled={hideSnippetMutation.isPending}>
-              {isHidden ? (
-                <PlusCircle className='h-6 w-6 min-w-[24px]' />
-              ) : (
-                <MinusCircle className='h-6 w-6 min-w-[24px]' />
-              )}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{isHidden ? 'Unhide snippet' : 'Hide snippet'}</p>
-          </TooltipContent>
-        </Tooltip>
-      )
+    <div className='flex space-x-2'>
+      <Button variant='destructive' size='sm' onClick={handleConfirm} disabled={hideSnippetMutation.isPending}>
+        {hideSnippetMutation.isPending ? (isHidden ? 'Unhiding...' : 'Hiding...') : isHidden ? 'Unhide' : 'Hide'}
+      </Button>
+      <Button variant='outline' size='sm' onClick={handleCancel}>
+        Cancel
+      </Button>
+    </div>
+  ) : (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant='ghost' size='icon' onClick={handleToggleClick} disabled={hideSnippetMutation.isPending}>
+          {isHidden ? (
+            <PlusCircle className='h-6 w-6 min-w-[24px]' />
+          ) : (
+            <MinusCircle className='h-6 w-6 min-w-[24px]' />
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{isHidden ? 'Unhide snippet' : 'Hide snippet'}</p>
+      </TooltipContent>
+    </Tooltip>
+  )
 }

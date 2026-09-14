@@ -9,7 +9,10 @@ import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { useFilters } from '@/hooks/useFilterOptions'
-import useSnippetFilters, { PoliticalSpectrum as PoliticalSpectrumValue, SnippetFilters } from '@/hooks/useSnippetFilters'
+import useSnippetFilters, {
+  PoliticalSpectrum as PoliticalSpectrumValue,
+  SnippetFilters
+} from '@/hooks/useSnippetFilters'
 import { useSnippets } from '@/hooks/useSnippets'
 import { useEffect, useRef } from 'react'
 import { PAGE_SIZE } from '@/constants'
@@ -77,7 +80,7 @@ export default function Sidebar() {
   }
 
   return (
-    <div className='hide-scrollbar bg-background-gray-lightest  fixed inset-0 z-50 h-[100svh] overflow-y-auto md:relative md:inset-auto  md:h-full md:w-80'>
+    <div className='hide-scrollbar fixed  inset-0 z-50 h-[100svh] overflow-y-auto bg-background-gray-lightest md:relative md:inset-auto  md:h-full md:w-80'>
       <div className='p-6'>
         <div className='mb-4 flex h-[24px] items-center justify-between'>
           <CountUp
@@ -86,7 +89,7 @@ export default function Sidebar() {
             duration={1.5}
             separator=','
             preserveValue
-            className='text-text-primary text-sm font-medium'
+            className='text-sm font-medium text-text-primary'
             formattingFn={n => {
               if (n >= 1000) {
                 return `${(n / 1000).toFixed(1)}k snippets`
@@ -107,44 +110,44 @@ export default function Sidebar() {
         </div>
 
         <div>
-          <h3 className='text-text-primary mb-2 mt-6 font-medium'>{t.sourceLanguage}</h3>
+          <h3 className='mb-2 mt-6 font-medium text-text-primary'>{t.sourceLanguage}</h3>
           <MultiSelect
             options={languages}
             onValueChange={values => setFilter('languages', values)}
             value={selectedLanguages}
             placeholder={t.selectLanguages}
             maxCount={2}
-            className='text-text-tertiary w-full'
+            className='w-full text-text-tertiary'
           />
 
-          <h3 className='text-text-primary mb-2 mt-6 font-medium'>{t.state}</h3>
+          <h3 className='mb-2 mt-6 font-medium text-text-primary'>{t.state}</h3>
           <MultiSelect
             options={states}
             onValueChange={values => setFilter('states', values)}
             value={selectedStates}
             placeholder={t.selectStates}
             maxCount={2}
-            className='text-text-tertiary w-full'
+            className='w-full text-text-tertiary'
           />
 
-          <h3 className='text-text-primary mb-2 mt-6 font-medium'>{t.source}</h3>
+          <h3 className='mb-2 mt-6 font-medium text-text-primary'>{t.source}</h3>
           <MultiSelect
             options={sources}
             onValueChange={values => setFilter('sources', values)}
             value={selectedSources}
             placeholder={t.selectSources}
             maxCount={2}
-            className='text-text-tertiary w-full'
+            className='w-full text-text-tertiary'
           />
 
-          <h3 className='text-text-primary mb-2 mt-6 font-medium'>{t.label}</h3>
+          <h3 className='mb-2 mt-6 font-medium text-text-primary'>{t.label}</h3>
           <MultiSelect
             options={labels.items}
             onValueChange={values => setFilter('labels', values)}
             value={selectedLabels}
             placeholder={t.selectLabels}
             maxCount={3}
-            className='text-text-tertiary w-full'
+            className='w-full text-text-tertiary'
           />
 
           <h3 className='mb-2 mt-6 font-medium text-text-secondary'>{t.politicalSpectrum}</h3>

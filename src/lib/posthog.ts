@@ -2,9 +2,7 @@ import posthog from 'posthog-js'
 
 const isEnabled = !!import.meta.env.VITE_POSTHOG_KEY
 
-export function capture(
-  ...args: Parameters<typeof posthog.capture>
-): ReturnType<typeof posthog.capture> | undefined {
+export function capture(...args: Parameters<typeof posthog.capture>): ReturnType<typeof posthog.capture> | undefined {
   if (!isEnabled) return undefined
   return posthog.capture(...args)
 }

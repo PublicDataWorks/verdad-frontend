@@ -21,7 +21,8 @@ export const useTrendingTopics = ({
   filters: Partial<SnippetFilters>
   language: string
   limit?: number
-}) => useQuery<TrendingTopicsResponse, Error>({
+}) =>
+  useQuery<TrendingTopicsResponse, Error>({
     queryKey: trendingKeys.topics(timespan, filters, language),
     queryFn: () => fetchTrendingTopics({ timespan, filters, language, limit }),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
@@ -40,7 +41,8 @@ export const useTopicDetails = ({
   filters: Partial<SnippetFilters>
   language: string
   enabled?: boolean
-}) => useQuery<TopicDetailsResponse, Error>({
+}) =>
+  useQuery<TopicDetailsResponse, Error>({
     queryKey: trendingKeys.topicDetails(topicId || '', timespan, filters, language),
     queryFn: () => fetchTopicDetails({ topicId: topicId!, timespan, filters, language }),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes

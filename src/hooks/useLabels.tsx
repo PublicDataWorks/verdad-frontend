@@ -12,7 +12,8 @@ export const fetchAllLabels = async () => {
   return (data as { text: string }[]).map(label => label.text)
 }
 
-export const useLabels = () => useQuery({
+export const useLabels = () =>
+  useQuery({
     queryKey: ['labels'],
     queryFn: fetchAllLabels
   })

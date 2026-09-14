@@ -79,23 +79,29 @@ const getFilterSummary = (filters: Record<string, unknown>) => {
 }
 
 // Compact filter summary component
-function FilterSummary({ filters, label, className }: { filters: Record<string, unknown>; label?: string; className?: string }) {
+function FilterSummary({
+  filters,
+  label,
+  className
+}: {
+  filters: Record<string, unknown>
+  label?: string
+  className?: string
+}) {
   const items = getFilterSummary(filters)
 
   if (items.length === 0) return null
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>
-      {label && (
-        <span className='text-xs text-orange-600 dark:text-orange-400'>{label}</span>
-      )}
+      {label && <span className='text-xs text-orange-600 dark:text-orange-400'>{label}</span>}
       {items.map((item, index) => (
         <div
           key={index}
-          className='flex items-center gap-1 rounded-full bg-orange-200/60 dark:bg-orange-800/60 px-2 py-0.5 text-xs text-orange-700 dark:text-orange-200'
+          className='flex items-center gap-1 rounded-full bg-orange-200/60 px-2 py-0.5 text-xs text-orange-700 dark:bg-orange-800/60 dark:text-orange-200'
         >
           {item.icon}
-          <span className='truncate max-w-[100px]'>{item.label}</span>
+          <span className='max-w-[100px] truncate'>{item.label}</span>
         </div>
       ))}
     </div>
@@ -120,11 +126,11 @@ function TopicSkeleton({ count = 5 }: { count?: number }) {
   return (
     <div className='space-y-2'>
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className='flex items-center justify-between gap-2 px-2 py-1.5 animate-pulse'>
-          <div className='h-4 bg-orange-200/50 dark:bg-orange-700/50 rounded flex-1 max-w-[60%]' />
+        <div key={i} className='flex animate-pulse items-center justify-between gap-2 px-2 py-1.5'>
+          <div className='h-4 max-w-[60%] flex-1 rounded bg-orange-200/50 dark:bg-orange-700/50' />
           <div className='flex items-center gap-2'>
-            <div className='w-[60px] h-5 bg-orange-200/50 dark:bg-orange-700/50 rounded' />
-            <div className='w-10 h-4 bg-orange-200/50 dark:bg-orange-700/50 rounded' />
+            <div className='h-5 w-[60px] rounded bg-orange-200/50 dark:bg-orange-700/50' />
+            <div className='h-4 w-10 rounded bg-orange-200/50 dark:bg-orange-700/50' />
           </div>
         </div>
       ))}
@@ -135,16 +141,16 @@ function TopicSkeleton({ count = 5 }: { count?: number }) {
 function FocusModeSkeleton() {
   return (
     <div className='animate-pulse'>
-      <div className='h-6 bg-orange-200/50 dark:bg-orange-700/50 rounded w-3/4 mb-4' />
-      <div className='h-[100px] bg-orange-200/30 dark:bg-orange-700/30 rounded mb-4' />
+      <div className='mb-4 h-6 w-3/4 rounded bg-orange-200/50 dark:bg-orange-700/50' />
+      <div className='mb-4 h-[100px] rounded bg-orange-200/30 dark:bg-orange-700/30' />
       <div className='flex justify-between'>
         <div>
-          <div className='h-8 w-20 bg-orange-200/50 dark:bg-orange-700/50 rounded mb-1' />
-          <div className='h-3 w-16 bg-orange-200/30 dark:bg-orange-700/30 rounded' />
+          <div className='mb-1 h-8 w-20 rounded bg-orange-200/50 dark:bg-orange-700/50' />
+          <div className='h-3 w-16 rounded bg-orange-200/30 dark:bg-orange-700/30' />
         </div>
         <div className='text-right'>
-          <div className='h-5 w-16 bg-orange-200/50 dark:bg-orange-700/50 rounded mb-1' />
-          <div className='h-3 w-24 bg-orange-200/30 dark:bg-orange-700/30 rounded' />
+          <div className='mb-1 h-5 w-16 rounded bg-orange-200/50 dark:bg-orange-700/50' />
+          <div className='h-3 w-24 rounded bg-orange-200/30 dark:bg-orange-700/30' />
         </div>
       </div>
     </div>
@@ -169,7 +175,11 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
   const focusedTopicId = filters.focusedTopic || (filters.labels?.length === 1 ? filters.labels[0] : undefined)
 
   // Fetch trending topics (Discovery Mode)
-  const { data: trendingData, isLoading: trendingLoading, error: trendingError } = useTrendingTopics({
+  const {
+    data: trendingData,
+    isLoading: trendingLoading,
+    error: trendingError
+  } = useTrendingTopics({
     timespan,
     filters,
     language,
@@ -177,7 +187,11 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
   })
 
   // Fetch topic details (Focus Mode)
-  const { data: topicData, isLoading: topicLoading, error: topicError } = useTopicDetails({
+  const {
+    data: topicData,
+    isLoading: topicLoading,
+    error: topicError
+  } = useTopicDetails({
     topicId: focusedTopicId,
     timespan,
     filters,
@@ -186,13 +200,16 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
   })
 
   // Prefetch topic details on hover for faster transitions
-  const prefetchTopicDetails = useCallback((topicId: string) => {
-    void queryClient.prefetchQuery({
-      queryKey: trendingKeys.topicDetails(topicId, timespan, filters, language),
-      queryFn: () => fetchTopicDetails({ topicId, timespan, filters, language }),
-      staleTime: 1000 * 60 * 5
-    })
-  }, [queryClient, timespan, filters, language])
+  const prefetchTopicDetails = useCallback(
+    (topicId: string) => {
+      void queryClient.prefetchQuery({
+        queryKey: trendingKeys.topicDetails(topicId, timespan, filters, language),
+        queryFn: () => fetchTopicDetails({ topicId, timespan, filters, language }),
+        staleTime: 1000 * 60 * 5
+      })
+    },
+    [queryClient, timespan, filters, language]
+  )
 
   const handleTimespanChange = (newTimespan: Timespan) => {
     setTimespan(newTimespan)
@@ -216,9 +233,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
 
   // Trigger fade animation when data changes
   useEffect(() => {
-    const currentDataKey = focusedTopicId
-      ? topicData?.topic?.id
-      : JSON.stringify(topics.map(topic => topic.id))
+    const currentDataKey = focusedTopicId ? topicData?.topic?.id : JSON.stringify(topics.map(topic => topic.id))
     if (prevDataRef.current !== null && prevDataRef.current !== currentDataKey) {
       setIsFading(true)
       const timer = setTimeout(() => setIsFading(false), 300)
@@ -231,27 +246,18 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
   // Render Focus Mode UI
   const renderFocusMode = () => {
     if (!topicData?.topic) {
-      return (
-        <p className='text-sm text-orange-700 dark:text-orange-300'>
-          {t.topicNotFound || 'Topic not found'}
-        </p>
-      )
+      return <p className='text-sm text-orange-700 dark:text-orange-300'>{t.topicNotFound || 'Topic not found'}</p>
     }
 
     const { topic } = topicData
-    const {changePercent} = topic
+    const { changePercent } = topic
     const isPositive = changePercent > 0
     const isNegative = changePercent < 0
 
     return (
-      <div className={cn(
-        'transition-opacity duration-300',
-        isFading ? 'opacity-50' : 'opacity-100'
-      )}>
+      <div className={cn('transition-opacity duration-300', isFading ? 'opacity-50' : 'opacity-100')}>
         {/* Topic title */}
-        <h3 className='mb-3 text-lg font-semibold text-orange-900 dark:text-orange-100'>
-          {topic.text}
-        </h3>
+        <h3 className='mb-3 text-lg font-semibold text-orange-900 dark:text-orange-100'>{topic.text}</h3>
 
         {/* Enhanced interactive chart */}
         <div className='mb-3'>
@@ -271,24 +277,27 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
             <span className='text-3xl font-bold text-orange-900 dark:text-orange-100'>
               {topic.count.toLocaleString()}
             </span>
-            <span className='text-xs text-orange-600 dark:text-orange-400'>
-              {t.snippetsInPeriod || 'snippets'}
-            </span>
+            <span className='text-xs text-orange-600 dark:text-orange-400'>{t.snippetsInPeriod || 'snippets'}</span>
           </div>
 
           {/* Change indicator */}
           {topicData.timespan !== 'all' && (
             <div className='flex flex-col items-end'>
-              <div className={cn(
-                'flex items-center gap-1 text-sm font-semibold',
-                isPositive && 'text-green-600 dark:text-green-400',
-                isNegative && 'text-red-600 dark:text-red-400',
-                !isPositive && !isNegative && 'text-orange-600 dark:text-orange-400'
-              )}>
+              <div
+                className={cn(
+                  'flex items-center gap-1 text-sm font-semibold',
+                  isPositive && 'text-green-600 dark:text-green-400',
+                  isNegative && 'text-red-600 dark:text-red-400',
+                  !isPositive && !isNegative && 'text-orange-600 dark:text-orange-400'
+                )}
+              >
                 {isPositive && <TrendingUp className='h-4 w-4' />}
                 {isNegative && <TrendingDown className='h-4 w-4' />}
                 {!isPositive && !isNegative && <Minus className='h-4 w-4' />}
-                <span>{isPositive ? '+' : ''}{changePercent}%</span>
+                <span>
+                  {isPositive ? '+' : ''}
+                  {changePercent}%
+                </span>
               </div>
               <span className='text-xs text-orange-500 dark:text-orange-400'>
                 {t.vsPreviousPeriod || 'vs previous period'}
@@ -299,7 +308,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
 
         {/* Filter indicator in Focus Mode */}
         {isFiltered && (
-          <div className='mt-3 pt-3 border-t border-orange-200/50 dark:border-orange-700/50'>
+          <div className='mt-3 border-t border-orange-200/50 pt-3 dark:border-orange-700/50'>
             <FilterSummary filters={filters} label={t.trendingFiltered || 'Based on your filters:'} />
           </div>
         )}
@@ -318,10 +327,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
     }
 
     return (
-      <div className={cn(
-        'transition-opacity duration-300',
-        isFading ? 'opacity-50' : 'opacity-100'
-      )}>
+      <div className={cn('transition-opacity duration-300', isFading ? 'opacity-50' : 'opacity-100')}>
         <div className='mb-1 flex justify-end pr-2'>
           <span className='text-[10px] uppercase tracking-wide text-orange-500/70 dark:text-orange-400/70'>
             snippets
@@ -337,7 +343,8 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
               className={cn(
                 'flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-orange-200/50 dark:hover:bg-orange-800/50',
                 expanded && index >= 5 && 'hidden lg:flex'
-              )}>
+              )}
+            >
               <span className='flex-1 truncate text-sm font-medium text-orange-900 dark:text-orange-100'>
                 {topic.text}
               </span>
@@ -366,7 +373,8 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
       className={cn(
         'relative overflow-hidden border-none bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-900 dark:to-amber-800',
         className
-      )}>
+      )}
+    >
       <CardHeader className='pb-2'>
         <div className='flex items-center justify-between'>
           <div className='flex flex-col'>
@@ -379,9 +387,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
                   className='flex items-center gap-1 text-orange-600 hover:text-orange-800 dark:text-orange-400 dark:hover:text-orange-200'
                 >
                   <ArrowLeft className='h-5 w-5' />
-                  <span className='text-sm font-medium'>
-                    {t.backToTrending || 'Back to trending'}
-                  </span>
+                  <span className='text-sm font-medium'>{t.backToTrending || 'Back to trending'}</span>
                 </button>
               ) : (
                 // Discovery Mode header
@@ -419,7 +425,8 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
                     timespan === option.value
                       ? 'bg-orange-200 text-orange-900 hover:bg-orange-200 dark:bg-orange-800 dark:text-orange-100'
                       : 'text-orange-700 hover:bg-orange-200/50 dark:text-orange-300'
-                  )}>
+                  )}
+                >
                   {option.label}
                 </Button>
               ))}
@@ -440,13 +447,16 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
       </CardHeader>
       <CardContent className='pb-4'>
         {isLoading ? (
-          focusedTopicId ? <FocusModeSkeleton /> : <TopicSkeleton count={expanded ? 5 : 5} />
+          focusedTopicId ? (
+            <FocusModeSkeleton />
+          ) : (
+            <TopicSkeleton count={expanded ? 5 : 5} />
+          )
         ) : error ? (
           <p className='text-sm text-orange-700 dark:text-orange-300'>
             {focusedTopicId
-              ? (t.errorLoadingTopic || 'Unable to load topic details')
-              : (t.errorLoadingTrending || 'Unable to load trending topics')
-            }
+              ? t.errorLoadingTopic || 'Unable to load topic details'
+              : t.errorLoadingTrending || 'Unable to load trending topics'}
           </p>
         ) : focusedTopicId ? (
           renderFocusMode()

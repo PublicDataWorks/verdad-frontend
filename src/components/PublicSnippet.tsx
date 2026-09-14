@@ -114,14 +114,16 @@ const PublicSnippet: FC = () => {
                   onClick={() => {
                     const content = `${snippet.context.before}\n\n${snippet.context.main}\n\n${snippet.context.after}`
                     handleDownloadTranscript(content, `transcript_${snippetId}_${snippetLanguage}.txt`)
-                  }}>
+                  }}
+                >
                   {t.originalTranscript} ({snippetLanguage})
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
                     const content = `${snippet.context.before_en}\n\n${snippet.context.main_en}\n\n${snippet.context.after_en}`
                     handleDownloadTranscript(content, `transcript_${snippetId}_en.txt`)
-                  }}>
+                  }}
+                >
                   {t.translatedTranscript} (English)
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleDownloadAudio}>{t.audio}</DropdownMenuItem>
@@ -157,7 +159,7 @@ const PublicSnippet: FC = () => {
             />
           </div>
         </CardContent>
-        <RelatedSnippets snippetId={snippetId} language="english" isPublic />
+        <RelatedSnippets snippetId={snippetId} language='english' isPublic />
       </Card>
     </>
   )

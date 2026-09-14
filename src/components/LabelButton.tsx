@@ -29,10 +29,13 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
     return localCount !== null ? localCount : label.upvote_count
   })
 
-  useEffect(() => () => {
+  useEffect(
+    () => () => {
       localStorage.removeItem(`upvoted_${snippetId}_${label.id}`)
       localStorage.removeItem(`upvoteCount_${snippetId}_${label.id}`)
-    }, [snippetId, label.id])
+    },
+    [snippetId, label.id]
+  )
 
   useEffect(() => {
     if (user) {
@@ -77,7 +80,7 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
 
       // Invalidate all snippets lists to refresh data
       void queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === 'snippets' && query.queryKey[1] === 'list'
+        predicate: query => query.queryKey[0] === 'snippets' && query.queryKey[1] === 'list'
       })
     } catch (error) {
       console.error('Error toggling upvote:', error)
@@ -100,14 +103,14 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
   }
 
   return (
-    <div className="rounded-full">
+    <div className='rounded-full'>
       <div>
         <Button
           variant='outline'
           size='sm'
           className={`${getUpvoteButtonClasses()} whitespace-nowrap`}
           onClick={handleUpvote}
->
+        >
           <span>{label?.text}</span>
           <img src={isUpvoted ? Upvoted : Upvote} alt='Upvote' className='h-4 w-4' />
           <span>{upvoteCount}</span>

@@ -7,13 +7,9 @@
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": [
-      "./tsconfig.json"
-    ]
+    "project": ["./tsconfig.json"]
   },
-  "plugins": [
-    "react-prefer-function-component"
-  ],
+  "plugins": ["react-prefer-function-component"],
   "extends": [
     "eslint:all",
     "plugin:@typescript-eslint/recommended-type-checked",
@@ -149,10 +145,7 @@
     "no-console": [
       "error",
       {
-        "allow": [
-          "warn",
-          "error"
-        ]
+        "allow": ["warn", "error"]
       }
     ],
     "no-nested-ternary": "off",
@@ -178,9 +171,7 @@
     "react/no-unknown-property": [
       "error",
       {
-        "ignore": [
-          "cmdk-input-wrapper"
-        ]
+        "ignore": ["cmdk-input-wrapper"]
       }
     ],
     "jsx-a11y/media-has-caption": "off",
@@ -206,53 +197,33 @@
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true,
-        "project": [
-          "./tsconfig.json",
-          "./tsconfig.node.json"
-        ]
+        "project": ["./tsconfig.json", "./tsconfig.node.json"]
       },
       "node": true
     }
   },
   "overrides": [
     {
-      "files": [
-        "src/**/*.ts?(x)"
-      ],
+      "files": ["src/**/*.ts?(x)"],
       "parserOptions": {
-        "project": [
-          "./tsconfig.json"
-        ]
+        "project": ["./tsconfig.json"]
       }
     },
     {
-      "files": [
-        "vite.config.ts",
-        "cypress.config.ts"
-      ],
+      "files": ["vite.config.ts", "cypress.config.ts"],
       "parserOptions": {
-        "project": [
-          "./tsconfig.node.json"
-        ]
+        "project": ["./tsconfig.node.json"]
       }
     },
     {
-      "files": [
-        "**/__tests__/**/*.ts?(x)"
-      ],
-      "extends": [
-        "plugin:testing-library/react"
-      ],
+      "files": ["**/__tests__/**/*.ts?(x)"],
+      "extends": ["plugin:testing-library/react"],
       "rules": {
-        "@typescript-eslint/no-magic-numbers": [
-          "off"
-        ],
+        "@typescript-eslint/no-magic-numbers": ["off"],
         "testing-library/no-await-sync-events": [
           "error",
           {
-            "eventModules": [
-              "fire-event"
-            ]
+            "eventModules": ["fire-event"]
           }
         ],
         "testing-library/no-manual-cleanup": "error",

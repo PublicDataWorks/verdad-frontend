@@ -97,7 +97,8 @@ export default function AudioPlayer({ audioSrc, startTime }: AudioPlayerProps) {
                   variant='ghost'
                   onClick={() => skip(-5)}
                   aria-label='Rewind 5 seconds'
-                  className='group relative border-none bg-transparent p-2 hover:bg-transparent'>
+                  className='group relative border-none bg-transparent p-2 hover:bg-transparent'
+                >
                   <div className='bg-bagr absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10' />
                   <Rewind className='relative h-8 w-8' />
                 </Button>
@@ -111,7 +112,8 @@ export default function AudioPlayer({ audioSrc, startTime }: AudioPlayerProps) {
                   size='icon'
                   className='group relative h-12 w-12 border-none bg-transparent p-2 hover:bg-transparent'
                   onClick={togglePlayPause}
-                  aria-label={isPlaying ? 'Pause' : 'Play'}>
+                  aria-label={isPlaying ? 'Pause' : 'Play'}
+                >
                   <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10' />
                   {isPlaying ? <Pause className='relative h-8 w-8' /> : <Play className='relative h-8 w-8' />}
                 </Button>
@@ -124,7 +126,8 @@ export default function AudioPlayer({ audioSrc, startTime }: AudioPlayerProps) {
                   variant='ghost'
                   onClick={() => skip(5)}
                   aria-label='Forward 5 seconds'
-                  className='group relative border-none bg-transparent p-2 hover:bg-transparent'>
+                  className='group relative border-none bg-transparent p-2 hover:bg-transparent'
+                >
                   <div className='absolute inset-0 rounded-full transition-colors duration-200 group-hover:bg-secondary/10' />
                   <FastForward className='relative h-8 w-8' />
                 </Button>
@@ -150,7 +153,8 @@ export default function AudioPlayer({ audioSrc, startTime }: AudioPlayerProps) {
         <div className='relative h-1 w-full overflow-hidden rounded-full bg-gray-200'>
           <div
             className='absolute left-0 top-0 h-full bg-blue-500'
-            style={{ width: `${(currentTime / duration) * 100}%` }} />
+            style={{ width: `${(currentTime / duration) * 100}%` }}
+          />
           <input
             type='range'
             min='0'

@@ -111,7 +111,8 @@ const AuthenticatedLayout: React.FC = () => {
         })
 
         return filteredData.map(entry => entry.email)
-      }}>
+      }}
+    >
       <div className='flex min-h-svh flex-col'>
         <HeaderBar />
         <div className='flex-grow overflow-hidden'>

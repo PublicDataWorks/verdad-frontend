@@ -102,8 +102,8 @@ export default function SignupPage() {
               <CardContent className='flex flex-col items-center space-y-4'>
                 <Mail className='h-16 w-16 text-blue-500' />
                 <p className='text-center'>
-                  We&apos;ve sent a verification email to <strong>{verificationEmail}</strong>. Please check your inbox and
-                  click on the verification link to complete your registration.
+                  We&apos;ve sent a verification email to <strong>{verificationEmail}</strong>. Please check your inbox
+                  and click on the verification link to complete your registration.
                 </p>
               </CardContent>
               <CardFooter className='flex justify-center'>
@@ -111,7 +111,8 @@ export default function SignupPage() {
                   onClick={() => {
                     setShowVerificationMessage(false)
                     navigate('/login')
-                  }}>
+                  }}
+                >
                   Close
                 </Button>
               </CardFooter>
@@ -177,7 +178,8 @@ export default function SignupPage() {
                       variant='link'
                       className='h-auto p-0 text-blue-600'
                       type='button'
-                      onClick={() => navigate('/login')}>
+                      onClick={() => navigate('/login')}
+                    >
                       Already have an account?
                     </Button>
                   </div>
@@ -205,7 +207,8 @@ export default function SignupPage() {
                     onClick={handleGoogleSignIn}
                     variant='outline'
                     className='h-12 w-full'
-                    disabled={isSubmitting}>
+                    disabled={isSubmitting}
+                  >
                     <img
                       className='mr-2 h-5 w-5'
                       src='https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg'

@@ -72,21 +72,21 @@ export default function DetailChart({
     })
 
     // Create smooth curve using cardinal spline
-    const linePath = points.map((point, index) => {
-      if (index === 0) return `M ${point.x} ${point.y}`
+    const linePath = points
+      .map((point, index) => {
+        if (index === 0) return `M ${point.x} ${point.y}`
 
-      // Use quadratic bezier for smoother curves
-      const prev = points[index - 1]
-      const cpx = (prev.x + point.x) / 2
-      return `Q ${cpx} ${prev.y} ${point.x} ${point.y}`
-    }).join(' ')
+        // Use quadratic bezier for smoother curves
+        const prev = points[index - 1]
+        const cpx = (prev.x + point.x) / 2
+        return `Q ${cpx} ${prev.y} ${point.x} ${point.y}`
+      })
+      .join(' ')
 
     // Area path for gradient fill
     const firstPoint = points[0]
     const lastPoint = points[points.length - 1]
-    const areaPath = `${linePath 
-      } L ${lastPoint.x} ${paddingTop + chartHeight}` +
-      ` L ${firstPoint.x} ${paddingTop + chartHeight} Z`
+    const areaPath = `${linePath} L ${lastPoint.x} ${paddingTop + chartHeight} L ${firstPoint.x} ${paddingTop + chartHeight} Z`
 
     // Y-axis grid lines (3-4 lines)
     const gridLines = []
@@ -142,7 +142,7 @@ export default function DetailChart({
     return (
       <div
         ref={containerRef}
-        className={cn('flex items-center justify-center bg-orange-50/50 dark:bg-orange-900/20 rounded', className)}
+        className={cn('flex items-center justify-center rounded bg-orange-50/50 dark:bg-orange-900/20', className)}
         style={{ height }}
       >
         <span className='text-xs text-orange-400'>No data</span>
@@ -194,21 +194,22 @@ export default function DetailChart({
         ))}
 
         {/* X-axis labels (show first, middle, last) */}
-        {labels.length > 0 && [0, Math.floor(labels.length / 2), labels.length - 1].map((i) => {
-          if (!points[i]) return null
-          return (
-            <text
-              key={i}
-              x={points[i].x}
-              y={height - 5}
-              textAnchor={i === 0 ? 'start' : i === labels.length - 1 ? 'end' : 'middle'}
-              className='fill-orange-500/60 dark:fill-orange-400/60'
-              fontSize={10}
-            >
-              {labels[i]}
-            </text>
-          )
-        })}
+        {labels.length > 0 &&
+          [0, Math.floor(labels.length / 2), labels.length - 1].map(i => {
+            if (!points[i]) return null
+            return (
+              <text
+                key={i}
+                x={points[i].x}
+                y={height - 5}
+                textAnchor={i === 0 ? 'start' : i === labels.length - 1 ? 'end' : 'middle'}
+                className='fill-orange-500/60 dark:fill-orange-400/60'
+                fontSize={10}
+              >
+                {labels[i]}
+              </text>
+            )
+          })}
 
         {/* Area fill */}
         <path d={areaPath} fill='url(#areaGradient)' />
@@ -255,7 +256,7 @@ export default function DetailChart({
       {/* Tooltip */}
       {hoveredIndex !== null && points[hoveredIndex] && (
         <div
-          className='absolute pointer-events-none bg-orange-900 dark:bg-orange-100 text-white dark:text-orange-900 text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-10'
+          className='pointer-events-none absolute z-10 whitespace-nowrap rounded bg-orange-900 px-2 py-1 text-xs text-white shadow-lg dark:bg-orange-100 dark:text-orange-900'
           style={{
             left: Math.min(Math.max(points[hoveredIndex].x, 40), width - 60),
             top: Math.max(points[hoveredIndex].y - 35, 5),
@@ -263,9 +264,7 @@ export default function DetailChart({
           }}
         >
           <div className='font-semibold'>{points[hoveredIndex].value.toLocaleString()} snippets</div>
-          {labels[hoveredIndex] && (
-            <div className='opacity-75'>{labels[hoveredIndex]}</div>
-          )}
+          {labels[hoveredIndex] && <div className='opacity-75'>{labels[hoveredIndex]}</div>}
         </div>
       )}
     </div>

@@ -21,7 +21,7 @@ export interface SnippetFilters {
   focusedTopic?: string // ID of the topic in Focus Mode
 }
 
-const parseArrayParam = (param: string | null): string[] => param ? param.split(',') : []
+const parseArrayParam = (param: string | null): string[] => (param ? param.split(',') : [])
 
 const setArrayParam = (newParams: URLSearchParams, key: string, value: string[]) => {
   if (value.length > 0) {
@@ -32,15 +32,15 @@ const setArrayParam = (newParams: URLSearchParams, key: string, value: string[])
 function useSnippetFilters() {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const languages = parseArrayParam(searchParams.get('languages')) 
-  const states = parseArrayParam(searchParams.get('states')) 
-  const sources = parseArrayParam(searchParams.get('sources')) 
-  const labels = parseArrayParam(searchParams.get('labels')) 
-  const labeledBy = parseArrayParam(searchParams.get('labeledBy')) 
-  const starredBy = parseArrayParam(searchParams.get('starredBy')) 
+  const languages = parseArrayParam(searchParams.get('languages'))
+  const states = parseArrayParam(searchParams.get('states'))
+  const sources = parseArrayParam(searchParams.get('sources'))
+  const labels = parseArrayParam(searchParams.get('labels'))
+  const labeledBy = parseArrayParam(searchParams.get('labeledBy'))
+  const starredBy = parseArrayParam(searchParams.get('starredBy'))
   const politicalSpectrum = searchParams.get('politicalSpectrum') as SnippetFilters['politicalSpectrum']
   const orderBy = searchParams.get('order_by') as SnippetFilters['order_by']
-  const upvotedBy = parseArrayParam(searchParams.get('upvotedBy')) 
+  const upvotedBy = parseArrayParam(searchParams.get('upvotedBy'))
   const searchTerm = searchParams.get('searchTerm') as SnippetFilters['searchTerm']
   const timespan = (searchParams.get('timespan') as SnippetFilters['timespan']) || '7d'
   const focusedTopic = searchParams.get('focusedTopic') as SnippetFilters['focusedTopic']
@@ -97,7 +97,8 @@ function useSnippetFilters() {
     focusedTopic
   }
 
-  const isEmpty = useCallback(() => (
+  const isEmpty = useCallback(
+    () =>
       languages.length === 0 &&
       states.length === 0 &&
       sources.length === 0 &&
@@ -105,8 +106,9 @@ function useSnippetFilters() {
       labeledBy.length === 0 &&
       starredBy.length === 0 &&
       upvotedBy.length === 0 &&
-      !politicalSpectrum
-    ), [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, upvotedBy])
+      !politicalSpectrum,
+    [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, upvotedBy]
+  )
 
   const setFilter = useCallback(
     (category: keyof SnippetFilters, values: SnippetFilters[keyof SnippetFilters]) => {

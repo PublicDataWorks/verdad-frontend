@@ -17,7 +17,8 @@ const fetchRoles = async (): Promise<string[]> => {
   }
 }
 
-export const useIsAdmin = () => useQuery({
+export const useIsAdmin = () =>
+  useQuery({
     queryKey: ['isAdmin'],
     queryFn: fetchRoles,
     select: roles => roles.includes('admin')

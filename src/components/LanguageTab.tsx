@@ -18,12 +18,7 @@ interface LanguageTabsProps {
   sourceLanguage: string
 }
 
-export default function LanguageTabs({
-  setLanguage,
-  sourceText,
-  englishText,
-  sourceLanguage
-}: LanguageTabsProps) {
+export default function LanguageTabs({ setLanguage, sourceText, englishText, sourceLanguage }: LanguageTabsProps) {
   const sourceRef = useRef<HTMLSpanElement>(null)
   const englishRef = useRef<HTMLSpanElement>(null)
   const [activeTab, setActiveTab] = useState(sourceLanguage)
