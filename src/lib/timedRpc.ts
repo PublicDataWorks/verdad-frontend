@@ -10,6 +10,18 @@ export const POSTGRES_QUERY_CANCELED_CODE = '57014'
 
 export type RpcArgs = Record<string, unknown>
 
+// Only read-only query RPCs whose args are search filters get their args sent to PostHog; every
+// other RPC (profile setup, user lists, like/hide/star mutations, ...) may carry personal data.
+export const TELEMETRY_ARGS_ALLOWLIST: ReadonlySet<string> = new Set([
+  'get_snippets',
+  'get_trending_topics',
+  'get_topic_details',
+  'get_filtering_options',
+  'search_related_snippets_public',
+  'get_public_snippet',
+  'get_landing_page_content'
+])
+
 export interface TimedRpcOptions {
   abortSignal?: AbortSignal
 }
@@ -41,7 +53,8 @@ const isAbortError = (error: unknown, abortSignal?: AbortSignal): boolean => {
 
 /**
  * Calls `supabase.rpc(name, args)`, measures how long it takes and reports the outcome to PostHog
- * as a `supabase_rpc` event (plus `captureException` on failure). Resolves with the RPC's `data`
+ * as a `supabase_rpc` event (plus `captureException` on failure). RPC args are attached to the
+ * telemetry only for RPCs in `TELEMETRY_ARGS_ALLOWLIST`. Resolves with the RPC's `data`
  * on success and throws the Postgrest error otherwise. Aborted requests are rethrown silently.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,6 +64,7 @@ export async function timedRpc<T = any>(
   { abortSignal }: TimedRpcOptions = {}
 ): Promise<TimedRpcResult<T>> {
   const startTime = performance.now()
+  const telemetryArgs = TELEMETRY_ARGS_ALLOWLIST.has(name) ? args : {}
 
   let query = supabase.rpc(name, args)
   if (abortSignal) {
@@ -70,7 +84,7 @@ export async function timedRpc<T = any>(
     const errorCode = error.code
     const isTimeout = isTimeoutError(error)
     const errorProps = {
-      ...args,
+      ...telemetryArgs,
       rpc_name: name,
       duration_ms: durationMs,
       error_code: errorCode,
@@ -83,7 +97,7 @@ export async function timedRpc<T = any>(
   }
 
   capture('supabase_rpc', {
-    ...args,
+    ...telemetryArgs,
     rpc_name: name,
     duration_ms: durationMs,
     status: durationMs > SLOW_THRESHOLD_MS ? 'warning' : 'success'
