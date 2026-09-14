@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { capture, captureException } from '@/lib/posthog'
 import { rpc as unmockedRpc } from '@/lib/supabase'
-import { isTimeoutError, timedRpc, SLOW_THRESHOLD_MS } from '@/lib/timedRpc'
+import { isTimeoutError, timedRpc, SLOW_THRESHOLD_MS, TELEMETRY_ARGS_ALLOWLIST } from '@/lib/timedRpc'
 
 vi.mock('@/lib/supabase', () => ({ rpc: vi.fn(), default: { rpc: vi.fn() } }))
 vi.mock('@/lib/posthog', () => ({ capture: vi.fn(), captureException: vi.fn() }))
@@ -37,12 +37,12 @@ describe('timedRpc', () => {
     mockRpc({ data: { ok: true } })
     mockDuration(250)
 
-    const result = await timedRpc('get_thing', { p_language: 'english', p_limit: 10 })
+    const result = await timedRpc('get_trending_topics', { p_language: 'english', p_limit: 10 })
 
-    expect(rpc).toHaveBeenCalledWith('get_thing', { p_language: 'english', p_limit: 10 })
+    expect(rpc).toHaveBeenCalledWith('get_trending_topics', { p_language: 'english', p_limit: 10 })
     expect(result).toEqual({ data: { ok: true }, durationMs: 250 })
     expect(capture).toHaveBeenCalledWith('supabase_rpc', {
-      rpc_name: 'get_thing',
+      rpc_name: 'get_trending_topics',
       duration_ms: 250,
       status: 'success',
       p_language: 'english',
@@ -77,10 +77,10 @@ describe('timedRpc', () => {
     mockRpc({ error })
     mockDuration(40)
 
-    await expect(timedRpc('get_thing', { snippet_id: 'abc' })).rejects.toBe(error)
+    await expect(timedRpc('get_public_snippet', { snippet_id: 'abc' })).rejects.toBe(error)
 
     const expectedProps = {
-      rpc_name: 'get_thing',
+      rpc_name: 'get_public_snippet',
       duration_ms: 40,
       error_code: '42883',
       is_timeout: false,
@@ -115,6 +115,32 @@ describe('timedRpc', () => {
     )
   })
 
+  it('omits args from telemetry for RPCs outside the allowlist', async () => {
+    mockRpc({ data: null })
+    mockDuration(30)
+
+    await timedRpc('setup_profile', { first_name: 'Ada', last_name: 'Lovelace', avatar_url: 'https://x/y.png' })
+
+    expect(capture).toHaveBeenCalledTimes(1)
+    expect(capture).toHaveBeenCalledWith('supabase_rpc', {
+      rpc_name: 'setup_profile',
+      duration_ms: 30,
+      status: 'success'
+    })
+  })
+
+  it('omits args from the error event and captured exception for RPCs outside the allowlist', async () => {
+    const error = { code: '23505', message: 'duplicate key' }
+    mockRpc({ error })
+    mockDuration(12)
+
+    await expect(timedRpc('like_snippet', { snippet_id: 'abc', value: 1 })).rejects.toBe(error)
+
+    const expectedProps = { rpc_name: 'like_snippet', duration_ms: 12, error_code: '23505', is_timeout: false }
+    expect(capture).toHaveBeenCalledWith('supabase_rpc', { ...expectedProps, status: 'error' })
+    expect(captureException).toHaveBeenCalledWith(error, expectedProps)
+  })
+
   it('rethrows aborted requests without reporting them', async () => {
     const controller = new AbortController()
     controller.abort()
@@ -125,6 +151,20 @@ describe('timedRpc', () => {
 
     expect(capture).not.toHaveBeenCalled()
     expect(captureException).not.toHaveBeenCalled()
+  })
+})
+
+describe('TELEMETRY_ARGS_ALLOWLIST', () => {
+  it('contains only read-only query RPCs', () => {
+    expect([...TELEMETRY_ARGS_ALLOWLIST].sort()).toEqual([
+      'get_filtering_options',
+      'get_landing_page_content',
+      'get_public_snippet',
+      'get_snippets',
+      'get_topic_details',
+      'get_trending_topics',
+      'search_related_snippets_public'
+    ])
   })
 })
 
