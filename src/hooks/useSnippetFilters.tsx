@@ -3,6 +3,9 @@ import { useSearchParams } from 'react-router-dom'
 
 export type Timespan = '24h' | '7d' | '30d' | '90d' | 'all'
 
+// Must match the literal keys compared in the get_snippets / get_trending_topics SQL functions
+export type PoliticalSpectrum = 'center' | 'center-left' | 'center-right' | 'left' | 'right'
+
 export type SnippetFilters = {
   languages: string[]
   states: string[]
@@ -10,7 +13,7 @@ export type SnippetFilters = {
   labels: string[]
   labeledBy: string[]
   starredBy: string[]
-  politicalSpectrum?: 'center' | 'center_left' | 'center_right' | 'left' | 'right'
+  politicalSpectrum?: PoliticalSpectrum
   order_by?: 'activities' | 'upvotes' | 'comments' | 'latest'
   upvotedBy: string[]
   searchTerm?: string
