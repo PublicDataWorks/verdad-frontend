@@ -77,7 +77,12 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
         if (currentAudio.id && currentAudio.id !== id && currentAudio.pause) {
           currentAudio.pause()
         }
-        void audio.play()
+        // `isPlaying` is otherwise only set by the `play`/`pause` media events, which fire
+        // after the clip loads, so a rapid second click would see `isPlaying === false` and
+        // call `play()` again. Flip the state synchronously and revert if `play()` rejects
+        // (an interrupted load or a blocked autoplay).
+        setIsPlaying(true)
+        audio.play().catch(() => setIsPlaying(false))
       }
     }
   }
