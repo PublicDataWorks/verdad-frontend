@@ -27,7 +27,7 @@ import { useToast } from '@/hooks/use-toast'
 
 import { downloadAudio, downloadText } from '@/lib/utils'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/storage'
-import supabase from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 
 import { translations } from '@/constants/translations'
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
@@ -135,11 +135,9 @@ const SnippetDetail: FC = () => {
     setIsStarred(newStarred)
 
     try {
-      const { data, error } = await supabase.rpc('toggle_star_snippet', {
+      const { data } = await timedRpc('toggle_star_snippet', {
         snippet_id: snippetId
       })
-
-      if (error) throw error
 
       const serverStarred = data.data.snippet_starred
       const message = data.data.message

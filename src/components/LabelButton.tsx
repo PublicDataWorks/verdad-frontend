@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import Upvote from '../assets/upvote.svg'
 import Upvoted from '../assets/upvoted.svg'
-import supabase from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 import { Label } from '@/types/snippet'
 import { useAuth } from '@/providers/auth'
 import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
@@ -66,12 +66,10 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
     setUpvoteCount(prevCount => (newIsUpvoted ? prevCount + 1 : prevCount - 1))
 
     try {
-      const { data, error } = await supabase.rpc('toggle_upvote_label', {
+      const { data } = await timedRpc('toggle_upvote_label', {
         snippet_id: snippetId,
         label_text: label.text
       })
-
-      if (error) throw error
 
       if (!data || (Array.isArray(data) && data.length === 0) || (data.labels && data.labels.length === 0)) {
         onLabelDeleted(label.id)

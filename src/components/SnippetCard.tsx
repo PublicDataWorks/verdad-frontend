@@ -18,7 +18,7 @@ import { useIsAdmin } from '@/hooks/usePermission'
 
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/storage'
-import supabaseClient from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 
 import { SnippetAudioPlayer } from './SnippetAudioPlayer'
 import { highlightText } from '@/utils/highlightText'
@@ -65,11 +65,9 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
     setIsStarred(newStarred)
 
     try {
-      const { data, error } = await supabaseClient.rpc('toggle_star_snippet', {
+      const { data } = await timedRpc('toggle_star_snippet', {
         snippet_id: snippet.id
       })
-
-      if (error) throw error
 
       const serverStarred = data.data.snippet_starred
 
