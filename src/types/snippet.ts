@@ -85,8 +85,9 @@ export interface LikeSnippetVariables {
 export interface PaginatedResponse {
   snippets: Snippet[]
   currentPage: number
-  total_pages: number
-  total_snippets: number
+  /** Only populated on the first page (`p_include_count`); null on later pages. */
+  total_pages: number | null
+  total_snippets: number | null
 }
 
 export interface PublicSnippetData {

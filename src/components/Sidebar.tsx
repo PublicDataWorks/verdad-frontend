@@ -53,12 +53,14 @@ export default function Sidebar() {
   })
 
   const lastValueRef = useRef(0)
+  // Only the first page carries the count; fall back to the last known value while loading.
+  const totalSnippets = snippetData?.pages[0]?.total_snippets ?? lastValueRef.current
 
   useEffect(() => {
-    if (!isLoading && snippetData?.pages[0].total_snippets !== undefined) {
-      lastValueRef.current = snippetData.pages[0].total_snippets
+    if (!isLoading) {
+      lastValueRef.current = totalSnippets
     }
-  }, [isLoading, snippetData])
+  }, [isLoading, totalSnippets])
 
   const handleClearAll = () => {
     clearAll()
@@ -85,7 +87,7 @@ export default function Sidebar() {
         <div className='mb-4 flex h-[24px] items-center justify-between'>
           <CountUp
             start={lastValueRef.current}
-            end={isLoading ? lastValueRef.current : snippetData?.pages[0].total_snippets ?? lastValueRef.current}
+            end={isLoading ? lastValueRef.current : totalSnippets}
             duration={1.5}
             separator=','
             preserveValue

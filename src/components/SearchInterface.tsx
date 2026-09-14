@@ -9,7 +9,7 @@ import { useSnippets } from '@/hooks/useSnippets'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { fetchFilteringOptions, filterKeys } from '@/hooks/useFilterOptions'
-import supabaseClient from '@/lib/supabase'
+import { isTimeoutError, timedRpc } from '@/lib/timedRpc'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef } from 'react'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
@@ -47,7 +47,7 @@ export default function SearchInterface() {
 
   const { searchTerm, order_by: orderBy } = filters
 
-  const { data, error, fetchNextPage, hasNextPage, status } = useSnippets({
+  const { data, error, fetchNextPage, hasNextPage, status, refetch } = useSnippets({
     pageSize: PAGE_SIZE,
     filters,
     language,
@@ -84,7 +84,7 @@ export default function SearchInterface() {
   useEffect(() => {
     const trackUserSignup = async () => {
       try {
-        await supabaseClient.rpc('track_user_signups', { origin: '/knight' })
+        await timedRpc('track_user_signups', { origin: '/knight' })
       } catch {
         // Best-effort analytics; failures are intentionally ignored.
       }
@@ -162,8 +162,11 @@ export default function SearchInterface() {
           className={`${padding} custom-scrollbar flex-1 overflow-y-scroll rounded-lg`}
         >
           {status === 'error' ? (
-            <div className='p-4 text-center text-destructive'>
-              {language === 'spanish' ? `Error: ${error.message}` : `Error: ${error.message}`}
+            <div className='flex flex-col items-center gap-3 p-4 text-center'>
+              <p className='text-destructive'>{isTimeoutError(error) ? t.snippetsTimeout : t.snippetsLoadError}</p>
+              <Button variant='outline' size='sm' onClick={() => void refetch()}>
+                {t.retry}
+              </Button>
             </div>
           ) : status === 'pending' ? (
             <div className='flex h-full items-center justify-center'>

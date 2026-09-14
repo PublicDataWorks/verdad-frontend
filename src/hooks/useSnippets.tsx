@@ -11,6 +11,18 @@ export const snippetKeys = {
   related: (id: string, language: string) => [...snippetKeys.all, 'related', id, { language }] as const
 }
 
+/**
+ * The total page count is only requested (and returned) for the first page, so read it from
+ * `pages[0]` rather than the page that was just fetched.
+ */
+export const getNextSnippetsPageParam = (lastPage: PaginatedResponse, allPages: PaginatedResponse[]) => {
+  const totalPages = allPages[0]?.total_pages ?? lastPage.total_pages
+  if (totalPages === null || lastPage.currentPage >= totalPages - 1) {
+    return undefined
+  }
+  return lastPage.currentPage + 1
+}
+
 export function useSnippets({
   pageSize = 10,
   filters = {},
@@ -43,12 +55,11 @@ export function useSnippets({
         abortSignal: signal
       }),
     initialPageParam: 0,
-    getNextPageParam: lastPage => {
-      if (lastPage.currentPage >= lastPage.total_pages - 1) {
-        return undefined
-      }
-      return lastPage.currentPage + 1
-    }
+    getNextPageParam: getNextSnippetsPageParam,
+    // Slow searches hit the database statement timeout; the default 3 exponential retries would
+    // keep the user waiting for minutes before the timeout message appears.
+    retry: 1,
+    retryDelay: 1000
   })
 }
 

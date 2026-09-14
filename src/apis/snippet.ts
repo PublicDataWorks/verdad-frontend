@@ -1,7 +1,7 @@
 // src/api/api.ts
 
-import { capture, captureException } from '@/lib/posthog'
-import { rpc } from '@/lib/supabase'
+import { capture } from '@/lib/posthog'
+import { SLOW_THRESHOLD_MS, timedRpc } from '@/lib/timedRpc'
 import type { SnippetFilters } from '@/hooks/useSnippetFilters'
 import {
   Snippet,
@@ -14,24 +14,18 @@ import {
   StarSnippetResponse
 } from '../types/snippet'
 
-const SLOW_THRESHOLD_MS = 20_000
-
 interface GetSnippetsResult {
   snippets: Snippet[]
-  total_pages: number
-  num_of_snippets: number
+  // Both are JSON null unless the call asked for the count (`p_include_count`).
+  total_pages: number | null
+  num_of_snippets: number | null
 }
 
 export const fetchSnippet = async (id: string, language: string): Promise<Snippet> => {
-  const { data, error } = await rpc<Snippet>('get_snippet', {
+  const { data } = await timedRpc<Snippet>('get_snippet', {
     snippet_id: id,
     p_language: language
   })
-
-  if (error) {
-    console.error('Error fetching snippet:', error)
-    throw error
-  }
   return data
 }
 
@@ -63,30 +57,14 @@ export const fetchSnippets = async ({
     p_language: language,
     p_filter: actualFilters,
     p_order_by: orderBy,
-    p_search_term: searchTerm
+    p_search_term: searchTerm,
+    // The total count is expensive; only the first page needs it (see getNextSnippetsPageParam).
+    p_include_count: pageParam === 0
   }
 
-  const startTime = performance.now()
-
-  const { data, error } = await rpc<GetSnippetsResult>('get_snippets', getSnippetsOptions).abortSignal(abortSignal)
-
-  const durationMs = Math.round(performance.now() - startTime)
-
-  if (error) {
-    console.error('Error fetching snippets:', error)
-
-    const isAborted = /AbortError/i.test(error.message)
-    if (!isAborted) {
-      const isTimeout = /timeout|canceling statement/i.test(error.message)
-      captureException(error, {
-        ...getSnippetsOptions,
-        duration_ms: durationMs,
-        is_timeout: isTimeout
-      })
-    }
-
-    throw error
-  }
+  const { data, durationMs } = await timedRpc<GetSnippetsResult>('get_snippets', getSnippetsOptions, {
+    abortSignal
+  })
 
   capture('get_snippets_rpc', {
     ...getSnippetsOptions,
@@ -105,58 +83,40 @@ export const fetchSnippets = async ({
 }
 
 export const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariables): Promise<LikeResponse> => {
-  const { data, error } = await rpc<LikeResponse>('like_snippet', {
+  const { data } = await timedRpc<LikeResponse>('like_snippet', {
     snippet_id: snippetId,
     value: likeStatus
   })
-  if (error) {
-    throw error
-  }
   return data
 }
 
 export const hideSnippet = async (snippetId: string): Promise<HideResponse> => {
-  const { data, error } = await rpc<HideResponse>('hide_snippet', {
+  const { data } = await timedRpc<HideResponse>('hide_snippet', {
     snippet_id: snippetId
   })
-  if (error) {
-    throw error
-  }
   return data
 }
 
 export const unhideSnippet = async (snippetId: string): Promise<HideResponse> => {
-  const { data, error } = await rpc<HideResponse>('unhide_snippet', {
+  const { data } = await timedRpc<HideResponse>('unhide_snippet', {
     snippet_id: snippetId
   })
-  if (error) {
-    throw error
-  }
   return data
 }
 
 export const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippetData> => {
-  const { data, error } = await rpc<PublicSnippetData>('get_public_snippet', { snippet_id: snippetId })
-
-  if (error) throw error
+  const { data } = await timedRpc<PublicSnippetData>('get_public_snippet', { snippet_id: snippetId })
   return data
 }
 
 export const dismissWelcomeCard = async (): Promise<void> => {
-  const { error } = await rpc<unknown>('dismiss_welcome_card')
-  if (error) {
-    throw error
-  }
+  await timedRpc<unknown>('dismiss_welcome_card')
 }
 
 export const toggleWelcomeCard = async (status: boolean): Promise<void> => {
-  const { error } = await rpc<unknown>('toggle_welcome_card', {
+  await timedRpc<unknown>('toggle_welcome_card', {
     p_status: status
   })
-
-  if (error) {
-    throw error
-  }
 }
 
 export const fetchRelatedSnippets = async ({
@@ -166,18 +126,16 @@ export const fetchRelatedSnippets = async ({
   snippetId: string
   language: string
 }): Promise<IRelatedSnippet[]> => {
-  const { data, error } = await rpc<IRelatedSnippet[]>('search_related_snippets_public', {
+  const { data } = await timedRpc<IRelatedSnippet[]>('search_related_snippets_public', {
     snippet_id: snippetId,
     p_language: language
   })
-  if (error) throw error
   return data
 }
 
 export const starSnippet = async (snippetId: string): Promise<StarSnippetResponse> => {
-  const { data, error } = await rpc<StarSnippetResponse>('toggle_star_snippet', {
+  const { data } = await timedRpc<StarSnippetResponse>('toggle_star_snippet', {
     snippet_id: snippetId
   })
-  if (error) throw error
   return data
 }

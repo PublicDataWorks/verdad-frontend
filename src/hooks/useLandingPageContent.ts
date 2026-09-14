@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { rpc } from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 import shuffle from 'lodash/shuffle'
 import { Language } from '@/providers/language'
 
@@ -36,11 +36,11 @@ export interface TranslatedLandingPageContent {
 }
 
 async function fetchLandingPageContent(language: Language): Promise<TranslatedLandingPageContent> {
-  const { data, error } = await rpc<LandingPageContentResult | null>('get_landing_page_content')
-
-  if (error) {
-    throw new Error(`Error fetching landing page content: ${error.message}`)
-  }
+  const { data } = await timedRpc<LandingPageContentResult | null>('get_landing_page_content').catch(
+    (error: Error) => {
+      throw new Error(`Error fetching landing page content: ${error.message}`)
+    }
+  )
 
   if (!data || typeof data !== 'object' || !Array.isArray(data.snippets)) {
     throw new Error('Unexpected data format received from Supabase')

@@ -1,6 +1,6 @@
 // src/hooks/useFilters.ts
 import { useQuery } from '@tanstack/react-query'
-import { rpc } from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 
 export interface FilterOption {
   label: string
@@ -29,16 +29,11 @@ export const filterKeys = {
 }
 
 export const fetchFilteringOptions = async (language = 'english'): Promise<FilteringOptions> => {
-  const { data, error } = await rpc<FilteringOptions>('get_filtering_options', {
+  const { data } = await timedRpc<FilteringOptions>('get_filtering_options', {
     p_language: language,
     p_label_page: 0,
     p_label_page_size: 1000
   })
-
-  if (error) {
-    console.error('Error fetching filtering options:', error)
-    throw error
-  }
 
   return data
 }
