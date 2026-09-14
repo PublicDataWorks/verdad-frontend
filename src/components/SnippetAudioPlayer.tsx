@@ -17,7 +17,7 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
 
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio) return
+    if (!audio) return undefined
 
     const setAudioData = () => {
       setDuration(audio.duration)
@@ -77,7 +77,7 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
         if (currentAudio.id && currentAudio.id !== id && currentAudio.pause) {
           currentAudio.pause()
         }
-        audio.play()
+        void audio.play()
       }
     }
   }

@@ -1,9 +1,9 @@
-import supabase from '@/lib/supabase'
+import { rpc } from '@/lib/supabase'
 import { useQuery } from '@tanstack/react-query'
 
-const fetchRoles = async () => {
+const fetchRoles = async (): Promise<string[]> => {
   try {
-    const { data, error } = await supabase.rpc('get_roles')
+    const { data, error } = await rpc<string[] | null>('get_roles')
 
     if (error) {
       console.error('Error fetching roles:', error)
@@ -17,10 +17,9 @@ const fetchRoles = async () => {
   }
 }
 
-export const useIsAdmin = () => {
-  return useQuery({
+export const useIsAdmin = () =>
+  useQuery({
     queryKey: ['isAdmin'],
     queryFn: fetchRoles,
     select: roles => roles.includes('admin')
   })
-}

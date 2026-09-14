@@ -3,13 +3,18 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test:unit": "vitest",
-    "test:unit:coverage": "vitest run --coverage",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "start:test": "vite --host 0.0.0.0 --port 3000 --mode testing",
     "cy:open": "start-server-and-test start:test http://127.0.0.1:3000/ 'cypress open'",
     "cy:run": "start-server-and-test start:test http://127.0.0.1:3000/ 'cypress run'",
@@ -98,6 +103,7 @@
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-airbnb-typescript": "17.1.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-cypress": "^2.15.1",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",
@@ -109,6 +115,7 @@
     "eslint-plugin-unicorn": "50.0.1",
     "husky": "^8.0.3",
     "jsdom": "^22.1.0",
+    "lint-staged": "^17.5.1",
     "nyc": "^15.1.0",
     "postcss": "^8.4.47",
     "prettier": "^3.2.4",
@@ -121,5 +128,9 @@
     "vite-plugin-istanbul": "^5.0.0",
     "vite-tsconfig-paths": "^4.2.3",
     "vitest": "^0.34.6"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": "eslint --report-unused-disable-directives --max-warnings 0 --fix",
+    "*.{ts,tsx,js,cjs,mjs,json,css,scss,md,yml,yaml}": "prettier --write"
   }
 }

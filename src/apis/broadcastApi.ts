@@ -1,4 +1,4 @@
-import axios from 'lib/axios'
+import axios from '@/lib/axios'
 import type { AxiosResponse } from 'axios'
 import { BROADCAST_PATH } from '../constants/routes'
 

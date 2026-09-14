@@ -1,10 +1,11 @@
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
+import { useQuery, useInfiniteQuery, type InfiniteData } from '@tanstack/react-query'
 import { fetchSnippet, fetchSnippets, fetchPublicSnippet, fetchRelatedSnippets } from '@/apis/snippet'
-import { PaginatedResponse, Snippet, PublicSnippetData, IRelatedSnippet } from '@/types/snippet'
+import type { PaginatedResponse, Snippet, PublicSnippetData, IRelatedSnippet } from '@/types/snippet'
+import type { SnippetFilters } from './useSnippetFilters'
 
 export const snippetKeys = {
   all: ['snippets'] as const,
-  lists: (pageSize: number, filters: any, language: string, orderBy: string, searchTerm: string) =>
+  lists: (pageSize: number, filters: Partial<SnippetFilters>, language: string, orderBy: string, searchTerm: string) =>
     [...snippetKeys.all, 'list', { pageSize, filters, language, orderBy, searchTerm }] as const,
   detail: (id: string, language: string) => [...snippetKeys.all, 'detail', id, { language }] as const,
   related: (id: string, language: string) => [...snippetKeys.all, 'related', id, { language }] as const
@@ -16,12 +17,24 @@ export function useSnippets({
   language = 'english',
   orderBy = 'latest',
   searchTerm = ''
+}: {
+  pageSize?: number
+  filters?: Partial<SnippetFilters>
+  language?: string
+  orderBy?: string
+  searchTerm?: string
 }) {
-  return useInfiniteQuery<PaginatedResponse, Error>({
+  return useInfiniteQuery<
+    PaginatedResponse,
+    Error,
+    InfiniteData<PaginatedResponse>,
+    ReturnType<typeof snippetKeys.lists>,
+    number
+  >({
     queryKey: snippetKeys.lists(pageSize, filters, language, orderBy, searchTerm),
     queryFn: ({ pageParam, signal }) =>
       fetchSnippets({
-        pageParam: pageParam ?? 0,
+        pageParam,
         pageSize,
         filters,
         language,

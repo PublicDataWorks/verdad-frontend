@@ -11,7 +11,7 @@ export default defineConfig(({ command, mode }) => ({
     tsconfigPaths(),
     istanbul({
       cypress: true,
-      requireEnv: false
+      requireEnv: true
     })
   ],
   resolve: {
@@ -22,7 +22,7 @@ export default defineConfig(({ command, mode }) => ({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/vitest-setup.ts'],
+    setupFiles: ['./src/setupTests.ts'],
     coverage: {
       provider: 'istanbul',
       reportsDirectory: 'vitest-coverage'

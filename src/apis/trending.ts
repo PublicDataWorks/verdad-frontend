@@ -1,4 +1,4 @@
-import supabase from '@/lib/supabase'
+import { rpc } from '@/lib/supabase'
 import { TrendingTopicsResponse, TopicDetailsResponse } from '@/types/trending'
 import { SnippetFilters } from '@/hooks/useSnippetFilters'
 
@@ -28,7 +28,7 @@ export const fetchTopicDetails = async ({
     filterObj.politicalSpectrum = filters.politicalSpectrum
   }
 
-  const { data, error } = await supabase.rpc('get_topic_details', {
+  const { data, error } = await rpc<TopicDetailsResponse>('get_topic_details', {
     p_topic_id: topicId,
     p_timespan: timespan,
     p_filter: Object.keys(filterObj).length > 0 ? filterObj : null,
@@ -40,7 +40,7 @@ export const fetchTopicDetails = async ({
     throw error
   }
 
-  return data as TopicDetailsResponse
+  return data
 }
 
 export const fetchTrendingTopics = async ({
@@ -70,7 +70,7 @@ export const fetchTrendingTopics = async ({
     filterObj.politicalSpectrum = filters.politicalSpectrum
   }
 
-  const { data, error } = await supabase.rpc('get_trending_topics', {
+  const { data, error } = await rpc<TrendingTopicsResponse>('get_trending_topics', {
     p_timespan: timespan,
     p_filter: Object.keys(filterObj).length > 0 ? filterObj : null,
     p_language: language,
@@ -82,5 +82,5 @@ export const fetchTrendingTopics = async ({
     throw error
   }
 
-  return data as TrendingTopicsResponse
+  return data
 }
