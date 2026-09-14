@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
-type LandingPageCarouselProps = {
+interface LandingPageCarouselProps {
   snippets: {
     id: string
     titleEn: string

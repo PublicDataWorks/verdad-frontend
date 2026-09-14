@@ -1,11 +1,11 @@
-import supabaseClient from '@/lib/supabase'
+import { rpc } from '@/lib/supabase'
 
-export type Feature = {
+export interface Feature {
   icon: string
   text: string
 }
 
-export type WelcomeCard = {
+export interface WelcomeCard {
   id: string
   language_code: string
   title: string
@@ -19,7 +19,7 @@ export type WelcomeCard = {
 }
 
 export const getWelcomeContent = async (language: string): Promise<WelcomeCard> => {
-  const { data, error } = await supabaseClient.rpc('get_welcome_card', { p_language: language })
+  const { data, error } = await rpc<WelcomeCard>('get_welcome_card', { p_language: language })
   if (error) throw error
   return data
 }

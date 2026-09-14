@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from '@/types/snippet'
-import supabase from '@/lib/supabase'
+import { rpc } from '@/lib/supabase'
 import { useLabels } from '@/hooks/useLabels'
 import { useQueryClient } from '@tanstack/react-query'
 
@@ -45,7 +45,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
     onLabelAdded(prevLabels => [...prevLabels, newLabel])
 
     try {
-      const { data, error } = await supabase.rpc('create_apply_and_upvote_label', {
+      const { data, error } = await rpc<{ labels?: Label[] } | null>('create_apply_and_upvote_label', {
         snippet_id: snippetId,
         label_text: labelText
       })
@@ -53,12 +53,12 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
       if (error) throw error
 
       // Replace entire label list with server response
-      if (data && data.labels) {
+      if (data?.labels) {
         onLabelAdded(data.labels)
       }
 
       // Invalidate all snippets lists to refresh data
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[0] === 'snippets' && query.queryKey[1] === 'list'
       })
     } catch (error) {
@@ -72,7 +72,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
+    const {value} = e.target
     setInputValue(value)
     if (value.length > 0) {
       const filteredSuggestions = (allLabels ?? [])
@@ -86,7 +86,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      createLabel(inputValue)
+      void createLabel(inputValue)
     }
   }
 
@@ -108,10 +108,15 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
             autoFocus
           />
           {suggestions.length > 0 && (
-            <ul className='absolute z-10 mt-1 max-h-32 w-full overflow-y-auto rounded-md border border-border-gray-dark bg-background-gray-lightest shadow-lg'>
+            <ul
+              role='listbox'
+              className='absolute z-10 mt-1 max-h-32 w-full overflow-y-auto rounded-md border border-border-gray-dark bg-background-gray-lightest shadow-lg'>
               {suggestions.map((suggestion, index) => (
                 <li
                   key={index}
+                  role='option'
+                  aria-selected={false}
+                  tabIndex={-1}
                   className='cursor-pointer px-2 py-1 hover:bg-background-gray-light'
                   onClick={() => createLabel(suggestion)}>
                   {suggestion}

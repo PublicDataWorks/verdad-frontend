@@ -32,7 +32,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
   if (allSelected) {
     displayValue = allItemsLabel
   } else if (selectedItems.length === 1) {
-    displayValue = selectedItems[0]
+    ;[displayValue] = selectedItems
   } else if (selectedItems.length > 1) {
     displayValue = `${selectedItems.length} selected`
   } else {

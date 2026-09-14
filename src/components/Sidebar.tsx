@@ -13,6 +13,7 @@ import useSnippetFilters, { PoliticalSpectrum as PoliticalSpectrumValue, Snippet
 import { useSnippets } from '@/hooks/useSnippets'
 import { useEffect, useRef } from 'react'
 import { PAGE_SIZE } from '@/constants'
+
 export default function Sidebar() {
   const { setShowSidebar } = useSidebar()
   const { filters, setFilter, clearAll, isEmpty } = useSnippetFilters()
@@ -84,7 +85,7 @@ export default function Sidebar() {
             end={isLoading ? lastValueRef.current : snippetData?.pages[0].total_snippets ?? lastValueRef.current}
             duration={1.5}
             separator=','
-            preserveValue={true}
+            preserveValue
             className='text-text-primary text-sm font-medium'
             formattingFn={n => {
               if (n >= 1000) {

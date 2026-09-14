@@ -20,9 +20,9 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
 
   const handleToggleHide = () => {
     if (isHidden) {
-      unhideSnippetMutation.mutateAsync(snippetId)
+      void unhideSnippetMutation.mutateAsync(snippetId)
     } else {
-      hideSnippetMutation.mutateAsync(snippetId)
+      void hideSnippetMutation.mutateAsync(snippetId)
     }
   }
 
@@ -39,9 +39,7 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
     setShowConfirmation(false)
   }
 
-  return (
-    <>
-      {showConfirmation ? (
+  return showConfirmation ? (
         <div className='flex space-x-2'>
           <Button variant='destructive' size='sm' onClick={handleConfirm} disabled={hideSnippetMutation.isPending}>
             {hideSnippetMutation.isPending ? (isHidden ? 'Unhiding...' : 'Hiding...') : isHidden ? 'Unhide' : 'Hide'}
@@ -65,7 +63,5 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
             <p>{isHidden ? 'Unhide snippet' : 'Hide snippet'}</p>
           </TooltipContent>
         </Tooltip>
-      )}
-    </>
-  )
+      )
 }

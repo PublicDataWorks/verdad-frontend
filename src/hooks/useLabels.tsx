@@ -9,12 +9,10 @@ export const fetchAllLabels = async () => {
     throw new Error(error.message)
   }
 
-  return data.map(label => label.text)
+  return (data as { text: string }[]).map(label => label.text)
 }
 
-export const useLabels = () => {
-  return useQuery({
+export const useLabels = () => useQuery({
     queryKey: ['labels'],
     queryFn: fetchAllLabels
   })
-}

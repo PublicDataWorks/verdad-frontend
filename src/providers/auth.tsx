@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState, ReactNode, useContext } from 'react'
+import React, { createContext, useEffect, useMemo, useState, ReactNode, useContext } from 'react'
 import supabase from '../lib/supabase'
 import { User, AuthError, Session } from '@supabase/supabase-js'
+
 interface AuthContextType {
   user: User | null
   session: Session | null
@@ -11,7 +12,7 @@ interface AuthContextType {
   signUp: (
     email: string,
     password: string,
-    metadata?: { [key: string]: any }
+    metadata?: Record<string, unknown>
   ) => Promise<{
     error: AuthError | null
     success?: boolean
@@ -43,10 +44,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const checkUser = async () => {
       try {
         const {
-          data: { session }
+          data: { session: currentSession }
         } = await supabase.auth.getSession()
-        setUser(session?.user ?? null)
-        setSession(session)
+        setUser(currentSession?.user ?? null)
+        setSession(currentSession)
       } catch (error) {
         console.error('Error checking user:', error)
       } finally {
@@ -54,13 +55,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     }
 
-    checkUser()
+    void checkUser()
 
     const {
       data: { subscription }
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null)
-      setSession(session)
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setUser(nextSession?.user ?? null)
+      setSession(nextSession)
     })
     return () => subscription.unsubscribe()
   }, [])
@@ -83,7 +84,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const loginWithGoogle = async (redirectTo?: string): Promise<{ error: AuthError | null }> => {
     try {
-      const redirectUrl = `${window.location.origin}${redirectTo ? redirectTo : import.meta.env.VITE_AUTH_REDIRECT_URL}`
+      const redirectUrl = `${window.location.origin}${redirectTo || import.meta.env.VITE_AUTH_REDIRECT_URL}`
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -102,7 +103,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signUp = async (email: string, password: string): Promise<{ error: AuthError | null; success?: boolean }> => {
     try {
-      const { error, data } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -134,27 +135,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const refreshUser = async () => {
     const {
-      data: { session }
+      data: { session: refreshedSession }
     } = await supabase.auth.refreshSession()
-    setUser(session?.user ?? null)
-    setSession(session)
+    setUser(refreshedSession?.user ?? null)
+    setSession(refreshedSession)
   }
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        session,
-        isLoading,
-        login,
-        logout,
-        loginWithGoogle,
-        signUp,
-        refreshUser
-      }}>
-      {children}
-    </AuthContext.Provider>
+  // The auth helpers only close over stable module/setter references, so the memo depends on state alone.
+  const value = useMemo(
+    () => ({ user, session, isLoading, login, logout, loginWithGoogle, signUp, refreshUser }),
+    [user, session, isLoading]
   )
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {

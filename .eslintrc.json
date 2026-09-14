@@ -7,15 +7,20 @@
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["./tsconfig.json"]
+    "project": [
+      "./tsconfig.json"
+    ]
   },
-  "plugins": ["react-prefer-function-component"],
+  "plugins": [
+    "react-prefer-function-component"
+  ],
   "extends": [
     "eslint:all",
-    "plugin:@typescript-eslint/all",
+    "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:import/recommended",
     "plugin:import/typescript",
-    "plugin:react/all",
+    "plugin:react/recommended",
     "airbnb",
     "airbnb-typescript",
     "airbnb/hooks",
@@ -120,7 +125,7 @@
       {
         "eventHandlerPrefix": "on",
         "eventHandlerPropPrefix": "on",
-        "checkInlineFunction": true
+        "checkInlineFunction": false
       }
     ],
     "react/jsx-key": "error",
@@ -137,35 +142,117 @@
     "react/jsx-no-constructed-context-values": "error",
     "react/jsx-no-script-url": "error",
     "react/jsx-no-useless-fragment": "error",
-    "unicorn/prevent-abbreviations": "off"
+    "unicorn/prevent-abbreviations": "off",
+    "react/prop-types": "off",
+    "import/prefer-default-export": "off",
+    "import/extensions": "off",
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ],
+    "no-nested-ternary": "off",
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": {
+          "attributes": false
+        }
+      }
+    ],
+    "@typescript-eslint/no-throw-literal": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "classes": true,
+        "variables": true
+      }
+    ],
+    "react/no-array-index-key": "off",
+    "react/no-unknown-property": [
+      "error",
+      {
+        "ignore": [
+          "cmdk-input-wrapper"
+        ]
+      }
+    ],
+    "jsx-a11y/media-has-caption": "off",
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "assert": "either"
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "args": "after-used",
+        "ignoreRestSiblings": true,
+        "argsIgnorePattern": "^_"
+      }
+    ]
   },
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": [
+          "./tsconfig.json",
+          "./tsconfig.node.json"
+        ]
+      },
+      "node": true
     }
   },
   "overrides": [
     {
-      "files": ["src/**/*.ts?(x)"],
+      "files": [
+        "src/**/*.ts?(x)"
+      ],
       "parserOptions": {
-        "project": ["./tsconfig.json"]
+        "project": [
+          "./tsconfig.json"
+        ]
       }
     },
     {
-      "files": ["vite.config.ts", "cypress.config.ts"],
+      "files": [
+        "vite.config.ts",
+        "cypress.config.ts"
+      ],
       "parserOptions": {
-        "project": ["./tsconfig.node.json"]
+        "project": [
+          "./tsconfig.node.json"
+        ]
       }
     },
     {
-      "files": ["**/__tests__/**/*.ts?(x)"],
-      "extends": ["plugin:testing-library/react"],
+      "files": [
+        "**/__tests__/**/*.ts?(x)"
+      ],
+      "extends": [
+        "plugin:testing-library/react"
+      ],
       "rules": {
-        "@typescript-eslint/no-magic-numbers": ["off"],
+        "@typescript-eslint/no-magic-numbers": [
+          "off"
+        ],
         "testing-library/no-await-sync-events": [
           "error",
           {
-            "eventModules": ["fire-event"]
+            "eventModules": [
+              "fire-event"
+            ]
           }
         ],
         "testing-library/no-manual-cleanup": "error",

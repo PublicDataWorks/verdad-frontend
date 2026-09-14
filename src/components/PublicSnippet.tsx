@@ -14,7 +14,6 @@ import Spinner from './Spinner'
 import PublicHeaderBar from './PublicHeaderBar'
 import ShareButton from './ShareButton'
 
-import { useLanguage } from '@/providers/language'
 import { useAuth } from '@/providers/auth'
 
 import { downloadAudio, downloadText } from '@/lib/utils'
@@ -29,7 +28,7 @@ const PublicSnippet: FC = () => {
   const { snippetId } = useParams<{ snippetId: string }>()
 
   const { user } = useAuth()
-  const t = translations['english']
+  const t = translations.english
 
   const [snippetLanguage, setSnippetLanguage] = useState<string>('Spanish')
   const { data: snippet, isLoading, isError } = usePublicSnippet(snippetId || '')
@@ -143,7 +142,6 @@ const PublicSnippet: FC = () => {
             </div>
             <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet?.file_path}`} startTime={snippet?.start_time} />
             <LanguageTabs
-              language={snippetLanguage}
               setLanguage={setSnippetLanguage}
               sourceText={{
                 before: snippet?.context?.before,
@@ -159,7 +157,7 @@ const PublicSnippet: FC = () => {
             />
           </div>
         </CardContent>
-        <RelatedSnippets snippetId={snippetId} language={'english'} isPublic={true} />
+        <RelatedSnippets snippetId={snippetId} language="english" isPublic />
       </Card>
     </>
   )

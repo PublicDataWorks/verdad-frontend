@@ -36,6 +36,7 @@ export interface ConfidenceScore {
 export interface ConfidenceScores {
   overall: number
   categories: ConfidenceScore[]
+  level?: 'high' | 'low' | 'medium'
 }
 
 export type LikeStatus = 1 | 0 | -1
@@ -119,10 +120,10 @@ export interface IRelatedSnippet {
   radio_station_code: string
   location_state: string
   summary: string
-  labels: Array<{
+  labels: {
     text: string
     text_spanish: string
-  }>
+  }[]
   recorded_at: string
   comment_count: number
   starred_by_user: boolean

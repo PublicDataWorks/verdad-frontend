@@ -67,7 +67,7 @@ export default function PoliticalSpectrumSlider({
             className
           )}
           {...props}>
-          <SliderPrimitive.Track className='slider-track relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200'></SliderPrimitive.Track>
+          <SliderPrimitive.Track className='slider-track relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200' />
           <SliderPrimitive.Thumb
             className={cn(
               'slider-thumb bg-background-gray-light border-background-gray-light block h-3 w-3 rounded-full border-2 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',

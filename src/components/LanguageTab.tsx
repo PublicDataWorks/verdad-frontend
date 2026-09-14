@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
 interface LanguageTabsProps {
-  language: string
   setLanguage: (language: string) => void
   sourceText: {
     before: string
@@ -20,7 +19,6 @@ interface LanguageTabsProps {
 }
 
 export default function LanguageTabs({
-  language,
   setLanguage,
   sourceText,
   englishText,

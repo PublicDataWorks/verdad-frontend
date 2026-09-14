@@ -151,7 +151,7 @@ export function RelatedSnippet({ snippet, parentSnippetId, language, isPublic }:
         </Label>
         <div className='flex w-full flex-wrap items-center gap-2'>
           {snippet?.labels.map((label, index) =>
-            label && label.text ? (
+            label?.text ? (
               <Badge
                 key={index}
                 variant='secondary'
@@ -163,7 +163,7 @@ export function RelatedSnippet({ snippet, parentSnippetId, language, isPublic }:
           <div className='ml-auto'>
             <Button variant='ghost' size='sm' className='gap-1 px-2 text-xs' disabled>
               <MessageSquare className='h-4 w-4' />
-              {snippet?.comment_count} {snippet?.comment_count == 1 ? t.comment : t.comments}
+              {snippet?.comment_count} {snippet?.comment_count === 1 ? t.comment : t.comments}
             </Button>
           </div>
         </div>

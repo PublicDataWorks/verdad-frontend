@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useMemo, useState } from 'react'
 
 export interface CurrentAudio {
   id: string | null
@@ -19,13 +19,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
     pause: null
   })
 
-  return (
-    <AudioContext.Provider
-      value={{
-        currentAudio,
-        setCurrentAudio
-      }}>
-      {children}
-    </AudioContext.Provider>
-  )
+  const value = useMemo(() => ({ currentAudio, setCurrentAudio }), [currentAudio])
+
+  return <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
 }

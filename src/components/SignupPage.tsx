@@ -9,7 +9,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Mail } from 'lucide-react'
 
-type SignupFormData = {
+interface SignupFormData {
   email: string
   password: string
   confirmPassword: string
@@ -97,12 +97,12 @@ export default function SignupPage() {
             <Card className='border-0 bg-white shadow-none'>
               <CardHeader className='flex flex-col items-center'>
                 <CardTitle className='text-2xl font-bold'>Verify Your Email</CardTitle>
-                <CardDescription>We've sent a verification email to your inbox.</CardDescription>
+                <CardDescription>We&apos;ve sent a verification email to your inbox.</CardDescription>
               </CardHeader>
               <CardContent className='flex flex-col items-center space-y-4'>
                 <Mail className='h-16 w-16 text-blue-500' />
                 <p className='text-center'>
-                  We've sent a verification email to <strong>{verificationEmail}</strong>. Please check your inbox and
+                  We&apos;ve sent a verification email to <strong>{verificationEmail}</strong>. Please check your inbox and
                   click on the verification link to complete your registration.
                 </p>
               </CardContent>

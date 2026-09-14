@@ -6,7 +6,7 @@ import { useAuth } from '../providers/auth'
 import { useForm } from 'react-hook-form'
 import { SIGNUP_PATH } from '@/constants/routes'
 
-type LoginFormData = {
+interface LoginFormData {
   email: string
   password: string
 }
@@ -105,7 +105,7 @@ export default function LoginPage() {
                 className='h-auto p-0 text-blue-600'
                 type='button'
                 onClick={() => navigate(SIGNUP_PATH)}>
-                Don't have an account?
+                Don&apos;t have an account?
               </Button>
               <Button
                 variant='link'

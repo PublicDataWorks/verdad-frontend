@@ -18,7 +18,7 @@ import { useIsAdmin } from '@/hooks/usePermission'
 
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/storage'
-import supabaseClient from '@/lib/supabase'
+import { rpc } from '@/lib/supabase'
 
 import { SnippetAudioPlayer } from './SnippetAudioPlayer'
 import { highlightText } from '@/utils/highlightText'
@@ -43,7 +43,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
   })
 
   const [isStarred, setIsStarred] = useState<boolean>(() => {
-    const localStarred = getLocalStorageItem(`starred_${snippet.id}`)
+    const localStarred = getLocalStorageItem<boolean>(`starred_${snippet.id}`)
     return localStarred !== null ? localStarred : snippet?.starred_by_user || false
   })
   const [isStarHovered, setIsStarHovered] = useState<boolean>(false)
@@ -65,7 +65,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
     setIsStarred(newStarred)
 
     try {
-      const { data, error } = await supabaseClient.rpc('toggle_star_snippet', {
+      const { data, error } = await rpc<{ data: { snippet_starred: boolean } }>('toggle_star_snippet', {
         snippet_id: snippet.id
       })
 
@@ -98,7 +98,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
 
       const response = await likeSnippetMutation.mutateAsync({
         snippetId: snippet.id,
-        likeStatus: likeStatus
+        likeStatus
       })
 
       setCounts({
@@ -205,7 +205,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
                   currentLikeStatus === 1 ? 'bg-green-200 text-background-gray-darkest hover:bg-green-300' : ''
                 }`}>
                 <ThumbsUp className='h-4 w-4' />
-                <span className={``}>{counts.likeCount}</span>
+                <span className="">{counts.likeCount}</span>
               </Button>
             </div>
           </TooltipTrigger>
@@ -244,7 +244,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
           <AddLabelButton snippetId={snippet?.id} onLabelAdded={handleLabelAdded} />
         </div>
       </div>
-      <LiveblocksComments snippetId={snippet?.id} showFullComments={true} />
+      <LiveblocksComments snippetId={snippet?.id} showFullComments />
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { TrendingUp, Filter, ArrowLeft, TrendingDown, Minus, X, Globe, MapPin, Radio, Gauge } from 'lucide-react'
+import { TrendingUp, ArrowLeft, TrendingDown, Minus, X, Globe, MapPin, Radio, Gauge } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Sparkline from '@/components/ui/sparkline'
@@ -187,7 +187,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
 
   // Prefetch topic details on hover for faster transitions
   const prefetchTopicDetails = useCallback((topicId: string) => {
-    queryClient.prefetchQuery({
+    void queryClient.prefetchQuery({
       queryKey: trendingKeys.topicDetails(topicId, timespan, filters, language),
       queryFn: () => fetchTopicDetails({ topicId, timespan, filters, language }),
       staleTime: 1000 * 60 * 5
@@ -218,13 +218,14 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
   useEffect(() => {
     const currentDataKey = focusedTopicId
       ? topicData?.topic?.id
-      : JSON.stringify(topics.map(t => t.id))
+      : JSON.stringify(topics.map(topic => topic.id))
     if (prevDataRef.current !== null && prevDataRef.current !== currentDataKey) {
       setIsFading(true)
       const timer = setTimeout(() => setIsFading(false), 300)
       return () => clearTimeout(timer)
     }
     prevDataRef.current = currentDataKey as string
+    return undefined
   }, [topics, topicData, focusedTopicId])
 
   // Render Focus Mode UI
@@ -238,7 +239,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
     }
 
     const { topic } = topicData
-    const changePercent = topic.changePercent
+    const {changePercent} = topic
     const isPositive = changePercent > 0
     const isNegative = changePercent < 0
 
@@ -329,6 +330,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
         <div className={cn('grid gap-2', expanded ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1')}>
           {topics.map((topic, index) => (
             <button
+              type='button'
               key={topic.id}
               onClick={() => handleTopicClick(topic.id)}
               onMouseEnter={() => prefetchTopicDetails(topic.id)}
@@ -372,6 +374,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
               {focusedTopicId ? (
                 // Focus Mode header with back button
                 <button
+                  type='button'
                   onClick={handleExitFocusMode}
                   className='flex items-center gap-1 text-orange-600 hover:text-orange-800 dark:text-orange-400 dark:hover:text-orange-200'
                 >

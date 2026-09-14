@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles, RotateCcw } from 'lucide-react'
+import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
@@ -102,7 +102,6 @@ interface MultiSelectProps
    * If true, renders the multi-select component as a child of another component.
    * Optional, defaults to false.
    */
-  asChild?: boolean
 
   /**
    * Additional class names to apply custom styles to the multi-select component.
@@ -123,7 +122,6 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       animation = 0,
       maxCount = 3,
       modalPopover = false,
-      asChild = false,
       className,
       ...props
     },
@@ -217,12 +215,12 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             {selectedValues.length > 0 ? (
               <div className='flex w-full items-center justify-between'>
                 <div className='flex flex-wrap items-center'>
-                  {selectedValues.slice(0, maxCount).map(value => {
-                    const option = options.find(o => o.value === value)
+                  {selectedValues.slice(0, maxCount).map(selected => {
+                    const option = options.find(o => o.value === selected)
                     const IconComponent = option?.icon
                     return (
                       <Badge
-                        key={value}
+                        key={selected}
                         className={cn(
                           isAnimating ? 'animate-bounce' : '',
                           multiSelectVariants({ variant }),
@@ -235,7 +233,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                           className='ml-2 h-4 w-4 flex-shrink-0 cursor-pointer'
                           onClick={event => {
                             event.stopPropagation()
-                            toggleOption(value)
+                            toggleOption(selected)
                           }}
                         />
                       </Badge>

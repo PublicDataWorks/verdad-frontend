@@ -10,7 +10,7 @@ import supabase from '../lib/supabase'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import PublicHeader from './PublicHeader'
 
-type FormData = {
+interface FormData {
   password: string
   confirmPassword: string
 }

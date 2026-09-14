@@ -6,7 +6,7 @@ import { FileX } from 'lucide-react'
 export const NoSnippetsMessage = () => {
   const { language } = useLanguage()
   const { clearAll, filters, isEmpty } = useSnippetFilters()
-  const searchTerm = filters.searchTerm
+  const {searchTerm} = filters
   const t = translations[language as keyof typeof translations]
 
   if (searchTerm && !isEmpty()) {
@@ -15,6 +15,7 @@ export const NoSnippetsMessage = () => {
         <p className='mb-2 text-lg font-semibold'>{t.searchTerm(searchTerm)}</p>
         <p className='mb-4 text-muted-foreground'>{t.hidingResults}</p>
         <button
+          type='button'
           onClick={clearAll}
           className='rounded-md bg-[#E8F1FF] px-4 py-2 text-[#005EF4] transition-colors hover:bg-[#D1E5FF]'>
           {t.clearFilters}

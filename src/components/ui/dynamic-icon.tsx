@@ -6,12 +6,10 @@ interface DynamicIconProps {
   className?: string
 }
 
-const kebabToPascalCase = (str: string): string => {
-  return str
+const kebabToPascalCase = (str: string): string => str
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join('')
-}
 
 export function DynamicIcon({ name, className = '' }: DynamicIconProps) {
   const pascalCaseName = kebabToPascalCase(name) as keyof typeof LucideIcons

@@ -29,7 +29,7 @@ export default function DetailChart({
   useEffect(() => {
     if (propWidth) {
       setContainerWidth(propWidth)
-      return
+      return undefined
     }
 
     const updateWidth = () => {
@@ -84,14 +84,14 @@ export default function DetailChart({
     // Area path for gradient fill
     const firstPoint = points[0]
     const lastPoint = points[points.length - 1]
-    const areaPath = linePath +
-      ` L ${lastPoint.x} ${paddingTop + chartHeight}` +
+    const areaPath = `${linePath 
+      } L ${lastPoint.x} ${paddingTop + chartHeight}` +
       ` L ${firstPoint.x} ${paddingTop + chartHeight} Z`
 
     // Y-axis grid lines (3-4 lines)
     const gridLines = []
     const numGridLines = 4
-    for (let i = 0; i <= numGridLines; i++) {
+    for (let i = 0; i <= numGridLines; i += 1) {
       const value = Math.round(min + (range * i) / numGridLines)
       const y = paddingTop + chartHeight - ((value - min) / range) * chartHeight
       gridLines.push({ y, value })

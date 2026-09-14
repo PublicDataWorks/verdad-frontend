@@ -15,7 +15,7 @@ import LanguageTabs from './LanguageTab'
 import LabelButton from './LabelButton'
 import AddLabelButton from './AddLabelButton'
 import Spinner from './Spinner'
-import LiveblocksComments from '../components/LiveblocksComments'
+import LiveblocksComments from "./LiveblocksComments"
 import ShareButton from './ShareButton'
 import SnippetVisibilityToggle from './ui/hide-button'
 
@@ -27,7 +27,7 @@ import { useToast } from '@/hooks/use-toast'
 
 import { downloadAudio, downloadText } from '@/lib/utils'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/storage'
-import supabase from '@/lib/supabase'
+import { rpc } from '@/lib/supabase'
 
 import { translations } from '@/constants/translations'
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
@@ -50,7 +50,7 @@ const SnippetDetail: FC = () => {
   const [labels, setLabels] = useState<Label[]>([])
   const [isStarHovered, setIsStarHovered] = useState<boolean>(false)
   const [isStarred, setIsStarred] = useState<boolean>(() => {
-    const localStarred = getLocalStorageItem(`starred_${snippetId}`)
+    const localStarred = getLocalStorageItem<boolean>(`starred_${snippetId}`)
     return localStarred !== null ? localStarred : snippet?.starred_by_user || false
   })
   const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet?.user_like_status ?? null)
@@ -82,11 +82,11 @@ const SnippetDetail: FC = () => {
   ) => {
     const updatedCounts = { ...currentCounts }
 
-    if (currentStatus === 1) updatedCounts.likeCount--
-    if (currentStatus === -1) updatedCounts.dislikeCount--
+    if (currentStatus === 1) updatedCounts.likeCount -= 1
+    if (currentStatus === -1) updatedCounts.dislikeCount -= 1
 
-    if (newStatus === 1) updatedCounts.likeCount++
-    if (newStatus === -1) updatedCounts.dislikeCount++
+    if (newStatus === 1) updatedCounts.likeCount += 1
+    if (newStatus === -1) updatedCounts.dislikeCount += 1
 
     return updatedCounts
   }
@@ -110,7 +110,7 @@ const SnippetDetail: FC = () => {
 
       const response = await likeSnippetMutation.mutateAsync({
         snippetId: snippetId!,
-        likeStatus: likeStatus
+        likeStatus
       })
 
       setCounts({
@@ -135,14 +135,14 @@ const SnippetDetail: FC = () => {
     setIsStarred(newStarred)
 
     try {
-      const { data, error } = await supabase.rpc('toggle_star_snippet', {
+      const { data, error } = await rpc<{ data: { snippet_starred: boolean; message: string } }>('toggle_star_snippet', {
         snippet_id: snippetId
       })
 
       if (error) throw error
 
       const serverStarred = data.data.snippet_starred
-      const message = data.data.message
+      const {message} = data.data
 
       if (serverStarred !== newStarred) {
         setIsStarred(serverStarred)
@@ -229,7 +229,7 @@ const SnippetDetail: FC = () => {
   }
 
   return (
-    <div className={`mx-auto h-full w-full max-w-3xl bg-background-gray-light p-2 sm:py-6`}>
+    <div className="mx-auto h-full w-full max-w-3xl bg-background-gray-light p-2 sm:py-6">
       <Card className={`mb-8 w-full ${isHidden ? 'opacity-50' : ''}`}>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <Tooltip>
@@ -327,7 +327,7 @@ const SnippetDetail: FC = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div>
-                    <SnippetVisibilityToggle isHidden={isHidden ? true : false} snippetId={snippet.id} />
+                    <SnippetVisibilityToggle isHidden={!!isHidden} snippetId={snippet.id} />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -393,7 +393,6 @@ const SnippetDetail: FC = () => {
 
             <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet?.file_path}`} startTime={snippet?.start_time} />
             <LanguageTabs
-              language={snippetLanguage || 'english'}
               setLanguage={setSnippetLanguage}
               sourceText={{
                 before: snippet?.context?.before,
