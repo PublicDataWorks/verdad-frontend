@@ -6,7 +6,7 @@
 import { execFileSync } from 'node:child_process'
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url))
 const rulesDir = join(repoRoot, '.claude', 'rules')
@@ -25,7 +25,7 @@ const findRules = dir => {
 }
 
 // Claude Code glob syntax: ** spans directories, * does not, {a,b} expands.
-const globToRegExp = glob => {
+export const globToRegExp = glob => {
   const expand = pattern => {
     const match = /\{([^{}]*)\}/.exec(pattern)
     if (!match) return [pattern]
@@ -38,8 +38,15 @@ const globToRegExp = glob => {
     for (let i = 0; i < pattern.length; i += 1) {
       const char = pattern[i]
       if (char === '*' && pattern[i + 1] === '*') {
-        source += '.*'
-        i += pattern[i + 2] === '/' ? 2 : 1
+        if (pattern[i + 2] === '/') {
+          // `**/` spans any number of leading directories, including none, and only ever
+          // matches at a path boundary: `**/__tests__/**` must not match `src/foo__tests__/x`.
+          source += '(?:.*/)?'
+          i += 2
+        } else {
+          source += '.*'
+          i += 1
+        }
       } else if (char === '*') source += '[^/]*'
       else if (char === '?') source += '[^/]'
       else source += char.replace(/[.+^${}()|[\]\\]/g, '\\$&')
@@ -48,7 +55,7 @@ const globToRegExp = glob => {
   })
 }
 
-const parsePaths = (file, text) => {
+export const parsePaths = (file, text) => {
   const lines = text.split('\n')
   if (lines[0]?.trim() !== '---') return { globs: [], errors: [`${file}: missing YAML frontmatter`] }
   const end = lines.indexOf('---', 1)
@@ -73,27 +80,32 @@ const parsePaths = (file, text) => {
   return { globs, errors: [] }
 }
 
-const rules = findRules(rulesDir)
-if (rules.length === 0) {
-  console.log(`No rules found in ${rulesDir}`)
-  process.exit(0)
-}
-
-const files = trackedFiles()
-const errors = []
-
-for (const rule of rules) {
-  const name = relative(repoRoot, rule)
-  const { globs, errors: ruleErrors } = parsePaths(name, readFileSync(rule, 'utf8'))
-  errors.push(...ruleErrors)
-  for (const glob of globs) {
-    const patterns = globToRegExp(glob)
-    if (!files.some(file => patterns.some(pattern => pattern.test(file)))) {
-      errors.push(`${name}: glob '${glob}' matches no tracked file`)
-    }
+const main = () => {
+  const rules = findRules(rulesDir)
+  if (rules.length === 0) {
+    console.log(`No rules found in ${rulesDir}`)
+    return 0
   }
-  if (globs.length > 0 && ruleErrors.length === 0) console.log(`ok  ${name}  (${globs.length} glob(s))`)
+
+  const files = trackedFiles()
+  const errors = []
+
+  for (const rule of rules) {
+    const name = relative(repoRoot, rule)
+    const { globs, errors: ruleErrors } = parsePaths(name, readFileSync(rule, 'utf8'))
+    errors.push(...ruleErrors)
+    for (const glob of globs) {
+      const patterns = globToRegExp(glob)
+      if (!files.some(file => patterns.some(pattern => pattern.test(file)))) {
+        errors.push(`${name}: glob '${glob}' matches no tracked file`)
+      }
+    }
+    if (globs.length > 0 && ruleErrors.length === 0) console.log(`ok  ${name}  (${globs.length} glob(s))`)
+  }
+
+  for (const error of errors) console.error(`ERROR ${error}`)
+  return errors.length > 0 ? 1 : 0
 }
 
-for (const error of errors) console.error(`ERROR ${error}`)
-process.exit(errors.length > 0 ? 1 : 0)
+// Run only when executed directly, so tests can import the helpers above.
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) process.exit(main())
