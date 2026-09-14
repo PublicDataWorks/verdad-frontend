@@ -11,7 +11,7 @@ export default defineConfig(({ command, mode }) => ({
     tsconfigPaths(),
     istanbul({
       cypress: true,
-      requireEnv: false
+      requireEnv: true
     })
   ],
   resolve: {
