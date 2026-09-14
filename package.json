@@ -130,7 +130,7 @@
     "vitest": "^0.34.6"
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx}": "eslint --max-warnings 0 --fix",
+    "src/**/*.{ts,tsx}": "eslint --report-unused-disable-directives --max-warnings 0 --fix",
     "*.{ts,tsx,js,cjs,mjs,json,css,scss,md,yml,yaml}": "prettier --write"
   }
 }
