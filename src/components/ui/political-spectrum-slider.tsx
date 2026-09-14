@@ -6,12 +6,14 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
+import type { PoliticalSpectrum } from '@/hooks/useSnippetFilters'
 
 import './political-spectrum-slider.scss'
 
-type Position = 'left' | 'center-left' | 'center' | 'center-right' | 'right'
+type Position = PoliticalSpectrum
 
-interface PoliticalSpectrumSliderProps extends React.ComponentProps<typeof SliderPrimitive.Root> {
+interface PoliticalSpectrumSliderProps
+  extends Omit<React.ComponentProps<typeof SliderPrimitive.Root>, 'value' | 'onChange'> {
   value: Position | undefined
   onChange: (value: Position | undefined) => void
 }
@@ -30,7 +32,8 @@ export default function PoliticalSpectrumSlider({
 
   const getLabel = (position: Position | undefined) => {
     if (position === undefined || position === null) return t.all || 'All'
-    return t[position as keyof typeof t] || position
+    const label = t[position as keyof typeof t]
+    return typeof label === 'string' && label ? label : position
   }
 
   const handleSliderChange = (newValue: number[]) => {

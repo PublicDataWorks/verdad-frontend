@@ -1,4 +1,4 @@
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
+import { useQuery, useInfiniteQuery, type InfiniteData } from '@tanstack/react-query'
 import { fetchSnippet, fetchSnippets, fetchPublicSnippet, fetchRelatedSnippets } from '@/apis/snippet'
 import { PaginatedResponse, Snippet, PublicSnippetData, IRelatedSnippet } from '@/types/snippet'
 
@@ -17,11 +17,11 @@ export function useSnippets({
   orderBy = 'latest',
   searchTerm = ''
 }) {
-  return useInfiniteQuery<PaginatedResponse, Error>({
+  return useInfiniteQuery<PaginatedResponse, Error, InfiniteData<PaginatedResponse>, ReturnType<typeof snippetKeys.lists>, number>({
     queryKey: snippetKeys.lists(pageSize, filters, language, orderBy, searchTerm),
     queryFn: ({ pageParam, signal }) =>
       fetchSnippets({
-        pageParam: pageParam ?? 0,
+        pageParam,
         pageSize,
         filters,
         language,

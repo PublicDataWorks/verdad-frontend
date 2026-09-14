@@ -208,7 +208,7 @@ export function useToggleWelcomeCard() {
 export function useStarSnippet(parentSnippetId: string, language: string) {
   const queryClient = useQueryClient()
 
-  return useMutation<void, Error, string>({
+  return useMutation<void, Error, string, { previousSnippets: IRelatedSnippet[] | undefined }>({
     mutationFn: starSnippet,
     onMutate: async (snippetId: string) => {
       // Cancel any outgoing refetches for this query

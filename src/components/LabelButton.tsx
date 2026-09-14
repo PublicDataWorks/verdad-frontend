@@ -20,12 +20,12 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
   const { user } = useAuth()
   const queryClient = useQueryClient()
 
-  const [isUpvoted, setIsUpvoted] = useState(() => {
+  const [isUpvoted, setIsUpvoted] = useState<boolean>(() => {
     const localUpvoted = getLocalStorageItem(`upvoted_${snippetId}_${label.id}`)
     return localUpvoted !== null ? localUpvoted : label.upvoted_by_me
   })
 
-  const [upvoteCount, setUpvoteCount] = useState(() => {
+  const [upvoteCount, setUpvoteCount] = useState<number>(() => {
     const localCount = getLocalStorageItem(`upvoteCount_${snippetId}_${label.id}`)
     return localCount !== null ? localCount : label.upvote_count
   })

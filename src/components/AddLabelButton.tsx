@@ -75,7 +75,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
     const value = e.target.value
     setInputValue(value)
     if (value.length > 0) {
-      const filteredSuggestions = allLabels
+      const filteredSuggestions = (allLabels ?? [])
         .filter(label => label.toLowerCase().includes(value.toLowerCase()))
         .slice(0, 10)
       setSuggestions(filteredSuggestions)

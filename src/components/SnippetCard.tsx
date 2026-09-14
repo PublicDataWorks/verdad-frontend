@@ -114,7 +114,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
     }
   }
 
-  const handleLabelAdded = (newLabels: Label[]) => {
+  const handleLabelAdded = (newLabels: Label[] | ((prevLabels: Label[]) => Label[])) => {
     setLabels(newLabels)
   }
 

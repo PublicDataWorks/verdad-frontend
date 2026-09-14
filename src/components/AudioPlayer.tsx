@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Pause, ChevronDown, Rewind5Icon, FastForward, Play, Rewind, Forward } from 'lucide-react'
+import { Pause, ChevronDown, FastForward, Play, Rewind } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
 interface AudioPlayerProps {

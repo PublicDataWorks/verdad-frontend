@@ -6,10 +6,16 @@ import { useQuery } from '@tanstack/react-query'
 import HeaderBar from '../components/HeaderBar'
 import supabase from '../lib/supabase'
 
-const fetchAllUsers = async () => {
+// Minimal local shape of the `get_users` RPC result (Supabase types are not generated yet).
+interface AppUser {
+  email: string
+  raw_user_meta_data?: { name?: string; avatar_url?: string }
+}
+
+const fetchAllUsers = async (): Promise<AppUser[]> => {
   const { data, error } = await supabase.rpc('get_users')
   if (error) throw error
-  return data
+  return (data ?? []) as AppUser[]
 }
 
 const AuthenticatedLayout: React.FC = () => {

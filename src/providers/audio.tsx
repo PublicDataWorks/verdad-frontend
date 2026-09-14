@@ -1,15 +1,20 @@
 import React, { createContext, useState } from 'react'
 
+export interface CurrentAudio {
+  id: string | null
+  pause: (() => void) | null
+}
+
 export const AudioContext = createContext<{
-  currentAudio: { id: string | null; pause: boolean | null }
-  setCurrentAudio: (audio: { id: string | null; pause: boolean | null }) => void
+  currentAudio: CurrentAudio
+  setCurrentAudio: (audio: CurrentAudio) => void
 }>({
   currentAudio: { id: null, pause: null },
   setCurrentAudio: () => {}
 })
 
 export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
-  const [currentAudio, setCurrentAudio] = useState({
+  const [currentAudio, setCurrentAudio] = useState<CurrentAudio>({
     id: null,
     pause: null
   })
@@ -18,7 +23,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
     <AudioContext.Provider
       value={{
         currentAudio,
-        setCurrentAudio: setCurrentAudio as (audio: { id: string | null; pause: boolean | null }) => void
+        setCurrentAudio
       }}>
       {children}
     </AudioContext.Provider>

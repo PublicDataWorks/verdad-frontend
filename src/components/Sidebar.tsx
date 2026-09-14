@@ -9,7 +9,7 @@ import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { useFilters } from '@/hooks/useFilterOptions'
-import useSnippetFilters, { SnippetFilters } from '@/hooks/useSnippetFilters'
+import useSnippetFilters, { PoliticalSpectrum as PoliticalSpectrumValue, SnippetFilters } from '@/hooks/useSnippetFilters'
 import { useSnippets } from '@/hooks/useSnippets'
 import { useEffect, useRef } from 'react'
 import { PAGE_SIZE } from '@/constants'
@@ -71,7 +71,7 @@ export default function Sidebar() {
     setFilter(category, newValues)
   }
 
-  const handlePoliticalSpectrumChange = (value: number) => {
+  const handlePoliticalSpectrumChange = (value: PoliticalSpectrumValue | undefined) => {
     setFilter('politicalSpectrum', value)
   }
 
@@ -81,7 +81,7 @@ export default function Sidebar() {
         <div className='mb-4 flex h-[24px] items-center justify-between'>
           <CountUp
             start={lastValueRef.current}
-            end={isLoading ? lastValueRef.current : snippetData?.pages[0].total_snippets}
+            end={isLoading ? lastValueRef.current : snippetData?.pages[0].total_snippets ?? lastValueRef.current}
             duration={1.5}
             separator=','
             preserveValue={true}

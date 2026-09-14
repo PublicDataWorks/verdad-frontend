@@ -4,6 +4,7 @@ import { User, AuthError, Session } from '@supabase/supabase-js'
 interface AuthContextType {
   user: User | null
   session: Session | null
+  isLoading: boolean
   login: (email: string, password: string) => Promise<{ error: AuthError | null }>
   logout: () => Promise<{ error: AuthError | null }>
   loginWithGoogle: (redirectTo?: string) => Promise<{ error: AuthError | null }>
@@ -21,6 +22,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
+  isLoading: false,
   login: async () => ({ error: null }),
   logout: async () => ({ error: null }),
   loginWithGoogle: async () => ({ error: null }),
@@ -35,6 +37,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -46,6 +49,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(session)
       } catch (error) {
         console.error('Error checking user:', error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -140,6 +145,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       value={{
         user,
         session,
+        isLoading,
         login,
         logout,
         loginWithGoogle,
