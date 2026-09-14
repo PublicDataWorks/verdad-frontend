@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import { jwtDecode } from 'jwt-decode'
 import supabase from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 import PublicHeader from './PublicHeader'
 
 type FormData = {
@@ -277,13 +278,11 @@ export default function OnboardingPage() {
         avatarUrl = publicUrl
       }
 
-      const { error: rpcError } = await supabase.rpc('setup_profile', {
+      await timedRpc('setup_profile', {
         first_name: firstName,
         last_name: lastName,
         avatar_url: avatarUrl
       })
-
-      if (rpcError) throw rpcError
 
       navigate('/search')
     } catch (err) {

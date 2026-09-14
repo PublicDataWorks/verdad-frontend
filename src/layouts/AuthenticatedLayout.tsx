@@ -5,10 +5,10 @@ import type { Session, User } from '@supabase/supabase-js'
 import { useQuery } from '@tanstack/react-query'
 import HeaderBar from '../components/HeaderBar'
 import supabase from '../lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 
 const fetchAllUsers = async () => {
-  const { data, error } = await supabase.rpc('get_users')
-  if (error) throw error
+  const { data } = await timedRpc('get_users')
   return data
 }
 
@@ -105,7 +105,8 @@ const AuthenticatedLayout: React.FC = () => {
         })
 
         return filteredData.map(user => user.email)
-      }}>
+      }}
+    >
       <div className='flex min-h-svh flex-col'>
         <HeaderBar />
         <div className='flex-grow overflow-hidden'>
