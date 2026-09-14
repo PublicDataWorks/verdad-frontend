@@ -30,7 +30,6 @@ const mockDuration = (ms: number) => {
 
 describe('timedRpc', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     vi.restoreAllMocks()
   })
 
