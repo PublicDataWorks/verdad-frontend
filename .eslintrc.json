@@ -210,6 +210,13 @@
       }
     },
     {
+      "files": ["src/types/database.ts"],
+      "rules": {
+        "@typescript-eslint/consistent-type-definitions": "off",
+        "@typescript-eslint/no-redundant-type-constituents": "off"
+      }
+    },
+    {
       "files": ["vite.config.ts", "cypress.config.ts"],
       "parserOptions": {
         "project": ["./tsconfig.node.json"]
