@@ -1,42 +1,43 @@
-'use client'
-
-import * as React from 'react'
 import * as SliderPrimitive from '@radix-ui/react-slider'
+
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
+import type { PoliticalSpectrum } from '@/hooks/useSnippetFilters'
 
-import './political-spectrum-slider.scss'
+export const POLITICAL_SPECTRUM_POSITIONS: PoliticalSpectrum[] = [
+  'left',
+  'center-left',
+  'center',
+  'center-right',
+  'right'
+]
 
-type Position = 'left' | 'center-left' | 'center' | 'center-right' | 'right'
+const LABEL_POSITIONS: PoliticalSpectrum[] = ['left', 'center', 'right']
 
-interface PoliticalSpectrumSliderProps extends React.ComponentProps<typeof SliderPrimitive.Root> {
-  value: Position | undefined
-  onChange: (value: Position | undefined) => void
+const DEFAULT_THUMB_INDEX = POLITICAL_SPECTRUM_POSITIONS.indexOf('center')
+
+interface PoliticalSpectrumSliderProps {
+  className?: string
+  value: PoliticalSpectrum | undefined
+  onChange: (value: PoliticalSpectrum | undefined) => void
 }
 
-export default function PoliticalSpectrumSlider({
-  className,
-  value,
-  onChange,
-  ...props
-}: PoliticalSpectrumSliderProps) {
+export default function PoliticalSpectrumSlider({ className, value, onChange }: PoliticalSpectrumSliderProps) {
   const { language } = useLanguage()
   const t = translations[language]
 
-  const positions: Position[] = ['left', 'center-left', 'center', 'center-right', 'right']
-  const labels = [t.left || 'Left', t.center || 'Center', t.right || 'Right']
-
-  const getLabel = (position: Position | undefined) => {
-    if (position === undefined || position === null) return t.all || 'All'
-    return t[position as keyof typeof t] || position
+  const getLabel = (position: PoliticalSpectrum | undefined): string => {
+    if (position === undefined) return t.all
+    return t[position]
   }
 
-  const handleSliderChange = (newValue: number[]) => {
-    const index = newValue[0]
-    const newPosition = index >= 0 && index < positions.length ? positions[index] : undefined
-    onChange(newPosition)
+  const hasValue = value !== undefined
+  const thumbIndex = hasValue ? POLITICAL_SPECTRUM_POSITIONS.indexOf(value) : DEFAULT_THUMB_INDEX
+
+  const handleSliderChange = ([index]: number[]) => {
+    onChange(POLITICAL_SPECTRUM_POSITIONS[index])
   }
 
   const handleClear = () => {
@@ -44,50 +45,83 @@ export default function PoliticalSpectrumSlider({
   }
 
   return (
-    <div className='w-full max-w-sm space-y-4'>
+    <div className={cn('w-full max-w-sm', className)}>
       <div className='flex items-center justify-end'>
-        <Button variant='ghost' size='sm' onClick={handleClear} disabled={value === null}>
-          {t.clear || 'Clear'}
+        <Button variant='ghost' size='sm' onClick={handleClear} disabled={!hasValue}>
+          {t.clear}
         </Button>
       </div>
-      <div className='relative'>
-        <SliderPrimitive.Root
-          id='political-spectrum'
-          value={value !== undefined && value !== null ? [positions.indexOf(value)] : [2]}
-          min={0}
-          max={positions.length - 1}
-          step={1}
-          onValueChange={handleSliderChange}
+
+      <SliderPrimitive.Root
+        id='political-spectrum'
+        value={[thumbIndex]}
+        min={0}
+        max={POLITICAL_SPECTRUM_POSITIONS.length - 1}
+        step={1}
+        onValueChange={handleSliderChange}
+        className='relative flex h-6 w-full touch-none select-none items-center'>
+        <SliderPrimitive.Track className='relative h-2 w-full grow overflow-hidden rounded-full bg-background-gray-medium' />
+        <SliderPrimitive.Thumb
+          aria-label={t.politicalSpectrum}
+          aria-valuetext={getLabel(value)}
           className={cn(
-            'political-spectrum-slider relative flex w-full touch-none select-none items-center',
-            value === null && 'is-grayed-out',
-            className
+            'block h-4 w-4 cursor-grab rounded-full border-2 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:cursor-grabbing',
+            hasValue
+              ? 'border-primary bg-primary'
+              : 'border-dashed border-background-gray-dark bg-background-gray-lightest'
           )}
-          {...props}>
-          <SliderPrimitive.Track className='slider-track relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200'></SliderPrimitive.Track>
-          <SliderPrimitive.Thumb
-            className={cn(
-              'slider-thumb bg-background-gray-light border-background-gray-light block h-3 w-3 rounded-full border-2 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
-              value === null && 'is-grayed-out'
-            )}
-          />
-        </SliderPrimitive.Root>
-        <div className='absolute left-0 right-0 top-full mt-1 flex justify-between'>
-          {positions.map(position => (
-            <div key={position} className={cn('bg-background-gray-medium h-2 w-2 rounded-full')} />
-          ))}
-        </div>
+        />
+      </SliderPrimitive.Root>
+
+      <div className='-mx-1 -mt-1.5 flex justify-between'>
+        {POLITICAL_SPECTRUM_POSITIONS.map(position => {
+          const isActive = value === position
+          return (
+            <button
+              key={position}
+              type='button'
+              title={getLabel(position)}
+              aria-label={getLabel(position)}
+              aria-pressed={isActive}
+              onClick={() => onChange(position)}
+              className='group flex h-6 w-6 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'>
+              <span
+                aria-hidden='true'
+                className={cn(
+                  'block rounded-full transition-all',
+                  isActive
+                    ? 'h-2.5 w-2.5 bg-primary'
+                    : 'h-2 w-2 bg-background-gray-medium group-hover:bg-background-gray-dark'
+                )}
+              />
+            </button>
+          )
+        })}
       </div>
 
-      <div className='flex justify-between text-sm'>
-        {labels.map(label => (
-          <span key={label} className={cn('text-muted-foreground')}>
-            {label}
-          </span>
-        ))}
+      <div className='mt-1 grid grid-cols-3 text-sm'>
+        {LABEL_POSITIONS.map((position, index) => {
+          const isActive = value === position
+          return (
+            <button
+              key={position}
+              type='button'
+              aria-pressed={isActive}
+              onClick={() => onChange(position)}
+              className={cn(
+                '-my-1 rounded py-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                index === 0 && 'justify-self-start',
+                index === 1 && 'justify-self-center',
+                index === 2 && 'justify-self-end',
+                isActive ? 'font-medium text-primary' : 'text-muted-foreground hover:text-foreground'
+              )}>
+              {getLabel(position)}
+            </button>
+          )
+        })}
       </div>
 
-      <div className='text-center text-sm font-medium text-primary'>{getLabel(value)}</div>
+      <div className='mt-4 text-center text-sm font-medium text-primary'>{getLabel(value)}</div>
     </div>
   )
 }
