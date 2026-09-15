@@ -20,7 +20,7 @@ const initialState: ThemeProviderState = {
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
 export function ThemeProvider({ children, storageKey = 'app-theme', ...props }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem(storageKey) as Theme) || 'light')
+  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem(storageKey) as Theme | null) || 'light')
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -39,10 +39,5 @@ export function ThemeProvider({ children, storageKey = 'app-theme', ...props }: 
   )
 }
 
-export const useTheme = () => {
-  const context = useContext(ThemeProviderContext)
-
-  if (context === undefined) throw new Error('useTheme must be used within a ThemeProvider')
-
-  return context
-}
+// The context is created with a default value, so there is nothing to guard against here.
+export const useTheme = () => useContext(ThemeProviderContext)

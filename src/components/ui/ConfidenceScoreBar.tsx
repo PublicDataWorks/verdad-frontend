@@ -1,17 +1,18 @@
 type Level = 'low' | 'medium' | 'high'
 
-export function ConfidenceChart({ level }: { level: Level }) {
-  const getChartConfig = (value: Level) => {
-    const configs = {
-      low: { filledBars: 3, color: '#005EF4' },
-      medium: { filledBars: 4, color: '#005EF4' },
-      high: { filledBars: 5, color: '#005EF4' }
-    }
-    return configs[value] || configs.low // Default to low if invalid level
-  }
+const CHART_CONFIGS: Record<Level, { filledBars: number; color: string }> = {
+  low: { filledBars: 3, color: '#005EF4' },
+  medium: { filledBars: 4, color: '#005EF4' },
+  high: { filledBars: 5, color: '#005EF4' }
+}
 
+// `level` comes from the unvalidated `confidence_scores` jsonb, so an unexpected value
+// still has to render as "low" rather than crash.
+const isLevel = (value: string): value is Level => value in CHART_CONFIGS
+
+export function ConfidenceChart({ level }: { level: Level }) {
   const totalBars = 5
-  const { filledBars, color } = getChartConfig(level)
+  const { filledBars, color } = CHART_CONFIGS[isLevel(level) ? level : 'low']
 
   return (
     <div className='flex h-3 items-end gap-0.5'>

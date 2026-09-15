@@ -9,10 +9,8 @@ import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { useFilters } from '@/hooks/useFilterOptions'
-import useSnippetFilters, {
-  PoliticalSpectrum as PoliticalSpectrumValue,
-  SnippetFilters
-} from '@/hooks/useSnippetFilters'
+import type { PoliticalSpectrum as PoliticalSpectrumValue, SnippetFilters } from '@/hooks/useSnippetFilters'
+import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { useSnippets } from '@/hooks/useSnippets'
 import { useEffect, useRef } from 'react'
 import { PAGE_SIZE } from '@/constants'

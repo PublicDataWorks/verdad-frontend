@@ -150,7 +150,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
     }
 
     const toggleOption = (option: string) => {
-      const currentSet = new Set(selectedValues || [])
+      const currentSet = new Set(selectedValues)
       if (currentSet.has(option)) {
         currentSet.delete(option)
       } else {

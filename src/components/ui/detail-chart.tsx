@@ -51,7 +51,7 @@ export default function DetailChart({
   const width = containerWidth
 
   const chartData = useMemo(() => {
-    if (!data || data.length === 0) return null
+    if (data.length === 0) return null
 
     const max = Math.max(...data, 1)
     const min = 0 // Always start from 0 for better context
@@ -138,7 +138,7 @@ export default function DetailChart({
     setHoveredIndex(null)
   }
 
-  if (!data || data.length === 0 || !chartData) {
+  if (data.length === 0 || !chartData) {
     return (
       <div
         ref={containerRef}

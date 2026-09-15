@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
+import type React from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import type { Label } from '@/types/snippet'

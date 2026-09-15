@@ -25,6 +25,8 @@
     "prettier"
   ],
   "rules": {
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/no-unnecessary-condition": "error",
     "no-dupe-else-if": "error",
     "no-promise-executor-return": "error",
     "no-unreachable-loop": "error",

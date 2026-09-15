@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import type React from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Pause, ChevronDown, FastForward, Play, Rewind } from 'lucide-react'

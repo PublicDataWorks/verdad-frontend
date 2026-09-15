@@ -1,5 +1,6 @@
 import type React from 'react'
-import { useState, useEffect, FC } from 'react'
+import type { FC } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { isEmpty, isNil } from 'lodash'
 

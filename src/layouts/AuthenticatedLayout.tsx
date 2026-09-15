@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import type React from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { LiveblocksProvider } from '@liveblocks/react/suspense'
 import type { Session, User } from '@supabase/supabase-js'

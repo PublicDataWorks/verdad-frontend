@@ -10,7 +10,7 @@ const fetchRoles = async (): Promise<string[]> => {
       return []
     }
 
-    return data || []
+    return data
   } catch (err) {
     console.error('Unexpected error fetching roles:', err)
     return []

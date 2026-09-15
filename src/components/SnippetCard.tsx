@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import type React from 'react'
+import { useState, useEffect } from 'react'
 import { ThumbsUp, ThumbsDown, Star } from 'lucide-react'
 import { isNil } from 'lodash'
 

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import type React from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import Upvote from '../assets/upvote.svg'
 import Upvoted from '../assets/upvoted.svg'

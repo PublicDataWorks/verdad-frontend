@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import type * as React from 'react'
 import * as SliderPrimitive from '@radix-ui/react-slider'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -14,7 +14,8 @@ type Position = PoliticalSpectrum
 
 interface PoliticalSpectrumSliderProps
   extends Omit<React.ComponentProps<typeof SliderPrimitive.Root>, 'value' | 'onChange'> {
-  value: Position | undefined
+  // `useSnippetFilters` reads the value straight off the URL, so "no selection" is null.
+  value: Position | null | undefined
   onChange: (value: Position | undefined) => void
 }
 
@@ -30,7 +31,7 @@ export default function PoliticalSpectrumSlider({
   const positions: Position[] = ['left', 'center-left', 'center', 'center-right', 'right']
   const labels = [t.left || 'Left', t.center || 'Center', t.right || 'Right']
 
-  const getLabel = (position: Position | undefined) => {
+  const getLabel = (position: Position | null | undefined) => {
     if (position === undefined || position === null) return t.all || 'All'
     const label = t[position as keyof typeof t]
     return typeof label === 'string' && label ? label : position

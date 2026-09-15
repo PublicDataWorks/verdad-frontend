@@ -1,7 +1,7 @@
 import { format } from 'date-fns-tz'
 import { getPoliticalLabel } from './getPoliticalLabel'
 import { ConfidenceChart } from '@/components/ui/ConfidenceScoreBar'
-import { Language } from '@/providers/language'
+import type { Language } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import type { AudioFileInfo, ConfidenceScores } from '@/types/snippet'
 

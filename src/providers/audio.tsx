@@ -1,4 +1,5 @@
-import React, { createContext, useMemo, useState } from 'react'
+import type React from 'react'
+import { createContext, useMemo, useState } from 'react'
 
 export interface CurrentAudio {
   id: string | null

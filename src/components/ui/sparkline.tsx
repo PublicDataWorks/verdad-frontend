@@ -20,7 +20,7 @@ export default function Sparkline({
   className = ''
 }: SparklineProps) {
   const path = useMemo(() => {
-    if (!data || data.length === 0) return ''
+    if (data.length === 0) return ''
 
     const max = Math.max(...data, 1) // Ensure at least 1 to avoid division by zero
     const min = Math.min(...data, 0)
@@ -45,7 +45,7 @@ export default function Sparkline({
   }, [data, width, height])
 
   const areaPath = useMemo(() => {
-    if (!fillColor || !data || data.length === 0) return ''
+    if (!fillColor || data.length === 0) return ''
 
     const max = Math.max(...data, 1)
     const min = Math.min(...data, 0)
@@ -73,7 +73,7 @@ export default function Sparkline({
     return linePath + closePath
   }, [data, width, height, fillColor])
 
-  if (!data || data.length === 0) {
+  if (data.length === 0) {
     return (
       <svg width={width} height={height} className={className}>
         <line
