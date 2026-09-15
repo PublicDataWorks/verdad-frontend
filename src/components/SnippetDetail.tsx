@@ -1,5 +1,6 @@
 import type React from 'react'
-import { useState, useEffect, FC } from 'react'
+import type { FC } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { isEmpty, isNil } from 'lodash'
 
@@ -135,12 +136,9 @@ const SnippetDetail: FC = () => {
     setIsStarred(newStarred)
 
     try {
-      const { data, error } = await rpc<{ data: { snippet_starred: boolean; message: string } }>(
-        'toggle_star_snippet',
-        {
-          snippet_id: snippetId
-        }
-      )
+      const { data, error } = await rpc('toggle_star_snippet', {
+        snippet_id: snippetId!
+      })
 
       if (error) throw error
 
@@ -261,7 +259,7 @@ const SnippetDetail: FC = () => {
                     <DropdownMenuItem
                       className='capitalize'
                       onClick={() => {
-                        const content = `${snippet.context.before}\n\n${snippet.context.main}\n\n${snippet.context.after}`
+                        const content = `${snippet.context?.before}\n\n${snippet.context?.main}\n\n${snippet.context?.after}`
                         downloadText(content, `transcript_${snippetId}_${snippetLanguage}.txt`)
                       }}
                     >
@@ -269,7 +267,7 @@ const SnippetDetail: FC = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => {
-                        const content = `${snippet.context.before_en}\n\n${snippet.context.main_en}\n\n${snippet.context.after_en}`
+                        const content = `${snippet.context?.before_en}\n\n${snippet.context?.main_en}\n\n${snippet.context?.after_en}`
                         downloadText(content, `transcript_${snippetId}_en.txt`)
                       }}
                     >
@@ -280,7 +278,7 @@ const SnippetDetail: FC = () => {
                         try {
                           await downloadAudio(
                             `${audioBaseUrl}/${snippet.file_path}`,
-                            `audio_${snippet.audio_file.radio_station_code}_${snippet.audio_file.radio_station_name}_${snippet.audio_file.location_state}.mp3`
+                            `audio_${snippet.audio_file?.radio_station_code}_${snippet.audio_file?.radio_station_name}_${snippet.audio_file?.location_state}.mp3`
                           )
                         } catch (error) {
                           toast({
@@ -364,7 +362,7 @@ const SnippetDetail: FC = () => {
                       }`}
                     >
                       <ThumbsUp className='h-4 w-4' />
-                      <span>{counts?.likeCount}</span>
+                      <span>{counts.likeCount}</span>
                     </Button>
                   </div>
                 </TooltipTrigger>
@@ -382,7 +380,7 @@ const SnippetDetail: FC = () => {
                       className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'bg-red-100 hover:bg-red-200' : ''}`}
                     >
                       <ThumbsDown className='h-4 w-4' />
-                      <span>{counts?.dislikeCount}</span>
+                      <span>{counts.dislikeCount}</span>
                     </Button>
                   </div>
                 </TooltipTrigger>
@@ -397,33 +395,28 @@ const SnippetDetail: FC = () => {
               <p className='text-sm'>{snippet.summary}</p>
             </div>
             <div className='space-y-2'>
-              <p className='text-sm text-muted-foreground'>{snippet?.explanation}</p>
+              <p className='text-sm text-muted-foreground'>{snippet.explanation}</p>
             </div>
 
-            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet?.file_path}`} startTime={snippet?.start_time} />
+            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
             <LanguageTabs
               setLanguage={setSnippetLanguage}
               sourceText={{
-                before: snippet?.context?.before,
-                main: snippet?.context?.main,
-                after: snippet?.context?.after
+                before: snippet.context?.before,
+                main: snippet.context?.main,
+                after: snippet.context?.after
               }}
               englishText={{
-                before_en: snippet?.context?.before_en,
-                main_en: snippet?.context?.main_en,
-                after_en: snippet?.context?.after_en
+                before_en: snippet.context?.before_en,
+                main_en: snippet.context?.main_en,
+                after_en: snippet.context?.after_en
               }}
-              sourceLanguage={snippet?.language?.primary_language?.toLowerCase() || 'english'}
+              sourceLanguage={snippet.language?.primary_language?.toLowerCase() || 'english'}
             />
 
             <div className='flex flex-wrap items-center gap-2'>
               {labels.map((label, index) => (
-                <LabelButton
-                  key={`${snippetId}-${label.id}-${index}`}
-                  label={label}
-                  snippetId={snippetId}
-                  onLabelDeleted={labelId => setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))}
-                />
+                <LabelButton key={`${snippetId}-${label.id}-${index}`} label={label} snippetId={snippetId} />
               ))}
               <AddLabelButton snippetId={snippetId} onLabelAdded={handleLabelAdded} />
             </div>

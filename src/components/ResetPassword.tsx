@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import type { SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

@@ -1,7 +1,9 @@
 'use client'
 
-import { useState, ChangeEvent, useEffect } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import type { ChangeEvent } from 'react'
+import { useState, useEffect } from 'react'
+import type { SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,7 +13,7 @@ import { Upload, Loader2, MailWarning } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import { jwtDecode } from 'jwt-decode'
-import supabase from '@/lib/supabase'
+import supabase, { rpc } from '@/lib/supabase'
 import PublicHeader from './PublicHeader'
 
 interface FormData {
@@ -133,7 +135,7 @@ export default function OnboardingPage() {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return
 
-      if (session?.user?.email) {
+      if (session?.user.email) {
         handleSessionEstablished(session.user.email)
       } else if (session === null) {
         // Clear email if user signs out (e.g., in another tab)
@@ -158,7 +160,7 @@ export default function OnboardingPage() {
 
         if (!isMounted) return
 
-        if (session?.user?.email) {
+        if (session?.user.email) {
           handleSessionEstablished(session.user.email)
         } else {
           // No session found, set timeout to allow for magic link processing
@@ -189,7 +191,7 @@ export default function OnboardingPage() {
     return () => {
       isMounted = false
       if (timeoutId) clearTimeout(timeoutId)
-      authListener?.subscription.unsubscribe()
+      authListener.subscription.unsubscribe()
     }
   }, [setValue, toast])
 
@@ -257,7 +259,8 @@ export default function OnboardingPage() {
 
       if (!user) throw new Error('No user found')
 
-      let avatarUrl = null
+      // `setup_profile` takes a text argument; '' stands for "no avatar uploaded".
+      let avatarUrl = ''
 
       if (avatar) {
         const fileExt = avatar.name.split('.').pop()
@@ -277,7 +280,7 @@ export default function OnboardingPage() {
         avatarUrl = publicUrl
       }
 
-      const { error: rpcError } = await supabase.rpc('setup_profile', {
+      const { error: rpcError } = await rpc('setup_profile', {
         first_name: firstName,
         last_name: lastName,
         avatar_url: avatarUrl

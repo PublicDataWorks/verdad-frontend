@@ -13,7 +13,7 @@ export interface SnippetFilters {
   labels: string[]
   labeledBy: string[]
   starredBy: string[]
-  politicalSpectrum?: PoliticalSpectrum
+  politicalSpectrum?: PoliticalSpectrum | null
   order_by?: 'activities' | 'upvotes' | 'comments' | 'latest'
   upvotedBy: string[]
   searchTerm?: string

@@ -32,3 +32,26 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+
+  types-drift:
+    name: Generated Supabase types match the live schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # `secrets` is not available in an `if:` condition, so the token is hoisted into `env`
+      # first and every step is skipped when it is empty. Until an admin adds the
+      # SUPABASE_ACCESS_TOKEN repository secret this job is a no-op (see AGENTS.md).
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        if: ${{ env.SUPABASE_ACCESS_TOKEN != '' }}
+      - uses: actions/setup-node@v4
+        if: ${{ env.SUPABASE_ACCESS_TOKEN != '' }}
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+        if: ${{ env.SUPABASE_ACCESS_TOKEN != '' }}
+      - name: Regenerate src/types/database.ts and fail if it changed
+        if: ${{ env.SUPABASE_ACCESS_TOKEN != '' }}
+        run: npm run check:types

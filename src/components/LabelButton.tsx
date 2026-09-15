@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import type React from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import Upvote from '../assets/upvote.svg'
 import Upvoted from '../assets/upvoted.svg'
 import { rpc } from '@/lib/supabase'
-import { Label } from '@/types/snippet'
+import type { Label } from '@/types/snippet'
 import { useAuth } from '@/providers/auth'
 import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
 import { toast } from '@/hooks/use-toast'
@@ -12,10 +13,9 @@ import { useQueryClient } from '@tanstack/react-query'
 interface LabelButtonProps {
   label: Label
   snippetId: string
-  onLabelDeleted: (labelId: string) => void
 }
 
-const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDeleted }) => {
+const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId }) => {
   const { user } = useAuth()
   const queryClient = useQueryClient()
 
@@ -66,17 +66,12 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
     setUpvoteCount(prevCount => (newIsUpvoted ? prevCount + 1 : prevCount - 1))
 
     try {
-      const { data, error } = await rpc<{ labels?: unknown[] } | unknown[] | null>('toggle_upvote_label', {
+      const { error } = await rpc('toggle_upvote_label', {
         snippet_id: snippetId,
         label_text: label.text
       })
 
       if (error) throw error
-
-      const remainingLabels = Array.isArray(data) ? data : data?.labels
-      if (!data || remainingLabels?.length === 0) {
-        onLabelDeleted(label.id)
-      }
 
       // Invalidate all snippets lists to refresh data
       void queryClient.invalidateQueries({
@@ -111,7 +106,7 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
           className={`${getUpvoteButtonClasses()} whitespace-nowrap`}
           onClick={handleUpvote}
         >
-          <span>{label?.text}</span>
+          <span>{label.text}</span>
           <img src={isUpvoted ? Upvoted : Upvote} alt='Upvote' className='h-4 w-4' />
           <span>{upvoteCount}</span>
         </Button>

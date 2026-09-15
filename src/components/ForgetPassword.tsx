@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import type { SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Loader2, CheckCircle2 } from 'lucide-react' // Add CheckCircle2 import

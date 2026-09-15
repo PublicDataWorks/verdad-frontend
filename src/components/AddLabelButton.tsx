@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import type React from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { Label } from '@/types/snippet'
+import type { Label } from '@/types/snippet'
 import { rpc } from '@/lib/supabase'
 import { useLabels } from '@/hooks/useLabels'
 import { useQueryClient } from '@tanstack/react-query'
@@ -45,7 +46,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
     onLabelAdded(prevLabels => [...prevLabels, newLabel])
 
     try {
-      const { data, error } = await rpc<{ labels?: Label[] } | null>('create_apply_and_upvote_label', {
+      const { data, error } = await rpc('create_apply_and_upvote_label', {
         snippet_id: snippetId,
         label_text: labelText
       })
@@ -53,9 +54,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
       if (error) throw error
 
       // Replace entire label list with server response
-      if (data?.labels) {
-        onLabelAdded(data.labels)
-      }
+      onLabelAdded(data.labels)
 
       // Invalidate all snippets lists to refresh data
       void queryClient.invalidateQueries({

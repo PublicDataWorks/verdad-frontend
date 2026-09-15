@@ -1,27 +1,9 @@
 // src/hooks/useFilters.ts
 import { useQuery } from '@tanstack/react-query'
 import { rpc } from '@/lib/supabase'
+import type { FilteringOptions } from '@/types/rpc'
 
-export interface FilterOption {
-  label: string
-  value: string
-}
-
-export interface LabelsResponse {
-  items: FilterOption[]
-  page_size: number
-  total_pages: number
-  current_page: number
-}
-
-export interface FilteringOptions {
-  labels: LabelsResponse
-  states: FilterOption[]
-  sources: FilterOption[]
-  labeledBy: FilterOption[]
-  languages: FilterOption[]
-  starredBy: FilterOption[]
-}
+export type { FilterOption, FilteringOptions, LabelsResponse } from '@/types/rpc'
 
 export const filterKeys = {
   all: ['filters'] as const,
@@ -29,7 +11,7 @@ export const filterKeys = {
 }
 
 export const fetchFilteringOptions = async (language = 'english'): Promise<FilteringOptions> => {
-  const { data, error } = await rpc<FilteringOptions>('get_filtering_options', {
+  const { data, error } = await rpc('get_filtering_options', {
     p_language: language,
     p_label_page: 0,
     p_label_page_size: 1000

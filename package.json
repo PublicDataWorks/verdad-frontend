@@ -10,6 +10,8 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
+    "gen:types": "node scripts/gen-types.mjs",
+    "check:types": "node scripts/gen-types.mjs && git diff --exit-code src/types/database.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest run",

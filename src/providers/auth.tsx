@@ -1,6 +1,8 @@
-import React, { createContext, useEffect, useMemo, useState, ReactNode, useContext } from 'react'
+import type { ReactNode } from 'react'
+import type React from 'react'
+import { createContext, useEffect, useMemo, useState, useContext } from 'react'
 import supabase from '../lib/supabase'
-import { User, AuthError, Session } from '@supabase/supabase-js'
+import type { User, AuthError, Session } from '@supabase/supabase-js'
 
 interface AuthContextType {
   user: User | null
@@ -150,10 +152,5 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
-}
+// The context is created with a default value, so there is nothing to guard against here.
+export const useAuth = () => useContext(AuthContext)

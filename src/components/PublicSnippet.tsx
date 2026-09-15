@@ -1,4 +1,4 @@
-import { useState, useEffect, FC } from 'react'
+import { useState, useEffect, type FC } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { isEmpty } from 'lodash'
 
@@ -52,7 +52,7 @@ const PublicSnippet: FC = () => {
     try {
       await downloadAudio(
         `${audioBaseUrl}/${snippet?.file_path}`,
-        `audio_${snippet?.audio_file.radio_station_code}_${snippet?.audio_file.radio_station_name}_${snippet?.audio_file.location_state}.mp3`
+        `audio_${snippet?.audio_file?.radio_station_code}_${snippet?.audio_file?.radio_station_name}_${snippet?.audio_file?.location_state}.mp3`
       )
     } catch (error) {
       toast({
@@ -90,7 +90,8 @@ const PublicSnippet: FC = () => {
     return <Navigate to={`/snippet/${snippetId}`} />
   }
 
-  const sourceLanguage = snippet.language
+  // `get_public_snippet` returns null when the snippet has no detected language.
+  const sourceLanguage = snippet.language ?? ''
   const audioBaseUrl = import.meta.env.VITE_AUDIO_BASE_URL
 
   return (
@@ -112,7 +113,7 @@ const PublicSnippet: FC = () => {
                 <DropdownMenuItem
                   className='capitalize'
                   onClick={() => {
-                    const content = `${snippet.context.before}\n\n${snippet.context.main}\n\n${snippet.context.after}`
+                    const content = `${snippet.context?.before}\n\n${snippet.context?.main}\n\n${snippet.context?.after}`
                     handleDownloadTranscript(content, `transcript_${snippetId}_${snippetLanguage}.txt`)
                   }}
                 >
@@ -120,7 +121,7 @@ const PublicSnippet: FC = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
-                    const content = `${snippet.context.before_en}\n\n${snippet.context.main_en}\n\n${snippet.context.after_en}`
+                    const content = `${snippet.context?.before_en}\n\n${snippet.context?.main_en}\n\n${snippet.context?.after_en}`
                     handleDownloadTranscript(content, `transcript_${snippetId}_en.txt`)
                   }}
                 >
@@ -135,25 +136,25 @@ const PublicSnippet: FC = () => {
         <CardContent>
           <div className='space-y-4'>
             <div>
-              <h2 className='text-2xl font-bold'>{snippet?.title}</h2>
+              <h2 className='text-2xl font-bold'>{snippet.title}</h2>
               <p className='text-sm text-muted-foreground text-zinc-400'>{getSnippetSubtitle(snippet, 'english')}</p>
             </div>
             <div className='space-y-2'>
               <h3 className='font-semibold'>{t.summary}</h3>
               <p className='text-sm'>{snippet.summary}</p>
             </div>
-            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet?.file_path}`} startTime={snippet?.start_time} />
+            <AudioPlayer audioSrc={`${audioBaseUrl}/${snippet.file_path}`} startTime={snippet.start_time} />
             <LanguageTabs
               setLanguage={setSnippetLanguage}
               sourceText={{
-                before: snippet?.context?.before,
-                main: snippet?.context?.main,
-                after: snippet?.context?.after
+                before: snippet.context?.before,
+                main: snippet.context?.main,
+                after: snippet.context?.after
               }}
               englishText={{
-                before_en: snippet?.context?.before_en,
-                main_en: snippet?.context?.main_en,
-                after_en: snippet?.context?.after_en
+                before_en: snippet.context?.before_en,
+                main_en: snippet.context?.main_en,
+                after_en: snippet.context?.after_en
               }}
               sourceLanguage={sourceLanguage}
             />

@@ -9,7 +9,7 @@ import { useSnippets } from '@/hooks/useSnippets'
 
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { fetchFilteringOptions, filterKeys } from '@/hooks/useFilterOptions'
-import supabaseClient from '@/lib/supabase'
+import { rpc } from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef } from 'react'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
@@ -36,7 +36,7 @@ export default function SearchInterface() {
   const { showSidebar } = useSidebar()
   const { filters, setFilter } = useSnippetFilters()
   const { user } = useAuth()
-  const showWelcomeCard = user?.user_metadata?.dismiss_welcome_card as boolean | undefined
+  const showWelcomeCard = user?.user_metadata.dismiss_welcome_card as boolean | undefined
 
   const { language } = useLanguage()
   const t = translations[language]
@@ -84,7 +84,7 @@ export default function SearchInterface() {
   useEffect(() => {
     const trackUserSignup = async () => {
       try {
-        await supabaseClient.rpc('track_user_signups', { origin: '/knight' })
+        await rpc('track_user_signups', { origin: '/knight' })
       } catch {
         // Best-effort analytics; failures are intentionally ignored.
       }

@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useContext, FC } from 'react'
+import type { FC } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { PauseIcon, PlayIcon } from 'lucide-react'

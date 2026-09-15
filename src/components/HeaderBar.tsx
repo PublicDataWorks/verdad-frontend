@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import type React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Info, LogOut, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -26,7 +26,7 @@ const HeaderBar: React.FC = () => {
   const { mutate: toggleWelcomeCard } = useToggleWelcomeCard()
 
   const t = translations[language]
-  const showInfoIcon = !user?.user_metadata?.dismiss_welcome_card
+  const showInfoIcon = !user?.user_metadata.dismiss_welcome_card
 
   const getInitials = (email: string) => email.split('@')[0].slice(0, 2).toUpperCase()
 

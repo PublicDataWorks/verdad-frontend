@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 
