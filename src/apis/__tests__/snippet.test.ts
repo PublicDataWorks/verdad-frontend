@@ -95,10 +95,17 @@ describe('hideSnippet / unhideSnippet', () => {
 })
 
 describe('the rpc wrapper types', () => {
-  it('accepts function names from the generated schema and rejects anything else', () => {
-    expectTypeOf(rpc).toBeCallableWith('get_roles')
+  it('only accepts names and arguments from the generated schema', () => {
+    void rpc('get_snippet', { snippet_id: 'snippet-1' })
+    void rpc('get_roles')
     // @ts-expect-error - not a function in src/types/database.ts
-    expectTypeOf(rpc).toBeCallableWith('not_a_function')
+    void rpc('not_a_function')
+    // @ts-expect-error - get_snippet requires a snippet_id
+    void rpc('get_snippet', {})
+    // @ts-expect-error - get_roles takes no arguments
+    void rpc('get_roles', { snippet_id: 'snippet-1' })
+
+    expect(mockedRpc).toHaveBeenCalledTimes(5)
   })
 
   it('resolves a non-jsonb function to its generated return type', () => {

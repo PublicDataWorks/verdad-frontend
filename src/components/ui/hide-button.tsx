@@ -19,10 +19,12 @@ export default function SnippetVisibilityToggle({ snippetId, isHidden = false }:
   const unhideSnippetMutation = useUnhideSnippet()
 
   const handleToggleHide = () => {
+    // `mutate`, not `mutateAsync`: a denied hide rejects, and nothing here awaits it.
+    // The mutation's own onError rolls the optimistic cache update back.
     if (isHidden) {
-      void unhideSnippetMutation.mutateAsync(snippetId)
+      unhideSnippetMutation.mutate(snippetId)
     } else {
-      void hideSnippetMutation.mutateAsync(snippetId)
+      hideSnippetMutation.mutate(snippetId)
     }
   }
 

@@ -20,15 +20,18 @@ interface RpcBuilder<T> extends PromiseLike<PostgrestSingleResponse<T>> {
   abortSignal: (signal: AbortSignal) => PromiseLike<PostgrestSingleResponse<T>>
 }
 
+/** No argument at all for a zero-argument function, exactly one for every other. */
+type RpcArgs<Fn extends RpcName> = [DatabaseFunctions[Fn]['Args']] extends [never]
+  ? []
+  : [args: DatabaseFunctions[Fn]['Args']]
+
 /**
  * Typed wrapper around `supabase.rpc`. The function name and its arguments are checked
  * against the generated schema (src/types/database.ts); the result type comes from
  * src/types/rpc.ts, which is hand-written from the live function bodies and trusted, not
  * validated - exactly as a generated `Returns` would be.
  */
-export const rpc = <Fn extends RpcName, T = RpcResult<Fn>>(
-  fn: Fn,
-  args?: DatabaseFunctions[Fn]['Args']
-): RpcBuilder<T> => supabaseClient.rpc(fn as never, args as never) as unknown as RpcBuilder<T>
+export const rpc = <Fn extends RpcName, T = RpcResult<Fn>>(fn: Fn, ...args: RpcArgs<Fn>): RpcBuilder<T> =>
+  supabaseClient.rpc(fn as never, args[0] as never) as unknown as RpcBuilder<T>
 
 export default supabaseClient
