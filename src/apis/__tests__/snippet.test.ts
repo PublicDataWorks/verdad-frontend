@@ -98,6 +98,9 @@ describe('the rpc wrapper types', () => {
   it('only accepts names and arguments from the generated schema', () => {
     void rpc('get_snippet', { snippet_id: 'snippet-1' })
     void rpc('get_roles')
+    // every argument of get_filtering_options has a SQL default
+    void rpc('get_filtering_options')
+    void rpc('get_filtering_options', { p_language: 'spanish' })
     // @ts-expect-error - not a function in src/types/database.ts
     void rpc('not_a_function')
     // @ts-expect-error - get_snippet requires a snippet_id
@@ -105,7 +108,7 @@ describe('the rpc wrapper types', () => {
     // @ts-expect-error - get_roles takes no arguments
     void rpc('get_roles', { snippet_id: 'snippet-1' })
 
-    expect(mockedRpc).toHaveBeenCalledTimes(5)
+    expect(mockedRpc).toHaveBeenCalledTimes(7)
   })
 
   it('resolves a non-jsonb function to its generated return type', () => {

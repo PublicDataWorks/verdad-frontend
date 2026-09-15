@@ -20,10 +20,15 @@ interface RpcBuilder<T> extends PromiseLike<PostgrestSingleResponse<T>> {
   abortSignal: (signal: AbortSignal) => PromiseLike<PostgrestSingleResponse<T>>
 }
 
-/** No argument at all for a zero-argument function, exactly one for every other. */
+/**
+ * No argument at all for a zero-argument function, an optional one when every argument has a
+ * SQL default (`{} extends Args`), exactly one for every other.
+ */
 type RpcArgs<Fn extends RpcName> = [DatabaseFunctions[Fn]['Args']] extends [never]
   ? []
-  : [args: DatabaseFunctions[Fn]['Args']]
+  : Record<never, never> extends DatabaseFunctions[Fn]['Args']
+    ? [args?: DatabaseFunctions[Fn]['Args']]
+    : [args: DatabaseFunctions[Fn]['Args']]
 
 /**
  * Typed wrapper around `supabase.rpc`. The function name and its arguments are checked
