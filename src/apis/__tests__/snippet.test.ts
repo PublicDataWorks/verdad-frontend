@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, expectTypeOf, it, vi } from 'vitest'
-import { fetchSnippet, fetchSnippets } from '../snippet'
+import { fetchSnippet, fetchSnippets, hideSnippet, unhideSnippet } from '../snippet'
 import { rpc } from '@/lib/supabase'
 
 vi.mock('@/lib/supabase', () => ({ rpc: vi.fn(), default: {} }))
@@ -75,6 +75,22 @@ describe('fetchSnippet', () => {
     mockedRpc.mockReturnValue(rpcResult({ data: snippet, error: null }) as never)
 
     await expect(fetchSnippet('snippet-1', 'english')).resolves.toBe(snippet)
+  })
+})
+
+describe('hideSnippet / unhideSnippet', () => {
+  it('throws when the RPC denies the change', async () => {
+    const denied = { status: 'error', message: 'Only admin users can hide the snippet' }
+    mockedRpc.mockReturnValue(rpcResult({ data: denied, error: null }) as never)
+
+    await expect(hideSnippet('snippet-1')).rejects.toThrow('Only admin users can hide the snippet')
+  })
+
+  it('resolves with the response when the change succeeds', async () => {
+    const granted = { status: 'success', message: 'Snippet has been unhidden successfully' }
+    mockedRpc.mockReturnValue(rpcResult({ data: granted, error: null }) as never)
+
+    await expect(unhideSnippet('snippet-1')).resolves.toBe(granted)
   })
 })
 

@@ -120,6 +120,11 @@ export const hideSnippet = async (snippetId: string): Promise<HideResponse> => {
   if (error) {
     throw error
   }
+  // A caller without the admin role gets `status: 'error'` instead of a Postgres error.
+  // Returning it as a success would leave the optimistic "hidden" state in the cache.
+  if (data.status === 'error') {
+    throw new Error(data.message)
+  }
   return data
 }
 
@@ -129,6 +134,9 @@ export const unhideSnippet = async (snippetId: string): Promise<HideResponse> =>
   })
   if (error) {
     throw error
+  }
+  if (data.status === 'error') {
+    throw new Error(data.message)
   }
   return data
 }
