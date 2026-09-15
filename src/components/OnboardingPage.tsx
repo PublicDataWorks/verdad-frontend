@@ -11,7 +11,7 @@ import { Upload, Loader2, MailWarning } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import { jwtDecode } from 'jwt-decode'
-import supabase from '@/lib/supabase'
+import supabase, { rpc } from '@/lib/supabase'
 import PublicHeader from './PublicHeader'
 
 interface FormData {
@@ -257,7 +257,8 @@ export default function OnboardingPage() {
 
       if (!user) throw new Error('No user found')
 
-      let avatarUrl = null
+      // `setup_profile` takes a text argument; '' stands for "no avatar uploaded".
+      let avatarUrl = ''
 
       if (avatar) {
         const fileExt = avatar.name.split('.').pop()
@@ -277,7 +278,7 @@ export default function OnboardingPage() {
         avatarUrl = publicUrl
       }
 
-      const { error: rpcError } = await supabase.rpc('setup_profile', {
+      const { error: rpcError } = await rpc('setup_profile', {
         first_name: firstName,
         last_name: lastName,
         avatar_url: avatarUrl

@@ -1,27 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { rpc } from '@/lib/supabase'
 import shuffle from 'lodash/shuffle'
-import { Language } from '@/providers/language'
-
-interface ContentLanguageMap {
-  english: string
-  spanish: string
-}
-
-interface Snippet {
-  id: string
-  title: ContentLanguageMap
-  labels: ContentLanguageMap[]
-}
-
-interface LandingPageContentResult {
-  content: {
-    hero_title: ContentLanguageMap
-    hero_description: ContentLanguageMap
-    footer_text: ContentLanguageMap
-  }
-  snippets: Snippet[]
-}
+import type { Language } from '@/providers/language'
 
 export interface TranslatedLandingPageContent {
   hero_title: string
@@ -36,13 +16,14 @@ export interface TranslatedLandingPageContent {
 }
 
 async function fetchLandingPageContent(language: Language): Promise<TranslatedLandingPageContent> {
-  const { data, error } = await rpc<LandingPageContentResult | null>('get_landing_page_content')
+  const { data, error } = await rpc('get_landing_page_content')
 
   if (error) {
     throw new Error(`Error fetching landing page content: ${error.message}`)
   }
 
-  if (!data || typeof data !== 'object' || !Array.isArray(data.snippets)) {
+  // `get_landing_page_content` always builds an object, but the payload is not validated.
+  if (!Array.isArray(data.snippets)) {
     throw new Error('Unexpected data format received from Supabase')
   }
 

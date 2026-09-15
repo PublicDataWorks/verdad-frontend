@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 const fetchRoles = async (): Promise<string[]> => {
   try {
-    const { data, error } = await rpc<string[] | null>('get_roles')
+    const { data, error } = await rpc('get_roles')
 
     if (error) {
       console.error('Error fetching roles:', error)

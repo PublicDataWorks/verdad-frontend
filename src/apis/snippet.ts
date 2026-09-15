@@ -3,7 +3,8 @@
 import { capture, captureException } from '@/lib/posthog'
 import { rpc } from '@/lib/supabase'
 import type { SnippetFilters } from '@/hooks/useSnippetFilters'
-import {
+import type { EmptyObject } from '@/types/rpc'
+import type {
   Snippet,
   PaginatedResponse,
   LikeSnippetVariables,
@@ -15,14 +16,12 @@ import {
 
 const SLOW_THRESHOLD_MS = 20_000
 
-interface GetSnippetsResult {
-  snippets: Snippet[]
-  total_pages: number
-  num_of_snippets: number
-}
+// `get_snippet` and `get_public_snippet` return `'{}'::jsonb` when the snippet does not
+// exist, is not `Processed`, or is hidden from the caller. Callers get `null` instead.
+const isEmptyObject = (value: object): value is EmptyObject => Object.keys(value).length === 0
 
-export const fetchSnippet = async (id: string, language: string): Promise<Snippet> => {
-  const { data, error } = await rpc<Snippet>('get_snippet', {
+export const fetchSnippet = async (id: string, language: string): Promise<Snippet | null> => {
+  const { data, error } = await rpc('get_snippet', {
     snippet_id: id,
     p_language: language
   })
@@ -31,7 +30,7 @@ export const fetchSnippet = async (id: string, language: string): Promise<Snippe
     console.error('Error fetching snippet:', error)
     throw error
   }
-  return data
+  return isEmptyObject(data) ? null : data
 }
 
 export const fetchSnippets = async ({
@@ -67,7 +66,7 @@ export const fetchSnippets = async ({
 
   const startTime = performance.now()
 
-  const { data, error } = await rpc<GetSnippetsResult>('get_snippets', getSnippetsOptions).abortSignal(abortSignal)
+  const { data, error } = await rpc('get_snippets', getSnippetsOptions).abortSignal(abortSignal)
 
   const durationMs = Math.round(performance.now() - startTime)
 
@@ -104,7 +103,7 @@ export const fetchSnippets = async ({
 }
 
 export const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariables): Promise<LikeResponse> => {
-  const { data, error } = await rpc<LikeResponse>('like_snippet', {
+  const { data, error } = await rpc('like_snippet', {
     snippet_id: snippetId,
     value: likeStatus
   })
@@ -115,7 +114,7 @@ export const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariable
 }
 
 export const hideSnippet = async (snippetId: string): Promise<HideResponse> => {
-  const { data, error } = await rpc<HideResponse>('hide_snippet', {
+  const { data, error } = await rpc('hide_snippet', {
     snippet_id: snippetId
   })
   if (error) {
@@ -125,7 +124,7 @@ export const hideSnippet = async (snippetId: string): Promise<HideResponse> => {
 }
 
 export const unhideSnippet = async (snippetId: string): Promise<HideResponse> => {
-  const { data, error } = await rpc<HideResponse>('unhide_snippet', {
+  const { data, error } = await rpc('unhide_snippet', {
     snippet_id: snippetId
   })
   if (error) {
@@ -134,22 +133,22 @@ export const unhideSnippet = async (snippetId: string): Promise<HideResponse> =>
   return data
 }
 
-export const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippetData> => {
-  const { data, error } = await rpc<PublicSnippetData>('get_public_snippet', { snippet_id: snippetId })
+export const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippetData | null> => {
+  const { data, error } = await rpc('get_public_snippet', { snippet_id: snippetId })
 
   if (error) throw error
-  return data
+  return isEmptyObject(data) ? null : data
 }
 
 export const dismissWelcomeCard = async (): Promise<void> => {
-  const { error } = await rpc<unknown>('dismiss_welcome_card')
+  const { error } = await rpc('dismiss_welcome_card')
   if (error) {
     throw error
   }
 }
 
 export const toggleWelcomeCard = async (status: boolean): Promise<void> => {
-  const { error } = await rpc<unknown>('toggle_welcome_card', {
+  const { error } = await rpc('toggle_welcome_card', {
     p_status: status
   })
 
@@ -165,7 +164,7 @@ export const fetchRelatedSnippets = async ({
   snippetId: string
   language: string
 }): Promise<IRelatedSnippet[]> => {
-  const { data, error } = await rpc<IRelatedSnippet[]>('search_related_snippets_public', {
+  const { data, error } = await rpc('search_related_snippets_public', {
     snippet_id: snippetId,
     p_language: language
   })
@@ -174,7 +173,7 @@ export const fetchRelatedSnippets = async ({
 }
 
 export const starSnippet = async (snippetId: string): Promise<void> => {
-  const { error } = await rpc<unknown>('toggle_star_snippet', {
+  const { error } = await rpc('toggle_star_snippet', {
     snippet_id: snippetId
   })
   if (error) throw error

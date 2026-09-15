@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fetchSnippets } from '../snippet'
+import { beforeEach, describe, expect, expectTypeOf, it, vi } from 'vitest'
+import { fetchSnippet, fetchSnippets } from '../snippet'
 import { rpc } from '@/lib/supabase'
 
 vi.mock('@/lib/supabase', () => ({ rpc: vi.fn(), default: {} }))
@@ -13,11 +13,11 @@ const rpcResult = (result: { data: unknown; error: { message: string } | null })
   return { abortSignal: () => thenable, then: thenable.then.bind(thenable) }
 }
 
-describe('fetchSnippets', () => {
-  beforeEach(() => {
-    mockedRpc.mockReset()
-  })
+beforeEach(() => {
+  mockedRpc.mockReset()
+})
 
+describe('fetchSnippets', () => {
   it('calls get_snippets with the paging options and maps the result', async () => {
     const snippets = [{ id: 'a' }, { id: 'b' }]
     mockedRpc.mockReturnValue(
@@ -59,5 +59,35 @@ describe('fetchSnippets', () => {
         abortSignal: new AbortController().signal
       })
     ).rejects.toEqual({ message: 'canceling statement' })
+  })
+})
+
+describe('fetchSnippet', () => {
+  it('maps the empty-object sentinel to null', async () => {
+    // `get_snippet` returns '{}' when the snippet is missing, unprocessed or hidden.
+    mockedRpc.mockReturnValue(rpcResult({ data: {}, error: null }) as never)
+
+    await expect(fetchSnippet('snippet-1', 'english')).resolves.toBeNull()
+  })
+
+  it('returns the snippet when the RPC finds one', async () => {
+    const snippet = { id: 'snippet-1', title: 'A title' }
+    mockedRpc.mockReturnValue(rpcResult({ data: snippet, error: null }) as never)
+
+    await expect(fetchSnippet('snippet-1', 'english')).resolves.toBe(snippet)
+  })
+})
+
+describe('the rpc wrapper types', () => {
+  it('accepts function names from the generated schema and rejects anything else', () => {
+    expectTypeOf(rpc).toBeCallableWith('get_roles')
+    // @ts-expect-error - not a function in src/types/database.ts
+    expectTypeOf(rpc).toBeCallableWith('not_a_function')
+  })
+
+  it('resolves a non-jsonb function to its generated return type', () => {
+    type RolesResponse = Awaited<ReturnType<typeof rpc<'get_roles'>>>
+
+    expectTypeOf<RolesResponse['data']>().toEqualTypeOf<string[] | null>()
   })
 })

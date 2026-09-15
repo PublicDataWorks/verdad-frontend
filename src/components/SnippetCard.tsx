@@ -35,16 +35,16 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
 
   const { data: isAdmin } = useIsAdmin()
 
-  const [labels, setLabels] = useState<Label[]>(snippet?.labels || [])
-  const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet?.user_like_status ?? null)
+  const [labels, setLabels] = useState<Label[]>(snippet.labels || [])
+  const [currentLikeStatus, setCurrentLikeStatus] = useState<LikeStatus | null>(() => snippet.user_like_status ?? null)
   const [counts, setCounts] = useState({
-    likeCount: snippet?.like_count || 0,
-    dislikeCount: snippet?.dislike_count || 0
+    likeCount: snippet.like_count || 0,
+    dislikeCount: snippet.dislike_count || 0
   })
 
   const [isStarred, setIsStarred] = useState<boolean>(() => {
     const localStarred = getLocalStorageItem<boolean>(`starred_${snippet.id}`)
-    return localStarred !== null ? localStarred : snippet?.starred_by_user || false
+    return localStarred !== null ? localStarred : snippet.starred_by_user
   })
   const [isStarHovered, setIsStarHovered] = useState<boolean>(false)
 
@@ -65,7 +65,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
     setIsStarred(newStarred)
 
     try {
-      const { data, error } = await rpc<{ data: { snippet_starred: boolean } }>('toggle_star_snippet', {
+      const { data, error } = await rpc('toggle_star_snippet', {
         snippet_id: snippet.id
       })
 
@@ -118,10 +118,6 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
     setLabels(newLabels)
   }
 
-  const handleLabelDeleted = (labelId: string) => {
-    setLabels(prevLabels => prevLabels.filter(l => l.id !== labelId))
-  }
-
   useEffect(() => {
     setLocalStorageItem(`starred_${snippet.id}`, isStarred)
   }, [isStarred, snippet.id])
@@ -144,15 +140,15 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
   return (
     <div
       className={`mt-2 rounded-lg border bg-background-gray-lightest p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
-      onClick={e => onSnippetClick(e, snippet?.id)}
+      onClick={e => onSnippetClick(e, snippet.id)}
     >
       <div className='mb-2 flex items-start justify-between'>
-        <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet?.title, searchTerm)}</h3>
+        <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet.title ?? '', searchTerm)}</h3>
         <div className='flex space-x-2' onClick={e => e.stopPropagation()}>
           <Tooltip>
             <TooltipTrigger asChild>
               <div>
-                <ShareButton snippetId={snippet?.id} />
+                <ShareButton snippetId={snippet.id} />
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -182,7 +178,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
             <Tooltip>
               <TooltipTrigger asChild>
                 <div>
-                  <SnippetVisibilityToggle isHidden={isHidden} snippetId={snippet?.id} />
+                  <SnippetVisibilityToggle isHidden={isHidden} snippetId={snippet.id} />
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -193,8 +189,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
         </div>
       </div>
       <p className='mb-4 text-xs text-zinc-400'>{getSnippetSubtitle(snippet, language)}</p>
-      <p className='mb-4'>{highlightText(snippet?.summary, searchTerm)}</p>
-      <SnippetAudioPlayer path={snippet?.file_path} initialStartTime={snippet?.start_time || '0'} />
+      <p className='mb-4'>{highlightText(snippet.summary ?? '', searchTerm)}</p>
+      <SnippetAudioPlayer path={snippet.file_path} initialStartTime={snippet.start_time || '0'} />
       <div className='mb-4 flex items-center gap-2'>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -238,17 +234,12 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
       <div className='flex justify-between'>
         <div className='flex flex-wrap items-baseline gap-2'>
           {labels.map((label, index) => (
-            <LabelButton
-              key={`${snippet?.id}-${label?.id}-${index}`}
-              label={label}
-              snippetId={snippet?.id}
-              onLabelDeleted={handleLabelDeleted}
-            />
+            <LabelButton key={`${snippet.id}-${label.id}-${index}`} label={label} snippetId={snippet.id} />
           ))}
-          <AddLabelButton snippetId={snippet?.id} onLabelAdded={handleLabelAdded} />
+          <AddLabelButton snippetId={snippet.id} onLabelAdded={handleLabelAdded} />
         </div>
       </div>
-      <LiveblocksComments snippetId={snippet?.id} showFullComments />
+      <LiveblocksComments snippetId={snippet.id} showFullComments />
     </div>
   )
 }

@@ -5,17 +5,12 @@ import type { Session, User } from '@supabase/supabase-js'
 import { useQuery } from '@tanstack/react-query'
 import HeaderBar from '../components/HeaderBar'
 import supabase, { rpc } from '../lib/supabase'
-
-// Minimal local shape of the `get_users` RPC result (Supabase types are not generated yet).
-interface AppUser {
-  email: string
-  raw_user_meta_data?: { name?: string; avatar_url?: string }
-}
+import type { AppUser } from '@/types/rpc'
 
 const fetchAllUsers = async (): Promise<AppUser[]> => {
-  const { data, error } = await rpc<AppUser[] | null>('get_users')
+  const { data, error } = await rpc('get_users')
   if (error) throw error
-  return data ?? []
+  return data
 }
 
 const AuthenticatedLayout: React.FC = () => {
@@ -33,8 +28,9 @@ const AuthenticatedLayout: React.FC = () => {
     select: users =>
       users.map(entry => ({
         ...entry,
+        email: entry.email ?? '',
         raw_user_meta_data: {
-          name: entry.raw_user_meta_data?.name || entry.email,
+          name: entry.raw_user_meta_data?.name || entry.email || '',
           avatar_url: entry.raw_user_meta_data?.avatar_url || ''
         }
       }))
@@ -104,7 +100,7 @@ const AuthenticatedLayout: React.FC = () => {
         }
 
         const filteredData = allUsers.filter(entry => {
-          const name = entry.raw_user_meta_data.name?.toLowerCase() || ''
+          const name = entry.raw_user_meta_data.name.toLowerCase()
           const email = entry.email.toLowerCase()
           const searchText = text.toLowerCase()
           return name.includes(searchText) || email.includes(searchText)

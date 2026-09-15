@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
 interface AudioPlayerProps {
   audioSrc: string
-  startTime?: string
+  startTime?: string | null
 }
 
 export default function AudioPlayer({ audioSrc, startTime }: AudioPlayerProps) {
