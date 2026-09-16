@@ -122,7 +122,6 @@ export function useHideSnippet() {
 
       const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
 
-      // Optimistically update snippets in cache
       queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: CachedSnippetData) => {
         if (!oldData) return oldData
 
@@ -163,7 +162,6 @@ export function useUnhideSnippet() {
 
       const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
 
-      // Optimistically update snippets in cache
       queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: CachedSnippetData) => {
         if (!oldData) return oldData
 

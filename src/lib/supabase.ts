@@ -10,11 +10,7 @@ interface RpcBuilder<T> extends PromiseLike<PostgrestSingleResponse<T>> {
   abortSignal: (signal: AbortSignal) => PromiseLike<PostgrestSingleResponse<T>>
 }
 
-/**
- * Typed wrapper around `supabase.rpc`. Supabase database types are not generated for this
- * project yet, so callers declare the expected `Returns` shape locally. The shape is trusted,
- * not validated, exactly like generated types would be.
- */
+// No generated Supabase types yet: callers declare `T` and it is trusted, not validated.
 export const rpc = <T>(fn: string, args?: Record<string, unknown>): RpcBuilder<T> =>
   supabaseClient.rpc(fn, args) as unknown as RpcBuilder<T>
 
