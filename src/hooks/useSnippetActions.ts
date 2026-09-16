@@ -1,6 +1,6 @@
 // src/hooks/useSnippetActions.ts
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient, type InfiniteData, type QueryKey } from '@tanstack/react-query'
 
 import { snippetKeys } from './useSnippets'
 import {
@@ -11,20 +11,43 @@ import {
   toggleWelcomeCard,
   starSnippet
 } from '@/apis/snippet'
-import { LikeSnippetVariables, LikeResponse, HideResponse, Snippet, IRelatedSnippet } from '@/types/snippet'
+import type {
+  LikeSnippetVariables,
+  LikeResponse,
+  HideResponse,
+  Snippet,
+  IRelatedSnippet,
+  PaginatedResponse,
+  StarSnippetResponse
+} from '@/types/snippet'
 import { useAuth } from '@/providers/auth'
+
+// Everything cached under `snippetKeys.all`: infinite lists, single details and related lists.
+type CachedSnippetData = InfiniteData<PaginatedResponse> | Snippet | IRelatedSnippet[] | undefined
+interface SnippetMutationContext {
+  previousSnippets: [QueryKey, unknown][]
+}
+
+const restorePreviousSnippets = (
+  queryClient: ReturnType<typeof useQueryClient>,
+  context: SnippetMutationContext | undefined
+) => {
+  context?.previousSnippets.forEach(([key, data]) => {
+    queryClient.setQueryData(key, data)
+  })
+}
 
 export function useLikeSnippet() {
   const queryClient = useQueryClient()
 
-  return useMutation<LikeResponse, Error, LikeSnippetVariables>({
+  return useMutation<LikeResponse, Error, LikeSnippetVariables, SnippetMutationContext>({
     mutationFn: likeSnippet,
     onMutate: async ({ snippetId, likeStatus }) => {
       await queryClient.cancelQueries({ queryKey: snippetKeys.all })
 
       const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
 
-      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: any) => {
+      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: CachedSnippetData) => {
         if (!oldData) return oldData
 
         const updateSnippet = (snippet: Snippet) =>
@@ -33,14 +56,14 @@ export function useLikeSnippet() {
         if ('pages' in oldData) {
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map(page => ({
               ...page,
               snippets: page.snippets.map(updateSnippet)
             }))
           }
         }
 
-        if (oldData.id === snippetId) {
+        if (!Array.isArray(oldData) && oldData.id === snippetId) {
           return { ...oldData, user_like_status: likeStatus }
         }
 
@@ -50,7 +73,7 @@ export function useLikeSnippet() {
       return { previousSnippets }
     },
     onSuccess: (response, { snippetId }) => {
-      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: any) => {
+      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: CachedSnippetData) => {
         if (!oldData) return oldData
 
         const updateSnippet = (snippet: Snippet) =>
@@ -65,14 +88,14 @@ export function useLikeSnippet() {
         if ('pages' in oldData) {
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map(page => ({
               ...page,
               snippets: page.snippets.map(updateSnippet)
             }))
           }
         }
 
-        if (oldData.id === snippetId) {
+        if (!Array.isArray(oldData) && oldData.id === snippetId) {
           return {
             ...oldData,
             like_count: response.like_count,
@@ -83,12 +106,8 @@ export function useLikeSnippet() {
         return oldData
       })
     },
-    onError: (err, variables, context: unknown) => {
-      if (context && typeof context === 'object' && 'previousSnippets' in context) {
-        ;(context.previousSnippets as [any, any][]).forEach(([key, data]: [any, any]) => {
-          queryClient.setQueriesData(key, data)
-        })
-      }
+    onError: (err, variables, context) => {
+      restorePreviousSnippets(queryClient, context)
     }
   })
 }
@@ -96,15 +115,14 @@ export function useLikeSnippet() {
 export function useHideSnippet() {
   const queryClient = useQueryClient()
 
-  return useMutation<HideResponse, Error, string>({
+  return useMutation<HideResponse, Error, string, SnippetMutationContext>({
     mutationFn: hideSnippet,
     onMutate: async snippetId => {
       await queryClient.cancelQueries({ queryKey: snippetKeys.all })
 
       const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
 
-      // Optimistically update snippets in cache
-      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: any) => {
+      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: CachedSnippetData) => {
         if (!oldData) return oldData
 
         const updateSnippet = (snippet: Snippet) => (snippet.id === snippetId ? { ...snippet, hidden: true } : snippet)
@@ -112,14 +130,14 @@ export function useHideSnippet() {
         if ('pages' in oldData) {
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map(page => ({
               ...page,
               snippets: page.snippets.map(updateSnippet)
             }))
           }
         }
 
-        if (oldData.id === snippetId) {
+        if (!Array.isArray(oldData) && oldData.id === snippetId) {
           return { ...oldData, hidden: true }
         }
 
@@ -129,11 +147,7 @@ export function useHideSnippet() {
       return { previousSnippets }
     },
     onError: (err, snippetId, context) => {
-      if (context && typeof context === 'object' && 'previousSnippets' in context) {
-        ;(context.previousSnippets as [any, any][]).forEach(([key, data]: [any, any]) => {
-          queryClient.setQueriesData(key, data)
-        })
-      }
+      restorePreviousSnippets(queryClient, context)
     }
   })
 }
@@ -141,15 +155,14 @@ export function useHideSnippet() {
 export function useUnhideSnippet() {
   const queryClient = useQueryClient()
 
-  return useMutation<HideResponse, Error, string>({
+  return useMutation<HideResponse, Error, string, SnippetMutationContext>({
     mutationFn: unhideSnippet,
     onMutate: async snippetId => {
       await queryClient.cancelQueries({ queryKey: snippetKeys.all })
 
       const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
 
-      // Optimistically update snippets in cache
-      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: any) => {
+      queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: CachedSnippetData) => {
         if (!oldData) return oldData
 
         const updateSnippet = (snippet: Snippet) => (snippet.id === snippetId ? { ...snippet, hidden: false } : snippet)
@@ -157,14 +170,14 @@ export function useUnhideSnippet() {
         if ('pages' in oldData) {
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map(page => ({
               ...page,
               snippets: page.snippets.map(updateSnippet)
             }))
           }
         }
 
-        if (oldData.id === snippetId) {
+        if (!Array.isArray(oldData) && oldData.id === snippetId) {
           return { ...oldData, hidden: false }
         }
 
@@ -174,11 +187,7 @@ export function useUnhideSnippet() {
       return { previousSnippets }
     },
     onError: (err, snippetId, context) => {
-      if (context && typeof context === 'object' && 'previousSnippets' in context) {
-        ;(context.previousSnippets as [any, any][]).forEach(([key, data]: [any, any]) => {
-          queryClient.setQueriesData(key, data)
-        })
-      }
+      restorePreviousSnippets(queryClient, context)
     }
   })
 }
@@ -188,8 +197,8 @@ export function useDismissWelcomeCard() {
 
   return useMutation<void, Error, void>({
     mutationFn: dismissWelcomeCard,
-    onSuccess: data => {
-      refreshUser()
+    onSuccess: () => {
+      void refreshUser()
     }
   })
 }
@@ -200,7 +209,7 @@ export function useToggleWelcomeCard() {
   return useMutation<void, Error, boolean>({
     mutationFn: toggleWelcomeCard,
     onSuccess: () => {
-      refreshUser()
+      void refreshUser()
     }
   })
 }
@@ -208,18 +217,15 @@ export function useToggleWelcomeCard() {
 export function useStarSnippet(parentSnippetId: string, language: string) {
   const queryClient = useQueryClient()
 
-  return useMutation<void, Error, string>({
+  return useMutation<StarSnippetResponse, Error, string, { previousSnippets: IRelatedSnippet[] | undefined }>({
     mutationFn: starSnippet,
     onMutate: async (snippetId: string) => {
-      // Cancel any outgoing refetches for this query
       await queryClient.cancelQueries({ queryKey: snippetKeys.related(parentSnippetId, language) })
 
-      // Snapshot previous value
       const previousSnippets = queryClient.getQueryData<IRelatedSnippet[]>(
         snippetKeys.related(parentSnippetId, language)
       )
 
-      // Optimistically update cache
       queryClient.setQueryData<IRelatedSnippet[]>(snippetKeys.related(parentSnippetId, language), old => {
         if (old) {
           return old.map(snippet => {
@@ -235,7 +241,6 @@ export function useStarSnippet(parentSnippetId: string, language: string) {
       return { previousSnippets }
     },
     onError: (err, snippetId, context) => {
-      // Revert the cache to the previous value
       if (context?.previousSnippets) {
         queryClient.setQueryData<IRelatedSnippet[]>(
           snippetKeys.related(parentSnippetId, language),
@@ -244,8 +249,7 @@ export function useStarSnippet(parentSnippetId: string, language: string) {
       }
     },
     onSettled: () => {
-      // Invalidate queries so they refetch
-      queryClient.invalidateQueries({ queryKey: snippetKeys.related(parentSnippetId, language) })
+      void queryClient.invalidateQueries({ queryKey: snippetKeys.related(parentSnippetId, language) })
     }
   })
 }

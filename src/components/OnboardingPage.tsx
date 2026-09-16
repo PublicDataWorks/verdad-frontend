@@ -14,13 +14,13 @@ import { jwtDecode } from 'jwt-decode'
 import supabase from '@/lib/supabase'
 import PublicHeader from './PublicHeader'
 
-type FormData = {
+interface FormData {
   email: string
   firstName: string
   lastName: string
 }
 
-type AuthFragmentError = {
+interface AuthFragmentError {
   title: string
   description: string
 }
@@ -82,7 +82,7 @@ const clearAuthFragment = (): void => {
   AUTH_FRAGMENT_KEYS_TO_CLEAR.forEach(k => params.delete(k))
 
   const newHash = params.toString()
-  const newUrl = `${url.origin}${url.pathname}${url.search}${newHash ? '#' + newHash : ''}`
+  const newUrl = `${url.origin}${url.pathname}${url.search}${newHash ? `#${newHash}` : ''}`
   window.history.replaceState(null, '', newUrl)
 }
 
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
       }
     }
 
-    checkSession()
+    void checkSession()
 
     // Cleanup
     return () => {
@@ -194,7 +194,7 @@ export default function OnboardingPage() {
   }, [setValue, toast])
 
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       const file = e.target.files[0]
       if (file.size > 10 * 1024 * 1024) {
         toast({
@@ -346,7 +346,7 @@ export default function OnboardingPage() {
         <Card className='w-full max-w-md'>
           <CardHeader className='text-center'>
             <CardTitle className='text-3xl font-semibold'>Welcome to VERDAD</CardTitle>
-            <p className='mt-4 text-base font-normal'>Let's set up your profile.</p>
+            <p className='mt-4 text-base font-normal'>Let&apos;s set up your profile.</p>
           </CardHeader>
           <CardContent className='mt-4'>
             <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>

@@ -6,12 +6,14 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
+import type { PoliticalSpectrum } from '@/hooks/useSnippetFilters'
 
 import './political-spectrum-slider.scss'
 
-type Position = 'left' | 'center-left' | 'center' | 'center-right' | 'right'
+type Position = PoliticalSpectrum
 
-interface PoliticalSpectrumSliderProps extends React.ComponentProps<typeof SliderPrimitive.Root> {
+interface PoliticalSpectrumSliderProps
+  extends Omit<React.ComponentProps<typeof SliderPrimitive.Root>, 'value' | 'onChange'> {
   value: Position | undefined
   onChange: (value: Position | undefined) => void
 }
@@ -30,7 +32,8 @@ export default function PoliticalSpectrumSlider({
 
   const getLabel = (position: Position | undefined) => {
     if (position === undefined || position === null) return t.all || 'All'
-    return t[position as keyof typeof t] || position
+    const label = t[position as keyof typeof t]
+    return typeof label === 'string' && label ? label : position
   }
 
   const handleSliderChange = (newValue: number[]) => {
@@ -63,18 +66,19 @@ export default function PoliticalSpectrumSlider({
             value === null && 'is-grayed-out',
             className
           )}
-          {...props}>
-          <SliderPrimitive.Track className='slider-track relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200'></SliderPrimitive.Track>
+          {...props}
+        >
+          <SliderPrimitive.Track className='slider-track relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200' />
           <SliderPrimitive.Thumb
             className={cn(
-              'slider-thumb bg-background-gray-light border-background-gray-light block h-3 w-3 rounded-full border-2 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+              'slider-thumb block h-3 w-3 rounded-full border-2 border-background-gray-light bg-background-gray-light ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
               value === null && 'is-grayed-out'
             )}
           />
         </SliderPrimitive.Root>
         <div className='absolute left-0 right-0 top-full mt-1 flex justify-between'>
           {positions.map(position => (
-            <div key={position} className={cn('bg-background-gray-medium h-2 w-2 rounded-full')} />
+            <div key={position} className={cn('h-2 w-2 rounded-full bg-background-gray-medium')} />
           ))}
         </div>
       </div>

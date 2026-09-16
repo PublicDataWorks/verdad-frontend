@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import supabase from '@/lib/supabase'
+import { rpc } from '@/lib/supabase'
 import shuffle from 'lodash/shuffle'
 import { Language } from '@/providers/language'
 
@@ -12,6 +12,15 @@ interface Snippet {
   id: string
   title: ContentLanguageMap
   labels: ContentLanguageMap[]
+}
+
+interface LandingPageContentResult {
+  content: {
+    hero_title: ContentLanguageMap
+    hero_description: ContentLanguageMap
+    footer_text: ContentLanguageMap
+  }
+  snippets: Snippet[]
 }
 
 export interface TranslatedLandingPageContent {
@@ -27,7 +36,7 @@ export interface TranslatedLandingPageContent {
 }
 
 async function fetchLandingPageContent(language: Language): Promise<TranslatedLandingPageContent> {
-  const { data, error } = await supabase.rpc('get_landing_page_content')
+  const { data, error } = await rpc<LandingPageContentResult | null>('get_landing_page_content')
 
   if (error) {
     throw new Error(`Error fetching landing page content: ${error.message}`)
@@ -42,10 +51,10 @@ async function fetchLandingPageContent(language: Language): Promise<TranslatedLa
     hero_description: data.content.hero_description[language],
     footer_text: data.content.footer_text[language],
     snippets: shuffle(
-      data.snippets.map((snippet: Snippet) => ({
+      data.snippets.map(snippet => ({
         id: snippet.id,
-        titleEn: snippet.title['english'],
-        titleEs: snippet.title['spanish'],
+        titleEn: snippet.title.english,
+        titleEs: snippet.title.spanish,
         labels: snippet.labels.map(label => label[language])
       }))
     )
@@ -55,7 +64,7 @@ async function fetchLandingPageContent(language: Language): Promise<TranslatedLa
 }
 
 export function useLandingPageContentQuery(language: Language) {
-  let userLanguage = language
+  const userLanguage = language
 
   return useQuery<TranslatedLandingPageContent, Error>({
     queryKey: ['landingPageContent', userLanguage],
