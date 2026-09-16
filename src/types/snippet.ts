@@ -113,6 +113,13 @@ export interface LikeResponse {
   dislike_count: number
 }
 
+export interface StarSnippetResponse {
+  data: {
+    snippet_starred: boolean
+    message: string
+  }
+}
+
 export interface IRelatedSnippet {
   id: string
   title: string
