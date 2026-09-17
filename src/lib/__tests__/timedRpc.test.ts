@@ -3,7 +3,7 @@ import { capture, captureException } from '@/lib/posthog'
 import { rpc as unmockedRpc } from '@/lib/supabase'
 import { isTimeoutError, timedRpc, SLOW_THRESHOLD_MS, TELEMETRY_ARGS_ALLOWLIST } from '@/lib/timedRpc'
 
-vi.mock('@/lib/supabase', () => ({ rpc: vi.fn(), default: { rpc: vi.fn() } }))
+vi.mock('@/lib/supabase', () => ({ rpc: vi.fn(), default: {} }))
 vi.mock('@/lib/posthog', () => ({ capture: vi.fn(), captureException: vi.fn() }))
 
 const rpc = vi.mocked(unmockedRpc)
