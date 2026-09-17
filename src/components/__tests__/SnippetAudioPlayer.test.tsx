@@ -27,9 +27,11 @@ const renderPlayer = () =>
     </AudioProvider>
   )
 
+const playControl = () => screen.getByRole('button', { name: /^(Play|Pause)$/ })
+
 const clickPlayControl = () => {
   act(() => {
-    screen.getByRole('button').click()
+    playControl().click()
   })
 }
 
@@ -49,9 +51,8 @@ describe('SnippetAudioPlayer', () => {
   })
 
   it('calls play() once when the play control is double-clicked before the clip loads', async () => {
-    // A real `play()` resolves only once the media element has enough data, and the
-    // component's `isPlaying` is driven by the `play`/`pause` media events, which fire
-    // no earlier than that. This promise never settles, so neither event fires.
+    // The `play`/`pause` media events are dispatched asynchronously; this mock fires none
+    // and never settles, the same as a clip still loading.
     play.mockReturnValue(new Promise<void>(() => {}))
 
     renderPlayer()
@@ -65,14 +66,16 @@ describe('SnippetAudioPlayer', () => {
   })
 
   it('reverts to the non-playing state when play() rejects', async () => {
-    play.mockReturnValue(Promise.reject(new Error('NotAllowedError')))
+    play.mockImplementation(() => Promise.reject<void>(new Error('NotAllowedError')))
 
     renderPlayer()
 
     clickPlayControl()
+    expect(playControl()).toHaveAccessibleName('Pause')
     await flush()
 
     expect(play).toHaveBeenCalledTimes(1)
+    expect(playControl()).toHaveAccessibleName('Play')
 
     // The component is back in the non-playing state, so the next click starts
     // playback again instead of being read as a pause request.
