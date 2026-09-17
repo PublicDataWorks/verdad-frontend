@@ -10,7 +10,8 @@ import {
   LikeResponse,
   HideResponse,
   PublicSnippetData,
-  IRelatedSnippet
+  IRelatedSnippet,
+  StarSnippetResponse
 } from '../types/snippet'
 
 const SLOW_THRESHOLD_MS = 20_000
@@ -173,9 +174,10 @@ export const fetchRelatedSnippets = async ({
   return data
 }
 
-export const starSnippet = async (snippetId: string): Promise<void> => {
-  const { error } = await rpc<unknown>('toggle_star_snippet', {
+export const starSnippet = async (snippetId: string): Promise<StarSnippetResponse> => {
+  const { data, error } = await rpc<StarSnippetResponse>('toggle_star_snippet', {
     snippet_id: snippetId
   })
   if (error) throw error
+  return data
 }

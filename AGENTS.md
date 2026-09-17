@@ -30,7 +30,8 @@ snippets: search and filter them, listen, label, upvote, star, hide, and discuss
 | `npm run prettier`    | Format everything (the pre-commit hook already formats staged files) |
 | `npm run cy:open`     | Cypress against a dev server on :3000; there are currently no specs  |
 
-CI (`.github/workflows/ci.yml`) runs typecheck, lint, `check:rules`, test and build on every PR and push to `main`.
+CI (`.github/workflows/ci.yml`) runs typecheck, lint, `check:rules`, `prettier --check`, test and build on every PR
+and push to `main`.
 
 ## Environment variables
 
@@ -75,7 +76,10 @@ is a candidate to ratchet back; re-enable one, fix the findings, remove the line
 
 - Presets: `@typescript-eslint/all` -> `recommended-type-checked` + `stylistic-type-checked`;
   `react/all` -> `react/recommended` (+ `jsx-runtime`). airbnb, airbnb-typescript, prettier kept.
-- `react/prop-types`, `react/require-default-props` off: TypeScript covers props.
+- `react/prop-types` off: TypeScript covers props (`react/require-default-props` was already off on `main`).
+- `react-hooks/exhaustive-deps` off, inherited from `main`: stale-closure risk. `src/providers/auth.tsx` memoizes
+  the context value on `[user, session, isLoading]` while capturing the auth callbacks (safe today: they close
+  over `supabase` and setters only). Re-enable as `warn` and fix the hits.
 - `import/extensions` off and `import/resolver: typescript` added: `@/` imports resolve without extensions.
 - `import/prefer-default-export` off: named exports are the convention here.
 - `no-nested-ternary` off: JSX conditionals; purely stylistic.

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fetchSnippets } from '../snippet'
+import { fetchSnippets, starSnippet } from '../snippet'
 import { rpc } from '@/lib/supabase'
 
 vi.mock('@/lib/supabase', () => ({ rpc: vi.fn(), default: {} }))
@@ -13,11 +13,11 @@ const rpcResult = (result: { data: unknown; error: { message: string } | null })
   return { abortSignal: () => thenable, then: thenable.then.bind(thenable) }
 }
 
-describe('fetchSnippets', () => {
-  beforeEach(() => {
-    mockedRpc.mockReset()
-  })
+beforeEach(() => {
+  mockedRpc.mockReset()
+})
 
+describe('fetchSnippets', () => {
   it('calls get_snippets with the paging options and maps the result', async () => {
     const snippets = [{ id: 'a' }, { id: 'b' }]
     mockedRpc.mockReturnValue(
@@ -59,5 +59,15 @@ describe('fetchSnippets', () => {
         abortSignal: new AbortController().signal
       })
     ).rejects.toEqual({ message: 'canceling statement' })
+  })
+})
+
+describe('starSnippet', () => {
+  it('calls toggle_star_snippet and returns its payload', async () => {
+    const payload = { data: { snippet_starred: true, message: 'Snippet starred' } }
+    mockedRpc.mockReturnValue(rpcResult({ data: payload, error: null }) as never)
+
+    await expect(starSnippet('a')).resolves.toEqual(payload)
+    expect(mockedRpc).toHaveBeenCalledWith('toggle_star_snippet', { snippet_id: 'a' })
   })
 })
