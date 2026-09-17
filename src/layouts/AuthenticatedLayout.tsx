@@ -4,7 +4,8 @@ import { LiveblocksProvider } from '@liveblocks/react/suspense'
 import type { Session, User } from '@supabase/supabase-js'
 import { useQuery } from '@tanstack/react-query'
 import HeaderBar from '../components/HeaderBar'
-import supabase, { rpc } from '../lib/supabase'
+import supabase from '../lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 
 // Minimal local shape of the `get_users` RPC result (Supabase types are not generated yet).
 interface AppUser {
@@ -13,8 +14,7 @@ interface AppUser {
 }
 
 const fetchAllUsers = async (): Promise<AppUser[]> => {
-  const { data, error } = await rpc<AppUser[] | null>('get_users')
-  if (error) throw error
+  const { data } = await timedRpc<AppUser[] | null>('get_users')
   return data ?? []
 }
 

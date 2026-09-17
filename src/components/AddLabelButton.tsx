@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from '@/types/snippet'
-import { rpc } from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 import { useLabels } from '@/hooks/useLabels'
 import { useQueryClient } from '@tanstack/react-query'
 
@@ -45,12 +45,10 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
     onLabelAdded(prevLabels => [...prevLabels, newLabel])
 
     try {
-      const { data, error } = await rpc<{ labels?: Label[] } | null>('create_apply_and_upvote_label', {
+      const { data } = await timedRpc<{ labels?: Label[] } | null>('create_apply_and_upvote_label', {
         snippet_id: snippetId,
         label_text: labelText
       })
-
-      if (error) throw error
 
       // Replace entire label list with server response
       if (data?.labels) {

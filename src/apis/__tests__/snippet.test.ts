@@ -41,9 +41,46 @@ describe('fetchSnippets', () => {
       // An unset politicalSpectrum must not be sent to the backend at all.
       p_filter: { languages: ['spanish'] },
       p_order_by: 'latest',
-      p_search_term: 'vote'
+      p_search_term: 'vote',
+      // The count is expensive, so only the first page asks for it.
+      p_include_count: false
     })
     expect(page).toEqual({ snippets, total_pages: 4, currentPage: 2, total_snippets: 37 })
+  })
+
+  it('asks for the count on the first page only', async () => {
+    mockedRpc.mockReturnValue(
+      rpcResult({ data: { snippets: [], total_pages: 1, num_of_snippets: 0 }, error: null }) as never
+    )
+
+    await fetchSnippets({
+      pageParam: 0,
+      pageSize: 10,
+      filters: {},
+      language: 'english',
+      orderBy: 'latest',
+      abortSignal: new AbortController().signal
+    })
+
+    expect(mockedRpc).toHaveBeenCalledWith('get_snippets', expect.objectContaining({ p_include_count: true }))
+  })
+
+  it('passes through the null counts a countless page returns', async () => {
+    const snippets = [{ id: 'a' }]
+    mockedRpc.mockReturnValue(
+      rpcResult({ data: { snippets, total_pages: null, num_of_snippets: null }, error: null }) as never
+    )
+
+    const page = await fetchSnippets({
+      pageParam: 3,
+      pageSize: 10,
+      filters: {},
+      language: 'english',
+      orderBy: 'latest',
+      abortSignal: new AbortController().signal
+    })
+
+    expect(page).toEqual({ snippets, total_pages: null, currentPage: 3, total_snippets: null })
   })
 
   it('rethrows the Supabase error', async () => {
