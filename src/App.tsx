@@ -9,9 +9,11 @@ import SnippetDetail from './components/SnippetDetail'
 import OnboardingPage from './components/OnboardingPage'
 import ForgetPassword from './components/ForgetPassword'
 import SignupPage from './components/SignupPage'
+import AuthConfirmPage from './components/AuthConfirmPage'
 import { AuthProvider } from './providers/auth'
 
 import {
+  AUTH_CONFIRM_PATH,
   FORGET_PASSWORD_PATH,
   ONBOARDING_PATH,
   LOGIN_PATH,
@@ -49,6 +51,7 @@ export default function App(): ReactElement {
                         <Route path={ONBOARDING_PATH} element={<OnboardingPage />} />
                         <Route path={LOGIN_PATH} element={<LoginPage />} />
                         <Route path={SIGNUP_PATH} element={<SignupPage />} />
+                        <Route path={AUTH_CONFIRM_PATH} element={<AuthConfirmPage />} />
                         <Route path={FORGET_PASSWORD_PATH} element={<ForgetPassword />} />
                         <Route path={RESET_PASSWORD_PATH} element={<ResetPassword />} />
                         <Route path={PUBLIC_SNIPPET_PATH} element={<PublicSnippet />} />
