@@ -37,7 +37,9 @@ export default function Sparkline({
     })
 
     // Create the line path
-    const linePath = points.map((point, index) => (index === 0 ? `M ${point.x} ${point.y}` : `L ${point.x} ${point.y}`)).join(' ')
+    const linePath = points
+      .map((point, index) => (index === 0 ? `M ${point.x} ${point.y}` : `L ${point.x} ${point.y}`))
+      .join(' ')
 
     return linePath
   }, [data, width, height])
@@ -59,7 +61,9 @@ export default function Sparkline({
       return { x, y }
     })
 
-    const linePath = points.map((point, index) => (index === 0 ? `M ${point.x} ${point.y}` : `L ${point.x} ${point.y}`)).join(' ')
+    const linePath = points
+      .map((point, index) => (index === 0 ? `M ${point.x} ${point.y}` : `L ${point.x} ${point.y}`))
+      .join(' ')
 
     // Close the path for fill
     const lastPoint = points[points.length - 1]
@@ -72,7 +76,15 @@ export default function Sparkline({
   if (!data || data.length === 0) {
     return (
       <svg width={width} height={height} className={className}>
-        <line x1={2} y1={height / 2} x2={width - 2} y2={height / 2} stroke={strokeColor} strokeWidth={1} opacity={0.3} />
+        <line
+          x1={2}
+          y1={height / 2}
+          x2={width - 2}
+          y2={height / 2}
+          stroke={strokeColor}
+          strokeWidth={1}
+          opacity={0.3}
+        />
       </svg>
     )
   }
@@ -80,7 +92,14 @@ export default function Sparkline({
   return (
     <svg width={width} height={height} className={className} viewBox={`0 0 ${width} ${height}`}>
       {fillColor && areaPath && <path d={areaPath} fill={fillColor} opacity={0.2} />}
-      <path d={path} fill='none' stroke={strokeColor} strokeWidth={strokeWidth} strokeLinecap='round' strokeLinejoin='round' />
+      <path
+        d={path}
+        fill='none'
+        stroke={strokeColor}
+        strokeWidth={strokeWidth}
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
     </svg>
   )
 }

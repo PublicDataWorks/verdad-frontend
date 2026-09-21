@@ -2,8 +2,8 @@ import { Moon, Sun } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { translations } from '@/constants/translations'
-import { useLanguage } from '../../providers/language'
-import { useTheme } from '../../providers/theme'
+import { useLanguage } from '@/providers/language'
+import { useTheme } from '@/providers/theme'
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
 
 export function ModeToggle() {
@@ -26,7 +26,6 @@ export function ModeToggle() {
           onClick={() => setTheme(isDark ? 'light' : 'dark')}
         >
           <Icon className='h-6 w-6 text-white transition-all hover:text-text-primary' />
-          <span className='sr-only'>{label}</span>
         </Button>
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>

@@ -30,6 +30,7 @@ const FilterList: React.FC<FilterListProps> = ({ selectedFilters, onFilterChange
       <h3 className='mb-2 text-lg font-semibold'>Filters:</h3>
       {filters.map(filter => (
         <button
+          type='button'
           key={filter}
           className={`mb-2 mr-2 rounded border px-3 py-1 text-sm ${
             selectedFilters.includes(filter) ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800'

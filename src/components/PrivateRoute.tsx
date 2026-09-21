@@ -3,9 +3,7 @@ import { useContext, useEffect } from 'react'
 import { useNavigate, useLocation, Outlet } from 'react-router-dom'
 import { AuthContext } from '../providers/auth'
 
-interface PrivateRouteProps {}
-
-const PrivateRoute: FC<PrivateRouteProps> = () => {
+const PrivateRoute: FC = () => {
   const { user, isLoading } = useContext(AuthContext)
   const navigate = useNavigate()
   const location = useLocation()

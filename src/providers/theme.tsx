@@ -3,12 +3,12 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 type ResolvedTheme = 'dark' | 'light'
 type Theme = ResolvedTheme | 'system'
 
-type ThemeProviderProps = {
+interface ThemeProviderProps {
   children: React.ReactNode
   storageKey?: string
 }
 
-type ThemeProviderState = {
+interface ThemeProviderState {
   theme: Theme
   resolvedTheme: ResolvedTheme
   setTheme: (theme: Theme) => void
