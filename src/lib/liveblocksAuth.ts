@@ -19,6 +19,10 @@ export interface FetchLiveblocksAuthOptions {
   fetchFn?: FetchLike
 }
 
+/** Human-readable reason for a thrown value, falling back to `fallback` when it carries no message. */
+const describe = (err: unknown, fallback: string): string =>
+  err instanceof Error && err.message.length > 0 ? `${fallback}: ${err.message}` : fallback
+
 /** Error returned by the backend as `{ "error": "..." }`. */
 const readReason = async (response: Response, fallback: string): Promise<string> => {
   try {
@@ -48,17 +52,27 @@ export async function fetchLiveblocksAuth({
   room,
   fetchFn = (input, init) => fetch(input, init)
 }: FetchLiveblocksAuthOptions): Promise<LiveblocksAuthResult> {
-  const response = await fetchFn(`${baseUrl}/api/liveblocks-auth`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
-    },
-    body: JSON.stringify({ room })
-  })
+  let response: Response
+  try {
+    response = await fetchFn(`${baseUrl}/api/liveblocks-auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ room })
+    })
+  } catch (err) {
+    // Network failure: retryable, and the Liveblocks client should see a structured result, not a rejection.
+    return { error: 'auth_failed', reason: describe(err, 'Failed to reach the Liveblocks auth endpoint') }
+  }
 
   if (response.ok) {
-    return (await response.json()) as LiveblocksAuthResult
+    try {
+      return (await response.json()) as LiveblocksAuthResult
+    } catch (err) {
+      return { error: 'auth_failed', reason: describe(err, 'Liveblocks auth endpoint returned a non-JSON body') }
+    }
   }
 
   const reason = await readReason(response, `Failed to authenticate with Liveblocks (HTTP ${response.status})`)

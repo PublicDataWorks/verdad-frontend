@@ -92,6 +92,36 @@ describe('fetchLiveblocksAuth', () => {
     })
   })
 
+  it('returns a retryable failure when the request itself rejects', async () => {
+    const fetchFn = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'))
+
+    const result = await fetchLiveblocksAuth({
+      baseUrl: BASE_URL,
+      accessToken: ACCESS_TOKEN,
+      room: 'snippet-1',
+      fetchFn
+    })
+
+    expect(result).toEqual({
+      error: 'auth_failed',
+      reason: 'Failed to reach the Liveblocks auth endpoint: Failed to fetch'
+    })
+  })
+
+  it('returns a retryable failure when a successful response is not JSON', async () => {
+    const fetchFn = mockFetch(200, '<html>not json</html>', 'text/html')
+
+    const result = await fetchLiveblocksAuth({
+      baseUrl: BASE_URL,
+      accessToken: ACCESS_TOKEN,
+      room: 'snippet-1',
+      fetchFn
+    })
+
+    expect(result).toMatchObject({ error: 'auth_failed' })
+    expect((result as { reason: string }).reason).toMatch(/^Liveblocks auth endpoint returned a non-JSON body/)
+  })
+
   it('falls back to a generic reason when a forbidden body has no error string', async () => {
     const fetchFn = mockFetch(403, JSON.stringify({ message: 'nope' }))
 
