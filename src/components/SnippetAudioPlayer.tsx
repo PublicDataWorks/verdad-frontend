@@ -17,7 +17,7 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
 
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio) return
+    if (!audio) return undefined
 
     const setAudioData = () => {
       setDuration(audio.duration)
@@ -77,7 +77,11 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
         if (currentAudio.id && currentAudio.id !== id && currentAudio.pause) {
           currentAudio.pause()
         }
-        audio.play()
+        // The `play`/`pause` media events reach `isPlaying` asynchronously, so a second click in
+        // the same tick would still see `false` and call `play()` again; and a `play()` rejected
+        // by the autoplay policy fires no event at all. Flip the state here, revert on rejection.
+        setIsPlaying(true)
+        audio.play().catch(() => setIsPlaying(false))
       }
     }
   }
@@ -107,7 +111,13 @@ export const SnippetAudioPlayer: FC<{ path: string; initialStartTime: string }> 
       <div className='flex items-center gap-2'>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant='ghost' size='icon' className='h-8 w-8' onClick={togglePlayPause}>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='h-8 w-8'
+              onClick={togglePlayPause}
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
               {isPlaying ? (
                 <PauseIcon className='h-4 w-4 fill-current' />
               ) : (

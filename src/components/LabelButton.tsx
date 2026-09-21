@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import Upvote from '../assets/upvote.svg'
 import Upvoted from '../assets/upvoted.svg'
-import supabase from '@/lib/supabase'
-import { Label } from '../hooks/useSnippets'
+import { timedRpc } from '@/lib/timedRpc'
+import { Label } from '@/types/snippet'
 import { useAuth } from '@/providers/auth'
 import { getLocalStorageItem, setLocalStorageItem } from '../lib/storage'
 import { toast } from '@/hooks/use-toast'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface LabelButtonProps {
   label: Label
@@ -15,33 +16,33 @@ interface LabelButtonProps {
 }
 
 const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDeleted }) => {
-  const [isHovered, setIsHovered] = useState(false)
   const { user } = useAuth()
+  const queryClient = useQueryClient()
 
-  const [isUpvoted, setIsUpvoted] = useState(() => {
-    const localUpvoted = getLocalStorageItem(`upvoted_${snippetId}_${label.id}`)
-    return localUpvoted !== null ? localUpvoted : label.upvoted_by.some(upvoter => upvoter.email === user?.email)
+  const [isUpvoted, setIsUpvoted] = useState<boolean>(() => {
+    const localUpvoted = getLocalStorageItem<boolean>(`upvoted_${snippetId}_${label.id}`)
+    return localUpvoted !== null ? localUpvoted : label.upvoted_by_me
   })
 
-  const [upvoteCount, setUpvoteCount] = useState(() => {
-    const localCount = getLocalStorageItem(`upvoteCount_${snippetId}_${label.id}`)
-    return localCount !== null ? localCount : label.upvoted_by.length
+  const [upvoteCount, setUpvoteCount] = useState<number>(() => {
+    const localCount = getLocalStorageItem<number>(`upvoteCount_${snippetId}_${label.id}`)
+    return localCount !== null ? localCount : label.upvote_count
   })
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       localStorage.removeItem(`upvoted_${snippetId}_${label.id}`)
       localStorage.removeItem(`upvoteCount_${snippetId}_${label.id}`)
-    }
-  }, [snippetId, label.id])
+    },
+    [snippetId, label.id]
+  )
 
   useEffect(() => {
     if (user) {
-      const isCurrentlyUpvoted = label.upvoted_by.some(upvoter => upvoter.email === user.email)
-      setIsUpvoted(isCurrentlyUpvoted)
-      setUpvoteCount(label.upvoted_by.length)
+      setIsUpvoted(label.upvoted_by_me)
+      setUpvoteCount(label.upvote_count)
     }
-  }, [user, label.upvoted_by])
+  }, [user, label.upvoted_by_me, label.upvote_count])
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -65,16 +66,20 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
     setUpvoteCount(prevCount => (newIsUpvoted ? prevCount + 1 : prevCount - 1))
 
     try {
-      const { data, error } = await supabase.rpc('toggle_upvote_label', {
+      const { data } = await timedRpc<{ labels?: unknown[] } | unknown[] | null>('toggle_upvote_label', {
         snippet_id: snippetId,
         label_text: label.text
       })
 
-      if (error) throw error
-
-      if (!data || (Array.isArray(data) && data.length === 0) || (data.labels && data.labels.length === 0)) {
+      const remainingLabels = Array.isArray(data) ? data : data?.labels
+      if (!data || remainingLabels?.length === 0) {
         onLabelDeleted(label.id)
       }
+
+      // Invalidate all snippets lists to refresh data
+      void queryClient.invalidateQueries({
+        predicate: query => query.queryKey[0] === 'snippets' && query.queryKey[1] === 'list'
+      })
     } catch (error) {
       console.error('Error toggling upvote:', error)
       toast({
@@ -96,15 +101,14 @@ const LabelButton: React.FC<LabelButtonProps> = ({ label, snippetId, onLabelDele
   }
 
   return (
-    <div className={`rounded-full`}>
+    <div className='rounded-full'>
       <div>
         <Button
           variant='outline'
           size='sm'
           className={`${getUpvoteButtonClasses()} whitespace-nowrap`}
           onClick={handleUpvote}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}>
+        >
           <span>{label?.text}</span>
           <img src={isUpvoted ? Upvoted : Upvote} alt='Upvote' className='h-4 w-4' />
           <span>{upvoteCount}</span>

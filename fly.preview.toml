@@ -1,0 +1,20 @@
+# Fly.io configuration for PR preview apps
+# Lighter resources than production to reduce costs
+
+app = 'verdad-frontend-preview'
+primary_region = 'sjc'
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8080
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0  # Allow full stop when idle
+  processes = ['app']
+
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1

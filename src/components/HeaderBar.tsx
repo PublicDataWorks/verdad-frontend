@@ -4,7 +4,7 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Info, LogOut, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { InboxPopover } from './InboxPopover'
+import InboxPopover from './InboxPopover'
 import { useAuth } from '@/providers/auth'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import supabase from '@/lib/supabase'
@@ -28,9 +28,7 @@ const HeaderBar: React.FC = () => {
   const t = translations[language]
   const showInfoIcon = !user?.user_metadata?.dismiss_welcome_card
 
-  const getInitials = (email: string) => {
-    return email.split('@')[0].slice(0, 2).toUpperCase()
-  }
+  const getInitials = (email: string) => email.split('@')[0].slice(0, 2).toUpperCase()
 
   const handleLogout = async () => {
     await supabase.auth.signOut()

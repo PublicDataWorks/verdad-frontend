@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import { createContext, useContext, useMemo, useState, ReactNode, useEffect } from 'react'
 import { isMobile } from 'react-device-detect'
 
 interface SidebarState {
@@ -18,19 +18,9 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
     setShowSidebarState(!isMobile)
   }, [])
 
-  const setShowSidebar = (show: boolean) => {
-    setShowSidebarState(show)
-  }
+  const value = useMemo(() => ({ showSidebar, setShowSidebar: setShowSidebarState }), [showSidebar])
 
-  return (
-    <SidebarContext.Provider
-      value={{
-        showSidebar,
-        setShowSidebar
-      }}>
-      {children}
-    </SidebarContext.Provider>
-  )
+  return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
 }
 
 export function useSidebar() {

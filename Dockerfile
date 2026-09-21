@@ -1,5 +1,5 @@
 # Stage 1: Build the React app using Vite
-FROM node:22.8.0-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Set environment variables
 ARG VITE_BASE_URL
@@ -8,6 +8,8 @@ ARG VITE_LIVEBLOCKS_PUBKEY
 ARG VITE_SUPABASE_ANON_KEY
 ARG VITE_SUPABASE_URL
 ARG VITE_AUTH_REDIRECT_URL
+ARG VITE_POSTHOG_KEY
+ARG VITE_POSTHOG_HOST
 
 # Set working directory
 WORKDIR /app
@@ -16,7 +18,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
 # Copy all source files
 COPY . .

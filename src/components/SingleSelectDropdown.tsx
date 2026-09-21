@@ -24,7 +24,7 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({ selectedIte
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant='outline' className='w-full justify-between' aria-label={`Select item`}>
+        <Button variant='outline' className='w-full justify-between' aria-label='Select item'>
           <span className='font-normal text-dropdown-text'> {selectedItem} </span>
           <ChevronDown className='h-4 w-4' />
         </Button>
@@ -34,7 +34,8 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({ selectedIte
           <DropdownMenuItem
             key={item}
             onSelect={handleItemClick(item)}
-            className={selectedItem === item ? 'bg-background-gray-lightest' : ''}>
+            className={selectedItem === item ? 'bg-background-gray-lightest' : ''}
+          >
             {item}
           </DropdownMenuItem>
         ))}

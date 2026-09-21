@@ -72,9 +72,23 @@ export const translations = {
     hidingResults: 'The filters could be hiding results.',
     clearFilters: 'Clear filters',
     noMoreSnippets: 'No more snippets',
+    snippetsTimeout: 'This search is taking too long. Try narrowing the filters or search term.',
+    snippetsLoadError: 'Something went wrong loading snippets.',
+    retry: 'Retry',
     relatedSnippets: 'Related',
     comment: 'Comment',
-    comments: 'Comments'
+    comments: 'Comments',
+    trendingTopics: 'Trending Topics',
+    trendingFiltered: 'Based on your filters',
+    trendingAll: 'All snippets',
+    errorLoadingTrending: 'Unable to load trending topics',
+    noTrendingTopics: 'No trending topics found',
+    // Focus Mode
+    backToTrending: 'Back to trending',
+    snippetsInPeriod: 'snippets',
+    vsPreviousPeriod: 'vs previous period',
+    topicNotFound: 'Topic not found',
+    errorLoadingTopic: 'Unable to load topic details'
   },
   spanish: {
     filters: 'Filtros',
@@ -149,8 +163,22 @@ export const translations = {
     hidingResults: 'Los filtros podrían estar ocultando resultados.',
     clearFilters: 'Limpiar filtros',
     noMoreSnippets: 'No hay más fragmentos',
+    snippetsTimeout: 'Esta búsqueda está tardando demasiado. Intenta acotar los filtros o el término de búsqueda.',
+    snippetsLoadError: 'Algo salió mal al cargar los fragmentos.',
+    retry: 'Reintentar',
     relatedSnippets: 'Relacionados',
     comment: 'Comentario',
-    comments: 'Comentarios'
+    comments: 'Comentarios',
+    trendingTopics: 'Temas Populares',
+    trendingFiltered: 'Según tus filtros',
+    trendingAll: 'Todos los fragmentos',
+    errorLoadingTrending: 'No se pudieron cargar los temas populares',
+    noTrendingTopics: 'No se encontraron temas populares',
+    // Focus Mode
+    backToTrending: 'Volver a tendencias',
+    snippetsInPeriod: 'fragmentos',
+    vsPreviousPeriod: 'vs período anterior',
+    topicNotFound: 'Tema no encontrado',
+    errorLoadingTopic: 'No se pudo cargar el tema'
   }
 }

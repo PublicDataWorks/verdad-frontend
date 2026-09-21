@@ -5,11 +5,17 @@ import type { Session, User } from '@supabase/supabase-js'
 import { useQuery } from '@tanstack/react-query'
 import HeaderBar from '../components/HeaderBar'
 import supabase from '../lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 
-const fetchAllUsers = async () => {
-  const { data, error } = await supabase.rpc('get_users')
-  if (error) throw error
-  return data
+// Minimal local shape of the `get_users` RPC result (Supabase types are not generated yet).
+interface AppUser {
+  email: string
+  raw_user_meta_data?: { name?: string; avatar_url?: string }
+}
+
+const fetchAllUsers = async (): Promise<AppUser[]> => {
+  const { data } = await timedRpc<AppUser[] | null>('get_users')
+  return data ?? []
 }
 
 const AuthenticatedLayout: React.FC = () => {
@@ -25,20 +31,20 @@ const AuthenticatedLayout: React.FC = () => {
     queryFn: fetchAllUsers,
     enabled: !!session,
     select: users =>
-      users.map(user => ({
-        ...user,
+      users.map(entry => ({
+        ...entry,
         raw_user_meta_data: {
-          name: user.raw_user_meta_data?.name || user.email,
-          avatar_url: user.raw_user_meta_data?.avatar_url || ''
+          name: entry.raw_user_meta_data?.name || entry.email,
+          avatar_url: entry.raw_user_meta_data?.avatar_url || ''
         }
       }))
   })
 
   useEffect(() => {
-    void supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user || null)
-      if (!session) {
+    void supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession)
+      setUser(currentSession?.user || null)
+      if (!currentSession) {
         const snippetMatch = location.pathname.match(/^\/snippet\/(.+)$/)
         if (snippetMatch) {
           navigate(`/p/${snippetMatch[1]}`)
@@ -50,10 +56,10 @@ const AuthenticatedLayout: React.FC = () => {
 
     const {
       data: { subscription }
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user || null)
-      if (!session) {
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession)
+      setUser(nextSession?.user || null)
+      if (!nextSession) {
         const snippetMatch = location.pathname.match(/^\/snippet\/(.+)$/)
         if (snippetMatch) {
           navigate(`/p/${snippetMatch[1]}`)
@@ -84,28 +90,29 @@ const AuthenticatedLayout: React.FC = () => {
       }}
       resolveUsers={async ({ userIds }) => {
         const users = userIds.map(userId => {
-          const user = allUsers.find(u => u.email === userId)
+          const match = allUsers.find(u => u.email === userId)
           return {
-            name: user?.raw_user_meta_data.name || userId,
-            avatar: user?.raw_user_meta_data.avatar_url || ''
+            name: match?.raw_user_meta_data.name || userId,
+            avatar: match?.raw_user_meta_data.avatar_url || ''
           }
         })
         return users
       }}
       resolveMentionSuggestions={async ({ text }) => {
         if (!text) {
-          return allUsers.map(user => user.email)
+          return allUsers.map(entry => entry.email)
         }
 
-        const filteredData = allUsers.filter(user => {
-          const name = user.raw_user_meta_data?.name?.toLowerCase() || ''
-          const email = user.email.toLowerCase()
+        const filteredData = allUsers.filter(entry => {
+          const name = entry.raw_user_meta_data.name?.toLowerCase() || ''
+          const email = entry.email.toLowerCase()
           const searchText = text.toLowerCase()
           return name.includes(searchText) || email.includes(searchText)
         })
 
-        return filteredData.map(user => user.email)
-      }}>
+        return filteredData.map(entry => entry.email)
+      }}
+    >
       <div className='flex min-h-svh flex-col'>
         <HeaderBar />
         <div className='flex-grow overflow-hidden'>

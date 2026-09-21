@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { Label } from '../hooks/useSnippets'
-import supabase from '@/lib/supabase'
+import { Label } from '@/types/snippet'
+import { timedRpc } from '@/lib/timedRpc'
 import { useLabels } from '@/hooks/useLabels'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface AddLabelButtonProps {
   snippetId: string
-  onLabelAdded: (newLabels: Label[]) => void
+  onLabelAdded: (newLabels: Label[] | ((prevLabels: Label[]) => Label[])) => void
 }
 
 const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded }) => {
@@ -16,6 +17,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
   const [suggestions, setSuggestions] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
   const { data: allLabels } = useLabels()
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -35,28 +37,28 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
     const newLabel: Label = {
       id: Date.now().toString(),
       text: labelText,
-      applied_at: new Date().toISOString(),
-      applied_by: null,
-      created_by: null,
-      upvoted_by: [{ id: 'temp', email: 'temp', upvoted_at: new Date().toISOString() }],
-      is_ai_suggested: false
+      upvote_count: 1,
+      upvoted_by_me: true
     }
 
     // Optimistic update - add the new label to the existing list
     onLabelAdded(prevLabels => [...prevLabels, newLabel])
 
     try {
-      const { data, error } = await supabase.rpc('create_apply_and_upvote_label', {
+      const { data } = await timedRpc<{ labels?: Label[] } | null>('create_apply_and_upvote_label', {
         snippet_id: snippetId,
         label_text: labelText
       })
 
-      if (error) throw error
-
       // Replace entire label list with server response
-      if (data && data.labels) {
+      if (data?.labels) {
         onLabelAdded(data.labels)
       }
+
+      // Invalidate all snippets lists to refresh data
+      void queryClient.invalidateQueries({
+        predicate: query => query.queryKey[0] === 'snippets' && query.queryKey[1] === 'list'
+      })
     } catch (error) {
       console.error('Error creating label:', error)
       // Remove the optimistically added label if there's an error
@@ -68,10 +70,10 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
+    const { value } = e.target
     setInputValue(value)
     if (value.length > 0) {
-      const filteredSuggestions = allLabels
+      const filteredSuggestions = (allLabels ?? [])
         .filter(label => label.toLowerCase().includes(value.toLowerCase()))
         .slice(0, 10)
       setSuggestions(filteredSuggestions)
@@ -82,7 +84,7 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      createLabel(inputValue)
+      void createLabel(inputValue)
     }
   }
 
@@ -104,12 +106,19 @@ const AddLabelButton: React.FC<AddLabelButtonProps> = ({ snippetId, onLabelAdded
             autoFocus
           />
           {suggestions.length > 0 && (
-            <ul className='absolute z-10 mt-1 max-h-32 w-full overflow-y-auto rounded-md border border-border-gray-dark bg-background-gray-lightest shadow-lg'>
+            <ul
+              role='listbox'
+              className='absolute z-10 mt-1 max-h-32 w-full overflow-y-auto rounded-md border border-border-gray-dark bg-background-gray-lightest shadow-lg'
+            >
               {suggestions.map((suggestion, index) => (
                 <li
                   key={index}
+                  role='option'
+                  aria-selected={false}
+                  tabIndex={-1}
                   className='cursor-pointer px-2 py-1 hover:bg-background-gray-light'
-                  onClick={() => createLabel(suggestion)}>
+                  onClick={() => createLabel(suggestion)}
+                >
                   {suggestion}
                 </li>
               ))}
