@@ -59,7 +59,9 @@ export const translations = {
       showWelcomeCard: 'Show welcome card',
       showInbox: 'Show inbox',
       changeLanguage: 'Change language',
-      toggleTheme: 'Toggle theme'
+      toggleTheme: 'Toggle theme',
+      switchToDarkMode: 'Switch to dark mode',
+      switchToLightMode: 'Switch to light mode'
     },
     sortBy: {
       mostRecentActivities: 'Recent user activities',
@@ -150,7 +152,9 @@ export const translations = {
       showWelcomeCard: 'Mostrar tarjeta de bienvenida',
       showInbox: 'Mostrar bandeja de entrada',
       changeLanguage: 'Cambiar idioma',
-      toggleTheme: 'Cambiar tema'
+      toggleTheme: 'Cambiar tema',
+      switchToDarkMode: 'Cambiar a modo oscuro',
+      switchToLightMode: 'Cambiar a modo claro'
     },
     sortBy: {
       mostRecentActivities: 'Reciente actividad de usuario',
