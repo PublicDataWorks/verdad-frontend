@@ -80,7 +80,8 @@ export function RelatedSnippet({ snippet, parentSnippetId, language, isPublic }:
   return (
     <Card
       className='flex cursor-pointer flex-col gap-3 border-2 border-transparent px-6 py-4 transition-all duration-700 ease-in-out hover:border-blue-600'
-      onClick={handleSnippetClick}>
+      onClick={handleSnippetClick}
+    >
       <CardHeader className='flex flex-row items-center gap-2 p-0'>
         <div className='flex-grow'>
           <h3 className='text-base font-semibold'>
@@ -132,7 +133,8 @@ export function RelatedSnippet({ snippet, parentSnippetId, language, isPublic }:
                   size='icon'
                   onClick={() => toggleStar(snippet?.id)}
                   onMouseEnter={() => setIsStarHovered(true)}
-                  onMouseLeave={() => setIsStarHovered(false)}>
+                  onMouseLeave={() => setIsStarHovered(false)}
+                >
                   {getStarIcon()}
                 </Button>
               </TooltipTrigger>
@@ -151,11 +153,12 @@ export function RelatedSnippet({ snippet, parentSnippetId, language, isPublic }:
         </Label>
         <div className='flex w-full flex-wrap items-center gap-2'>
           {snippet?.labels.map((label, index) =>
-            label && label.text ? (
+            label?.text ? (
               <Badge
                 key={index}
                 variant='secondary'
-                className='flex h-8 items-center space-x-1 rounded-full border-none bg-blue-light px-3 text-blue-accent hover:bg-blue-light'>
+                className='flex h-8 items-center space-x-1 rounded-full border-none bg-blue-light px-3 text-blue-accent hover:bg-blue-light'
+              >
                 {label?.text}
               </Badge>
             ) : null
@@ -163,7 +166,7 @@ export function RelatedSnippet({ snippet, parentSnippetId, language, isPublic }:
           <div className='ml-auto'>
             <Button variant='ghost' size='sm' className='gap-1 px-2 text-xs' disabled>
               <MessageSquare className='h-4 w-4' />
-              {snippet?.comment_count} {snippet?.comment_count == 1 ? t.comment : t.comments}
+              {snippet?.comment_count} {snippet?.comment_count === 1 ? t.comment : t.comments}
             </Button>
           </div>
         </div>

@@ -25,9 +25,7 @@ dist-ssr
 
 # Coverage reports
 coverage
-cypress-coverage
 vitest-coverage
-.nyc_output
 reports
 
 cypress/videos
