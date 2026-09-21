@@ -365,7 +365,7 @@ export default function OnboardingPage() {
             <p className='mt-4 text-base font-normal'>Let&apos;s set up your profile.</p>
           </CardHeader>
           <CardContent className='mt-4'>
-            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6' noValidate>
               <div className='flex items-center'>
                 <Avatar className='h-16 w-16'>
                   {avatarPreview ? (
