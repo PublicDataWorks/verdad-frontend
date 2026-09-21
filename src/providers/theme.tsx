@@ -18,7 +18,11 @@ const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)'
 
 const toResolvedTheme = (prefersDark: boolean): ResolvedTheme => (prefersDark ? 'dark' : 'light')
 
-const getSystemTheme = (): ResolvedTheme => toResolvedTheme(window.matchMedia(DARK_SCHEME_QUERY).matches)
+// `matchMedia` is missing in jsdom and in any non-browser host, so every use of it is optional.
+const getDarkSchemeQuery = (): MediaQueryList | null =>
+  typeof window.matchMedia === 'function' ? window.matchMedia(DARK_SCHEME_QUERY) : null
+
+const getSystemTheme = (): ResolvedTheme => toResolvedTheme(getDarkSchemeQuery()?.matches ?? false)
 
 const getStoredTheme = (storageKey: string): Theme => {
   const stored = localStorage.getItem(storageKey)
@@ -40,7 +44,9 @@ export function ThemeProvider({ children, storageKey = 'app-theme', ...props }: 
   const resolvedTheme = theme === 'system' ? systemTheme : theme
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(DARK_SCHEME_QUERY)
+    const mediaQuery = getDarkSchemeQuery()
+    if (!mediaQuery) return undefined
+
     const onChange = (event: MediaQueryListEvent) => setSystemTheme(toResolvedTheme(event.matches))
     mediaQuery.addEventListener('change', onChange)
     return () => mediaQuery.removeEventListener('change', onChange)
