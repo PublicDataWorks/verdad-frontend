@@ -5,6 +5,7 @@ import type { Session, User } from '@supabase/supabase-js'
 import { useQuery } from '@tanstack/react-query'
 import HeaderBar from '../components/HeaderBar'
 import supabase from '../lib/supabase'
+import { fetchLiveblocksAuth } from '@/lib/liveblocksAuth'
 import { timedRpc } from '@/lib/timedRpc'
 
 // Minimal local shape of the `get_users` RPC result (Supabase types are not generated yet).
@@ -76,18 +77,7 @@ const AuthenticatedLayout: React.FC = () => {
 
   return (
     <LiveblocksProvider
-      authEndpoint={async room => {
-        const response = await fetch(`${baseUrl}/api/liveblocks-auth`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${session.access_token}`
-          },
-          body: JSON.stringify({ room })
-        })
-        if (!response.ok) throw new Error('Failed to authenticate with Liveblocks')
-        return response.json()
-      }}
+      authEndpoint={async room => fetchLiveblocksAuth({ baseUrl, accessToken: session.access_token, room })}
       resolveUsers={async ({ userIds }) => {
         const users = userIds.map(userId => {
           const match = allUsers.find(u => u.email === userId)
