@@ -63,6 +63,40 @@ describe('fetchLiveblocksAuth', () => {
     expect(result).toEqual({ error: 'forbidden', reason: 'Room not found' })
   })
 
+  it('keeps a room-less 403 retryable so an infrastructure 403 cannot kill the inbox until reload', async () => {
+    const fetchFn = mockFetch(403, JSON.stringify({ error: 'blocked' }))
+
+    const result = await fetchLiveblocksAuth({ baseUrl: BASE_URL, accessToken: ACCESS_TOKEN, fetchFn })
+
+    expect(result).toEqual({ error: 'auth_failed', reason: 'blocked' })
+  })
+
+  it('returns a retryable failure when a successful body carries no token', async () => {
+    const fetchFn = mockFetch(200, JSON.stringify({}))
+
+    const result = await fetchLiveblocksAuth({
+      baseUrl: BASE_URL,
+      accessToken: ACCESS_TOKEN,
+      room: 'snippet-1',
+      fetchFn
+    })
+
+    expect(result).toEqual({ error: 'auth_failed', reason: 'Liveblocks auth endpoint returned no token' })
+  })
+
+  it('stringifies a non-Error rejection', async () => {
+    const fetchFn = vi.fn().mockRejectedValue('offline')
+
+    const result = await fetchLiveblocksAuth({
+      baseUrl: BASE_URL,
+      accessToken: ACCESS_TOKEN,
+      room: 'snippet-1',
+      fetchFn
+    })
+
+    expect(result).toEqual({ error: 'auth_failed', reason: 'Failed to reach the Liveblocks auth endpoint: offline' })
+  })
+
   it('maps a 401 to a retryable failure carrying the server reason', async () => {
     const fetchFn = mockFetch(401, JSON.stringify({ error: 'Invalid token' }))
 

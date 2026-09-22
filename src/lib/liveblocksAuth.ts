@@ -1,9 +1,5 @@
-/**
- * Shape a Liveblocks custom `authEndpoint` callback may return. Returning `error: 'forbidden'`
- * makes the client stop retrying the connection permanently; any other `error` string fails the
- * attempt but lets it retry with backoff. Throwing instead would hide the server's reason and
- * retry forever.
- */
+// What a Liveblocks custom `authEndpoint` may return: `error: 'forbidden'` stops the client retrying for good,
+// any other `error` fails this attempt and lets it retry with backoff. Throwing would retry forever.
 export type LiveblocksAuthResult = { token: string } | { error: string; reason: string }
 
 type FetchLike = typeof fetch
@@ -19,9 +15,8 @@ export interface FetchLiveblocksAuthOptions {
   fetchFn?: FetchLike
 }
 
-/** Human-readable reason for a thrown value, falling back to `fallback` when it carries no message. */
-const describe = (err: unknown, fallback: string): string =>
-  err instanceof Error && err.message.length > 0 ? `${fallback}: ${err.message}` : fallback
+const reasonFrom = (err: unknown, prefix: string): string =>
+  `${prefix}: ${err instanceof Error && err.message.length > 0 ? err.message : String(err)}`
 
 /** Error returned by the backend as `{ "error": "..." }`. */
 const readReason = async (response: Response, fallback: string): Promise<string> => {
@@ -38,13 +33,9 @@ const readReason = async (response: Response, fallback: string): Promise<string>
 }
 
 /**
- * Authenticates the current Supabase session against `${baseUrl}/api/liveblocks-auth` for one room.
- *
- * Resolves with the endpoint's JSON body on success. On a 403 (the backend does not grant this user
- * access to the room, e.g. `{ "error": "Room not found" }`) it resolves with
- * `{ error: 'forbidden', reason }` so the Liveblocks client stops retrying and surfaces the reason;
- * on any other failure it resolves with `{ error: 'auth_failed', reason }`, which fails this attempt
- * but leaves the client free to retry.
+ * Authenticates the current Supabase session against `${baseUrl}/api/liveblocks-auth`. A 403 for a room means the
+ * backend does not grant it: `forbidden`, so the client stops retrying. Everything else is `auth_failed` (retryable),
+ * including a room-less 403, which the backend never sends and must not kill the inbox until reload.
  */
 export async function fetchLiveblocksAuth({
   baseUrl,
@@ -63,18 +54,23 @@ export async function fetchLiveblocksAuth({
       body: JSON.stringify({ room })
     })
   } catch (err) {
-    // Network failure: retryable, and the Liveblocks client should see a structured result, not a rejection.
-    return { error: 'auth_failed', reason: describe(err, 'Failed to reach the Liveblocks auth endpoint') }
+    return { error: 'auth_failed', reason: reasonFrom(err, 'Failed to reach the Liveblocks auth endpoint') }
   }
 
   if (response.ok) {
+    let body: unknown
     try {
-      return (await response.json()) as LiveblocksAuthResult
+      body = await response.json()
     } catch (err) {
-      return { error: 'auth_failed', reason: describe(err, 'Liveblocks auth endpoint returned a non-JSON body') }
+      return { error: 'auth_failed', reason: reasonFrom(err, 'Liveblocks auth endpoint returned a non-JSON body') }
     }
+    if (typeof body === 'object' && body !== null && typeof (body as { token?: unknown }).token === 'string') {
+      return body as { token: string }
+    }
+    return { error: 'auth_failed', reason: 'Liveblocks auth endpoint returned no token' }
   }
 
   const reason = await readReason(response, `Failed to authenticate with Liveblocks (HTTP ${response.status})`)
-  return response.status === 403 ? { error: 'forbidden', reason } : { error: 'auth_failed', reason }
+  const forbiddenRoom = response.status === 403 && typeof room === 'string' && room.length > 0
+  return forbiddenRoom ? { error: 'forbidden', reason } : { error: 'auth_failed', reason }
 }
