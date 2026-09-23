@@ -11,6 +11,7 @@ import { Upload, Loader2, MailWarning } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import { jwtDecode } from 'jwt-decode'
+import type { User } from '@supabase/supabase-js'
 import supabase from '@/lib/supabase'
 import { timedRpc } from '@/lib/timedRpc'
 import PublicHeader from './PublicHeader'
@@ -130,12 +131,26 @@ export default function OnboardingPage() {
       clearAuthFragment() // Clear sensitive tokens from URL
     }
 
+    // A session whose user carries no email should never happen here (password sign-in, email
+    // signup and Google OAuth all produce one), but if it does, keep the form usable: leave the
+    // email editable and stop waiting on the auth check instead of sitting on the spinner.
+    const handleSessionWithoutEmail = (user: User) => {
+      if (!isMounted) return
+      if (timeoutId) clearTimeout(timeoutId)
+      console.warn('Auth session has no email; leaving the email field editable', user.id)
+      setEmailLocked(false)
+      setIsCheckingAuth(false)
+      clearAuthFragment()
+    }
+
     // Listen for auth state changes (handles magic link authentication)
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return
 
       if (session?.user?.email) {
         handleSessionEstablished(session.user.email)
+      } else if (session?.user) {
+        handleSessionWithoutEmail(session.user)
       } else if (session === null) {
         // Clear email if user signs out (e.g., in another tab)
         setValue('email', '')
@@ -161,6 +176,8 @@ export default function OnboardingPage() {
 
         if (session?.user?.email) {
           handleSessionEstablished(session.user.email)
+        } else if (session?.user) {
+          handleSessionWithoutEmail(session.user)
         } else {
           // No session found, set timeout to allow for magic link processing
           timeoutId = setTimeout(() => {
@@ -348,7 +365,7 @@ export default function OnboardingPage() {
             <p className='mt-4 text-base font-normal'>Let&apos;s set up your profile.</p>
           </CardHeader>
           <CardContent className='mt-4'>
-            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6' noValidate>
               <div className='flex items-center'>
                 <Avatar className='h-16 w-16'>
                   {avatarPreview ? (
@@ -386,6 +403,11 @@ export default function OnboardingPage() {
                   <Label htmlFor='email'>Email</Label>
                   <Input
                     id='email'
+                    type='email'
+                    autoComplete='email'
+                    autoCapitalize='none'
+                    autoCorrect='off'
+                    spellCheck={false}
                     {...register('email', {
                       required: 'Email is required',
                       pattern: {
