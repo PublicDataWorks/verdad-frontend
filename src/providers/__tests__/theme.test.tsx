@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react'
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { ThemeProvider, useTheme } from '../theme'
+import { THEME_STORAGE_KEY, ThemeProvider, useTheme } from '../theme'
 
 const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)'
-const STORAGE_KEY = 'app-theme'
 
 type ChangeListener = (event: MediaQueryListEvent) => void
 
@@ -64,7 +63,7 @@ describe('ThemeProvider', () => {
     expect(result.current.resolvedTheme).toBe('dark')
     expect(document.documentElement.classList.contains('dark')).toBe(true)
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
-    expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull()
   })
 
   it('follows later OS changes while no explicit choice is stored', () => {
@@ -76,7 +75,7 @@ describe('ThemeProvider', () => {
 
     expect(result.current.resolvedTheme).toBe('dark')
     expect(document.documentElement.classList.contains('dark')).toBe(true)
-    expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull()
   })
 
   it('persists an explicit choice and stops following the OS', () => {
@@ -88,7 +87,7 @@ describe('ThemeProvider', () => {
 
     expect(result.current.theme).toBe('dark')
     expect(result.current.resolvedTheme).toBe('dark')
-    expect(localStorage.getItem(STORAGE_KEY)).toBe('dark')
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark')
 
     emitSystemChange(false)
 
@@ -97,7 +96,7 @@ describe('ThemeProvider', () => {
   })
 
   it('honours a stored preference from a previous session over the OS', () => {
-    localStorage.setItem(STORAGE_KEY, 'light')
+    localStorage.setItem(THEME_STORAGE_KEY, 'light')
     prefersDark = true
 
     const { result } = renderHook(useTheme, { wrapper })
@@ -107,8 +106,18 @@ describe('ThemeProvider', () => {
     expect(document.documentElement.classList.contains('light')).toBe(true)
   })
 
+  it("ignores the old provider's app-theme value, which it wrote for every visitor", () => {
+    localStorage.setItem('app-theme', 'light')
+    prefersDark = true
+
+    const { result } = renderHook(useTheme, { wrapper })
+
+    expect(result.current.theme).toBe('system')
+    expect(result.current.resolvedTheme).toBe('dark')
+  })
+
   it('setTheme("system") clears the stored choice and follows the OS again', () => {
-    localStorage.setItem(STORAGE_KEY, 'light')
+    localStorage.setItem(THEME_STORAGE_KEY, 'light')
 
     const { result } = renderHook(useTheme, { wrapper })
 
@@ -116,7 +125,7 @@ describe('ThemeProvider', () => {
       result.current.setTheme('system')
     })
 
-    expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull()
 
     emitSystemChange(true)
 

@@ -16,6 +16,10 @@ interface ThemeProviderState {
 
 const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)'
 
+// Not 'app-theme': the old provider stored 'light' for every visitor, which would pin them all off system mode.
+// index.html reads the same key to set the theme before first paint.
+export const THEME_STORAGE_KEY = 'app-theme-v2'
+
 const toResolvedTheme = (prefersDark: boolean): ResolvedTheme => (prefersDark ? 'dark' : 'light')
 
 // `matchMedia` is missing in jsdom and in any non-browser host, so every use of it is optional.
@@ -37,7 +41,7 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
-export function ThemeProvider({ children, storageKey = 'app-theme', ...props }: ThemeProviderProps) {
+export function ThemeProvider({ children, storageKey = THEME_STORAGE_KEY, ...props }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => getStoredTheme(storageKey))
   const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(getSystemTheme)
 
