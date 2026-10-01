@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { THEME_STORAGE_KEY, ThemeProvider, useTheme } from '../theme'
+import indexHtml from '../../../index.html?raw'
 
 const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)'
 
@@ -139,6 +140,10 @@ describe('ThemeProvider', () => {
 
     expect(result.current.resolvedTheme).toBe('light')
     expect(document.documentElement.classList.contains('light')).toBe(true)
+  })
+
+  it('shares its storage key with the pre-paint script in index.html', () => {
+    expect(indexHtml).toContain(`localStorage.getItem('${THEME_STORAGE_KEY}')`)
   })
 
   it('removes its change listener on unmount', () => {
