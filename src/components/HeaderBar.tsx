@@ -28,9 +28,7 @@ const HeaderBar: React.FC = () => {
   const t = translations[language]
   const showInfoIcon = !user?.user_metadata?.dismiss_welcome_card
 
-  const getInitials = (email: string) => {
-    return email.split('@')[0].slice(0, 2).toUpperCase()
-  }
+  const getInitials = (email: string) => email.split('@')[0].slice(0, 2).toUpperCase()
 
   const handleLogout = async () => {
     await supabase.auth.signOut()

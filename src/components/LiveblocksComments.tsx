@@ -14,19 +14,7 @@ interface LiveblocksCommentsProps {
   showFullComments?: boolean
 }
 
-const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, showFullComments = false }) => {
-  if (!showFullComments) {
-    return null
-  }
-
-  return (
-    <RoomProvider id={snippetId}>
-      <LiveblocksCommentsContent snippetId={snippetId} />
-    </RoomProvider>
-  )
-}
-
-const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetId }) => {
+const LiveblocksCommentsContent: React.FC<{ snippetId: string }> = ({ snippetId }) => {
   const { threads, error, isLoading } = useThreads()
   const { language } = useLanguage()
   const t = translations[language]
@@ -76,6 +64,18 @@ const LiveblocksCommentsContent: React.FC<LiveblocksCommentsProps> = ({ snippetI
         }}
       />
     </div>
+  )
+}
+
+const LiveblocksComments: React.FC<LiveblocksCommentsProps> = ({ snippetId, showFullComments = false }) => {
+  if (!showFullComments) {
+    return null
+  }
+
+  return (
+    <RoomProvider id={snippetId}>
+      <LiveblocksCommentsContent snippetId={snippetId} />
+    </RoomProvider>
   )
 }
 

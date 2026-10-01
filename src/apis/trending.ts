@@ -1,4 +1,4 @@
-import supabase from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 import { TrendingTopicsResponse, TopicDetailsResponse } from '@/types/trending'
 import { SnippetFilters } from '@/hooks/useSnippetFilters'
 
@@ -28,19 +28,14 @@ export const fetchTopicDetails = async ({
     filterObj.politicalSpectrum = filters.politicalSpectrum
   }
 
-  const { data, error } = await supabase.rpc('get_topic_details', {
+  const { data } = await timedRpc<TopicDetailsResponse>('get_topic_details', {
     p_topic_id: topicId,
     p_timespan: timespan,
     p_filter: Object.keys(filterObj).length > 0 ? filterObj : null,
     p_language: language
   })
 
-  if (error) {
-    console.error('Error fetching topic details:', error)
-    throw error
-  }
-
-  return data as TopicDetailsResponse
+  return data
 }
 
 export const fetchTrendingTopics = async ({
@@ -70,17 +65,12 @@ export const fetchTrendingTopics = async ({
     filterObj.politicalSpectrum = filters.politicalSpectrum
   }
 
-  const { data, error } = await supabase.rpc('get_trending_topics', {
+  const { data } = await timedRpc<TrendingTopicsResponse>('get_trending_topics', {
     p_timespan: timespan,
     p_filter: Object.keys(filterObj).length > 0 ? filterObj : null,
     p_language: language,
     p_limit: limit
   })
 
-  if (error) {
-    console.error('Error fetching trending topics:', error)
-    throw error
-  }
-
-  return data as TrendingTopicsResponse
+  return data
 }

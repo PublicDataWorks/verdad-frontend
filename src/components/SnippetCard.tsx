@@ -18,7 +18,7 @@ import { useIsAdmin } from '@/hooks/usePermission'
 
 import { getSnippetSubtitle } from '@/utils/getSnippetSubtitle'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/storage'
-import supabaseClient from '@/lib/supabase'
+import { starSnippet } from '@/apis/snippet'
 
 import { SnippetAudioPlayer } from './SnippetAudioPlayer'
 import { highlightText } from '@/utils/highlightText'
@@ -43,7 +43,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
   })
 
   const [isStarred, setIsStarred] = useState<boolean>(() => {
-    const localStarred = getLocalStorageItem(`starred_${snippet.id}`)
+    const localStarred = getLocalStorageItem<boolean>(`starred_${snippet.id}`)
     return localStarred !== null ? localStarred : snippet?.starred_by_user || false
   })
   const [isStarHovered, setIsStarHovered] = useState<boolean>(false)
@@ -65,13 +65,9 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
     setIsStarred(newStarred)
 
     try {
-      const { data, error } = await supabaseClient.rpc('toggle_star_snippet', {
-        snippet_id: snippet.id
-      })
-
-      if (error) throw error
-
-      const serverStarred = data.data.snippet_starred
+      const {
+        data: { snippet_starred: serverStarred }
+      } = await starSnippet(snippet.id)
 
       if (serverStarred !== newStarred) {
         setIsStarred(serverStarred)
@@ -98,7 +94,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
 
       const response = await likeSnippetMutation.mutateAsync({
         snippetId: snippet.id,
-        likeStatus: likeStatus
+        likeStatus
       })
 
       setCounts({
@@ -114,7 +110,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
     }
   }
 
-  const handleLabelAdded = (newLabels: Label[]) => {
+  const handleLabelAdded = (newLabels: Label[] | ((prevLabels: Label[]) => Label[])) => {
     setLabels(newLabels)
   }
 
@@ -144,7 +140,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
   return (
     <div
       className={`mt-2 rounded-lg border bg-background-gray-lightest p-6 ${isHidden ? 'opacity-50' : ''} cursor-pointer border-2 border-transparent transition-all duration-700 ease-in-out hover:border-blue-600`}
-      onClick={e => onSnippetClick(e, snippet?.id)}>
+      onClick={e => onSnippetClick(e, snippet?.id)}
+    >
       <div className='mb-2 flex items-start justify-between'>
         <h3 className='cursor-pointer text-lg font-medium'>{highlightText(snippet?.title, searchTerm)}</h3>
         <div className='flex space-x-2' onClick={e => e.stopPropagation()}>
@@ -166,7 +163,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
                   variant='ghost'
                   onMouseEnter={() => setIsStarHovered(true)}
                   onMouseLeave={() => setIsStarHovered(false)}
-                  onClick={handleStarClick}>
+                  onClick={handleStarClick}
+                >
                   {getStarIcon()}
                 </Button>
               </div>
@@ -203,9 +201,10 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
                 onClick={e => handleLikeClick(e, 1)}
                 className={`flex items-center gap-4 ${
                   currentLikeStatus === 1 ? 'bg-green-200 text-background-gray-darkest hover:bg-green-300' : ''
-                }`}>
+                }`}
+              >
                 <ThumbsUp className='h-4 w-4' />
-                <span className={``}>{counts.likeCount}</span>
+                <span className=''>{counts.likeCount}</span>
               </Button>
             </div>
           </TooltipTrigger>
@@ -220,7 +219,8 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
                 variant='outline'
                 size='sm'
                 onClick={e => handleLikeClick(e, -1)}
-                className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'bg-red-200 text-background-gray-darkest hover:bg-red-300' : ''}`}>
+                className={`flex items-center gap-4 ${currentLikeStatus === -1 ? 'bg-red-200 text-background-gray-darkest hover:bg-red-300' : ''}`}
+              >
                 <ThumbsDown className='h-4 w-4' />
                 <span>{counts.dislikeCount}</span>
               </Button>
@@ -244,7 +244,7 @@ const SnippetCard: React.FC<SnippetCardProps> = ({ snippet, searchTerm = '', onS
           <AddLabelButton snippetId={snippet?.id} onLabelAdded={handleLabelAdded} />
         </div>
       </div>
-      <LiveblocksComments snippetId={snippet?.id} showFullComments={true} />
+      <LiveblocksComments snippetId={snippet?.id} showFullComments />
     </div>
   )
 }

@@ -10,10 +10,7 @@ src/assets/*
 
 # coverage files
 coverage
-cypress-coverage
 vitest-coverage
-.nyc_output
 reports
-merge-cov.cjs
 /dist
 cypress/

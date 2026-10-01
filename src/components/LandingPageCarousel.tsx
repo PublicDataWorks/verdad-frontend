@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
-type LandingPageCarouselProps = {
+interface LandingPageCarouselProps {
   snippets: {
     id: string
     titleEn: string
@@ -60,7 +60,7 @@ export default function LandingPageCarousel({ snippets }: LandingPageCarouselPro
   return (
     <Card className='h-[400px] overflow-hidden border-white/20 bg-white/10 p-4 backdrop-blur-sm' ref={containerRef}>
       <div ref={scrollRef} className='transition-transform duration-1000 ease-linear'>
-        {snippets.map((snippet) => (
+        {snippets.map(snippet => (
           <Card key={snippet.id} className='mb-4 border-white/10 bg-white/5 p-4'>
             <div className='mb-3 flex items-start justify-between'>
               <div className='flex-1 pr-4'>

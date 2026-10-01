@@ -1,13 +1,13 @@
 type Level = 'low' | 'medium' | 'high'
 
 export function ConfidenceChart({ level }: { level: Level }) {
-  const getChartConfig = (level: Level) => {
+  const getChartConfig = (value: Level) => {
     const configs = {
       low: { filledBars: 3, color: '#005EF4' },
       medium: { filledBars: 4, color: '#005EF4' },
       high: { filledBars: 5, color: '#005EF4' }
     }
-    return configs[level] || configs.low // Default to low if invalid level
+    return configs[value] || configs.low // Default to low if invalid level
   }
 
   const totalBars = 5

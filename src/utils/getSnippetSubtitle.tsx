@@ -3,8 +3,17 @@ import { getPoliticalLabel } from './getPoliticalLabel'
 import { ConfidenceChart } from '@/components/ui/ConfidenceScoreBar'
 import { Language } from '@/providers/language'
 import { translations } from '@/constants/translations'
+import type { AudioFileInfo, ConfidenceScores } from '@/types/snippet'
 
-export function getSnippetSubtitle(snippet: any, language: Language): JSX.Element {
+// The subset of snippet fields the subtitle needs; accepts Snippet and PublicSnippetData.
+export interface SubtitleSnippet {
+  audio_file?: Partial<AudioFileInfo> | null
+  recorded_at?: string | null
+  political_leaning?: { score?: number | null } | null
+  confidence_scores?: Pick<ConfidenceScores, 'level'> | null
+}
+
+export function getSnippetSubtitle(snippet: SubtitleSnippet | null | undefined, language: Language): JSX.Element {
   const parts = [
     snippet?.audio_file?.radio_station_name,
     snippet?.audio_file?.radio_station_code,

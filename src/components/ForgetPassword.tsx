@@ -6,7 +6,7 @@ import { Loader2, CheckCircle2 } from 'lucide-react' // Add CheckCircle2 import
 import supabase from '../lib/supabase'
 import PublicHeader from './PublicHeader'
 
-type FormData = {
+interface FormData {
   email: string
 }
 
@@ -92,13 +92,16 @@ export default function ForgetPassword() {
                   <CheckCircle2 className='h-12 w-12 text-green-500' />
                 </div>
                 <p className='text-center text-base text-gray-600'>
-                  We've sent an email to {email.replace(/(.{2})(.*)(?=@)/, (_, a, b) => a + '*'.repeat(b.length))} with
+                  We&apos;ve sent an email to{' '}
+                  {email.replace(/(.{2})(.*)(?=@)/, (_: string, a: string, b: string) => a + '*'.repeat(b.length))} with
                   password reset instructions. Please check your email.
                 </p>
               </div>
 
               <Button
-                onClick={() => (window.location.href = '/login')}
+                onClick={() => {
+                  window.location.href = '/login'
+                }}
                 className='w-full rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 focus:outline-none'
               >
                 Return to Login

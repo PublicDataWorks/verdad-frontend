@@ -19,7 +19,7 @@ export default function RelatedSnippets({ snippetId, language, isPublic = false 
         <Spinner />
       </div>
     )
-  if (isEmpty(snippets)) return null
+  if (!snippets || isEmpty(snippets)) return null
 
   return (
     <div className='mt-2 px-4'>

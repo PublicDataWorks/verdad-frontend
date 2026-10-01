@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles, RotateCcw } from 'lucide-react'
+import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
@@ -99,12 +99,6 @@ interface MultiSelectProps
   modalPopover?: boolean
 
   /**
-   * If true, renders the multi-select component as a child of another component.
-   * Optional, defaults to false.
-   */
-  asChild?: boolean
-
-  /**
    * Additional class names to apply custom styles to the multi-select component.
    * Optional, can be used to add custom styles.
    */
@@ -123,7 +117,6 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       animation = 0,
       maxCount = 3,
       modalPopover = false,
-      asChild = false,
       className,
       ...props
     },
@@ -211,31 +204,33 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              'border-border-gray-light flex h-auto min-h-10 w-full items-center justify-between rounded-md border bg-inherit p-1 hover:bg-inherit',
+              'flex h-auto min-h-10 w-full items-center justify-between rounded-md border border-border-gray-light bg-inherit p-1 hover:bg-inherit',
               className
-            )}>
+            )}
+          >
             {selectedValues.length > 0 ? (
               <div className='flex w-full items-center justify-between'>
                 <div className='flex flex-wrap items-center'>
-                  {selectedValues.slice(0, maxCount).map(value => {
-                    const option = options.find(o => o.value === value)
+                  {selectedValues.slice(0, maxCount).map(selected => {
+                    const option = options.find(o => o.value === selected)
                     const IconComponent = option?.icon
                     return (
                       <Badge
-                        key={value}
+                        key={selected}
                         className={cn(
                           isAnimating ? 'animate-bounce' : '',
                           multiSelectVariants({ variant }),
                           'max-w-[150px] truncate'
                         )}
-                        style={{ animationDuration: `${animation}s` }}>
+                        style={{ animationDuration: `${animation}s` }}
+                      >
                         {IconComponent && <IconComponent className='mr-2 h-4 w-4 flex-shrink-0' />}
                         <span className='truncate'>{option?.label}</span>
                         <XCircle
                           className='ml-2 h-4 w-4 flex-shrink-0 cursor-pointer'
                           onClick={event => {
                             event.stopPropagation()
-                            toggleOption(value)
+                            toggleOption(selected)
                           }}
                         />
                       </Badge>
@@ -248,7 +243,8 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                         isAnimating ? 'animate-bounce' : '',
                         multiSelectVariants({ variant })
                       )}
-                      style={{ animationDuration: `${animation}s` }}>
+                      style={{ animationDuration: `${animation}s` }}
+                    >
                       {`+ ${selectedValues.length - maxCount} more`}
                       <XCircle
                         className='ml-2 h-4 w-4 cursor-pointer'
@@ -287,11 +283,12 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                 <CommandItem key='all' onSelect={toggleAll} className='cursor-pointer'>
                   <div
                     className={cn(
-                      'border-border-gray-light mr-2 flex h-4 w-4 items-center justify-center rounded-sm border',
+                      'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-border-gray-light',
                       selectedValues.length === options.length
                         ? 'bg-primary text-primary-foreground'
                         : 'opacity-50 [&_svg]:invisible'
-                    )}>
+                    )}
+                  >
                     <CheckIcon className='h-4 w-4' />
                   </div>
                   <span>Select All</span>
@@ -302,12 +299,14 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                     <CommandItem
                       key={option.value}
                       onSelect={() => toggleOption(option.value)}
-                      className='cursor-pointer'>
+                      className='cursor-pointer'
+                    >
                       <div
                         className={cn(
-                          'border-border-gray-light mr-2 flex h-4 w-4 items-center justify-center rounded-sm border',
+                          'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-border-gray-light',
                           isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible'
-                        )}>
+                        )}
+                      >
                         <CheckIcon className='h-4 w-4' />
                       </div>
                       {option.icon && <option.icon className='mr-2 h-4 w-4 text-muted-foreground' />}
@@ -333,7 +332,8 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   <Separator orientation='vertical' className='flex h-full min-h-6' />
                   <CommandItem
                     onSelect={() => setIsPopoverOpen(false)}
-                    className='flex-1 cursor-pointer justify-center'>
+                    className='flex-1 cursor-pointer justify-center'
+                  >
                     Close
                   </CommandItem>
                 </div>
