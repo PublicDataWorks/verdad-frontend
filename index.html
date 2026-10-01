@@ -9,6 +9,17 @@
     <meta name="theme-color" content="#ffffff" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Verdad</title>
+    <script>
+      // Same resolution as ThemeProvider, applied before the bundle loads so dark users see no light flash.
+      try {
+        var stored = localStorage.getItem('app-theme-v2')
+        var dark =
+          stored === 'dark' || (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        var theme = dark ? 'dark' : 'light'
+        document.documentElement.classList.add(theme)
+        document.documentElement.setAttribute('data-theme', theme)
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
