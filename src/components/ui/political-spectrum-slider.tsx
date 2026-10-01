@@ -6,13 +6,7 @@ import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import type { PoliticalSpectrum } from '@/hooks/useSnippetFilters'
 
-export const POLITICAL_SPECTRUM_POSITIONS: PoliticalSpectrum[] = [
-  'left',
-  'center-left',
-  'center',
-  'center-right',
-  'right'
-]
+const POLITICAL_SPECTRUM_POSITIONS: PoliticalSpectrum[] = ['left', 'center-left', 'center', 'center-right', 'right']
 
 const LABEL_POSITIONS: PoliticalSpectrum[] = ['left', 'center', 'right']
 
@@ -42,6 +36,11 @@ export default function PoliticalSpectrumSlider({ className, value, onChange }: 
 
   const handleClear = () => {
     onChange(undefined)
+  }
+
+  // Ticks and labels are pointer-only (the thumb covers the keyboard); a re-click would push a duplicate URL.
+  const select = (position: PoliticalSpectrum) => {
+    if (position !== value) onChange(position)
   }
 
   return (
@@ -81,11 +80,11 @@ export default function PoliticalSpectrumSlider({ className, value, onChange }: 
             <button
               key={position}
               type='button'
+              tabIndex={-1}
               title={getLabel(position)}
               aria-label={getLabel(position)}
-              aria-pressed={isActive}
-              onClick={() => onChange(position)}
-              className='group flex h-6 w-6 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+              onClick={() => select(position)}
+              className='group flex h-6 w-6 items-center justify-center rounded-full'
             >
               <span
                 aria-hidden='true'
@@ -108,10 +107,10 @@ export default function PoliticalSpectrumSlider({ className, value, onChange }: 
             <button
               key={position}
               type='button'
-              aria-pressed={isActive}
-              onClick={() => onChange(position)}
+              tabIndex={-1}
+              onClick={() => select(position)}
               className={cn(
-                '-my-1 rounded py-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                '-mx-1 -my-1 rounded px-1 py-1 transition-colors',
                 index === 0 && 'justify-self-start',
                 index === 1 && 'justify-self-center',
                 index === 2 && 'justify-self-end',
