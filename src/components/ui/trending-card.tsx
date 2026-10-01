@@ -64,9 +64,9 @@ const getFilterSummary = (filters: Record<string, unknown>) => {
   if (politicalSpectrum) {
     const spectrumLabels: Record<string, string> = {
       left: 'Left',
-      center_left: 'Center-Left',
+      'center-left': 'Center-Left',
       center: 'Center',
-      center_right: 'Center-Right',
+      'center-right': 'Center-Right',
       right: 'Right'
     }
     items.push({
