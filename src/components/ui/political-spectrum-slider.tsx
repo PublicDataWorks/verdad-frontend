@@ -59,7 +59,8 @@ export default function PoliticalSpectrumSlider({ className, value, onChange }: 
         max={POLITICAL_SPECTRUM_POSITIONS.length - 1}
         step={1}
         onValueChange={handleSliderChange}
-        className='relative flex h-6 w-full touch-none select-none items-center'>
+        className='relative flex h-6 w-full touch-none select-none items-center'
+      >
         <SliderPrimitive.Track className='relative h-2 w-full grow overflow-hidden rounded-full bg-background-gray-medium' />
         <SliderPrimitive.Thumb
           aria-label={t.politicalSpectrum}
@@ -84,7 +85,8 @@ export default function PoliticalSpectrumSlider({ className, value, onChange }: 
               aria-label={getLabel(position)}
               aria-pressed={isActive}
               onClick={() => onChange(position)}
-              className='group flex h-6 w-6 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'>
+              className='group flex h-6 w-6 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+            >
               <span
                 aria-hidden='true'
                 className={cn(
@@ -114,7 +116,8 @@ export default function PoliticalSpectrumSlider({ className, value, onChange }: 
                 index === 1 && 'justify-self-center',
                 index === 2 && 'justify-self-end',
                 isActive ? 'font-medium text-primary' : 'text-muted-foreground hover:text-foreground'
-              )}>
+              )}
+            >
               {getLabel(position)}
             </button>
           )
