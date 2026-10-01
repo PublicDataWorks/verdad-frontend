@@ -4,13 +4,12 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
+import { POLITICAL_SPECTRUM_VALUES } from '@/hooks/useSnippetFilters'
 import type { PoliticalSpectrum } from '@/hooks/useSnippetFilters'
-
-const POLITICAL_SPECTRUM_POSITIONS: PoliticalSpectrum[] = ['left', 'center-left', 'center', 'center-right', 'right']
 
 const LABEL_POSITIONS: PoliticalSpectrum[] = ['left', 'center', 'right']
 
-const DEFAULT_THUMB_INDEX = POLITICAL_SPECTRUM_POSITIONS.indexOf('center')
+const DEFAULT_THUMB_INDEX = POLITICAL_SPECTRUM_VALUES.indexOf('center')
 
 interface PoliticalSpectrumSliderProps {
   className?: string
@@ -28,10 +27,10 @@ export default function PoliticalSpectrumSlider({ className, value, onChange }: 
   }
 
   const hasValue = value !== undefined
-  const thumbIndex = hasValue ? POLITICAL_SPECTRUM_POSITIONS.indexOf(value) : DEFAULT_THUMB_INDEX
+  const thumbIndex = hasValue ? POLITICAL_SPECTRUM_VALUES.indexOf(value) : DEFAULT_THUMB_INDEX
 
   const handleSliderChange = ([index]: number[]) => {
-    onChange(POLITICAL_SPECTRUM_POSITIONS[index])
+    onChange(POLITICAL_SPECTRUM_VALUES[index])
   }
 
   const handleClear = () => {
@@ -55,7 +54,7 @@ export default function PoliticalSpectrumSlider({ className, value, onChange }: 
         id='political-spectrum'
         value={[thumbIndex]}
         min={0}
-        max={POLITICAL_SPECTRUM_POSITIONS.length - 1}
+        max={POLITICAL_SPECTRUM_VALUES.length - 1}
         step={1}
         onValueChange={handleSliderChange}
         className='relative flex h-6 w-full touch-none select-none items-center'
@@ -74,7 +73,7 @@ export default function PoliticalSpectrumSlider({ className, value, onChange }: 
       </SliderPrimitive.Root>
 
       <div className='-mx-1 -mt-1.5 flex justify-between'>
-        {POLITICAL_SPECTRUM_POSITIONS.map(position => {
+        {POLITICAL_SPECTRUM_VALUES.map(position => {
           const isActive = value === position
           return (
             <button
