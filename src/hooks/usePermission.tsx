@@ -1,14 +1,9 @@
-import { rpc } from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 import { useQuery } from '@tanstack/react-query'
 
 const fetchRoles = async (): Promise<string[]> => {
   try {
-    const { data, error } = await rpc('get_roles')
-
-    if (error) {
-      console.error('Error fetching roles:', error)
-      return []
-    }
+    const { data } = await timedRpc('get_roles')
 
     return data
   } catch (err) {

@@ -14,7 +14,8 @@ import type {
   LikeResponse,
   LocalizedText,
   PublicSnippetData,
-  Snippet
+  Snippet,
+  StarSnippetResponse
 } from './snippet'
 import type { TopicDetailsResponse, TrendingTopicsResponse } from './trending'
 
@@ -31,23 +32,17 @@ export interface StatusResponse {
 
 export interface GetSnippetsResult {
   snippets: Snippet[]
-  num_of_snippets: number
+  /** Both are JSON null unless the call asked for the count (`p_include_count`). */
+  num_of_snippets: number | null
   current_page: number
   page_size: number
-  total_pages: number
+  total_pages: number | null
 }
 
 /** `get_snippet_labels`, also returned by `create_apply_and_upvote_label`. */
 export interface SnippetLabelsResult {
   snippet_id: string
   labels: Label[]
-}
-
-export interface ToggleStarResponse {
-  data: {
-    message: string
-    snippet_starred: boolean
-  }
 }
 
 /** `toggle_upvote_label` returns a message and nothing else - no label list. */
@@ -135,7 +130,7 @@ export type RpcReturns = RpcReturnsOf<{
   like_snippet: LikeResponse
   search_related_snippets_public: IRelatedSnippet[]
   setup_profile: StatusResponse
-  toggle_star_snippet: ToggleStarResponse
+  toggle_star_snippet: StarSnippetResponse
   toggle_upvote_label: ToggleUpvoteLabelResponse
   toggle_welcome_card: StatusResponse
   track_user_signups: StatusResponse

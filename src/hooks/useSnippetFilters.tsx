@@ -4,7 +4,9 @@ import { useSearchParams } from 'react-router-dom'
 export type Timespan = '24h' | '7d' | '30d' | '90d' | 'all'
 
 // Values must match the CASE branches in the backend `get_snippets` SQL function.
-export type PoliticalSpectrum = 'left' | 'center-left' | 'center' | 'center-right' | 'right'
+export const POLITICAL_SPECTRUM_VALUES = ['left', 'center-left', 'center', 'center-right', 'right'] as const
+
+export type PoliticalSpectrum = (typeof POLITICAL_SPECTRUM_VALUES)[number]
 
 export interface SnippetFilters {
   languages: string[]
@@ -23,6 +25,10 @@ export interface SnippetFilters {
 
 const parseArrayParam = (param: string | null): string[] => (param ? param.split(',') : [])
 
+// `get` returns null for a missing param; the slider needs undefined ("All") for that and for unknown values.
+const parsePoliticalSpectrum = (param: string | null): PoliticalSpectrum | undefined =>
+  POLITICAL_SPECTRUM_VALUES.find(value => value === param)
+
 const setArrayParam = (newParams: URLSearchParams, key: string, value: string[]) => {
   if (value.length > 0) {
     newParams.set(key, value.join(','))
@@ -38,7 +44,7 @@ function useSnippetFilters() {
   const labels = parseArrayParam(searchParams.get('labels'))
   const labeledBy = parseArrayParam(searchParams.get('labeledBy'))
   const starredBy = parseArrayParam(searchParams.get('starredBy'))
-  const politicalSpectrum = searchParams.get('politicalSpectrum') as SnippetFilters['politicalSpectrum']
+  const politicalSpectrum = parsePoliticalSpectrum(searchParams.get('politicalSpectrum'))
   const orderBy = searchParams.get('order_by') as SnippetFilters['order_by']
   const upvotedBy = parseArrayParam(searchParams.get('upvotedBy'))
   const searchTerm = searchParams.get('searchTerm') as SnippetFilters['searchTerm']

@@ -1,5 +1,5 @@
 # Stage 1: Build the React app using Vite
-FROM node:22.8.0-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Set environment variables
 ARG VITE_BASE_URL

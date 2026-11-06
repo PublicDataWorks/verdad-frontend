@@ -1257,6 +1257,7 @@ export type Database = {
       get_snippets: {
         Args: {
           p_filter: Json
+          p_include_count?: boolean
           p_language: string
           p_order_by: string
           p_search_term?: string

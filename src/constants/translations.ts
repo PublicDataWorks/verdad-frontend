@@ -59,7 +59,8 @@ export const translations = {
       showWelcomeCard: 'Show welcome card',
       showInbox: 'Show inbox',
       changeLanguage: 'Change language',
-      toggleTheme: 'Toggle theme'
+      switchToDarkMode: 'Switch to dark mode',
+      switchToLightMode: 'Switch to light mode'
     },
     sortBy: {
       mostRecentActivities: 'Recent user activities',
@@ -72,6 +73,9 @@ export const translations = {
     hidingResults: 'The filters could be hiding results.',
     clearFilters: 'Clear filters',
     noMoreSnippets: 'No more snippets',
+    snippetsTimeout: 'This search is taking too long. Try narrowing the filters or search term.',
+    snippetsLoadError: 'Something went wrong loading snippets.',
+    retry: 'Retry',
     relatedSnippets: 'Related',
     comment: 'Comment',
     comments: 'Comments',
@@ -147,7 +151,8 @@ export const translations = {
       showWelcomeCard: 'Mostrar tarjeta de bienvenida',
       showInbox: 'Mostrar bandeja de entrada',
       changeLanguage: 'Cambiar idioma',
-      toggleTheme: 'Cambiar tema'
+      switchToDarkMode: 'Cambiar a modo oscuro',
+      switchToLightMode: 'Cambiar a modo claro'
     },
     sortBy: {
       mostRecentActivities: 'Reciente actividad de usuario',
@@ -160,6 +165,9 @@ export const translations = {
     hidingResults: 'Los filtros podrían estar ocultando resultados.',
     clearFilters: 'Limpiar filtros',
     noMoreSnippets: 'No hay más fragmentos',
+    snippetsTimeout: 'Esta búsqueda está tardando demasiado. Intenta acotar los filtros o el término de búsqueda.',
+    snippetsLoadError: 'Algo salió mal al cargar los fragmentos.',
+    retry: 'Reintentar',
     relatedSnippets: 'Relacionados',
     comment: 'Comentario',
     comments: 'Comentarios',

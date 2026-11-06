@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { rpc } from '@/lib/supabase'
+import { timedRpc } from '@/lib/timedRpc'
 import shuffle from 'lodash/shuffle'
 import type { Language } from '@/providers/language'
 
@@ -16,11 +16,9 @@ export interface TranslatedLandingPageContent {
 }
 
 async function fetchLandingPageContent(language: Language): Promise<TranslatedLandingPageContent> {
-  const { data, error } = await rpc('get_landing_page_content')
-
-  if (error) {
+  const { data } = await timedRpc('get_landing_page_content').catch((error: Error) => {
     throw new Error(`Error fetching landing page content: ${error.message}`)
-  }
+  })
 
   // `get_landing_page_content` always builds an object, but the payload is not validated.
   if (!Array.isArray(data.snippets)) {

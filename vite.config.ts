@@ -1,19 +1,11 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import istanbul from 'vite-plugin-istanbul'
 import path from 'path'
 
-export default defineConfig(({ command, mode }) => ({
+export default defineConfig({
   base: '/',
-  plugins: [
-    react(),
-    tsconfigPaths(),
-    istanbul({
-      cypress: true,
-      requireEnv: true
-    })
-  ],
+  plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
@@ -32,4 +24,4 @@ export default defineConfig(({ command, mode }) => ({
     host: '0.0.0.0',
     port: 5173
   }
-}))
+})

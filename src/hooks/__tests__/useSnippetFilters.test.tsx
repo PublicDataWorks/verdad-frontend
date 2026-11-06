@@ -25,6 +25,15 @@ describe('useSnippetFilters', () => {
     expect(result.current.isEmpty()).toBe(false)
   })
 
+  it.each(['/search', '/search?politicalSpectrum=center_left'])(
+    'reads a missing or unknown political spectrum as undefined (%s)',
+    path => {
+      const { result } = renderHook(useFiltersWithLocation, { wrapper: withRouter(path) })
+
+      expect(result.current.filters.politicalSpectrum).toBeUndefined()
+    }
+  )
+
   it('writes a filter to the URL and only serializes non-empty values', () => {
     const { result } = renderHook(useFiltersWithLocation, { wrapper: withRouter('/search') })
 

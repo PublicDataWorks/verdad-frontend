@@ -4,13 +4,13 @@ import CountUp from 'react-countup'
 import { Button } from '@/components/ui/button'
 import { MultiSelect } from '@/components/ui/multi-select'
 import RoundedToggleButton from './RoundedToggleButton'
-import PoliticalSpectrum from '@/components/ui/political-spectrum-slider'
+import PoliticalSpectrumSlider from '@/components/ui/political-spectrum-slider'
 import { useSidebar } from '@/providers/sidebar'
 import { useLanguage } from '@/providers/language'
 import { translations } from '@/constants/translations'
 import { useFilters } from '@/hooks/useFilterOptions'
-import type { PoliticalSpectrum as PoliticalSpectrumValue, SnippetFilters } from '@/hooks/useSnippetFilters'
 import useSnippetFilters from '@/hooks/useSnippetFilters'
+import type { PoliticalSpectrum, SnippetFilters } from '@/hooks/useSnippetFilters'
 import { useSnippets } from '@/hooks/useSnippets'
 import { useEffect, useRef } from 'react'
 import { PAGE_SIZE } from '@/constants'
@@ -51,12 +51,14 @@ export default function Sidebar() {
   })
 
   const lastValueRef = useRef(0)
+  // Only the first page carries the count; fall back to the last known value while loading.
+  const totalSnippets = snippetData?.pages[0]?.total_snippets ?? lastValueRef.current
 
   useEffect(() => {
-    if (!isLoading && snippetData?.pages[0].total_snippets !== undefined) {
-      lastValueRef.current = snippetData.pages[0].total_snippets
+    if (!isLoading) {
+      lastValueRef.current = totalSnippets
     }
-  }, [isLoading, snippetData])
+  }, [isLoading, totalSnippets])
 
   const handleClearAll = () => {
     clearAll()
@@ -73,7 +75,7 @@ export default function Sidebar() {
     setFilter(category, newValues)
   }
 
-  const handlePoliticalSpectrumChange = (value: PoliticalSpectrumValue | undefined) => {
+  const handlePoliticalSpectrumChange = (value: PoliticalSpectrum | undefined) => {
     setFilter('politicalSpectrum', value)
   }
 
@@ -83,7 +85,7 @@ export default function Sidebar() {
         <div className='mb-4 flex h-[24px] items-center justify-between'>
           <CountUp
             start={lastValueRef.current}
-            end={isLoading ? lastValueRef.current : snippetData?.pages[0].total_snippets ?? lastValueRef.current}
+            end={isLoading ? lastValueRef.current : totalSnippets}
             duration={1.5}
             separator=','
             preserveValue
@@ -149,7 +151,7 @@ export default function Sidebar() {
           />
 
           <h3 className='mb-2 mt-6 font-medium text-text-secondary'>{t.politicalSpectrum}</h3>
-          <PoliticalSpectrum value={politicalSpectrum} onChange={handlePoliticalSpectrumChange} />
+          <PoliticalSpectrumSlider value={politicalSpectrum} onChange={handlePoliticalSpectrumChange} />
         </div>
 
         <h3 className='mb-2 mt-6 font-semibold'>{t.labeled}</h3>

@@ -17,7 +17,8 @@ import type {
   HideResponse,
   Snippet,
   IRelatedSnippet,
-  PaginatedResponse
+  PaginatedResponse,
+  StarSnippetResponse
 } from '@/types/snippet'
 import { useAuth } from '@/providers/auth'
 
@@ -121,7 +122,6 @@ export function useHideSnippet() {
 
       const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
 
-      // Optimistically update snippets in cache
       queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: CachedSnippetData) => {
         if (!oldData) return oldData
 
@@ -162,7 +162,6 @@ export function useUnhideSnippet() {
 
       const previousSnippets = queryClient.getQueriesData({ queryKey: snippetKeys.all })
 
-      // Optimistically update snippets in cache
       queryClient.setQueriesData({ queryKey: snippetKeys.all }, (oldData: CachedSnippetData) => {
         if (!oldData) return oldData
 
@@ -218,18 +217,15 @@ export function useToggleWelcomeCard() {
 export function useStarSnippet(parentSnippetId: string, language: string) {
   const queryClient = useQueryClient()
 
-  return useMutation<void, Error, string, { previousSnippets: IRelatedSnippet[] | undefined }>({
+  return useMutation<StarSnippetResponse, Error, string, { previousSnippets: IRelatedSnippet[] | undefined }>({
     mutationFn: starSnippet,
     onMutate: async (snippetId: string) => {
-      // Cancel any outgoing refetches for this query
       await queryClient.cancelQueries({ queryKey: snippetKeys.related(parentSnippetId, language) })
 
-      // Snapshot previous value
       const previousSnippets = queryClient.getQueryData<IRelatedSnippet[]>(
         snippetKeys.related(parentSnippetId, language)
       )
 
-      // Optimistically update cache
       queryClient.setQueryData<IRelatedSnippet[]>(snippetKeys.related(parentSnippetId, language), old => {
         if (old) {
           return old.map(snippet => {
@@ -245,7 +241,6 @@ export function useStarSnippet(parentSnippetId: string, language: string) {
       return { previousSnippets }
     },
     onError: (err, snippetId, context) => {
-      // Revert the cache to the previous value
       if (context?.previousSnippets) {
         queryClient.setQueryData<IRelatedSnippet[]>(
           snippetKeys.related(parentSnippetId, language),
@@ -254,7 +249,6 @@ export function useStarSnippet(parentSnippetId: string, language: string) {
       }
     },
     onSettled: () => {
-      // Invalidate queries so they refetch
       void queryClient.invalidateQueries({ queryKey: snippetKeys.related(parentSnippetId, language) })
     }
   })

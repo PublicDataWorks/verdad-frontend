@@ -24,7 +24,7 @@ interface RpcBuilder<T> extends PromiseLike<PostgrestSingleResponse<T>> {
  * No argument at all for a zero-argument function, an optional one when every argument has a
  * SQL default (`{} extends Args`), exactly one for every other.
  */
-type RpcArgs<Fn extends RpcName> = [DatabaseFunctions[Fn]['Args']] extends [never]
+export type RpcArgs<Fn extends RpcName> = [DatabaseFunctions[Fn]['Args']] extends [never]
   ? []
   : Record<never, never> extends DatabaseFunctions[Fn]['Args']
     ? [args?: DatabaseFunctions[Fn]['Args']]
