@@ -33,10 +33,23 @@ export interface ConfidenceScore {
   category: string
 }
 
+// Written by Stage 3 (VER-462); absent on older snippets and null when the clip has no such rhetoric.
+// The evidence gate does not cap it, so it can be high while `overall` is low.
+export interface HarmfulRhetoric {
+  score: number // 0-100
+  kind: 'gender' | 'electioneering'
+  quote: string
+  harm: {
+    english: string
+    spanish: string
+  }
+}
+
 export interface ConfidenceScores {
   overall: number
   categories: ConfidenceScore[]
   level?: 'high' | 'low' | 'medium'
+  harmful_rhetoric?: HarmfulRhetoric | null
 }
 
 export type LikeStatus = 1 | 0 | -1

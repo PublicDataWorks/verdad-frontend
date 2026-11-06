@@ -48,6 +48,50 @@ describe('fetchSnippets', () => {
     expect(page).toEqual({ snippets, total_pages: 4, currentPage: 2, total_snippets: 37 })
   })
 
+  it('passes the research view to get_snippets', async () => {
+    mockedRpc.mockReturnValue(
+      rpcResult({ data: { snippets: [], total_pages: 1, num_of_snippets: 0 }, error: null }) as never
+    )
+
+    await fetchSnippets({
+      pageParam: 0,
+      pageSize: 10,
+      filters: { states: ['TX'], view: 'research' },
+      language: 'spanish',
+      orderBy: 'latest',
+      abortSignal: new AbortController().signal
+    })
+
+    expect(mockedRpc).toHaveBeenCalledWith('get_snippets', {
+      page: 0,
+      page_size: 10,
+      p_language: 'spanish',
+      p_filter: { states: ['TX'], view: 'research' },
+      p_order_by: 'latest',
+      p_search_term: '',
+      p_include_count: true
+    })
+  })
+
+  it('omits an unset view so the default feed is unchanged', async () => {
+    mockedRpc.mockReturnValue(
+      rpcResult({ data: { snippets: [], total_pages: 1, num_of_snippets: 0 }, error: null }) as never
+    )
+
+    await fetchSnippets({
+      pageParam: 0,
+      pageSize: 10,
+      filters: { states: ['TX'], view: undefined },
+      language: 'english',
+      orderBy: 'latest',
+      abortSignal: new AbortController().signal
+    })
+
+    const [, args] = mockedRpc.mock.calls[0] as [string, { p_filter: Record<string, unknown> }]
+    expect(args.p_filter).toEqual({ states: ['TX'] })
+    expect(args.p_filter).not.toHaveProperty('view')
+  })
+
   it('asks for the count on the first page only', async () => {
     mockedRpc.mockReturnValue(
       rpcResult({ data: { snippets: [], total_pages: 1, num_of_snippets: 0 }, error: null }) as never

@@ -89,7 +89,20 @@ export const translations = {
     snippetsInPeriod: 'snippets',
     vsPreviousPeriod: 'vs previous period',
     topicNotFound: 'Topic not found',
-    errorLoadingTopic: 'Unable to load topic details'
+    errorLoadingTopic: 'Unable to load topic details',
+    // Research view (VER-462)
+    view: 'View',
+    researchView: 'Research view',
+    researchViewBannerTitle: 'Research view: leads, not verified disinformation',
+    researchViewBannerBody:
+      "This list also includes research findings below VERDAD's disinformation-confidence threshold: clips flagged by the VER-430 research run or for harmful rhetoric.",
+    researchViewBannerCaution:
+      'Treat them as leads for journalists, not verified disinformation. Listen to the clip before publishing anything about it.',
+    harmfulRhetoric: 'Harmful rhetoric',
+    harmfulRhetoricKinds: {
+      gender: 'gender',
+      electioneering: 'elections'
+    }
   },
   spanish: {
     filters: 'Filtros',
@@ -181,6 +194,19 @@ export const translations = {
     snippetsInPeriod: 'fragmentos',
     vsPreviousPeriod: 'vs período anterior',
     topicNotFound: 'Tema no encontrado',
-    errorLoadingTopic: 'No se pudo cargar el tema'
+    errorLoadingTopic: 'No se pudo cargar el tema',
+    // Research view (VER-462)
+    view: 'Vista',
+    researchView: 'Vista de investigación',
+    researchViewBannerTitle: 'Vista de investigación: pistas, no desinformación verificada',
+    researchViewBannerBody:
+      'Esta lista también incluye hallazgos de investigación por debajo del umbral de confianza de desinformación de VERDAD: fragmentos marcados por la investigación VER-430 o por retórica dañina.',
+    researchViewBannerCaution:
+      'Trátelos como pistas para periodistas, no como desinformación verificada. Escuche el fragmento antes de publicar algo sobre él.',
+    harmfulRhetoric: 'Retórica dañina',
+    harmfulRhetoricKinds: {
+      gender: 'género',
+      electioneering: 'elecciones'
+    }
   }
 }
