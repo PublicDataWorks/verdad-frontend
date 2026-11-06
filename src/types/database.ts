@@ -7,7 +7,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '14.5'
+    PostgrestVersion: '13.0.5'
   }
   public: {
     Tables: {
@@ -24,6 +24,8 @@ export type Database = {
           radio_station_name: string
           recorded_at: string
           recording_day_of_week: string
+          retry_attempts: number
+          source_id: string | null
           starred: boolean | null
           status: Database['public']['Enums']['processing_status']
           updated_at: string
@@ -40,6 +42,8 @@ export type Database = {
           radio_station_name: string
           recorded_at: string
           recording_day_of_week: string
+          retry_attempts?: number
+          source_id?: string | null
           starred?: boolean | null
           status?: Database['public']['Enums']['processing_status']
           updated_at?: string
@@ -56,36 +60,49 @@ export type Database = {
           radio_station_name?: string
           recorded_at?: string
           recording_day_of_week?: string
+          retry_attempts?: number
+          source_id?: string | null
           starred?: boolean | null
           status?: Database['public']['Enums']['processing_status']
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'audio_files_source_id_fkey'
+            columns: ['source_id']
+            isOneToOne: false
+            referencedRelation: 'sources'
+            referencedColumns: ['id']
+          }
+        ]
       }
-      backfill_control: {
+      audio_requeue_log: {
         Row: {
-          batch_size: number | null
-          enabled: boolean | null
+          batch: string
           id: string
-          last_run_at: string | null
-          rows_processed: number | null
-          status: string | null
+          prior_error: string | null
+          prior_retry: number
+          prior_status: Database['public']['Enums']['processing_status']
+          requeued_at: string
+          tier: string
         }
         Insert: {
-          batch_size?: number | null
-          enabled?: boolean | null
-          id?: string
-          last_run_at?: string | null
-          rows_processed?: number | null
-          status?: string | null
+          batch: string
+          id: string
+          prior_error?: string | null
+          prior_retry: number
+          prior_status: Database['public']['Enums']['processing_status']
+          requeued_at?: string
+          tier: string
         }
         Update: {
-          batch_size?: number | null
-          enabled?: boolean | null
+          batch?: string
           id?: string
-          last_run_at?: string | null
-          rows_processed?: number | null
-          status?: string | null
+          prior_error?: string | null
+          prior_retry?: number
+          prior_status?: Database['public']['Enums']['processing_status']
+          requeued_at?: string
+          tier?: string
         }
         Relationships: []
       }
@@ -248,6 +265,141 @@ export type Database = {
           id?: number
           template_content?: string | null
           template_name?: string | null
+        }
+        Relationships: []
+      }
+      embedding_batch_candidates_2026_09_15: {
+        Row: {
+          candidate: string | null
+          seed_snippet: string | null
+          similarity: number | null
+        }
+        Insert: {
+          candidate?: string | null
+          seed_snippet?: string | null
+          similarity?: number | null
+        }
+        Update: {
+          candidate?: string | null
+          seed_snippet?: string | null
+          similarity?: number | null
+        }
+        Relationships: []
+      }
+      embedding_batch_seeds_2026_09_15: {
+        Row: {
+          embedding: string | null
+          rn: number | null
+          snippet: string | null
+          sub_emb: string | null
+        }
+        Insert: {
+          embedding?: string | null
+          rn?: number | null
+          snippet?: string | null
+          sub_emb?: string | null
+        }
+        Update: {
+          embedding?: string | null
+          rn?: number | null
+          snippet?: string | null
+          sub_emb?: string | null
+        }
+        Relationships: []
+      }
+      feed_items: {
+        Row: {
+          attempts: number
+          audio_file_id: string | null
+          created_at: string
+          duration_seconds: number | null
+          external_item_id: string
+          id: string
+          is_live_recording: boolean
+          item_url: string | null
+          last_error: string | null
+          published_at: string | null
+          source_id: string
+          status: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          audio_file_id?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          external_item_id: string
+          id?: string
+          is_live_recording?: boolean
+          item_url?: string | null
+          last_error?: string | null
+          published_at?: string | null
+          source_id: string
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          audio_file_id?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          external_item_id?: string
+          id?: string
+          is_live_recording?: boolean
+          item_url?: string | null
+          last_error?: string | null
+          published_at?: string | null
+          source_id?: string
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'feed_items_audio_file_id_fkey'
+            columns: ['audio_file_id']
+            isOneToOne: false
+            referencedRelation: 'audio_files'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'feed_items_source_id_fkey'
+            columns: ['source_id']
+            isOneToOne: false
+            referencedRelation: 'sources'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      kb_deactivation_log: {
+        Row: {
+          batch: string
+          deactivated_at: string
+          id: string
+          kb_entry: string
+          previous_status: Database['public']['Enums']['kb_entry_status']
+          reason: string
+          restored_at: string | null
+        }
+        Insert: {
+          batch: string
+          deactivated_at?: string
+          id?: string
+          kb_entry: string
+          previous_status: Database['public']['Enums']['kb_entry_status']
+          reason: string
+          restored_at?: string | null
+        }
+        Update: {
+          batch?: string
+          deactivated_at?: string
+          id?: string
+          kb_entry?: string
+          previous_status?: Database['public']['Enums']['kb_entry_status']
+          reason?: string
+          restored_at?: string | null
         }
         Relationships: []
       }
@@ -564,6 +716,35 @@ export type Database = {
         }
         Relationships: []
       }
+      landing_page_snippet_overrides: {
+        Row: {
+          created_at: string
+          mode: string
+          note: string | null
+          snippet: string
+        }
+        Insert: {
+          created_at?: string
+          mode: string
+          note?: string | null
+          snippet: string
+        }
+        Update: {
+          created_at?: string
+          mode?: string
+          note?: string | null
+          snippet?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'landing_page_snippet_overrides_snippet_fkey'
+            columns: ['snippet']
+            isOneToOne: true
+            referencedRelation: 'snippets'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       prompt_versions: {
         Row: {
           created_at: string
@@ -624,6 +805,105 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+        }
+        Relationships: []
+      }
+      search_hit_stats: {
+        Row: {
+          alerted: boolean
+          analyses: number
+          analyses_with_hit: number
+          analyses_with_search: number
+          hour_start: string
+          queries: number
+          queries_with_hit: number
+          recorded_at: string
+          stage4_searches: number
+          stage4_searches_with_results: number
+        }
+        Insert: {
+          alerted?: boolean
+          analyses: number
+          analyses_with_hit: number
+          analyses_with_search: number
+          hour_start: string
+          queries: number
+          queries_with_hit: number
+          recorded_at?: string
+          stage4_searches: number
+          stage4_searches_with_results: number
+        }
+        Update: {
+          alerted?: boolean
+          analyses?: number
+          analyses_with_hit?: number
+          analyses_with_search?: number
+          hour_start?: string
+          queries?: number
+          queries_with_hit?: number
+          recorded_at?: string
+          stage4_searches?: number
+          stage4_searches_with_results?: number
+        }
+        Relationships: []
+      }
+      snippet_analysis_snapshot: {
+        Row: {
+          analyzed_by: string | null
+          batch: string
+          confidence_scores: Json | null
+          disinformation_categories: Json[] | null
+          explanation: Json | null
+          grounding_metadata: string | null
+          id: string
+          labels: Json
+          reviewed_at: string | null
+          reviewed_by: string | null
+          snapshot_at: string
+          snippet: string
+          stage_3_prompt_version_id: string | null
+          status: Database['public']['Enums']['processing_status'] | null
+          summary: Json | null
+          thought_summaries: string | null
+          title: Json | null
+        }
+        Insert: {
+          analyzed_by?: string | null
+          batch: string
+          confidence_scores?: Json | null
+          disinformation_categories?: Json[] | null
+          explanation?: Json | null
+          grounding_metadata?: string | null
+          id?: string
+          labels?: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          snapshot_at?: string
+          snippet: string
+          stage_3_prompt_version_id?: string | null
+          status?: Database['public']['Enums']['processing_status'] | null
+          summary?: Json | null
+          thought_summaries?: string | null
+          title?: Json | null
+        }
+        Update: {
+          analyzed_by?: string | null
+          batch?: string
+          confidence_scores?: Json | null
+          disinformation_categories?: Json[] | null
+          explanation?: Json | null
+          grounding_metadata?: string | null
+          id?: string
+          labels?: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          snapshot_at?: string
+          snippet?: string
+          stage_3_prompt_version_id?: string | null
+          status?: Database['public']['Enums']['processing_status'] | null
+          summary?: Json | null
+          thought_summaries?: string | null
+          title?: Json | null
         }
         Relationships: []
       }
@@ -742,6 +1022,30 @@ export type Database = {
           }
         ]
       }
+      snippet_hide_review: {
+        Row: {
+          batch: string
+          reviewed_at: string
+          snippet: string
+          verdict: string
+          why: string | null
+        }
+        Insert: {
+          batch: string
+          reviewed_at?: string
+          snippet: string
+          verdict: string
+          why?: string | null
+        }
+        Update: {
+          batch?: string
+          reviewed_at?: string
+          snippet?: string
+          verdict?: string
+          why?: string | null
+        }
+        Relationships: []
+      }
       snippet_labels: {
         Row: {
           applied_by: string | null
@@ -787,8 +1091,69 @@ export type Database = {
           }
         ]
       }
+      snippet_quarantine_log: {
+        Row: {
+          batch: string
+          id: string
+          previous_status: Database['public']['Enums']['processing_status']
+          quarantined_at: string
+          reason: string
+          restored_at: string | null
+          snippet: string
+        }
+        Insert: {
+          batch: string
+          id?: string
+          previous_status: Database['public']['Enums']['processing_status']
+          quarantined_at?: string
+          reason: string
+          restored_at?: string | null
+          snippet: string
+        }
+        Update: {
+          batch?: string
+          id?: string
+          previous_status?: Database['public']['Enums']['processing_status']
+          quarantined_at?: string
+          reason?: string
+          restored_at?: string | null
+          snippet?: string
+        }
+        Relationships: []
+      }
+      snippet_requeue_log: {
+        Row: {
+          batch: string
+          id: string
+          new_status: Database['public']['Enums']['processing_status']
+          previous_error: string | null
+          previous_status: Database['public']['Enums']['processing_status']
+          requeued_at: string
+          snippet: string
+        }
+        Insert: {
+          batch: string
+          id?: string
+          new_status: Database['public']['Enums']['processing_status']
+          previous_error?: string | null
+          previous_status: Database['public']['Enums']['processing_status']
+          requeued_at?: string
+          snippet: string
+        }
+        Update: {
+          batch?: string
+          id?: string
+          new_status?: Database['public']['Enums']['processing_status']
+          previous_error?: string | null
+          previous_status?: Database['public']['Enums']['processing_status']
+          requeued_at?: string
+          snippet?: string
+        }
+        Relationships: []
+      }
       snippets: {
         Row: {
+          analysis_attempts: number
           analyzed_by: string | null
           audio_file: string | null
           comment_count: number | null
@@ -809,8 +1174,11 @@ export type Database = {
           keywords_detected: string[] | null
           language: Json | null
           like_count: number | null
+          location_state: string | null
           political_leaning: Json | null
           previous_analysis: Json | null
+          priority: number
+          radio_station_code: string | null
           recorded_at: string | null
           reviewed_at: string | null
           reviewed_by: string | null
@@ -828,6 +1196,7 @@ export type Database = {
           user_last_activity: string | null
         }
         Insert: {
+          analysis_attempts?: number
           analyzed_by?: string | null
           audio_file?: string | null
           comment_count?: number | null
@@ -848,8 +1217,11 @@ export type Database = {
           keywords_detected?: string[] | null
           language?: Json | null
           like_count?: number | null
+          location_state?: string | null
           political_leaning?: Json | null
           previous_analysis?: Json | null
+          priority?: number
+          radio_station_code?: string | null
           recorded_at?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -867,6 +1239,7 @@ export type Database = {
           user_last_activity?: string | null
         }
         Update: {
+          analysis_attempts?: number
           analyzed_by?: string | null
           audio_file?: string | null
           comment_count?: number | null
@@ -887,8 +1260,11 @@ export type Database = {
           keywords_detected?: string[] | null
           language?: Json | null
           like_count?: number | null
+          location_state?: string | null
           political_leaning?: Json | null
           previous_analysis?: Json | null
+          priority?: number
+          radio_station_code?: string | null
           recorded_at?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -929,6 +1305,66 @@ export type Database = {
           }
         ]
       }
+      sources: {
+        Row: {
+          consecutive_failures: number
+          created_at: string
+          display_name: string
+          enabled: boolean
+          external_id: string
+          feed_urls: Json
+          id: string
+          language: string | null
+          last_error: string | null
+          last_polled_at: string | null
+          last_success_at: string | null
+          location_state: string | null
+          metadata: Json
+          poll_interval_seconds: number
+          stream_url: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          consecutive_failures?: number
+          created_at?: string
+          display_name: string
+          enabled?: boolean
+          external_id: string
+          feed_urls?: Json
+          id?: string
+          language?: string | null
+          last_error?: string | null
+          last_polled_at?: string | null
+          last_success_at?: string | null
+          location_state?: string | null
+          metadata?: Json
+          poll_interval_seconds?: number
+          stream_url?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          consecutive_failures?: number
+          created_at?: string
+          display_name?: string
+          enabled?: boolean
+          external_id?: string
+          feed_urls?: Json
+          id?: string
+          language?: string | null
+          last_error?: string | null
+          last_polled_at?: string | null
+          last_success_at?: string | null
+          location_state?: string | null
+          metadata?: Json
+          poll_interval_seconds?: number
+          stream_url?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       stage_1_llm_responses: {
         Row: {
           audio_file: string
@@ -943,7 +1379,6 @@ export type Database = {
           timestamped_transcription: Json | null
           transcription_prompt_version_id: string | null
           transcriptor: string | null
-          tsv_transcription: unknown
           updated_at: string
         }
         Insert: {
@@ -959,7 +1394,6 @@ export type Database = {
           timestamped_transcription?: Json | null
           transcription_prompt_version_id?: string | null
           transcriptor?: string | null
-          tsv_transcription?: unknown
           updated_at?: string
         }
         Update: {
@@ -975,7 +1409,6 @@ export type Database = {
           timestamped_transcription?: Json | null
           transcription_prompt_version_id?: string | null
           transcriptor?: string | null
-          tsv_transcription?: unknown
           updated_at?: string
         }
         Relationships: [
@@ -1001,6 +1434,50 @@ export type Database = {
             referencedColumns: ['id']
           }
         ]
+      }
+      station_hour_priority: {
+        Row: {
+          day_of_week: number
+          local_hour: number
+          radio_station_code: string
+        }
+        Insert: {
+          day_of_week: number
+          local_hour: number
+          radio_station_code: string
+        }
+        Update: {
+          day_of_week?: number
+          local_hour?: number
+          radio_station_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'station_hour_priority_radio_station_code_fkey'
+            columns: ['radio_station_code']
+            isOneToOne: false
+            referencedRelation: 'station_priority'
+            referencedColumns: ['radio_station_code']
+          }
+        ]
+      }
+      station_priority: {
+        Row: {
+          radio_station_code: string
+          tier: string
+          timezone: string | null
+        }
+        Insert: {
+          radio_station_code: string
+          tier: string
+          timezone?: string | null
+        }
+        Update: {
+          radio_station_code?: string
+          tier?: string
+          timezone?: string | null
+        }
+        Relationships: []
       }
       total_labels: {
         Row: {
@@ -1194,11 +1671,17 @@ export type Database = {
       }
     }
     Functions: {
+      backfill_snippets_location: {
+        Args: { p_batch?: number }
+        Returns: number
+      }
       create_apply_and_upvote_label: {
         Args: { label_text: string; p_language?: string; snippet_id: string }
         Returns: Json
       }
+      demote_stale_live_snippets: { Args: never; Returns: number }
       dismiss_welcome_card: { Args: never; Returns: Json }
+      drain_error_backlog_95: { Args: { p_batch?: number }; Returns: Json }
       fetch_a_new_audio_file_and_reserve_it: { Args: never; Returns: Json }
       fetch_a_new_snippet_and_reserve_it: { Args: never; Returns: Json }
       fetch_a_new_stage_1_llm_response_and_reserve_it: {
@@ -1232,15 +1715,6 @@ export type Database = {
         Args: { p_language?: string; p_recording_id: string }
         Returns: Json
       }
-      get_recordings_preview: {
-        Args: {
-          p_cursor?: string
-          p_filter?: Json
-          p_limit?: number
-          p_search_term?: string
-        }
-        Returns: Json
-      }
       get_roles: { Args: never; Returns: string[] }
       get_snippet: {
         Args: { p_language?: string; snippet_id: string }
@@ -1258,28 +1732,6 @@ export type Database = {
         Args: {
           p_filter: Json
           p_include_count?: boolean
-          p_language: string
-          p_order_by: string
-          p_search_term?: string
-          page: number
-          page_size: number
-        }
-        Returns: Json
-      }
-      get_snippets_debug_like_count: {
-        Args: {
-          p_filter: Json
-          p_language: string
-          p_order_by: string
-          p_search_term?: string
-          page: number
-          page_size: number
-        }
-        Returns: Json
-      }
-      get_snippets_preview: {
-        Args: {
-          p_filter: Json
           p_language: string
           p_order_by: string
           p_search_term?: string
@@ -1323,14 +1775,23 @@ export type Database = {
         Args: { snippet_id: string; value: number }
         Returns: Json
       }
+      record_search_hit_stats: {
+        Args: {
+          p_alert?: boolean
+          p_hour?: string
+          p_min_analyses?: number
+          p_min_share?: number
+        }
+        Returns: Json
+      }
       refresh_filter_options_cache: { Args: never; Returns: undefined }
-      run_tsv_backfill: { Args: never; Returns: Json }
       search_kb_entries: {
         Args: {
           candidate_multiplier?: number
           filter_categories?: string[]
           match_count?: number
           match_threshold?: number
+          min_confidence?: number
           query_embedding: string
           reference_date?: string
         }
@@ -1362,7 +1823,24 @@ export type Database = {
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { '': string }; Returns: string[] }
+      snippet_priority: {
+        Args: { p_audio_file: string; p_recorded_at: string }
+        Returns: number
+      }
       sub_vector: { Args: { dimensions: number; v: string }; Returns: string }
+      sweep_retryable_audio_errors: {
+        Args: { p_batch?: number; p_max_attempts?: number }
+        Returns: Json
+      }
+      sweep_retryable_errors: {
+        Args: { p_batch?: number; p_max_attempts?: number }
+        Returns: Json
+      }
+      sweep_stuck_audio_files: {
+        Args: { p_max_attempts?: number }
+        Returns: Json
+      }
+      sweep_stuck_snippets: { Args: never; Returns: Json }
       toggle_recording_star: { Args: { p_recording_id: string }; Returns: Json }
       toggle_star_snippet: { Args: { snippet_id: string }; Returns: Json }
       toggle_upvote_label: {
@@ -1394,6 +1872,7 @@ export type Database = {
         Args: { label_text: string; snippet_id: string }
         Returns: Json
       }
+      verdad_unaccent: { Args: { p_text: string }; Returns: string }
     }
     Enums: {
       kb_entry_status: 'active' | 'superseded' | 'deactivated'
