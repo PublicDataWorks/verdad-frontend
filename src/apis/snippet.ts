@@ -3,7 +3,8 @@
 import { capture } from '@/lib/posthog'
 import { SLOW_THRESHOLD_MS, timedRpc } from '@/lib/timedRpc'
 import type { SnippetFilters } from '@/hooks/useSnippetFilters'
-import {
+import type { EmptyObject } from '@/types/rpc'
+import type {
   Snippet,
   PaginatedResponse,
   LikeSnippetVariables,
@@ -14,19 +15,16 @@ import {
   StarSnippetResponse
 } from '../types/snippet'
 
-interface GetSnippetsResult {
-  snippets: Snippet[]
-  // Both are JSON null unless the call asked for the count (`p_include_count`).
-  total_pages: number | null
-  num_of_snippets: number | null
-}
+// `get_snippet` and `get_public_snippet` return `'{}'::jsonb` when the snippet does not
+// exist, is not `Processed`, or is hidden from the caller. Callers get `null` instead.
+const isEmptyObject = (value: object): value is EmptyObject => Object.keys(value).length === 0
 
-export const fetchSnippet = async (id: string, language: string): Promise<Snippet> => {
-  const { data } = await timedRpc<Snippet>('get_snippet', {
+export const fetchSnippet = async (id: string, language: string): Promise<Snippet | null> => {
+  const { data } = await timedRpc('get_snippet', {
     snippet_id: id,
     p_language: language
   })
-  return data
+  return isEmptyObject(data) ? null : data
 }
 
 export const fetchSnippets = async ({
@@ -62,7 +60,7 @@ export const fetchSnippets = async ({
     p_include_count: pageParam === 0
   }
 
-  const { data, durationMs } = await timedRpc<GetSnippetsResult>('get_snippets', getSnippetsOptions, {
+  const { data, durationMs } = await timedRpc('get_snippets', getSnippetsOptions, {
     abortSignal
   })
 
@@ -83,7 +81,7 @@ export const fetchSnippets = async ({
 }
 
 export const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariables): Promise<LikeResponse> => {
-  const { data } = await timedRpc<LikeResponse>('like_snippet', {
+  const { data } = await timedRpc('like_snippet', {
     snippet_id: snippetId,
     value: likeStatus
   })
@@ -91,30 +89,38 @@ export const likeSnippet = async ({ snippetId, likeStatus }: LikeSnippetVariable
 }
 
 export const hideSnippet = async (snippetId: string): Promise<HideResponse> => {
-  const { data } = await timedRpc<HideResponse>('hide_snippet', {
+  const { data } = await timedRpc('hide_snippet', {
     snippet_id: snippetId
   })
+  // A caller without the admin role gets `status: 'error'` instead of a Postgres error.
+  // Returning it as a success would leave the optimistic "hidden" state in the cache.
+  if (data.status === 'error') {
+    throw new Error(data.message)
+  }
   return data
 }
 
 export const unhideSnippet = async (snippetId: string): Promise<HideResponse> => {
-  const { data } = await timedRpc<HideResponse>('unhide_snippet', {
+  const { data } = await timedRpc('unhide_snippet', {
     snippet_id: snippetId
   })
+  if (data.status === 'error') {
+    throw new Error(data.message)
+  }
   return data
 }
 
-export const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippetData> => {
-  const { data } = await timedRpc<PublicSnippetData>('get_public_snippet', { snippet_id: snippetId })
-  return data
+export const fetchPublicSnippet = async (snippetId: string): Promise<PublicSnippetData | null> => {
+  const { data } = await timedRpc('get_public_snippet', { snippet_id: snippetId })
+  return isEmptyObject(data) ? null : data
 }
 
 export const dismissWelcomeCard = async (): Promise<void> => {
-  await timedRpc<unknown>('dismiss_welcome_card')
+  await timedRpc('dismiss_welcome_card')
 }
 
 export const toggleWelcomeCard = async (status: boolean): Promise<void> => {
-  await timedRpc<unknown>('toggle_welcome_card', {
+  await timedRpc('toggle_welcome_card', {
     p_status: status
   })
 }
@@ -126,7 +132,7 @@ export const fetchRelatedSnippets = async ({
   snippetId: string
   language: string
 }): Promise<IRelatedSnippet[]> => {
-  const { data } = await timedRpc<IRelatedSnippet[]>('search_related_snippets_public', {
+  const { data } = await timedRpc('search_related_snippets_public', {
     snippet_id: snippetId,
     p_language: language
   })
@@ -134,7 +140,7 @@ export const fetchRelatedSnippets = async ({
 }
 
 export const starSnippet = async (snippetId: string): Promise<StarSnippetResponse> => {
-  const { data } = await timedRpc<StarSnippetResponse>('toggle_star_snippet', {
+  const { data } = await timedRpc('toggle_star_snippet', {
     snippet_id: snippetId
   })
   return data

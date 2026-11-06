@@ -64,7 +64,7 @@ export function useSnippets({
 }
 
 export function useSnippet(id: string, language: string) {
-  return useQuery<Snippet, Error>({
+  return useQuery<Snippet | null, Error>({
     queryKey: snippetKeys.detail(id, language),
     queryFn: () => fetchSnippet(id, language),
     enabled: !!id
@@ -72,7 +72,7 @@ export function useSnippet(id: string, language: string) {
 }
 
 export function usePublicSnippet(snippetId: string) {
-  return useQuery<PublicSnippetData, Error>({
+  return useQuery<PublicSnippetData | null, Error>({
     queryKey: snippetKeys.detail(snippetId, 'english'),
     queryFn: () => fetchPublicSnippet(snippetId),
     enabled: !!snippetId

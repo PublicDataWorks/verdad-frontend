@@ -6,14 +6,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 interface LanguageTabsProps {
   setLanguage: (language: string) => void
   sourceText: {
-    before: string
-    main: string
-    after: string
+    before?: string
+    main?: string
+    after?: string
   }
   englishText: {
-    before_en: string
-    main_en: string
-    after_en: string
+    before_en?: string
+    main_en?: string
+    after_en?: string
   }
   sourceLanguage: string
 }
@@ -23,7 +23,7 @@ export default function LanguageTabs({ setLanguage, sourceText, englishText, sou
   const englishRef = useRef<HTMLSpanElement>(null)
   const [activeTab, setActiveTab] = useState(sourceLanguage)
 
-  const isSourceEnglish = sourceLanguage && sourceLanguage?.toLowerCase() === 'english'
+  const isSourceEnglish = sourceLanguage && sourceLanguage.toLowerCase() === 'english'
 
   const scrollToHighlight = (ref: React.RefObject<HTMLSpanElement>) => {
     if (ref.current) {

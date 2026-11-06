@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import type React from 'react'
+import { useState } from 'react'
 import { Share2, Check, Copy } from 'lucide-react'
 import { Button } from './ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
@@ -18,10 +19,12 @@ const ShareButton: React.FC<ShareButtonProps> = ({ snippetId, showLabel = false 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation()
     try {
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(publicUrl)
+      // lib.dom declares navigator.clipboard as always present; it is missing in
+      // insecure contexts and older Safari, hence the textarea fallback below.
+      const clipboard = navigator.clipboard as Clipboard | undefined
+      if (clipboard) {
+        await clipboard.writeText(publicUrl)
       } else {
-        // Fallback for Safari
         const textArea = document.createElement('textarea')
         textArea.value = publicUrl
         document.body.appendChild(textArea)

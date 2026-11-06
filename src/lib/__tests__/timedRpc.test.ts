@@ -1,7 +1,8 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, expectTypeOf, it, vi, beforeEach } from 'vitest'
 import { capture, captureException } from '@/lib/posthog'
 import { rpc as unmockedRpc } from '@/lib/supabase'
 import { isTimeoutError, timedRpc, SLOW_THRESHOLD_MS, TELEMETRY_ARGS_ALLOWLIST } from '@/lib/timedRpc'
+import type { StarSnippetResponse } from '@/types/snippet'
 
 vi.mock('@/lib/supabase', () => ({ rpc: vi.fn(), default: {} }))
 vi.mock('@/lib/posthog', () => ({ capture: vi.fn(), captureException: vi.fn() }))
@@ -55,11 +56,11 @@ describe('timedRpc', () => {
     mockRpc({ data: [] })
     mockDuration(SLOW_THRESHOLD_MS + 1)
 
-    await timedRpc('get_thing')
+    await timedRpc('get_roles')
 
     expect(capture).toHaveBeenCalledWith(
       'supabase_rpc',
-      expect.objectContaining({ rpc_name: 'get_thing', status: 'warning', duration_ms: SLOW_THRESHOLD_MS + 1 })
+      expect.objectContaining({ rpc_name: 'get_roles', status: 'warning', duration_ms: SLOW_THRESHOLD_MS + 1 })
     )
   })
 
@@ -67,7 +68,7 @@ describe('timedRpc', () => {
     const abortSignal = mockRpc({ data: null })
     const controller = new AbortController()
 
-    await timedRpc('get_thing', {}, { abortSignal: controller.signal })
+    await timedRpc('get_trending_topics', {}, { abortSignal: controller.signal })
 
     expect(abortSignal).toHaveBeenCalledWith(controller.signal)
   })
@@ -94,7 +95,7 @@ describe('timedRpc', () => {
     const error = { code: '57014', message: 'canceling statement due to statement timeout' }
     mockRpc({ error })
 
-    await expect(timedRpc('get_snippets')).rejects.toBe(error)
+    await expect(timedRpc('get_roles')).rejects.toBe(error)
 
     expect(capture).toHaveBeenCalledWith(
       'supabase_rpc',
@@ -107,7 +108,7 @@ describe('timedRpc', () => {
     const error = { message: 'upstream request timeout' }
     mockRpc({ error })
 
-    await expect(timedRpc('get_snippets')).rejects.toBe(error)
+    await expect(timedRpc('get_roles')).rejects.toBe(error)
 
     expect(capture).toHaveBeenCalledWith(
       'supabase_rpc',
@@ -147,10 +148,43 @@ describe('timedRpc', () => {
     const error = { message: 'AbortError: The user aborted a request.' }
     mockRpc({ error })
 
-    await expect(timedRpc('get_snippets', {}, { abortSignal: controller.signal })).rejects.toBe(error)
+    await expect(timedRpc('get_trending_topics', {}, { abortSignal: controller.signal })).rejects.toBe(error)
 
     expect(capture).not.toHaveBeenCalled()
     expect(captureException).not.toHaveBeenCalled()
+  })
+
+  it('takes the options in the second slot for a zero-argument function', async () => {
+    const abortSignal = mockRpc({ data: [] })
+    const controller = new AbortController()
+
+    await timedRpc('get_roles', undefined, { abortSignal: controller.signal })
+
+    expect(rpc).toHaveBeenCalledWith('get_roles', undefined)
+    expect(abortSignal).toHaveBeenCalledWith(controller.signal)
+  })
+
+  it('only accepts names and arguments from the generated schema', () => {
+    mockRpc({ data: null })
+
+    void timedRpc('get_snippet', { snippet_id: 'snippet-1' })
+    void timedRpc('get_roles')
+    // every argument of get_trending_topics has a SQL default
+    void timedRpc('get_trending_topics')
+    // @ts-expect-error - not a function in src/types/database.ts
+    void timedRpc('not_a_function')
+    // @ts-expect-error - get_snippet requires a snippet_id
+    void timedRpc('get_snippet', {})
+    // @ts-expect-error - get_roles takes no arguments
+    void timedRpc('get_roles', { snippet_id: 'snippet-1' })
+
+    expect(rpc).toHaveBeenCalledTimes(6)
+  })
+
+  it('types the result from src/types/rpc.ts', () => {
+    type StarResult = Awaited<ReturnType<typeof timedRpc<'toggle_star_snippet'>>>['data']
+
+    expectTypeOf<StarResult>().toEqualTypeOf<StarSnippetResponse>()
   })
 })
 

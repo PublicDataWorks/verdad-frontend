@@ -23,5 +23,6 @@ export interface TopicDetails {
 
 export interface TopicDetailsResponse {
   timespan: string
-  topic: TopicDetails
+  /** Null when the topic id does not match a label. */
+  topic: TopicDetails | null
 }

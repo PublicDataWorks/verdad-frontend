@@ -1,5 +1,5 @@
 import { translations } from '@/constants/translations'
-import { Language } from '@/providers/language'
+import type { Language } from '@/providers/language'
 
 export function getPoliticalLabel(value: number, language: Language): string {
   if (value >= -1.0 && value <= -0.7) {

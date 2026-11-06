@@ -14,6 +14,6 @@ const kebabToPascalCase = (str: string): string =>
 
 export function DynamicIcon({ name, className = '' }: DynamicIconProps) {
   const pascalCaseName = kebabToPascalCase(name) as keyof typeof LucideIcons
-  const Icon = LucideIcons[pascalCaseName] as React.ComponentType<{ className?: string }>
+  const Icon = LucideIcons[pascalCaseName] as React.ComponentType<{ className?: string }> | undefined
   return Icon ? <Icon className={className} /> : null
 }

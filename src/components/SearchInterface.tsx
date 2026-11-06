@@ -36,7 +36,7 @@ export default function SearchInterface() {
   const { showSidebar } = useSidebar()
   const { filters, setFilter } = useSnippetFilters()
   const { user } = useAuth()
-  const showWelcomeCard = user?.user_metadata?.dismiss_welcome_card as boolean | undefined
+  const showWelcomeCard = user?.user_metadata.dismiss_welcome_card as boolean | undefined
 
   const { language } = useLanguage()
   const t = translations[language]

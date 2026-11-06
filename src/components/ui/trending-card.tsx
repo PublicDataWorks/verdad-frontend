@@ -6,7 +6,8 @@ import Sparkline from '@/components/ui/sparkline'
 import DetailChart from '@/components/ui/detail-chart'
 import { useTrendingTopics, useTopicDetails, trendingKeys } from '@/hooks/useTrendingTopics'
 import { fetchTopicDetails } from '@/apis/trending'
-import useSnippetFilters, { Timespan } from '@/hooks/useSnippetFilters'
+import type { Timespan } from '@/hooks/useSnippetFilters'
+import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { useLanguage } from '@/providers/language'
 import { useSidebar } from '@/providers/sidebar'
 import { translations } from '@/constants/translations'
@@ -172,7 +173,7 @@ export default function TrendingCard({ expanded = false, className }: TrendingCa
   const prevDataRef = useRef<string | null>(null)
 
   // Check if we're in Focus Mode - either explicitly set or when exactly one label is selected
-  const focusedTopicId = filters.focusedTopic || (filters.labels?.length === 1 ? filters.labels[0] : undefined)
+  const focusedTopicId = filters.focusedTopic || (filters.labels.length === 1 ? filters.labels[0] : undefined)
 
   // Fetch trending topics (Discovery Mode)
   const {

@@ -10,7 +10,9 @@ const ResizeObserverStub = function ResizeObserverStub() {
   return { observe: () => {}, unobserve: () => {}, disconnect: () => {} }
 } as unknown as typeof ResizeObserver
 
-globalThis.ResizeObserver ??= ResizeObserverStub
+// lib.dom declares ResizeObserver as always present, hence the widened type.
+const globals: { ResizeObserver?: typeof ResizeObserver } = globalThis
+globals.ResizeObserver ??= ResizeObserverStub
 
 const showSlider = (value: PoliticalSpectrum | undefined) => {
   const onChange = vi.fn()

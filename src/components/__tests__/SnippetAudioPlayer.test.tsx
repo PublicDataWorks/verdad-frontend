@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach, vi, Mock } from 'vitest'
+import type { Mock } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render, screen, act } from '@testing-library/react'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AudioProvider } from '@/providers/audio'
@@ -10,7 +11,9 @@ const ResizeObserverStub = function ResizeObserverStub() {
   return { observe: () => {}, unobserve: () => {}, disconnect: () => {} }
 } as unknown as typeof ResizeObserver
 
-globalThis.ResizeObserver ??= ResizeObserverStub
+// lib.dom declares ResizeObserver as always present, hence the widened type.
+const globals: { ResizeObserver?: typeof ResizeObserver } = globalThis
+globals.ResizeObserver ??= ResizeObserverStub
 
 const flush = async () => {
   await act(async () => {

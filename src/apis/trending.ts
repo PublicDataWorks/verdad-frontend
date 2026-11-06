@@ -1,6 +1,7 @@
 import { timedRpc } from '@/lib/timedRpc'
-import { TrendingTopicsResponse, TopicDetailsResponse } from '@/types/trending'
-import { SnippetFilters } from '@/hooks/useSnippetFilters'
+import type { Json } from '@/types/database'
+import type { TrendingTopicsResponse, TopicDetailsResponse } from '@/types/trending'
+import type { SnippetFilters } from '@/hooks/useSnippetFilters'
 
 export const fetchTopicDetails = async ({
   topicId,
@@ -13,7 +14,7 @@ export const fetchTopicDetails = async ({
   filters: Partial<SnippetFilters>
   language: string
 }): Promise<TopicDetailsResponse> => {
-  const filterObj: Record<string, unknown> = {}
+  const filterObj: Record<string, Json> = {}
 
   if (filters.languages && filters.languages.length > 0) {
     filterObj.languages = filters.languages
@@ -28,7 +29,7 @@ export const fetchTopicDetails = async ({
     filterObj.politicalSpectrum = filters.politicalSpectrum
   }
 
-  const { data } = await timedRpc<TopicDetailsResponse>('get_topic_details', {
+  const { data } = await timedRpc('get_topic_details', {
     p_topic_id: topicId,
     p_timespan: timespan,
     p_filter: Object.keys(filterObj).length > 0 ? filterObj : null,
@@ -50,7 +51,7 @@ export const fetchTrendingTopics = async ({
   limit?: number
 }): Promise<TrendingTopicsResponse> => {
   // Build filter object matching the backend expectations
-  const filterObj: Record<string, unknown> = {}
+  const filterObj: Record<string, Json> = {}
 
   if (filters.languages && filters.languages.length > 0) {
     filterObj.languages = filters.languages
@@ -65,7 +66,7 @@ export const fetchTrendingTopics = async ({
     filterObj.politicalSpectrum = filters.politicalSpectrum
   }
 
-  const { data } = await timedRpc<TrendingTopicsResponse>('get_trending_topics', {
+  const { data } = await timedRpc('get_trending_topics', {
     p_timespan: timespan,
     p_filter: Object.keys(filterObj).length > 0 ? filterObj : null,
     p_language: language,

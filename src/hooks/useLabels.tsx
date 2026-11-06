@@ -9,7 +9,7 @@ export const fetchAllLabels = async () => {
     throw new Error(error.message)
   }
 
-  return (data as { text: string }[]).map(label => label.text)
+  return data.map(label => label.text)
 }
 
 export const useLabels = () =>

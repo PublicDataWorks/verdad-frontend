@@ -8,22 +8,24 @@ paths:
 
 # Data layer (apis, hooks, types, lib)
 
-## Everything goes through `rpc<T>()`
+## Everything goes through `timedRpc()`
 
 There is no backend API for data: the browser calls Supabase `SECURITY DEFINER` RPCs with the anon key.
-`rpc<T>(fn, args)` in `src/lib/supabase.ts` is a cast, not a validation - `T` is simply asserted onto
-`PostgrestSingleResponse<T>`. So:
+`timedRpc(fn, args, { abortSignal })` in `src/lib/timedRpc.ts` wraps `rpc(fn, args)` from
+`src/lib/supabase.ts`, reports duration and errors to PostHog and throws the Postgrest error. So:
 
-- One function per call in `src/apis/` (no React, no hooks there), each passing an explicit `T`.
-- The interfaces behind `T` live in `src/types/` (`snippet.ts`, `trending.ts`) or next to the api function.
-  Keep them matching the SQL: the source of truth is the **backend repo** `publicDataWorks/verdad` under
-  `supabase/` (`supabase/database/sql/*.sql` plus `supabase/migrations/`). Read the function there before
-  trusting a field; `src/types/snippet.ts` has lagged the SQL before, and a renamed column arrives as
+- One function per call in `src/apis/` (no React, no hooks there). Do not pass a type argument: `fn` and
+  `args` are checked against the generated `src/types/database.ts`, and the result type comes from the
+  `RpcReturns` map in `src/types/rpc.ts`.
+- `RpcReturns` is a declaration, not a validation. Each entry is read off the live function body
+  (`select pg_get_functiondef(...)`); the backend repo `publicDataWorks/verdad` (`supabase/migrations/`) is
+  the next best source, but its `supabase/database/sql/` has drifted. A renamed column arrives as
   `undefined` rather than an error.
-- `rpc()` returns a thenable that also exposes `.abortSignal(signal)`; pass TanStack Query's `signal`
-  through for cancellable list queries (see `fetchSnippets`).
+- After a migration changes a signature, regenerate `src/types/database.ts` with `npm run gen:types`
+  (needs `SUPABASE_ACCESS_TOKEN`); do not hand-edit it except as a stopgap.
+- Pass TanStack Query's `signal` as `abortSignal` for cancellable list queries (see `fetchSnippets`).
 - Never add an `eslint-disable` for `@typescript-eslint/no-unsafe-assignment`/`-call`/`-member-access`.
-  An unsafe-any complaint means the result is untyped - give `rpc<T>()` a real `T`.
+  An unsafe-any complaint means a result is untyped - add its shape to `RpcReturns`.
 
 ## Hooks wrap apis, they do not call Supabase
 

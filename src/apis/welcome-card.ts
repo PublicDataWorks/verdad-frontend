@@ -1,24 +1,7 @@
 import { timedRpc } from '@/lib/timedRpc'
+import type { WelcomeCard } from '@/types/rpc'
 
-export interface Feature {
-  icon: string
-  text: string
-}
-
-export interface WelcomeCard {
-  id: string
-  language_code: string
-  title: string
-  subtitle: string | null
-  features: Feature[]
-  footer_text: string | null
-  contact_email: string | null
-  is_default: boolean
-  updated_at: string
-  contact_text: string | null
-}
-
-export const getWelcomeContent = async (language: string): Promise<WelcomeCard> => {
-  const { data } = await timedRpc<WelcomeCard>('get_welcome_card', { p_language: language })
+export const getWelcomeContent = async (language: string): Promise<WelcomeCard | null> => {
+  const { data } = await timedRpc('get_welcome_card', { p_language: language })
   return data
 }

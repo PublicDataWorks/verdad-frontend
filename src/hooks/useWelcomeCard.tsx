@@ -1,8 +1,9 @@
-import { getWelcomeContent, type WelcomeCard } from '@/apis/welcome-card'
+import { getWelcomeContent } from '@/apis/welcome-card'
+import type { WelcomeCard } from '@/types/rpc'
 import { useQuery } from '@tanstack/react-query'
 
 export const useWelcomeCard = (language: string) =>
-  useQuery<WelcomeCard, Error>({
+  useQuery<WelcomeCard | null, Error>({
     queryKey: ['welcome-card', language],
     queryFn: () => getWelcomeContent(language)
   })

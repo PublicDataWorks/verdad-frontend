@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { fetchTrendingTopics, fetchTopicDetails } from '@/apis/trending'
-import { TrendingTopicsResponse, TopicDetailsResponse } from '@/types/trending'
-import { SnippetFilters } from '@/hooks/useSnippetFilters'
+import type { TrendingTopicsResponse, TopicDetailsResponse } from '@/types/trending'
+import type { SnippetFilters } from '@/hooks/useSnippetFilters'
 
 export const trendingKeys = {
   all: ['trending'] as const,

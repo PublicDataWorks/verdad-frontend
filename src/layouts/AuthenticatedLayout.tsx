@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import type React from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { LiveblocksProvider } from '@liveblocks/react/suspense'
 import type { Session, User } from '@supabase/supabase-js'
@@ -7,16 +8,11 @@ import HeaderBar from '../components/HeaderBar'
 import supabase from '../lib/supabase'
 import { fetchLiveblocksAuth } from '@/lib/liveblocksAuth'
 import { timedRpc } from '@/lib/timedRpc'
-
-// Minimal local shape of the `get_users` RPC result (Supabase types are not generated yet).
-interface AppUser {
-  email: string
-  raw_user_meta_data?: { name?: string; avatar_url?: string }
-}
+import type { AppUser } from '@/types/rpc'
 
 const fetchAllUsers = async (): Promise<AppUser[]> => {
-  const { data } = await timedRpc<AppUser[] | null>('get_users')
-  return data ?? []
+  const { data } = await timedRpc('get_users')
+  return data
 }
 
 const AuthenticatedLayout: React.FC = () => {
@@ -34,8 +30,9 @@ const AuthenticatedLayout: React.FC = () => {
     select: users =>
       users.map(entry => ({
         ...entry,
+        email: entry.email ?? '',
         raw_user_meta_data: {
-          name: entry.raw_user_meta_data?.name || entry.email,
+          name: entry.raw_user_meta_data?.name || entry.email || '',
           avatar_url: entry.raw_user_meta_data?.avatar_url || ''
         }
       }))
@@ -94,7 +91,7 @@ const AuthenticatedLayout: React.FC = () => {
         }
 
         const filteredData = allUsers.filter(entry => {
-          const name = entry.raw_user_meta_data.name?.toLowerCase() || ''
+          const name = entry.raw_user_meta_data.name.toLowerCase()
           const email = entry.email.toLowerCase()
           const searchText = text.toLowerCase()
           return name.includes(searchText) || email.includes(searchText)

@@ -1,4 +1,5 @@
-import { createContext, useContext, useMemo, useState, ReactNode, useEffect } from 'react'
+import type { ReactNode } from 'react'
+import { createContext, useContext, useMemo, useState, useEffect } from 'react'
 import { isMobile } from 'react-device-detect'
 
 interface SidebarState {

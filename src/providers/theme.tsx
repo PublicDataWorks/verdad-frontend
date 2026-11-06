@@ -83,10 +83,5 @@ export function ThemeProvider({ children, storageKey = THEME_STORAGE_KEY, ...pro
   )
 }
 
-export const useTheme = () => {
-  const context = useContext(ThemeProviderContext)
-
-  if (context === undefined) throw new Error('useTheme must be used within a ThemeProvider')
-
-  return context
-}
+// The context is created with a default value, so there is nothing to guard against here.
+export const useTheme = () => useContext(ThemeProviderContext)
