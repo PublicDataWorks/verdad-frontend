@@ -27,7 +27,8 @@ export default function Sidebar() {
     starredBy: selectedStarredBy,
     upvotedBy: selectedUpvotedBy,
     labels: selectedLabels,
-    politicalSpectrum
+    politicalSpectrum,
+    view
   } = filters
 
   const { language } = useLanguage()
@@ -79,6 +80,10 @@ export default function Sidebar() {
     setFilter('politicalSpectrum', value)
   }
 
+  const handleResearchViewToggle = () => {
+    setFilter('view', view === 'research' ? undefined : 'research')
+  }
+
   return (
     <div className='hide-scrollbar fixed  inset-0 z-50 h-[100svh] overflow-y-auto bg-background-gray-lightest md:relative md:inset-auto  md:h-full md:w-80'>
       <div className='p-6'>
@@ -107,6 +112,15 @@ export default function Sidebar() {
               <X className='h-6 w-6' />
             </Button>
           </div>
+        </div>
+
+        <h3 className='mb-2 mt-6 font-semibold'>{t.view}</h3>
+        <div className='flex flex-wrap gap-2'>
+          <RoundedToggleButton
+            label={t.researchView}
+            isActive={view === 'research'}
+            onClick={handleResearchViewToggle}
+          />
         </div>
 
         <div>

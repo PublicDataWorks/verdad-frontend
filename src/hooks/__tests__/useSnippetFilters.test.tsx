@@ -48,6 +48,55 @@ describe('useSnippetFilters', () => {
     expect(result.current.isEmpty()).toBe(false)
   })
 
+  it('parses the research view and counts it as a filter', () => {
+    const { result } = renderHook(useFiltersWithLocation, { wrapper: withRouter('/search?view=research') })
+
+    expect(result.current.filters.view).toBe('research')
+    expect(result.current.isEmpty()).toBe(false)
+  })
+
+  it.each(['/search', '/search?view=Research', '/search?view=all'])(
+    'reads a missing or unknown view as the default view (%s)',
+    path => {
+      const { result } = renderHook(useFiltersWithLocation, { wrapper: withRouter(path) })
+
+      expect(result.current.filters.view).toBeUndefined()
+      expect(result.current.isEmpty()).toBe(true)
+    }
+  )
+
+  it('writes the research view to the URL and removes it when unset', () => {
+    const { result } = renderHook(useFiltersWithLocation, { wrapper: withRouter('/search?states=TX') })
+
+    act(() => {
+      result.current.setFilter('view', 'research')
+    })
+
+    expect(result.current.filters.view).toBe('research')
+    expect(result.current.search).toBe('?states=TX&view=research')
+
+    act(() => {
+      result.current.setFilter('view', undefined)
+    })
+
+    expect(result.current.filters.view).toBeUndefined()
+    expect(result.current.search).toBe('?states=TX')
+  })
+
+  it('clearAll turns the research view off', () => {
+    const { result } = renderHook(useFiltersWithLocation, {
+      wrapper: withRouter('/search?view=research&order_by=upvotes')
+    })
+
+    act(() => {
+      result.current.clearAll()
+    })
+
+    expect(result.current.filters.view).toBeUndefined()
+    expect(result.current.search).toBe('?order_by=upvotes')
+    expect(result.current.isEmpty()).toBe(true)
+  })
+
   it('clearAll keeps only order_by and searchTerm', () => {
     const { result } = renderHook(useFiltersWithLocation, {
       wrapper: withRouter('/search?labels=fraud&order_by=comments&searchTerm=border')

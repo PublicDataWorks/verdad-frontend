@@ -51,6 +51,9 @@ export const fetchSnippets = async ({
   if (!actualFilters.politicalSpectrum) {
     delete actualFilters.politicalSpectrum
   }
+  if (!actualFilters.view) {
+    delete actualFilters.view
+  }
   const getSnippetsOptions = {
     page: pageParam,
     page_size: pageSize,

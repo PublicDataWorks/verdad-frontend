@@ -16,6 +16,7 @@ import useSnippetFilters from '@/hooks/useSnippetFilters'
 import { isMobile } from 'react-device-detect'
 import WelcomeCard from './ui/welcome-card'
 import TrendingCard from './ui/trending-card'
+import ResearchViewBanner from './ResearchViewBanner'
 import { useAuth } from '@/providers/auth'
 import { Button } from './ui/button'
 import {
@@ -161,6 +162,7 @@ export default function SearchInterface() {
           id='scrollableDiv'
           className={`${padding} custom-scrollbar flex-1 overflow-y-scroll rounded-lg`}
         >
+          {filters.view === 'research' && <ResearchViewBanner />}
           {status === 'error' ? (
             <div className='flex flex-col items-center gap-3 p-4 text-center'>
               <p className='text-destructive'>{isTimeoutError(error) ? t.snippetsTimeout : t.snippetsLoadError}</p>

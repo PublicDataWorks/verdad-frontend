@@ -8,6 +8,12 @@ export const POLITICAL_SPECTRUM_VALUES = ['left', 'center-left', 'center', 'cent
 
 export type PoliticalSpectrum = (typeof POLITICAL_SPECTRUM_VALUES)[number]
 
+// Values must match `p_filter.view` in the backend `get_snippets` SQL function. "research" also returns
+// Processed clips below the confidence threshold that carry a research label or a high harmful-rhetoric score.
+export const SNIPPET_VIEWS = ['research'] as const
+
+export type SnippetView = (typeof SNIPPET_VIEWS)[number]
+
 export interface SnippetFilters {
   languages: string[]
   states: string[]
@@ -16,6 +22,7 @@ export interface SnippetFilters {
   labeledBy: string[]
   starredBy: string[]
   politicalSpectrum?: PoliticalSpectrum
+  view?: SnippetView
   order_by?: 'activities' | 'upvotes' | 'comments' | 'latest'
   upvotedBy: string[]
   searchTerm?: string
@@ -28,6 +35,9 @@ const parseArrayParam = (param: string | null): string[] => (param ? param.split
 // `get` returns null for a missing param; the slider needs undefined ("All") for that and for unknown values.
 const parsePoliticalSpectrum = (param: string | null): PoliticalSpectrum | undefined =>
   POLITICAL_SPECTRUM_VALUES.find(value => value === param)
+
+// Unknown values read as the default view, so a stale or hand-edited URL cannot send them to the backend.
+const parseSnippetView = (param: string | null): SnippetView | undefined => SNIPPET_VIEWS.find(value => value === param)
 
 const setArrayParam = (newParams: URLSearchParams, key: string, value: string[]) => {
   if (value.length > 0) {
@@ -45,6 +55,7 @@ function useSnippetFilters() {
   const labeledBy = parseArrayParam(searchParams.get('labeledBy'))
   const starredBy = parseArrayParam(searchParams.get('starredBy'))
   const politicalSpectrum = parsePoliticalSpectrum(searchParams.get('politicalSpectrum'))
+  const view = parseSnippetView(searchParams.get('view'))
   const orderBy = searchParams.get('order_by') as SnippetFilters['order_by']
   const upvotedBy = parseArrayParam(searchParams.get('upvotedBy'))
   const searchTerm = searchParams.get('searchTerm') as SnippetFilters['searchTerm']
@@ -65,6 +76,10 @@ function useSnippetFilters() {
 
       if (filters.politicalSpectrum) {
         newParams.set('politicalSpectrum', filters.politicalSpectrum)
+      }
+
+      if (filters.view) {
+        newParams.set('view', filters.view)
       }
 
       if (filters.order_by) {
@@ -96,6 +111,7 @@ function useSnippetFilters() {
     labeledBy,
     starredBy,
     politicalSpectrum,
+    view,
     order_by: orderBy,
     upvotedBy,
     searchTerm,
@@ -112,8 +128,9 @@ function useSnippetFilters() {
       labeledBy.length === 0 &&
       starredBy.length === 0 &&
       upvotedBy.length === 0 &&
-      !politicalSpectrum,
-    [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, upvotedBy]
+      !politicalSpectrum &&
+      !view,
+    [languages, states, sources, labels, labeledBy, starredBy, politicalSpectrum, upvotedBy, view]
   )
 
   const setFilter = useCallback(
@@ -131,6 +148,7 @@ function useSnippetFilters() {
     [setSnippetFilters, filters]
   )
 
+  // Reset also turns the research view off: it widens the result set, so it counts as a filter.
   const clearAll = useCallback(() => {
     const newParams = new URLSearchParams()
     if (orderBy) {
